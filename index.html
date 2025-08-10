@@ -25,7 +25,37 @@ a{color:var(--accent);text-decoration:underline}
 .notice{background:var(--accent-weak);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 </style>
 
+  
 
+
+<!-- Paste this block ABOVE the main headline "Not for Profit. Not for Data. Built for Dignity" -->
+
+<!-- Scoped styles so nothing else is affected -->
+<style>
+  .doc-badge { text-align: center; margin: 8px 0 12px; }
+  .doc-badge img {
+    height: 132px;         /* small size on desktop */
+    width: auto;
+    display: inline-block;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.06);
+  }
+  @media (max-width: 640px){
+    .doc-badge img { height: 36px; } /* smaller on mobile */
+  }
+</style>
+
+<div class="doc-badge" aria-label="Diplomatic strategy document badge">
+  <img src="DOCUMENT.png" alt="Refugee Self‑Reliance Diplomatic Strategy Document">
+</div>
+
+<!-- End of snippet -->
+
+  
+
+
+
+  
   
   <title>M Corp AI — Public Interest Message + Impact Simulator</title>
   <meta name="description" content="Not for Profit. Not for Data. Built for Dignity — Rights‑based wearable AI and refugee self‑reliance, with an in‑browser impact simulator." />
