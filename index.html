@@ -1041,63 +1041,85 @@ setInterval(showFrame, 3000); // 3 seconds
 
 
 
+  
 
 
 
   
-  <!-- Tri‑lingual diplomatic footer snippet (place near the very end of your page) -->
-<div style="font-family: Arial, system-ui, -apple-system, 'Segoe UI', Roboto; font-size: 12pt; line-height: 1.6; margin-top: 18px;">
-  <!-- English (black) -->
-  <p style="color: #000; margin: 0 0 9px 0;">
-    The AI Necklace for children with disabilities — an ethical‑AI approach — has not yet been led by either the United States or China. If this is not an immediate priority for your Ministry, I would be grateful if you could connect me with an appropriate NGO. Ethical AI can be implemented with as little as <strong>USD&nbsp;1,000</strong>.
-  </p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Public‑interest message – profile block update</title>
+  <style>
+    :root{
+      --ink:#0f2e4f;
+      --muted:#4b5563;
+      --accent:#0b77d5;
+      --line:#e5eaf2;
+      --soft:#f7f9fc;
+    }
+    body{margin:0;padding:24px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+    .wrap{max-width:980px;margin:0 auto}
 
-  <!-- Japanese (blue) -->
-  <p style="color: #0b5ebd; margin: 0 0 9px 0;">
-    🇯🇵 障害のある子ども向けのAIネックレス、すなわち倫理的AIの分野は、米国も中国もまだ先行していません。もし貴外務省の最優先事項でない場合は、適切なNGOをご紹介いただければ幸いです。倫理的AIは<strong>1,000ドル</strong>で実装が可能です。
-  </p>
+    /* Email row + image to the left */
+    .contact-row{display:flex;align-items:flex-start;gap:16px}
+    .profile{flex:0 0 auto}
+    .profile img{width:96px;height:auto;border-radius:10px;display:block;box-shadow:0 4px 14px rgba(15,46,79,.12)}
+    .email{flex:1 1 auto;padding-top:6px}
+    .email a{color:var(--accent);text-decoration:underline}
 
-  <!-- French (red) -->
-  <p style="color: #bd0b0b; margin: 0 0 9px 0;">
-    🇫🇷 Le collier d’IA pour enfants en situation de handicap — une approche d’IA éthique — n’est encore dominé ni par les États‑Unis ni par la Chine. Si cela ne relève pas des priorités immédiates de votre ministère, je vous serais reconnaissant de me mettre en relation avec une ONG. Une IA éthique peut être mise en œuvre avec seulement <strong>1 000&nbsp;USD</strong>.
-  </p>
+    /* Small, elegant message block */
+    .note{margin-top:16px;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+    .note h3{margin:0 0 8px 0;font-size:13px;font-weight:700;letter-spacing:.2px;color:var(--ink)}
+    .note p{margin:8px 0 0 0;font-size:12px;line-height:1.55;color:var(--muted)}
+    .note p + p{margin-top:10px}
 
-  <!-- Email (English) -->
-  <p style="color: #000; margin: 8px 0 0 0;">
-    Email: <a href="mailto:gyumin.jeon.childsafe@gmail.com" style="color: inherit; text-decoration: underline;">gyumin.jeon.childsafe@gmail.com</a>
-  </p>
-</div>
+    /* Keep multilingual lines above as in your page */
+    .intl{margin-bottom:14px}
+    .intl p{margin:6px 0}
+    .intl .jp{color:#0b5bd5}
+    .intl .fr{color:#c01818}
+  </style>
+</head>
+<body>
+  <div class="wrap">
 
+    <!-- Keep your three-language block here (example structure) -->
+    <div class="intl">
+      <p>EN The AI Necklace for children with disabilities — an ethical‑AI approach — has not yet been led by either the United States or China. If this is not an immediate priority for your Ministry, I would be grateful if you could connect me with an appropriate NGO. Ethical AI can be implemented with as little as <strong>USD 1,000</strong>.</p>
+      <p class="jp">JP 障害のある子ども向けのAIネックレス、すなわち倫理的AIの分野は、米国も中国もまだ先行していません。もし貴外務省の最優先事項でない場合は、適切なNGOをご紹介いただければ幸いです。倫理的AIは<strong>1,000ドル</strong>で実装が可能です。</p>
+      <p class="fr">FR Le collier d’IA pour enfants en situation de handicap — une approche d’IA éthique — n’est encore dominé ni par les États‑Unis ni par la Chine. Si cela ne relève pas des priorités immédiates de votre ministère, je vous serais reconnaissant de me mettre en relation avec une ONG. Une IA éthique peut être mise en œuvre avec seulement <strong>1 000 USD</strong>.</p>
+    </div>
 
+    <!-- Contact + left image -->
+    <div class="contact-row">
+      <div class="profile">
+        <img src="/path/to/your/profile.jpg" alt="Gyu‑min Jeon portrait" />
+      </div>
+      <div class="email">
+        <p style="margin:0 0 2px 0;font-size:14px;color:var(--ink)">Email: <a href="mailto:gyumin.jeon.childsafe@gmail.com">gyumin.jeon.childsafe@gmail.com</a></p>
+      </div>
+    </div>
 
+    <!-- Small, elegant message block -->
+    <section class="note" aria-label="Author and feasibility note">
+      <h3>Author and feasibility note</h3>
+      <p>“I am a national of the Republic of Korea.” Gyu‑min Jeon (also known as Morgan J.). I was born on January 17, 1982.</p>
+      <p>This initiative is among the first of its kind worldwide. With an initial investment of USD 1,000, a pilot version can be launched. The proposal clearly demonstrates technical feasibility and financial accessibility, offering a scalable, verifiable model suitable for public‑sector adoption on an international scale.</p>
+      <p>This is a real‑world test to determine whether refugees can assemble the AI necklace for children with disabilities using just USD 1,000. The device itself requires only a few 14‑nanometer chips and one or two simple circuit assemblies. There is no need for a formal modular factory; a single refugee tent can serve as the assembly site. It is genuinely possible to establish a small‑scale assembly operation for USD 1,000.</p>
+      <p>This initiative aligns directly with the United Nations Sustainable Development Goals. In its ambition, impact, and humanitarian alignment, the initiative reflects the kind of public‑benefit innovation that merits diplomatic attention.</p>
+      <p><strong>Is this really feasible?</strong> Yes, it is entirely feasible. The AI necklace for children with disabilities is built with a remarkably simple structure, making it straightforward to assemble. Even refugees with no technical background can carry out the work. With about two hours of basic training, any refugee can become self‑sufficient in assembling the device. Establishing a polished, modular factory would cost around USD 100,000; however, in a refugee settlement, all that is needed is a tent, a small set of semiconductor components, and necklace parts. As noted, a small‑scale assembly setup can be launched with USD 1,000.</p>
+      <p><strong>Is there confidence in demand?</strong> Absolutely. The AI necklace combines a compelling founder story, clear public benefit, the objective of guaranteed child safety, refugee empowerment, and an opportunity for meaningful sponsorship. With this combination, demand is expected to exceed supply.</p>
+    </section>
 
+  </div>
+</body>
+</html>
 
-        
 
   
-<!-- Paste this block ABOVE the main headline "Not for Profit. Not for Data. Built for Dignity" -->
-
-<!-- Scoped styles so nothing else is affected -->
-<style>
-  .doc-badge { text-align: center; margin: 8px 0 12px; }
-  .doc-badge img {
-    height: 176px;         /* small size on desktop */
-    width: auto;
-    display: inline-block;
-    border-radius: 4px;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.06);
-  }
-  @media (max-width: 640px){
-    .doc-badge img { height: 36px; } /* smaller on mobile */
-  }
-</style>
-
-<div class="doc-badge" aria-label="Diplomatic strategy document badge">
-  <img src="image.PNG" alt="Refugee Self‑Reliance Diplomatic Strategy Document">
-</div>
-
-<!-- End of snippet -->
-
 
   
   
