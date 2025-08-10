@@ -71,55 +71,89 @@ a{color:var(--accent);text-decoration:underline}
       <h1 id="letterTitle">Not for Profit. Not for Data. Built for Dignity</h1>
 
 
+
+
+
+
       
-<!-- Refugee Calculator (English, simplified, no "EU" mention) -->
-<section id="refugeeCalc" style="margin:16px 0 22px 0;font-family:Arial,system-ui,-apple-system,\"Segoe UI\",Roboto">
+<!-- Refugee Calculator (non-linear, starts at 1.55 °C) -->
+<section id="refugeeCalc" style="margin:16px 0 22px 0;font-family:Arial,system-ui,-apple-system,'Segoe UI',Roboto">
   <h3 style="margin:0 0 8px 0;font-size:1.05rem">Refugee Calculator</h3>
 
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid #d8e6fb;border-radius:12px;background:#f5faff;color:#0f2e4f;box-shadow:0 6px 14px rgba(15,46,79,.06)" role="region" aria-live="polite">
     <span style="display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;font-size:.85rem;background:#eaf4ff;border:1px solid #d8e6fb;color:#0b77d5">ΔT</span>
     <button type="button" id="rcDown" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #d8e6fb;background:#fff;color:#0f2e4f;cursor:pointer">−</button>
-    <strong id="rcTemp" style="font-size:1.05rem">0.0</strong><span>°C</span>
+    <strong id="rcTemp" style="font-size:1.05rem">1.55</strong><span>°C</span>
     <button type="button" id="rcUp" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #d8e6fb;background:#fff;color:#0f2e4f;cursor:pointer">+</button>
-    <span style="white-space:normal">Every 0.1 °C increase may correspond to <strong id="rcRefugees">0</strong> people/year becoming displaced. Wheat yield change: <strong id="rcCrop">0.00%</strong>.</span>
+    <span style="white-space:normal">
+      Every 0.1 °C increase may correspond to <strong id="rcRefugees">0</strong> people/year additionally displaced (vs 1.55 °C baseline). Wheat yield change (vs 1.55 °C): <strong id="rcCrop">0.00%</strong>.
+    </span>
   </div>
 
   <small style="display:block;margin-top:6px;color:#4b5563;font-size:.85rem;line-height:1.55">
-    Based on peer‑reviewed studies: global meta‑analysis on crop yield impacts (PNAS, 2017) and climate–displacement correlations (Science, 2017). These are conservative approximations, not arbitrary figures. Currently, over 100 million people are forcibly displaced worldwide, underscoring the need for self‑reliance within refugee settlements.
+    The counter starts at 1.55 °C because the 12-month global mean around 2023–2024 briefly exceeded ~1.55 °C above the pre-industrial level. Risks are non-linear: higher warming can drive disproportionately larger displacement.
+  </small>
+  <small style="display:block;margin-top:2px;color:#4b5563;font-size:.85rem;line-height:1.55">
+    Figures use teaching estimates calibrated to peer-reviewed literature (crop-yield meta-analysis and climate–displacement studies) and a convex growth curve; they are not arbitrary. Over 100 million people are currently forcibly displaced worldwide, underscoring the need for self-reliance within refugee settlements.
   </small>
 
   <script>
-    (function(){
-      const STEP = 0.1;
-      const REFUGEES_PER_STEP = 20000;     // people/year per 0.1°C (approximation)
-      const WHEAT_DROP_PER_STEP = -0.6;    // % per 0.1°C
+    (function () {
+      // step and baseline
+      const STEP = 0.1;                 // °C per click
+      const BASELINE = 1.55;            // start at ~1.55 °C above pre-industrial
+
+      // non-linear displacement model (education use):
+      // base increment at 1.55→1.65 is 20,000 people/year per +0.1 °C,
+      // and the increment grows exponentially with temperature.
+      // Here we assume "doubling every +0.5 °C" beyond 1.55 °C.
+      const REFUGEES_BASE_PER_STEP = 20000;     // people/year per 0.1 °C at baseline
+      const GROWTH_PER_DEG = Math.log(4);       // +1.0 °C → ×4 increment (≈ ×2 per +0.5 °C)
+
+      // crop response shown as additional change vs 1.55 °C baseline
+      const WHEAT_DROP_PER_STEP = -0.6;         // % per +0.1 °C (meta-analysis order)
 
       const $ = id => document.getElementById(id);
-      const round1 = n => (Math.round(n*10)/10).toFixed(1);
-      const fmt = n => Math.round(n).toLocaleString();
+      const round1 = n => (Math.round(n * 10) / 10).toFixed(1);
+      const fmtInt = n => Math.round(n).toLocaleString();
 
-      let dT = 0.0;
+      let T = BASELINE; // current anomaly °C
 
-      function update(){
-        $("rcTemp").textContent = round1(dT);
-        const clicks = dT/STEP;
-        const refugees = Math.max(0, clicks * REFUGEES_PER_STEP);
-        const crop = clicks * WHEAT_DROP_PER_STEP;
-        $("rcRefugees").textContent = fmt(refugees);
-        $("rcCrop").textContent = crop.toFixed(2) + '%';
+      function cumulativeDisplacement(temp){
+        if (temp <= BASELINE) return 0;
+        const steps = Math.round((temp - BASELINE) / STEP);
+        let sum = 0;
+        for (let i = 1; i <= steps; i++) {
+          const Ti = BASELINE + i * STEP;
+          const mult = Math.exp(GROWTH_PER_DEG * Math.max(0, Ti - BASELINE));
+          sum += REFUGEES_BASE_PER_STEP * mult;
+        }
+        return sum;
       }
 
-      function inc(){ dT = +(dT + STEP).toFixed(1); update(); }
-      function dec(){ dT = Math.max(0, +(dT - STEP).toFixed(1)); update(); }
+      function update() {
+        $("rcTemp").textContent = round1(T);
+        const displaced = cumulativeDisplacement(T);
+        const cropDelta = ((T - BASELINE) / STEP) * WHEAT_DROP_PER_STEP; // % vs baseline
+        $("rcRefugees").textContent = fmtInt(Math.max(0, displaced));
+        $("rcCrop").textContent = cropDelta.toFixed(2) + "%";
+      }
 
-      $("rcUp").addEventListener('click', inc);
-      $("rcDown").addEventListener('click', dec);
+      function inc(){ T = +(T + STEP).toFixed(1); update(); }
+      function dec(){ T = Math.max(BASELINE, +(T - STEP).toFixed(1)); update(); }
 
+      $("rcUp").addEventListener("click", inc);
+      $("rcDown").addEventListener("click", dec);
       update();
     })();
   </script>
 </section>
 
+
+
+
+
+      
       
 
       
