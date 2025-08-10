@@ -69,6 +69,60 @@ a{color:var(--accent);text-decoration:underline}
     <!-- ===== Public‑interest letter (original one‑pager) ===== -->
     <section class="lead" aria-labelledby="letterTitle">
       <h1 id="letterTitle">Not for Profit. Not for Data. Built for Dignity</h1>
+
+
+      
+<!-- Refugee Calculator (English, simplified, no "EU" mention) -->
+<section id="refugeeCalc" style="margin:16px 0 22px 0;font-family:Arial,system-ui,-apple-system,\"Segoe UI\",Roboto">
+  <h3 style="margin:0 0 8px 0;font-size:1.05rem">Refugee Calculator</h3>
+
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid #d8e6fb;border-radius:12px;background:#f5faff;color:#0f2e4f;box-shadow:0 6px 14px rgba(15,46,79,.06)" role="region" aria-live="polite">
+    <span style="display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;font-size:.85rem;background:#eaf4ff;border:1px solid #d8e6fb;color:#0b77d5">ΔT</span>
+    <button type="button" id="rcDown" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #d8e6fb;background:#fff;color:#0f2e4f;cursor:pointer">−</button>
+    <strong id="rcTemp" style="font-size:1.05rem">0.0</strong><span>°C</span>
+    <button type="button" id="rcUp" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #d8e6fb;background:#fff;color:#0f2e4f;cursor:pointer">+</button>
+    <span style="white-space:normal">Every 0.1 °C increase may correspond to <strong id="rcRefugees">0</strong> people/year becoming displaced. Wheat yield change: <strong id="rcCrop">0.00%</strong>.</span>
+  </div>
+
+  <small style="display:block;margin-top:6px;color:#4b5563;font-size:.85rem;line-height:1.55">
+    Based on peer‑reviewed studies: global meta‑analysis on crop yield impacts (PNAS, 2017) and climate–displacement correlations (Science, 2017). These are conservative approximations, not arbitrary figures. Currently, over 100 million people are forcibly displaced worldwide, underscoring the need for self‑reliance within refugee settlements.
+  </small>
+
+  <script>
+    (function(){
+      const STEP = 0.1;
+      const REFUGEES_PER_STEP = 20000;     // people/year per 0.1°C (approximation)
+      const WHEAT_DROP_PER_STEP = -0.6;    // % per 0.1°C
+
+      const $ = id => document.getElementById(id);
+      const round1 = n => (Math.round(n*10)/10).toFixed(1);
+      const fmt = n => Math.round(n).toLocaleString();
+
+      let dT = 0.0;
+
+      function update(){
+        $("rcTemp").textContent = round1(dT);
+        const clicks = dT/STEP;
+        const refugees = Math.max(0, clicks * REFUGEES_PER_STEP);
+        const crop = clicks * WHEAT_DROP_PER_STEP;
+        $("rcRefugees").textContent = fmt(refugees);
+        $("rcCrop").textContent = crop.toFixed(2) + '%';
+      }
+
+      function inc(){ dT = +(dT + STEP).toFixed(1); update(); }
+      function dec(){ dT = Math.max(0, +(dT - STEP).toFixed(1)); update(); }
+
+      $("rcUp").addEventListener('click', inc);
+      $("rcDown").addEventListener('click', dec);
+
+      update();
+    })();
+  </script>
+</section>
+
+      
+
+      
       <h2>A rights-based wearable AI initiative for children with disabilities and displaced communities</h2>
       <p><strong>All contents of this message may be freely shared.</strong></p>
       <p>I hope this message finds you well.<br>
