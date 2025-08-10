@@ -27,60 +27,88 @@ a{color:var(--accent);text-decoration:underline}
 
 
 
-  
-  
-  <title>M Corp AI — Public Interest Message + Impact Simulator</title>
-  <meta name="description" content="Not for Profit. Not for Data. Built for Dignity — Rights‑based wearable AI and refugee self‑reliance, with an in‑browser impact simulator." />
-  <style>
-    /* ===== Letter section (light) ===== */
-:root{--txt:#333; /* --bg:#f9f9f9; */ --muted:#4b5563}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);font-family:Arial,system-ui,-apple-system,"Segoe UI",Roboto}
-    .page{max-width:1000px;margin:0 auto;padding:28px}
-    .lead h1{margin:.2rem 0 0 0;font-size:1.9rem}
-    .lead h2{margin:.4rem 0 1rem 0;font-size:1.2rem;color:#444}
-    .lead ol{padding-left:1.2rem}
-    .lead p strong{font-weight:700}
 
-    /* ===== Simulator (scoped dark theme) ===== */
-    .mc{--bg:#0f172a;--fg:#e2e8f0;--soft:#1e293b;--muted:#94a3b8;--line:#334155;--ok:#22c55e;--bad:#ef4444;--info:#60a5fa}
-    .mc .wrap{background:var(--bg);color:var(--fg);border-radius:18px;margin-top:26px;padding:22px;box-shadow:0 12px 28px rgba(2,6,23,.25)}
-    .mc h3{margin:0 0 .25rem 0}
-    .mc p{color:var(--muted);margin:.25rem 0 .75rem}
-    .mc .highlight{background:#022c22;border:1px solid #14532d;padding:12px;border-radius:12px;color:#bbf7d0;margin:10px 0;line-height:1.55}
-    .mc .grid{display:grid;gap:12px}
-    @media(min-width:920px){.mc .cols-3{grid-template-columns:repeat(3,1fr)}.mc .cols-2{grid-template-columns:1.2fr 1fr}}
-    .mc label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:4px}
-    .mc input[type=number], .mc input[type=range]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:var(--fg);outline:none}
-    .mc input[readonly]{opacity:.9}
-    .mc .kpi{display:grid;gap:10px}
-    @media(min-width:720px){.mc .kpi{grid-template-columns:repeat(3,1fr)}}
-    .mc .card{background:#0b1220;border:1px solid var(--line);border-radius:12px;padding:12px}
-    .mc .title{font-size:.95rem;color:var(--muted)}
-    .mc .num{font-size:1.35rem;font-weight:800}
-    .mc .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .mc .badge{display:inline-flex;gap:6px;align-items:center;background:#052e1d;color:#86efac;border:1px solid #14532d;padding:6px 10px;border-radius:999px;font-size:.78rem}
-    .mc .btn{cursor:pointer;border:1px solid var(--line);background:#0b1220;color:var(--fg);padding:9px 12px;border-radius:10px;font-size:.92rem}
-    .mc .btn.primary{background:linear-gradient(180deg,#16a34a,#15803d);border-color:#166534}
-    .mc canvas{width:100%;height:180px;background:#0b1220;border-radius:10px}
-    .mc textarea{width:100%;min-height:140px;background:#0b1220;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,1px,1px);white-space:nowrap;border:0}
-  </style>
+
+  
+  
+<title>M Corp AI — Public Interest Message + Impact Simulator</title>
+<meta name="description" content="Not for Profit. Not for Data. Built for Dignity — Rights‑based wearable AI and refugee self‑reliance, with an in‑browser impact simulator." />
+<style>
+  /* ===== Global (diplomatic tone) ===== */
+  :root{
+    --bg:#f2f5f8;           /* 바탕: 아주 옅은 파랑‑회색 */
+    --paper:#ffffff;        /* 카드 배경 */
+    --ink:#0f2e4f;          /* 본문 잉크색(짙은 남청) */
+    --muted:#475569;        /* 보조 텍스트 */
+    --line:#d8e3f0;         /* 테두리 */
+    --accent:#0b77d5;       /* 링크/강조 파랑 */
+  }
+
+  html,body{
+    margin:0;padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:Arial,system-ui,-apple-system,"Segoe UI",Roboto;
+    line-height:1.6;
+  }
+
+  .page{max-width:1000px;margin:0 auto;padding:28px}
+
+  /* ===== Lead (상단 소개 카드) ===== */
+  .lead{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 8px 24px rgba(15,46,79,.06);
+  }
+
+  .lead h1{margin:.2rem 0 .4rem 0;font-size:1.9rem}
+  .lead p{margin:.25rem 0 0 0;color:var(--muted);font-size:.95rem}
+  .lead a{color:var(--accent);text-decoration:underline}
+
+  /* ===== Simulator (기존 다크 테마 유지) ===== */
+  .mc{
+    --bg:#0f172a;--fg:#e2e8f0;--soft:#1e293b;--muted:#94a3b8;--line:#334155;
+    --ok:#22c55e;--bad:#ef4444;--info:#60a5fa
+  }
+  .mc .wrap{background:var(--bg);color:var(--fg);border-radius:18px;margin-top:26px;
+    padding:22px;box-shadow:0 12px 28px rgba(2,6,23,.25)}
+  .mc h3{margin:0 0 .25rem 0}
+  .mc p{color:var(--muted);margin:.25rem 0 .75rem}
+  .mc .grid{display:grid;gap:12px}
+  @media(min-width:920px){.mc .cols-3{grid-template-columns:repeat(3,1fr)}.mc .cols-2{grid-template-columns:1.2fr 1fr}}
+  .mc label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:4px}
+  .mc input[type=number], .mc input[type=range]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:var(--fg);outline:none}
+  .mc .card{background:#0b1220;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .mc .title{font-size:.95rem;color:var(--muted)}
+  .mc .num{font-size:1.35rem;font-weight:800}
+  .mc .btn{cursor:pointer;border:1px solid var(--line);background:#0b1220;color:var(--fg);padding:9px 12px;border-radius:10px;font-size:.92rem}
+  .mc .btn.primary{background:linear-gradient(180deg,#16a34a,#15803d);border-color:#166534}
+  .mc canvas{width:100%;height:180px;background:#0b1220;border-radius:10px}
+  .mc textarea{width:100%;min-height:140px;background:#0b1220;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:10px}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,1px,1px);white-space:nowrap;border:0}
+</style>
 </head>
 <body>
   <main class="page">
     <!-- ===== Public‑interest letter (original one‑pager) ===== -->
     <section class="lead" aria-labelledby="letterTitle">
-<h1 id="letterTitle">Not for Profit. Not for Data. Built for Dignity</h1>
-<p style="color:#0b77d5; font-size:0.85rem; margin-top:4px; line-height:1.5;">
-  We have prepared a PDF strategy document to support self-reliance within refugee camps. 
-  Depending on circumstances, this plan could enable up to one million refugees to achieve self-reliance 
-  inside the camps within five years. The PDF file can be sent to you by email. 
-  Here, “self-reliance” refers not to external migration, but to sustainable livelihoods within the camps themselves.
-  Email: gyumin.jeon.childsafe@gmail.com
-</p>
+      <h1 id="letterTitle">Not for Profit. Not for Data. Built for Dignity</h1>
+      <p>
+        We have prepared a PDF strategy document to support self-reliance within refugee camps.
+        Depending on circumstances, this plan could enable up to one million refugees to achieve self-reliance
+        inside the camps within five years. The PDF file can be sent to you by email.
+        Here, “self-reliance” refers not to external migration, but to sustainable livelihoods within the camps themselves.
+        Email: <a href="mailto:gyumin.jeon.childsafe@gmail.com">gyumin.jeon.childsafe@gmail.com</a>
+      </p>
+    </section>
 
-      
 
+
+
+    
 
      
 
