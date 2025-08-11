@@ -545,167 +545,163 @@ Should you seek a precise and in-depth understanding of the foundational princip
 
 
   
+  
 
-<!-- Refugee & Extreme Weather Ticker (last 7 days, refresh every 3 minutes) -->
-<section id="refugee-ticker" role="status" aria-label="Humanitarian updates" aria-live="polite">
-  <span class="label">Refugee Map</span>
-  <span class="message" id="refugeeMsg">Fetching latest update…</span>
+<!-- === PASTE THIS SNIPPET JUST BEFORE </body> IN YOUR index.html === -->
+
+<!-- Transparent panel: Real-time Refugee Map & Scam‑Compound Risk -->
+<section id="rt-panel" aria-label="Real-time Refugee & Scam Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.58);backdrop-filter:saturate(1.1) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
+  <h3 id="rt-title" style="margin:0 0 8px;font-size:1.02rem;font-weight:700;color:#111">Real‑time Refugee Map & Scam‑Compound Risk</h3>
+
+  <!-- Ticker line (small, centered, black) -->
+  <div id="rt-ticker" role="status" aria-live="polite" style="text-align:center;font-size:.85rem;color:#111;letter-spacing:.1px;margin:6px 0 10px">
+    <span style="font-weight:700;color:#111;margin-right:6px">Refugee Map</span>
+    <span id="rt-msg">Fetching latest update…</span>
+  </div>
+
+  <!-- Controls + compact scam table -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <small id="rt-src" style="color:#6b7280">Source: ReliefWeb (last 7 days)</small>
+    <label for="rt-country" style="color:#374151;font-size:.85rem">Country filter:</label>
+    <select id="rt-country" style="padding:6px 10px;border:1px solid #e5e7eb;border-radius:999px;background:#fff;color:#111;font-size:.85rem">
+      <option value="All" selected>All</option>
+    </select>
+  </div>
+
+  <div style="max-height:320px;overflow:auto;margin-top:8px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
+    <table id="rt-table" style="width:100%;border-collapse:collapse;font-size:.92rem">
+      <thead>
+        <tr style="position:sticky;top:0;background:#fff">
+          <th style="text-align:left;padding:8px 8px;border-bottom:1px solid #e5e7eb">Country</th>
+          <th style="text-align:left;padding:8px 8px;border-bottom:1px solid #e5e7eb">City/Area</th>
+          <th style="text-align:left;padding:8px 8px;border-bottom:1px solid #e5e7eb">Pattern</th>
+          <th style="text-align:left;padding:8px 8px;border-bottom:1px solid #e5e7eb">Last Report</th>
+          <th style="text-align:left;padding:8px 8px;border-bottom:1px solid #e5e7eb">Risk</th>
+        </tr>
+      </thead>
+      <tbody id="rt-rows"></tbody>
+    </table>
+  </div>
 </section>
-
-<style>
-  /* Centered, small, gray */
-  #refugee-ticker{
-    text-align:center;
-    font-size:0.82rem;
-    color:#6b7280; /* gray-500 */
-    margin:14px 0 6px;
-    letter-spacing:.1px;
-  }
-  #refugee-ticker .label{ font-weight:700; color:#6b7280; margin-right:6px; }
-  #refugee-ticker .message{ color:#6b7280; }
-  @media print{ #refugee-ticker{ display:none } }
-</style>
 
 <script>
 (function(){
-  const msgEl = document.getElementById('refugeeMsg');
-  if (!msgEl) return;
+  // ===== Scoped helpers (avoid global conflicts) =====
+  const $ = (id) => document.getElementById(id);
+  const msgEl = $('rt-msg');
+  if(!msgEl) return; // safety if pasted twice
 
-  const set = t => { msgEl.textContent = t; };
-  const RW_URL = 'https://api.reliefweb.int/v2/reports'; // v2 API
-  const APP = 'mcorpai'; // appname tag
-  const REFRESH_MS = 3 * 60 * 1000; // 3 minutes
+  // ===== ReliefWeb v2 (7-day, 3-min; only when visible) =====
+  const RW_URL = 'https://api.reliefweb.int/v2/reports';
+  const APP = 'mcorpai';
+  const REFRESH_MS = 3*60*1000;
 
-  // Utility: ISO string for 7 days ago (UTC)
-  const sevenDaysAgoISO = () => new Date(Date.now() - 7*24*60*60*1000).toISOString();
+  const basePayload = {
+    limit: 1,
+    preset: 'latest',
+    profile: 'list',
+    slim: 1,
+    fields: { include:['title','primary_country.name','date.created','url'] }
+  };
+  const since = new Date(Date.now()-7*24*60*60*1000).toISOString();
+  const qRefugee = Object.assign({}, basePayload, {
+    filter:{ operator:'AND', conditions:[
+      { field:'date.created', range:{ from: since } },
+      { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] }
+    ]},
+    query:{ value:'refugee OR displacement' }
+  });
+  const qWx = Object.assign({}, basePayload, {
+    filter:{ operator:'AND', conditions:[
+      { field:'date.created', range:{ from: since } },
+      { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] }
+    ]},
+    query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') }
+  });
 
-  // Build a POST to ReliefWeb v2
-  function rwFetch(body, timeoutMs = 8000){
+  function fetchRW(body, maxRetries=3){
     const url = RW_URL + '?appname=' + encodeURIComponent(APP);
-    const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), timeoutMs);
-
-    const payload = Object.assign({
-      limit: 1,
-      preset: 'latest', // newest first
-      profile: 'list',  // lightweight
-      slim: 1,
-      fields: { include: [
-        'title',
-        'primary_country.name',
-        'date.created',
-        'url',
-        'disaster_type.name'
-      ] }
-    }, body);
-
-    return fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: ctrl.signal
-    })
-    .then(r => { if(!r.ok) throw new Error('ReliefWeb bad status'); return r.json(); })
-    .then(j => j && j.data && j.data[0] && j.data[0].fields ? j.data[0].fields : null)
-    .catch(() => null)
-    .finally(() => clearTimeout(to));
+    const baseDelay = 900;
+    return new Promise(function attempt(resolve){
+      const ctrl = new AbortController();
+      const t = setTimeout(()=>ctrl.abort(), 9000);
+      fetch(url,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:ctrl.signal })
+        .then(r=>{ if(!r.ok) throw new Error('bad status'); return r.json(); })
+        .then(j=> resolve(j && j.data && j.data[0] && j.data[0].fields ? j.data[0].fields : null))
+        .catch(()=>{
+          if(maxRetries<=0) return resolve(null);
+          const jitter = Math.random()*300; const delay = baseDelay*Math.pow(2, (3-maxRetries)) + jitter;
+          setTimeout(()=> fetchRW(body, maxRetries-1).then(resolve), delay);
+        })
+        .finally(()=> clearTimeout(t));
+    });
   }
 
-  // Queries (last 7 days only)
-  const dateCondition = { field:'date.created', range: { from: sevenDaysAgoISO() } };
+  function isoDate(f){ return (f && f.date && (f.date.created||f.date.original||f.date.changed)) || ''; }
+  function countryOf(f){ return (f && f.primary_country && f.primary_country.name) || 'Multiple countries'; }
+  function cleanTitle(t){ return (t||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/, '').replace(/\s*\|\s*ReliefWeb.*$/i,'').replace(/\s+-\s+ReliefWeb.*$/i,'').trim(); }
+  function ago(iso){ if(!iso) return ''; const s=(Date.now()-new Date(iso))/1000; if(s<90) return '· just now'; const m=Math.floor(s/60); if(m<60) return `· ${m} min ago`; const h=Math.floor(m/60); if(h<24) return `· ${h} h ago`; const d=Math.floor(h/24); return `· ${d} d ago`; }
 
-  const qRefugee = {
-    filter: {
-      operator: 'AND',
-      conditions: [
-        dateCondition,
-        { operator: 'OR', conditions: [
-          { field:'theme.name', value:['Refugees','IDPs','Protection'] }
-        ]}
-      ]
-    },
-    query: { value: 'refugee OR displacement' }
-  };
+  async function updateTicker(){
+    if(document.hidden) return;
+    msgEl.textContent = 'Fetching latest update…';
+    const [r1, r2] = await Promise.all([ fetchRW(qRefugee), fetchRW(qWx) ]);
+    if(!r1 && !r2){ msgEl.textContent = 'Global: Monitoring displacement and climate-related disruptions.'; return; }
+    const pick = !r1 ? r2 : (!r2 ? r1 : (new Date(isoDate(r1)) >= new Date(isoDate(r2)) ? r1 : r2));
+    const line = `${countryOf(pick)}: ${cleanTitle(pick.title)} ${ago(isoDate(pick))}`;
+    msgEl.textContent = line;
+  }
 
-  const qWeather = {
-    filter: {
-      operator: 'AND',
-      conditions: [
-        dateCondition,
-        { operator: 'OR', conditions: [
-          { field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }
-        ]}
-      ]
-    },
-    query: { value: [
-      'flood','cyclone','hurricane','storm','heatwave','"heat wave"',
-      'wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'
-    ].join(' OR ') }
-  };
+  updateTicker();
+  const iv = setInterval(updateTicker, REFRESH_MS);
+  window.addEventListener('pagehide', ()=> clearInterval(iv), { once:true });
 
-  // Helpers
-  const iso = f => (f && f.date && (f.date.created || f.date.original || f.date.changed)) || '';
-  const place = f => (f && f.primary_country && f.primary_country.name) || 'Multiple countries';
-  const clean = t => (t||'')
-    .replace(/\s+/g,' ')
-    .replace(/^\[.*?\]\s*/, '')
-    .replace(/\s*\|\s*ReliefWeb.*$/i, '')
-    .replace(/\s+-\s+ReliefWeb.*$/i, '')
-    .trim();
-  const ago = isoStr => {
-    if(!isoStr) return '';
-    const diff = (Date.now() - new Date(isoStr).getTime())/1000;
-    if (diff < 90) return '· just now';
-    const m = Math.floor(diff/60);
-    if (m < 60) return `· ${m} min ago`;
-    const h = Math.floor(m/60);
-    if (h < 24) return `· ${h} h ago`;
-    const d = Math.floor(h/24);
-    return `· ${d} d ago`;
-  };
+  // ===== Scam-Compound compact table (static demo data) =====
+  const DATA = [
+    { country:'Thailand', city:'Sakon Nakhon (border belt)', pattern:'Forced scamming / passport confiscation / confinement', last:'2025-07-10', risk:'HIGH' },
+    { country:'Myanmar', city:'Myawaddy SEZ', pattern:'Human trafficking / fenced compounds / armed guards', last:'2025-07-29', risk:'HIGH' },
+    { country:'Laos', city:'Golden Triangle SEZ', pattern:'Coerced cyberfraud / movement restriction', last:'2025-07-20', risk:'HIGH' },
+    { country:'Cambodia', city:'Sihanoukville (various sites)', pattern:'Compelled online scams / document seizure', last:'2025-06-30', risk:'MED' },
+    { country:'Philippines', city:'Clark area (reports vary)', pattern:'Recruitment scams targeting foreign workers', last:'2025-06-12', risk:'MED' },
+    { country:'UAE', city:'Dubai (front-office recruitment)', pattern:'Sham job offers leading to debt bondage', last:'2025-05-02', risk:'LOW' }
+  ];
 
-  let lastUrl = '';
+  const countrySel = $('rt-country');
+  const tbody = $('rt-rows');
+  const riskCls = (r)=> r==='HIGH'? 'color:#ef4444;font-weight:700' : (r==='MED'?'color:#f59e0b;font-weight:700' : 'color:#10b981;font-weight:700');
 
-  async function updateOnce(){
-    try{
-      if (document.hidden) return; // skip when tab hidden
-      set('Fetching latest update…');
-      const [rRef, rWx] = await Promise.all([rwFetch(qRefugee), rwFetch(qWeather)]);
-      if (!rRef && !rWx) { fallback(); return; }
-      const pick = !rRef ? rWx : (!rWx ? rRef : (new Date(iso(rRef)) >= new Date(iso(rWx)) ? rRef : rWx));
-      // de-dup by url
-      if (pick && pick.url && pick.url === lastUrl) return; // keep current text
-      lastUrl = pick && pick.url || '';
+  // Populate filter options
+  (function(){ const set=new Set(['All']); DATA.forEach(x=>set.add(x.country)); set.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; countrySel.appendChild(o); }); })();
 
-      const when = ago(iso(pick));
-      const where = place(pick);
-      const text = clean(pick && pick.title);
-      set(`${where}: ${text} ${when}`);
-    }catch(_){
-      fallback();
+  function render(){
+    const sel = countrySel.value || 'All';
+    const rows = DATA.filter(x=> sel==='All' || x.country===sel).sort((a,b)=> (a.country.localeCompare(b.country) || (a.last<b.last?1:-1)));
+    tbody.innerHTML='';
+    for(const x of rows){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.country}</td>
+        <td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.city}</td>
+        <td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.pattern}</td>
+        <td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.last}</td>
+        <td style="padding:8px;border-bottom:1px solid #e5e7eb"><span style="${riskCls(x.risk)}">${x.risk}</span></td>`;
+      tbody.appendChild(tr);
     }
   }
+  countrySel.addEventListener('change', render);
+  render();
 
-  function fallback(){
-    const pool = [
-      'Global: Monitoring displacement and climate-related disruptions; humanitarian access varies by context.',
-      'Update: Weather-driven risks could trigger short-notice movements in multiple contexts.',
-      'Note: Localized shocks may constrain protection services; coordination efforts are ongoing.'
-    ];
-    set(pool[new Date().getUTCDay() % pool.length]);
-  }
-
-  // Initial run + 3-minute interval
-  updateOnce();
-  const iv = setInterval(updateOnce, REFRESH_MS);
-
-  // Housekeeping
-  window.addEventListener('pagehide', () => clearInterval(iv), { once:true });
+  // ===== Self-checks (safe to keep; console-only) =====
+  try{ console.info('[rt-panel] mounted'); if(!('fetch' in window)) console.warn('fetch API missing'); }catch(e){}
 })();
 </script>
+<!-- === END SNIPPET === -->
 
 
 
+
+  
+
+  
   
   
 
