@@ -546,14 +546,19 @@ Should you seek a precise and in-depth understanding of the foundational princip
 
   
   
-<!-- === Real‑time two‑line panel for https://mcorpai.org/  
-Paste this block just before </body> in index.html  
-Requires: /scam_feed.json at the site root (already prepared).  === -->
+<!-- ==========================  
+Final two‑line transparent panel for https://mcorpai.org/  
+JSON‑first (optional) + ReliefWeb API fallback. 60s refresh. No service worker.  
+Paste this block just before </body> in index.html.  
+
+Also create /refugee_feed.json in the site root if you want to override the API.  
+Example refugee_feed.json schema is included at the very end of this file as a comment.  
+========================== -->
 
 <section id="rt-panel" aria-label="Real-time Refugee & Scam Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.58);backdrop-filter:saturate(1.1) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
   <h3 style="margin:0 0 8px;font-size:1.02rem;font-weight:700;color:#111">Real‑time Refugee Map & Scam‑Compound Risk</h3>
 
-  <!-- Line 1: Refugee ticker (auto‑refresh every 60s) -->
+  <!-- Line 1: Refugee Map (JSON‑first, then API) -->
   <div role="status" aria-live="polite" style="text-align:center;font-size:.92rem;color:#111;letter-spacing:.1px;margin:6px 0 8px">
     <span style="font-weight:700;margin-right:6px">1.</span>
     <span style="font-weight:700;margin-right:6px">Refugee Map</span>
@@ -569,7 +574,6 @@ Requires: /scam_feed.json at the site root (already prepared).  === -->
 </section>
 
 <style>
-  /* Risk colors + country styling */
   #rt-panel .country{color:#111;font-weight:600}
   #rt-panel .risk-high{color:#ef4444;font-weight:700}
   #rt-panel .risk-med{color:#f59e0b;font-weight:700}
@@ -578,99 +582,88 @@ Requires: /scam_feed.json at the site root (already prepared).  === -->
 
 <script>
 (function(){
-  // ===== Guard if pasted twice =====
   var L1 = document.getElementById('rt-line1');
   var L2 = document.getElementById('rt-line2');
   if(!L1 || !L2) return;
 
-  // ===== Utilities =====
-  function esc(s){ return String(s||'').replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]);}); }
-  function ago(iso){
-    if(!iso) return '';
-    var t = Date.now() - new Date(iso).getTime();
-    if(!isFinite(t)) return '';
-    var s = t/1000; if(s < 90) return '· just now';
-    var m = Math.floor(s/60); if(m < 60) return '· ' + m + ' min ago';
-    var h = Math.floor(m/60); if(h < 24) return '· ' + h + ' h ago';
-    var d = Math.floor(h/24); return '· ' + d + ' d ago';
+  function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]);}); }
+  function ago(iso){ if(!iso) return ''; var t=Date.now()-new Date(iso).getTime(); if(!isFinite(t)) return ''; var s=t/1000; if(s<90) return '· just now'; var m=Math.floor(s/60); if(m<60) return '· '+m+' min ago'; var h=Math.floor(m/60); if(h<24) return '· '+h+' h ago'; var d=Math.floor(h/24); return '· '+d+' d ago'; }
+
+  // ---------- Line 1: JSON‑first then API ----------
+  var LOCAL_REFUGEE_JSON = '/refugee_feed.json'; // optional JSON you can manage in GitHub
+  var RW_URL = 'https://api.reliefweb.int/v2/reports?appname=mcorpai';
+  var basePayload = { limit:1, preset:'latest', profile:'list', slim:1, fields:{ include:['title','primary_country.name','date.created'] } };
+  function qRefugee(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] } ] }, query:{ value:'refugee OR displacement' } }); }
+  function qWx(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] } ] }, query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') } }); }
+
+  async function fetchJSONFirst(){
+    try{
+      // Cache buster to avoid GitHub Pages caching
+      var r = await fetch(LOCAL_REFUGEE_JSON + '?ts=' + Date.now(), { cache:'no-store' });
+      if(!r.ok) throw new Error('no local');
+      var j = await r.json();
+      if(!j || !j.title || !j.country || !j.iso) throw new Error('bad schema');
+      return { country:j.country, title:j.title, iso:j.iso, freshness:new Date(j.iso).getTime() };
+    }catch(e){ return null; }
+  }
+  async function fetchReliefWeb(){
+    try{
+      var a = await fetch(RW_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(qRefugee()), cache:'no-store' });
+      var b = await fetch(RW_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(qWx()), cache:'no-store' });
+      var aj = a.ok ? await a.json() : null; var bj = b.ok ? await b.json() : null;
+      var A = aj && aj.data && aj.data[0] && aj.data[0].fields; var B = bj && bj.data && bj.data[0] && bj.data[0].fields;
+      var pick = !A ? B : (!B ? A : (new Date(A.date&&A.date.created||0) >= new Date(B.date&&B.date.created||0) ? A : B));
+      if(!pick) return null;
+      var country = (pick.primary_country && pick.primary_country.name) ? pick.primary_country.name : 'Global';
+      var title = String(pick.title||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/,'').replace(/\s*\|\s*ReliefWeb.*$/i,'').trim();
+      var iso = (pick.date && (pick.date.created||pick.date.original||pick.date.changed)) || '';
+      return { country:country, title:title, iso:iso, freshness:new Date(iso).getTime() };
+    }catch(e){ return null; }
   }
 
-  // ===== Line 1: ReliefWeb latest (refugee or disaster), pick newest =====
-  var RW_URL = 'https://api.reliefweb.int/v2/reports?appname=mcorpai';
-  var basePayload = {
-    limit:1, preset:'latest', profile:'list', slim:1,
-    fields:{ include:['title','primary_country.name','date.created'] }
-  };
-  function qRefugee(){
-    return Object.assign({}, basePayload, {
-      filter:{ operator:'AND', conditions:[
-        { field:'date.created', range:{ from: new Date(Date.now()-7*24*60*60*1000).toISOString() } },
-        { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] }
-      ]},
-      query:{ value:'refugee OR displacement' }
-    });
-  }
-  function qWx(){
-    return Object.assign({}, basePayload, {
-      filter:{ operator:'AND', conditions:[
-        { field:'date.created', range:{ from: new Date(Date.now()-7*24*60*60*1000).toISOString() } },
-        { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] }
-      ]},
-      query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') }
-    });
-  }
-  async function fetchRW(body, timeoutMs){
-    var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, timeoutMs||10000);
-    try{
-      var res = await fetch(RW_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:ctrl.signal, cache:'no-store' });
-      if(!res.ok) throw new Error('status');
-      var j = await res.json();
-      var f = j && j.data && j.data[0] && j.data[0].fields; return f || null;
-    }catch(e){ return null; }
-    finally{ clearTimeout(to); }
-  }
   async function updateLine1(){
     if(document.hidden) return;
     L1.textContent = 'Updating…';
-    var rA = await fetchRW(qRefugee(), 10000);
-    var rB = await fetchRW(qWx(), 10000);
-    var pick = !rA ? rB : (!rB ? rA : (new Date(rA.date&&rA.date.created||0) >= new Date(rB.date&&rB.date.created||0) ? rA : rB));
+    var local = await fetchJSONFirst();
+    var api   = await fetchReliefWeb();
+    var pick = !local ? api : (!api ? local : (local.freshness >= api.freshness ? local : api));
     if(!pick){ L1.textContent = 'Global: Monitoring displacement activity'; return; }
-    var country = (pick.primary_country && pick.primary_country.name) ? pick.primary_country.name : 'Global';
-    var title = esc(String(pick.title||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/,'').replace(/\s*\|\s*ReliefWeb.*$/i,'').trim());
-    var when = (pick.date && (pick.date.created||pick.date.original||pick.date.changed)) || '';
-    L1.innerHTML = esc(country) + ': ' + title + ' ' + esc(ago(when));
+    L1.innerHTML = esc(pick.country) + ': ' + esc(pick.title) + ' ' + esc(ago(pick.iso));
   }
 
-  // ===== Line 2: Build one sentence from /scam_feed.json =====
-  var FEED_URL = '/scam_feed.json'; // same-origin file on https://mcorpai.org/
-  function riskWord(code){ code = String(code||'').toUpperCase(); return code==='HIGH' ? {w:'위험', cls:'risk-high'} : code==='LOW' ? {w:'낮음', cls:'risk-low'} : {w:'보통', cls:'risk-med'}; }
+  // ---------- Line 2: Scam single sentence from /scam_feed.json ----------
+  var FEED_URL = '/scam_feed.json';
+  function riskWord(code){ code=String(code||'').toUpperCase(); return code==='HIGH' ? {w:'위험', cls:'risk-high'} : code==='LOW' ? {w:'낮음', cls:'risk-low'} : {w:'보통', cls:'risk-med'}; }
   async function updateLine2(){
     try{
-      var res = await fetch(FEED_URL, { cache:'no-store' });
-      if(!res.ok) throw new Error('status');
-      var j = await res.json();
+      var r = await fetch(FEED_URL + '?ts=' + Date.now(), { cache:'no-store' });
+      if(!r.ok) throw new Error('status');
+      var j = await r.json();
       if(!j || !Array.isArray(j.items)) throw new Error('schema');
       var parts = [];
-      j.items.forEach(function(x){
-        var r = riskWord(x.risk);
-        parts.push('<span class="country">' + esc(x.country) + '</span> ' + '<span class="' + r.cls + '">' + r.w + '</span>');
-      });
+      j.items.forEach(function(x){ var R=riskWord(x.risk); parts.push('<span class="country">'+esc(x.country)+'</span> <span class="'+R.cls+'">'+R.w+'</span>'); });
       L2.innerHTML = parts.join(', ');
-    }catch(e){
-      L2.textContent = '데이터를 불러오지 못했습니다';
-    }
+    }catch(e){ L2.textContent = '데이터를 불러오지 못했습니다'; }
   }
 
-  // ===== First paint + timers =====
+  // First paint + timers
   updateLine1();
   updateLine2();
   var iv1 = setInterval(function(){ if(!document.hidden) updateLine1(); }, 60*1000);
-  var iv2 = setInterval(function(){ if(!document.hidden) updateLine2(); }, 10*60*1000); // scam line은 10분 주기 권장
+  var iv2 = setInterval(function(){ if(!document.hidden) updateLine2(); }, 10*60*1000);
   window.addEventListener('pagehide', function(){ clearInterval(iv1); clearInterval(iv2); }, { once:true });
 })();
 </script>
+
+<!-- ==========================  
+Example refugee_feed.json you can place at https://mcorpai.org/refugee_feed.json  
+This overrides API output if the timestamp here is the newest.  
+{
+  "country": "Jordan",
+  "title": "Jordan Operational Update – January 2025",
+  "iso": "2025-01-15T03:10:00Z"
+}
+========================== -->
 
 
   
