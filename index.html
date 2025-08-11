@@ -546,102 +546,123 @@ Should you seek a precise and in-depth understanding of the foundational princip
 
   
 
-<!-- Refugee Ticker (API-driven, centered, gray, small text) -->
-<section id="refugee-ticker" class="refugee-ticker" aria-label="Refugee updates" aria-live="polite">
+<!-- Refugee & Extreme Weather Ticker (API-driven, centered, gray, small text) -->
+<section id="refugee-ticker" aria-label="Humanitarian updates" aria-live="polite">
   <span class="label">Refugee Map</span>
-  <span class="message" id="refugeeMsg">Fetching latest humanitarian note…</span>
+  <span class="message" id="refugeeMsg">Fetching latest update…</span>
 </section>
 
 <style>
-  /* Centered, small, gray tone to avoid visual dominance */
-  #refugee-ticker{ 
-    text-align:center; 
-    font-size:0.82rem; 
-    color:#6b7280; /* gray-500 */
-    margin:14px 0 6px; 
+  #refugee-ticker{
+    text-align:center;
+    font-size:0.82rem;
+    color:#6b7280;
+    margin:14px 0 6px;
     letter-spacing:.1px;
   }
-  #refugee-ticker .label{ 
-    font-weight:700; 
-    color:#6b7280; /* same gray to keep low emphasis */
+  #refugee-ticker .label{
+    font-weight:700;
+    color:#6b7280;
     margin-right:6px;
   }
-  #refugee-ticker .message{ 
-    color:#6b7280; /* all-gray per request */
+  #refugee-ticker .message{
+    color:#6b7280;
   }
   @media print{ #refugee-ticker{ display:none } }
 </style>
 
 <script>
-(async function(){
+(function(){
   const el = document.getElementById('refugeeMsg');
   if(!el) return;
 
-  // Helper to safely set text
-  const set = (t)=>{ el.textContent = t; };
+  const set = t => el.textContent = t;
+  const RW_URL = 'https://api.reliefweb.int/v1/reports';
 
-  // ReliefWeb (OCHA) Reports API — CORS enabled, near real-time humanitarian updates
-  // Filter for refugee/displacement related items, newest first, 1 item only
-  const url = new URL('https://api.reliefweb.int/v1/reports');
-  url.searchParams.set('appname','mcorpai');
-  url.searchParams.set('profile','full');
-  url.searchParams.set('limit','1');
-  url.searchParams.set('sort[]','date:desc');
+  // 공통 요청 옵션
+  function rwFetch(body){
+    const url = new URL(RW_URL);
+    url.searchParams.set('appname','mcorpai');
+    url.searchParams.set('profile','full');
+    url.searchParams.set('limit','1');
+    url.searchParams.set('sort[]','date:desc');
+    return fetch(url.toString(),{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    }).then(r=>{ if(!r.ok) throw new Error('RW bad status'); return r.json(); })
+      .then(j=>j?.data?.[0]?.fields || null)
+      .catch(()=>null);
+  }
 
-  // Filter builder (JSON encoded in POST body to be safe with complex filters)
-  const body = {
-    query: {
-      value: '',
-      operator: 'OR',
-      conditions: [
-        { field: 'theme.name', value: ['Refugees','IDPs','Protection'] },
-        { field: 'title', value: 'displacement' },
-        { field: 'body', value: 'refugee' }
+  // 난민·이동 관련 쿼리
+  const bodyRefugee = {
+    query:{
+      operator:'OR',
+      conditions:[
+        { field:'theme.name', value:['Refugees','IDPs','Protection'] },
+        { field:'title', value:'displacement' },
+        { field:'body',  value:'refugee' }
       ]
     },
-    fields: {
-      include: [ 'title', 'country', 'primary_country', 'date', 'source', 'theme' ]
-    }
+    fields:{ include:['title','country','primary_country','date','source','theme'] }
   };
 
-  try{
-    const res = await fetch(url.toString(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if(!res.ok) throw new Error('Network response was not ok');
-    const data = await res.json();
-    const item = data?.data?.[0];
+  // 기상 이변·자연재해 관련 쿼리
+  const bodyWeather = {
+    query:{
+      operator:'OR',
+      conditions:[
+        { field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] },
+        { field:'title', value:['flood','cyclone','hurricane','storm','heat wave','wildfire','drought','landslide'] },
+        { field:'body',  value:['flood','cyclone','hurricane','storm','heat wave','wildfire','drought','landslide'] }
+      ]
+    },
+    fields:{ include:['title','country','primary_country','date','disaster_type'] }
+  };
 
-    if(item){
-      const f = item.fields || {};
-      const title = (f.title || '').replace(/\s+/g,' ').trim();
-      const country = (f.primary_country?.name || f.country?.[0]?.name || 'Multiple countries');
-      const nice = title
-        .replace(/^\[.*?\]\s*/,'')       // strip leading brackets if any
-        .replace(/\s*\|\s*ReliefWeb.*$/i,'') // strip trailing source tag
-        .replace(/\s+\-\s+ReliefWeb.*$/i,'');
-      set(`${country}: ${nice}`);
-    } else {
-      // Fallback to a curated line if API returns empty
+  function cleanTitle(t){
+    return (t||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/,'')
+      .replace(/\s*\|\s*ReliefWeb.*$/i,'').replace(/\s+-\s+ReliefWeb.*$/i,'').trim();
+  }
+  function countryOf(f){
+    return f?.primary_country?.name || (f?.country && f.country[0]?.name) || 'Multiple countries';
+  }
+  function isoDate(f){
+    return f?.date?.created || f?.date?.original || f?.date?.changed || '';
+  }
+
+  async function updateOnce(){
+    try{
+      set('Fetching latest update…');
+      const [rRef, rWx] = await Promise.all([rwFetch(bodyRefugee), rwFetch(bodyWeather)]);
+      if(!rRef && !rWx) { fallback(); return; }
+      const pick = !rRef ? rWx : !rWx ? rRef :
+        (new Date(isoDate(rRef)) >= new Date(isoDate(rWx)) ? rRef : rWx);
+      const title = cleanTitle(pick.title);
+      const place = countryOf(pick);
+      set(`${place}: ${title}`);
+    }catch(_){
       fallback();
     }
-  }catch(err){
-    fallback();
   }
 
   function fallback(){
     const pool = [
-      'Chad: Refugee inflows are rising; food availability is tightening in border areas.',
-      'Sudan: New displacement reported; humanitarian access remains constrained.',
-      'DRC: Localized clashes have triggered short-notice movements; protection services are overstretched.'
+      'Global: Monitoring displacement and climate-related disruptions; humanitarian access varies by context.',
+      'Update: Aid partners report weather-related risks could trigger short-notice movements.',
+      'Note: Localized shocks may constrain protection services; coordination efforts are ongoing.'
     ];
     const i = new Date().getUTCDate() % pool.length;
     set(pool[i]);
   }
+
+  // 최초 실행 및 10분 간격 자동 갱신
+  updateOnce();
+  setInterval(updateOnce, 10 * 60 * 1000);
 })();
 </script>
+
 
   
 
