@@ -524,7 +524,7 @@ Should you seek a precise and in-depth understanding of the foundational princip
         ].join('\n');
         navigator.clipboard.writeText(text).then(()=>alert('Summary copied to clipboard.'));
       }
-      function copyPrompt(){ $('gptPrompt').select(); document.execCommand('copy'); alert('GPT prompt copied.'); }
+      function copyPrompt(){ $('gptPrompt').select(); document.execCommand('copy'); alert('AI prompt copied.'); }
       document.getElementById('premiumShare').addEventListener('input', e=>{ syncShare(e.target.value); });
       document.getElementById('btnCopy').addEventListener('click', copy);
       document.getElementById('btnCopyPrompt').addEventListener('click', copyPrompt);
