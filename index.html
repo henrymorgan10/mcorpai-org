@@ -591,45 +591,52 @@ Should you seek a precise and in-depth understanding of the foundational princip
   const msgEl = $('rt-msg');
   if(!msgEl) return; // safety if pasted twice
 
-  const REFRESH_MS = 3*60*1000; // 3 minutes
+  const REFRESH_MS = 3*60*1000; // 3 minutes (ticker)
+  const SCAM_REFRESH_MS = 10*60*1000; // 10 minutes (scam feed)
   const RW_URL = 'https://api.reliefweb.int/v2/reports';
   const APP = 'mcorpai';
 
-  // ================= Service Worker registration =================
+  // ================= Service Worker registration (already uploaded sw.js) =================
   let swReady = false;
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
       try{
         const reg = await navigator.serviceWorker.register('/sw.js');
-        // controller may be null on first install; re-fetch on activation
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          swReady = true;
-          fetchFromSW();
+          swReady = true; fetchFromSW();
         });
         if (reg.active) {
           swReady = true;
-          // optional: ask SW to update now
           if (navigator.serviceWorker.controller) {
             navigator.serviceWorker.controller.postMessage({ type:'RW_UPDATE_NOW' });
           }
         }
-        // try initial load from SW cache endpoint regardless
-        fetchFromSW();
+        fetchFromSW(); // try SW endpoint first
       }catch(e){ console.warn('[SW] registration failed:', e); }
     });
   }
 
   // ================= ReliefWeb direct fetch (fallback) =================
   const basePayload = {
-    limit: 1,
-    preset: 'latest',
-    profile: 'list',
-    slim: 1,
+    limit: 1, preset: 'latest', profile: 'list', slim: 1,
     fields: { include:['title','primary_country.name','date.created','url'] }
   };
   function sinceISO(days){ return new Date(Date.now()-days*24*60*60*1000).toISOString(); }
-  function qRefugee(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from: sinceISO(7) } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] } ] }, query:{ value:'refugee OR displacement' } }); }
-  function qWx(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from: sinceISO(7) } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] } ] }, query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') } }); }
+  function qRefugee(){ return Object.assign({}, basePayload, {
+    filter:{ operator:'AND', conditions:[
+      { field:'date.created', range:{ from: sinceISO(7) } },
+      { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] }
+    ]}, query:{ value:'refugee OR displacement' }
+  });}
+  function qWx(){ return Object.assign({}, basePayload, {
+    filter:{ operator:'AND', conditions:[
+      { field:'date.created', range:{ from: sinceISO(7) } },
+      { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] }
+    ]}, query:{ value:[
+      'flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide',
+      'earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'
+    ].join(' OR ') }
+  });}
 
   function fetchRW(body, maxRetries=3){
     const url = RW_URL + '?appname=' + encodeURIComponent(APP);
@@ -663,7 +670,7 @@ Should you seek a precise and in-depth understanding of the foundational princip
     msgEl.textContent = `${countryOf(pick)}: ${cleanTitle(pick.title)} ${ago(isoDate(pick))}`;
   }
 
-  // ================= Read from Service Worker (SWR endpoint) =================
+  // Read from Service Worker (SWR endpoint)
   async function fetchFromSW(){
     try{
       const r = await fetch('/rw/latest.json', { cache:'reload' });
@@ -671,18 +678,8 @@ Should you seek a precise and in-depth understanding of the foundational princip
       const j = await r.json();
       msgEl.textContent = `${j.where}: ${j.title} ${j.ago || ''}`.trim();
     }catch(_){
-      // if SW not ready yet, use direct fetch fallback
-      updateTickerDirect();
+      updateTickerDirect(); // fallback
     }
-  }
-
-  // Listen for SW cache refresh notifications
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('message', (evt) => {
-      if (evt.data && evt.data.type === 'RW_UPDATED') {
-        fetchFromSW();
-      }
-    });
   }
 
   // First paint + 3‑minute refresh
@@ -698,42 +695,101 @@ Should you seek a precise and in-depth understanding of the foundational princip
   }, REFRESH_MS);
   window.addEventListener('pagehide', ()=> clearInterval(iv), { once:true });
 
-  // ===== Scam-Compound compact table (static demo data) =====
-  const DATA = [
-    { country:'Thailand', city:'Sakon Nakhon (border belt)', pattern:'Forced scamming / passport confiscation / confinement', last:'2025-07-10', risk:'HIGH' },
-    { country:'Myanmar', city:'Myawaddy SEZ', pattern:'Human trafficking / fenced compounds / armed guards', last:'2025-07-29', risk:'HIGH' },
-    { country:'Laos', city:'Golden Triangle SEZ', pattern:'Coerced cyberfraud / movement restriction', last:'2025-07-20', risk:'HIGH' },
-    { country:'Cambodia', city:'Sihanoukville (various sites)', pattern:'Compelled online scams / document seizure', last:'2025-06-30', risk:'MED' },
-    { country:'Philippines', city:'Clark area (reports vary)', pattern:'Recruitment scams targeting foreign workers', last:'2025-06-12', risk:'MED' },
-    { country:'UAE', city:'Dubai (front-office recruitment)', pattern:'Sham job offers leading to debt bondage', last:'2025-05-02', risk:'LOW' }
-  ];
-
+  // ================= Scam‑Compound: Remote JSON feed =================
+  const FEED_URL = '/scam_feed.json'; // 깃허브 루트에 올린 파일명(언더스코어)과 일치
   const countrySel = $('rt-country');
   const tbody = $('rt-rows');
-  const riskCls = (r)=> r==='HIGH'? 'color:#ef4444;font-weight:700' : (r==='MED'?'color:#f59e0b;font-weight:700' : 'color:#10b981;font-weight:700');
 
-  (function(){ const set=new Set(['All']); DATA.forEach(x=>set.add(x.country)); set.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; countrySel.appendChild(o); }); })();
+  // 간단한 로컬 캐시(TTL 10분)
+  const NS = 'scam.feed.v1.';
+  function getCache(k){
+    try{ const raw = localStorage.getItem(NS+k); if(!raw) return null;
+      const o = JSON.parse(raw); if(o.exp && Date.now()>o.exp) return null; return o.val;
+    }catch(_){ return null }
+  }
+  function setCache(k,v,ttl){ try{ localStorage.setItem(NS+k, JSON.stringify({val:v, exp: Date.now()+ttl})); }catch(_){}}
 
-  function render(){
+  async function fetchScamFeed(maxRetries=2){
+    const cached = getCache('data');
+    if(cached) return cached;
+    const baseDelay = 800;
+    for(let i=0;i<=maxRetries;i++){
+      try{
+        const r = await fetch(FEED_URL, { cache:'no-store' });
+        if(!r.ok) throw new Error('bad status');
+        const j = await r.json();
+        if(!Array.isArray(j?.items)) throw new Error('bad schema');
+        // 기본 필드 검증 및 정규화
+        const norm = j.items.map(x => ({
+          country: String(x.country||'').trim(),
+          city: String(x.city||'').trim(),
+          pattern: String(x.pattern||'').trim(),
+          last: String(x.last||'').trim(),
+          risk: String(x.risk||'').trim().toUpperCase()
+        })).filter(x => x.country && x.city && x.last && ['LOW','MED','HIGH'].includes(x.risk));
+        setCache('data', norm, 10*60*1000); // 10분
+        return norm;
+      }catch(e){
+        if(i===maxRetries) throw e;
+        const jitter = Math.random()*250; const delay = Math.pow(2,i)*baseDelay + jitter;
+        await new Promise(res=>setTimeout(res, delay));
+      }
+    }
+  }
+
+  function riskStyle(r){
+    return r==='HIGH' ? 'color:#ef4444;font-weight:700' : (r==='MED' ? 'color:#f59e0b;font-weight:700' : 'color:#10b981;font-weight:700');
+  }
+
+  function renderOptions(data){
+    const set = new Set(['All']);
+    data.forEach(x=> set.add(x.country));
+    countrySel.innerHTML = '';
+    set.forEach(c => {
+      const o = document.createElement('option'); o.value=c; o.textContent=c; countrySel.appendChild(o);
+    });
+  }
+
+  function renderRows(data){
     const sel = countrySel.value || 'All';
-    const rows = DATA.filter(x=> sel==='All' || x.country===sel).sort((a,b)=> (a.country.localeCompare(b.country) || (a.last<b.last?1:-1)));
-    tbody.innerHTML='';
+    const rows = data
+      .filter(x => sel==='All' || x.country===sel)
+      .sort((a,b)=> (a.country.localeCompare(b.country) || (a.last<b.last?1:-1)));
+    tbody.innerHTML = '';
     for(const x of rows){
       const tr = document.createElement('tr');
       tr.innerHTML = `<td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.country}</td>
         <td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.city}</td>
         <td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.pattern}</td>
         <td style="padding:8px;border-bottom:1px solid #e5e7eb">${x.last}</td>
-        <td style="padding:8px;border-bottom:1px solid #e5e7eb"><span style="${riskCls(x.risk)}">${x.risk}</span></td>`;
+        <td style="padding:8px;border-bottom:1px solid #e5e7eb"><span style="${riskStyle(x.risk)}">${x.risk}</span></td>`;
       tbody.appendChild(tr);
     }
   }
-  countrySel.addEventListener('change', render);
-  render();
 
-  // ===== Self-checks (console only) =====
-  try{ console.info('[rt-panel] mounted'); if(!('fetch' in window)) console.warn('fetch API missing'); }catch(e){}
-})();
+  let SCAM_DATA = [];
+  async function loadScam(initial=false){
+    try{
+      const data = await fetchScamFeed();
+      SCAM_DATA = data;
+      if(initial) renderOptions(SCAM_DATA);
+      renderRows(SCAM_DATA);
+    }catch(_){
+      // 피드 실패 시 메시지 1행 표시
+      tbody.innerHTML = '<tr><td colspan="5" style="padding:10px;color:#6b7280">No remote scam feed. Please check scam_feed.json.</td></tr>';
+    }
+  }
+
+  countrySel.addEventListener('change', ()=> renderRows(SCAM_DATA));
+
+  // 초기 로드 + 주기 갱신
+  loadScam(true);
+  const scamIv = setInterval(()=>{ if(!document.hidden) loadScam(false); }, SCAM_REFRESH_MS);
+  window.addEventListener('pagehide', ()=> clearInterval(scamIv), { once:true });
+
+  // 콘솔 확인용
+  try{ console.info('[rt-panel] mounted with remote scam feed'); }catch(_){}}
+)();
 </script>
 <!-- === END BLOCK === -->
 
