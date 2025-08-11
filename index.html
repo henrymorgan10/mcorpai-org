@@ -546,12 +546,17 @@ Should you seek a precise and in-depth understanding of the foundational princip
 
 
   
-  
-<!-- === Real‑time Scam‑Compound Risk panel (drop‑in). Paste this block just before </body> in index.html === -->
+<!-- === Real‑time Scam‑Compound Risk panel (English-only). Paste just before </body> === -->
 <section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
-  <h3 style="margin:0 0 8px;font-size:1rem;font-weight:700;color:#111">Real‑time Scam‑Compound Risk</h3>
+  <h3 style="margin:0 0 4px;font-size:1rem;font-weight:700;color:#111">
+    Real‑time Scam‑Compound Risk <span style="font-weight:600;color:#6b7280">(updates every 10 minutes)</span>
+  </h3>
+  <p style="margin:0 0 8px;font-size:.84rem;color:#6b7280">
+    A concise indicator summarizing public reports of coerced online‑fraud compounds by country; not a verification or legal finding.
+  </p>
+
   <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 2px">
-    <span style="font-weight:700;margin-right:6px">Scam‑Compound Index :</span>
+    <span style="font-weight:700;margin-right:6px">Scam‑Compound Index:</span>
     <span id="scam-line">Loading…</span>
   </div>
 </section>
@@ -572,9 +577,12 @@ Should you seek a precise and in-depth understanding of the foundational princip
   const line = document.getElementById('scam-line');
   if(!line) return;
 
-  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+  const esc = s => String(s||'').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\\'':'&#39;'}[c]));
   const order = {HIGH:3, MED:2, LOW:1};
-  function word(r){ r=String(r||'MED').toUpperCase(); return r==='HIGH'?{w:'위험',cls:'risk-high'}:r==='LOW'?{w:'낮음',cls:'risk-low'}:{w:'보통',cls:'risk-med'}; }
+  function word(r){
+    r=String(r||'MED').toUpperCase();
+    return r==='HIGH'?{w:'High',cls:'risk-high'}:r==='LOW'?{w:'Low',cls:'risk-low'}:{w:'Medium',cls:'risk-med'};
+  }
 
   async function jget(url){
     const ctrl = new AbortController();
@@ -587,6 +595,12 @@ Should you seek a precise and in-depth understanding of the foundational princip
       return null;
     }finally{ clearTimeout(t); }
   }
+
+  // Optional: add two additional “potential/monitoring” countries if not present in feed
+  const SUGGEST = [
+    {country:'Sri Lanka', risk:'LOW', city:'—', pattern:'Monitoring potential recruitment hubs', last:'2025-07-15'},
+    {country:'Bangladesh', risk:'LOW', city:'—', pattern:'Monitoring potential recruitment hubs', last:'2025-07-12'}
+  ];
 
   function merge(feeds){
     const map = new Map();
@@ -602,6 +616,12 @@ Should you seek a precise and in-depth understanding of the foundational princip
         }
       });
     });
+    // add two suggested if missing
+    SUGGEST.forEach(s=>{
+      if(!map.has(s.country)){
+        map.set(s.country, {c:s.country, r:String(s.risk||'LOW').toUpperCase(), last:new Date(s.last||0).getTime()||0, city:s.city||'', pattern:s.pattern||''});
+      }
+    });
     const arr = Array.from(map.values());
     arr.sort((a,b)=> order[b.r]-order[a.r] || a.c.localeCompare(b.c));
     return arr;
@@ -610,8 +630,8 @@ Should you seek a precise and in-depth understanding of the foundational princip
   async function load(){
     line.textContent = 'Loading…';
     const results = await Promise.all(FEEDS.map(jget));
-    const items = merge(results);
-    if(!items.length){ line.textContent='데이터를 불러오지 못했습니다'; return; }
+    const items = merge(results.filter(Boolean));
+    if(!items.length){ line.textContent='Failed to load data'; return; }
     const parts = items.map(x=>{
       const W = word(x.r);
       const tip = [x.city?`City: ${x.city}`:'', x.pattern?`Pattern: ${x.pattern}`:'', x.last?`Last: ${new Date(x.last).toISOString().slice(0,10)}`:''].filter(Boolean).join(' · ');
@@ -630,8 +650,6 @@ Should you seek a precise and in-depth understanding of the foundational princip
   window.addEventListener('pagehide', ()=>clearInterval(iv), {once:true});
 })();
 </script>
-
-  
 
   
 
