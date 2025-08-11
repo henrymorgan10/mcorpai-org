@@ -542,59 +542,110 @@ Should you seek a precise and in-depth understanding of the foundational princip
   
 
 
-  <!-- Refugee Ticker Module -->
-<section class="refugee-ticker" aria-label="Refugee updates" aria-live="polite">
+
+
+  
+
+<!-- Refugee Ticker (API-driven, centered, gray, small text) -->
+<section id="refugee-ticker" class="refugee-ticker" aria-label="Refugee updates" aria-live="polite">
   <span class="label">Refugee Map</span>
-  <span class="message" id="refugeeMsg">Loading latest humanitarian note…</span>
+  <span class="message" id="refugeeMsg">Fetching latest humanitarian note…</span>
 </section>
 
 <style>
-  .refugee-ticker {
-    font-size: 0.86rem;
-    color: #10243a;
-    margin: 16px 0 8px;
-    opacity: 0.9;
+  /* Centered, small, gray tone to avoid visual dominance */
+  #refugee-ticker{ 
+    text-align:center; 
+    font-size:0.82rem; 
+    color:#6b7280; /* gray-500 */
+    margin:14px 0 6px; 
+    letter-spacing:.1px;
   }
-  .refugee-ticker .label {
-    font-weight: 700;
-    color: #111;
+  #refugee-ticker .label{ 
+    font-weight:700; 
+    color:#6b7280; /* same gray to keep low emphasis */
+    margin-right:6px;
   }
-  .refugee-ticker .message {
-    color: #b91c1c;
-    margin-left: 8px;
+  #refugee-ticker .message{ 
+    color:#6b7280; /* all-gray per request */
   }
-  @media print {
-    .refugee-ticker {
-      display: none;
-    }
-  }
+  @media print{ #refugee-ticker{ display:none } }
 </style>
 
 <script>
-(function(){
-  const msgs = [
-    "Chad: Refugee inflows are rising; food availability is tightening in border areas.",
-    "Sudan: New displacement reported; humanitarian access remains constrained.",
-    "DRC: Localized clashes have triggered short-notice movements; protection services are overstretched.",
-    "Somalia: Drought recovery is fragile; any rainfall deficit may re‑ignite displacement.",
-    "Ukraine: Power disruptions increase winter vulnerability among displaced families.",
-    "Lebanon: Price spikes are eroding purchasing power for refugee households.",
-    "Yemen: Sporadic escalations risk disrupting aid corridors; nutrition support is critical.",
-    "South Sudan: Flood‑prone counties face renewed movement risks during peak rains.",
-    "Burkina Faso: Insecurity continues to restrict safe routes for civilians.",
-    "Afghanistan: Seasonal pressures are raising needs in remote highland districts."
-  ];
+(async function(){
   const el = document.getElementById('refugeeMsg');
   if(!el) return;
+
+  // Helper to safely set text
+  const set = (t)=>{ el.textContent = t; };
+
+  // ReliefWeb (OCHA) Reports API — CORS enabled, near real-time humanitarian updates
+  // Filter for refugee/displacement related items, newest first, 1 item only
+  const url = new URL('https://api.reliefweb.int/v1/reports');
+  url.searchParams.set('appname','mcorpai');
+  url.searchParams.set('profile','full');
+  url.searchParams.set('limit','1');
+  url.searchParams.set('sort[]','date:desc');
+
+  // Filter builder (JSON encoded in POST body to be safe with complex filters)
+  const body = {
+    query: {
+      value: '',
+      operator: 'OR',
+      conditions: [
+        { field: 'theme.name', value: ['Refugees','IDPs','Protection'] },
+        { field: 'title', value: 'displacement' },
+        { field: 'body', value: 'refugee' }
+      ]
+    },
+    fields: {
+      include: [ 'title', 'country', 'primary_country', 'date', 'source', 'theme' ]
+    }
+  };
+
   try{
-    const i = new Date().getUTCDate() % msgs.length;
-    el.textContent = msgs[i];
-  }catch(e){
-    el.textContent = "Latest update temporarily unavailable. Please check back soon.";
+    const res = await fetch(url.toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw new Error('Network response was not ok');
+    const data = await res.json();
+    const item = data?.data?.[0];
+
+    if(item){
+      const f = item.fields || {};
+      const title = (f.title || '').replace(/\s+/g,' ').trim();
+      const country = (f.primary_country?.name || f.country?.[0]?.name || 'Multiple countries');
+      const nice = title
+        .replace(/^\[.*?\]\s*/,'')       // strip leading brackets if any
+        .replace(/\s*\|\s*ReliefWeb.*$/i,'') // strip trailing source tag
+        .replace(/\s+\-\s+ReliefWeb.*$/i,'');
+      set(`${country}: ${nice}`);
+    } else {
+      // Fallback to a curated line if API returns empty
+      fallback();
+    }
+  }catch(err){
+    fallback();
+  }
+
+  function fallback(){
+    const pool = [
+      'Chad: Refugee inflows are rising; food availability is tightening in border areas.',
+      'Sudan: New displacement reported; humanitarian access remains constrained.',
+      'DRC: Localized clashes have triggered short-notice movements; protection services are overstretched.'
+    ];
+    const i = new Date().getUTCDate() % pool.length;
+    set(pool[i]);
   }
 })();
 </script>
 
+  
+
+  
 
   
 </html>
