@@ -546,102 +546,141 @@ Should you seek a precise and in-depth understanding of the foundational princip
 
   
 
-<!-- Refugee & Extreme Weather Ticker (API-driven, centered, gray, small text) -->
-<section id="refugee-ticker" aria-label="Humanitarian updates" aria-live="polite">
+<!-- Refugee & Extreme Weather Ticker (last 7 days, refresh every 3 minutes) -->
+<section id="refugee-ticker" role="status" aria-label="Humanitarian updates" aria-live="polite">
   <span class="label">Refugee Map</span>
   <span class="message" id="refugeeMsg">Fetching latest update…</span>
 </section>
 
 <style>
+  /* Centered, small, gray */
   #refugee-ticker{
     text-align:center;
     font-size:0.82rem;
-    color:#6b7280;
+    color:#6b7280; /* gray-500 */
     margin:14px 0 6px;
     letter-spacing:.1px;
   }
-  #refugee-ticker .label{
-    font-weight:700;
-    color:#6b7280;
-    margin-right:6px;
-  }
-  #refugee-ticker .message{
-    color:#6b7280;
-  }
+  #refugee-ticker .label{ font-weight:700; color:#6b7280; margin-right:6px; }
+  #refugee-ticker .message{ color:#6b7280; }
   @media print{ #refugee-ticker{ display:none } }
 </style>
 
 <script>
 (function(){
-  const el = document.getElementById('refugeeMsg');
-  if(!el) return;
+  const msgEl = document.getElementById('refugeeMsg');
+  if (!msgEl) return;
 
-  const set = t => el.textContent = t;
-  const RW_URL = 'https://api.reliefweb.int/v1/reports';
+  const set = t => { msgEl.textContent = t; };
+  const RW_URL = 'https://api.reliefweb.int/v2/reports'; // v2 API
+  const APP = 'mcorpai'; // appname tag
+  const REFRESH_MS = 3 * 60 * 1000; // 3 minutes
 
-  // 공통 요청 옵션
-  function rwFetch(body){
-    const url = new URL(RW_URL);
-    url.searchParams.set('appname','mcorpai');
-    url.searchParams.set('profile','full');
-    url.searchParams.set('limit','1');
-    url.searchParams.set('sort[]','date:desc');
-    return fetch(url.toString(),{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(body)
-    }).then(r=>{ if(!r.ok) throw new Error('RW bad status'); return r.json(); })
-      .then(j=>j?.data?.[0]?.fields || null)
-      .catch(()=>null);
+  // Utility: ISO string for 7 days ago (UTC)
+  const sevenDaysAgoISO = () => new Date(Date.now() - 7*24*60*60*1000).toISOString();
+
+  // Build a POST to ReliefWeb v2
+  function rwFetch(body, timeoutMs = 8000){
+    const url = RW_URL + '?appname=' + encodeURIComponent(APP);
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), timeoutMs);
+
+    const payload = Object.assign({
+      limit: 1,
+      preset: 'latest', // newest first
+      profile: 'list',  // lightweight
+      slim: 1,
+      fields: { include: [
+        'title',
+        'primary_country.name',
+        'date.created',
+        'url',
+        'disaster_type.name'
+      ] }
+    }, body);
+
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: ctrl.signal
+    })
+    .then(r => { if(!r.ok) throw new Error('ReliefWeb bad status'); return r.json(); })
+    .then(j => j && j.data && j.data[0] && j.data[0].fields ? j.data[0].fields : null)
+    .catch(() => null)
+    .finally(() => clearTimeout(to));
   }
 
-  // 난민·이동 관련 쿼리
-  const bodyRefugee = {
-    query:{
-      operator:'OR',
-      conditions:[
-        { field:'theme.name', value:['Refugees','IDPs','Protection'] },
-        { field:'title', value:'displacement' },
-        { field:'body',  value:'refugee' }
+  // Queries (last 7 days only)
+  const dateCondition = { field:'date.created', range: { from: sevenDaysAgoISO() } };
+
+  const qRefugee = {
+    filter: {
+      operator: 'AND',
+      conditions: [
+        dateCondition,
+        { operator: 'OR', conditions: [
+          { field:'theme.name', value:['Refugees','IDPs','Protection'] }
+        ]}
       ]
     },
-    fields:{ include:['title','country','primary_country','date','source','theme'] }
+    query: { value: 'refugee OR displacement' }
   };
 
-  // 기상 이변·자연재해 관련 쿼리
-  const bodyWeather = {
-    query:{
-      operator:'OR',
-      conditions:[
-        { field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] },
-        { field:'title', value:['flood','cyclone','hurricane','storm','heat wave','wildfire','drought','landslide'] },
-        { field:'body',  value:['flood','cyclone','hurricane','storm','heat wave','wildfire','drought','landslide'] }
+  const qWeather = {
+    filter: {
+      operator: 'AND',
+      conditions: [
+        dateCondition,
+        { operator: 'OR', conditions: [
+          { field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }
+        ]}
       ]
     },
-    fields:{ include:['title','country','primary_country','date','disaster_type'] }
+    query: { value: [
+      'flood','cyclone','hurricane','storm','heatwave','"heat wave"',
+      'wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'
+    ].join(' OR ') }
   };
 
-  function cleanTitle(t){
-    return (t||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/,'')
-      .replace(/\s*\|\s*ReliefWeb.*$/i,'').replace(/\s+-\s+ReliefWeb.*$/i,'').trim();
-  }
-  function countryOf(f){
-    return f?.primary_country?.name || (f?.country && f.country[0]?.name) || 'Multiple countries';
-  }
-  function isoDate(f){
-    return f?.date?.created || f?.date?.original || f?.date?.changed || '';
-  }
+  // Helpers
+  const iso = f => (f && f.date && (f.date.created || f.date.original || f.date.changed)) || '';
+  const place = f => (f && f.primary_country && f.primary_country.name) || 'Multiple countries';
+  const clean = t => (t||'')
+    .replace(/\s+/g,' ')
+    .replace(/^\[.*?\]\s*/, '')
+    .replace(/\s*\|\s*ReliefWeb.*$/i, '')
+    .replace(/\s+-\s+ReliefWeb.*$/i, '')
+    .trim();
+  const ago = isoStr => {
+    if(!isoStr) return '';
+    const diff = (Date.now() - new Date(isoStr).getTime())/1000;
+    if (diff < 90) return '· just now';
+    const m = Math.floor(diff/60);
+    if (m < 60) return `· ${m} min ago`;
+    const h = Math.floor(m/60);
+    if (h < 24) return `· ${h} h ago`;
+    const d = Math.floor(h/24);
+    return `· ${d} d ago`;
+  };
+
+  let lastUrl = '';
 
   async function updateOnce(){
     try{
+      if (document.hidden) return; // skip when tab hidden
       set('Fetching latest update…');
-      const [rRef, rWx] = await Promise.all([rwFetch(bodyRefugee), rwFetch(bodyWeather)]);
-      if(!rRef && !rWx) { fallback(); return; }
-      const pick = !rRef ? rWx : !rWx ? rRef :
-        (new Date(isoDate(rRef)) >= new Date(isoDate(rWx)) ? rRef : rWx);
-      const title = cleanTitle(pick.title);
-      const place = countryOf(pick);
-      set(`${place}: ${title}`);
+      const [rRef, rWx] = await Promise.all([rwFetch(qRefugee), rwFetch(qWeather)]);
+      if (!rRef && !rWx) { fallback(); return; }
+      const pick = !rRef ? rWx : (!rWx ? rRef : (new Date(iso(rRef)) >= new Date(iso(rWx)) ? rRef : rWx));
+      // de-dup by url
+      if (pick && pick.url && pick.url === lastUrl) return; // keep current text
+      lastUrl = pick && pick.url || '';
+
+      const when = ago(iso(pick));
+      const where = place(pick);
+      const text = clean(pick && pick.title);
+      set(`${where}: ${text} ${when}`);
     }catch(_){
       fallback();
     }
@@ -650,22 +689,24 @@ Should you seek a precise and in-depth understanding of the foundational princip
   function fallback(){
     const pool = [
       'Global: Monitoring displacement and climate-related disruptions; humanitarian access varies by context.',
-      'Update: Aid partners report weather-related risks could trigger short-notice movements.',
+      'Update: Weather-driven risks could trigger short-notice movements in multiple contexts.',
       'Note: Localized shocks may constrain protection services; coordination efforts are ongoing.'
     ];
-    const i = new Date().getUTCDate() % pool.length;
-    set(pool[i]);
+    set(pool[new Date().getUTCDay() % pool.length]);
   }
 
-  // 최초 실행 및 10분 간격 자동 갱신
+  // Initial run + 3-minute interval
   updateOnce();
-  setInterval(updateOnce, 10 * 60 * 1000);
+  const iv = setInterval(updateOnce, REFRESH_MS);
+
+  // Housekeeping
+  window.addEventListener('pagehide', () => clearInterval(iv), { once:true });
 })();
 </script>
 
 
-  
 
+  
   
 
   
