@@ -537,4 +537,64 @@ Should you seek a precise and in-depth understanding of the foundational princip
     })();
   </script>
 </body>
+
+
+  
+
+
+  <!-- Refugee Ticker Module -->
+<section class="refugee-ticker" aria-label="Refugee updates" aria-live="polite">
+  <span class="label">Refugee Map</span>
+  <span class="message" id="refugeeMsg">Loading latest humanitarian note…</span>
+</section>
+
+<style>
+  .refugee-ticker {
+    font-size: 0.86rem;
+    color: #10243a;
+    margin: 16px 0 8px;
+    opacity: 0.9;
+  }
+  .refugee-ticker .label {
+    font-weight: 700;
+    color: #111;
+  }
+  .refugee-ticker .message {
+    color: #b91c1c;
+    margin-left: 8px;
+  }
+  @media print {
+    .refugee-ticker {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+(function(){
+  const msgs = [
+    "Chad: Refugee inflows are rising; food availability is tightening in border areas.",
+    "Sudan: New displacement reported; humanitarian access remains constrained.",
+    "DRC: Localized clashes have triggered short-notice movements; protection services are overstretched.",
+    "Somalia: Drought recovery is fragile; any rainfall deficit may re‑ignite displacement.",
+    "Ukraine: Power disruptions increase winter vulnerability among displaced families.",
+    "Lebanon: Price spikes are eroding purchasing power for refugee households.",
+    "Yemen: Sporadic escalations risk disrupting aid corridors; nutrition support is critical.",
+    "South Sudan: Flood‑prone counties face renewed movement risks during peak rains.",
+    "Burkina Faso: Insecurity continues to restrict safe routes for civilians.",
+    "Afghanistan: Seasonal pressures are raising needs in remote highland districts."
+  ];
+  const el = document.getElementById('refugeeMsg');
+  if(!el) return;
+  try{
+    const i = new Date().getUTCDate() % msgs.length;
+    el.textContent = msgs[i];
+  }catch(e){
+    el.textContent = "Latest update temporarily unavailable. Please check back soon.";
+  }
+})();
+</script>
+
+
+  
 </html>
