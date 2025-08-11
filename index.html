@@ -32,8 +32,10 @@
     a{color:var(--accent)}
     .container{max-width:1100px;margin:0 auto;padding:24px}
     .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
-    .btn{display:inline-block;border-radius:12px;border:1px solid var(--line);padding:10px 14px;background:#fff;color:var(--ink);cursor:pointer}
+    .btn{display:inline-block;border-radius:12px;border:1px solid var(--line);padding:10px 14px;background:#fff;color:var(--ink);cursor:pointer;text-decoration:none}
     .btn.primary{background:var(--accent);color:#fff;border-color:#0b69bb}
+    .btn.ghost{background:transparent}
+    .btn + .btn{margin-left:8px}
     .grid{display:grid;gap:12px}
     .cols-2{grid-template-columns:1.15fr 1fr}
     .cols-3{grid-template-columns:repeat(3,1fr)}
@@ -85,6 +87,28 @@
 
     /* Print */
     @media print{nav, .no-print{display:none!important} body{background:#fff} .card, .panel-dark{box-shadow:none;border-color:#ddd}}
+
+    /* ===== Inline initiative links box (A/B/C) ===== */
+    .initiative-box{ 
+      max-width: 980px; 
+      margin: 16px 0; 
+      padding: 18px 20px; 
+      background: linear-gradient(0deg,#ffffff,#ffffff),
+                  radial-gradient(900px 420px at 8% -8%, rgba(37,99,235,.06), transparent 60%),
+                  radial-gradient(900px 420px at 120% 120%, rgba(2,132,199,.06), transparent 60%);
+      border: 1px solid #91c9ff;
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(2,132,199,.08);
+      color: #0f2e4f; 
+      font-family: Arial, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.7; 
+    }
+    .initiative-box h3{margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 700; color: #0b5bd3}
+    .initiative-box p{ margin: 0; font-size: 15px }
+    .initiative-box a{ color:#0b5bd3; text-decoration: underline }
+
+    /* Small helper to visually hide placeholders until JS paints values */
+    .placeholder{opacity:.6}
   </style>
 </head>
 <body>
@@ -114,8 +138,9 @@
   <!-- Diplomatic notes -->
   <div class="diplom-wrap">
     <section class="diplom blue" aria-label="Diplomatic request">
-      <p><strong>Request:</strong> 5‑minute briefing & permission to share the 11‑page executive summary.</p>
+      <p><strong>Request:</strong> 5‑minute briefing & permission to share the <strong>11‑page</strong> executive summary.</p>
       <p><strong>Your Excellency,</strong> I would be grateful if you could spare a brief moment to review a concise presentation on supporting children with disabilities and pathways to refugee self‑reliance. With your kind permission, I would be honored to deliver a brief, five‑minute overview. This initiative has been <em>noted by</em> GIZ (Germany) and is under <em>future review</em> at SIDA (Sweden), underscoring its alignment with inclusive, ethical technology. To our knowledge, this is among the earliest humanitarian AI models designed not to compete with Big Tech, but to protect children with disabilities and empower refugees — capable of being field‑proven with only USD 1,000.</p>
+      <p class="meta">For EU missions and UK posts: the model is designed to align with CRPD/UNCRC priorities and GDPR‑oriented privacy expectations; all materials are non‑commercial and rights‑based.</p>
     </section>
   </div>
   <div class="diplom-wrap">
@@ -156,8 +181,16 @@
         <li><strong>Locally verifiable:</strong> Refugee‑assembled in a tent within hours → immediate, visible results suitable for diplomatic due diligence.</li>
       </ul>
 
-<p><strong>Docs:</strong> 11‑page executive summary available: <a href="https://drive.google.com/file/d/1tY-QZBgBoGggzbkF4o7mWlAeXEgx4dKZ/view" target="_blank" rel="noopener">AINecklace_Summary_Korea.pdf</a>. A 260‑page dossier is available upon request.</p>
-            
+      <!-- Dual‑hosted document links (local + GitHub + Drive) -->
+      <div class="doc-links" style="margin-top:10px">
+        <strong>Docs:</strong> <span>11‑page executive summary <em>(AINecklace_Summary_Korea.pdf)</em></span>
+        <div style="margin-top:8px">
+          <a class="btn primary" href="/docs/AINecklace_Summary_Korea.pdf" download aria-label="Download executive summary locally as PDF">Download locally (PDF)</a>
+          <a class="btn" href="https://raw.githubusercontent.com/REPLACE_WITH_YOUR_USER/REPLACE_WITH_YOUR_REPO/main/docs/AINecklace_Summary_Korea.pdf" target="_blank" rel="noopener" aria-label="Open executive summary on GitHub">Open on GitHub</a>
+          <a class="btn ghost" href="https://drive.google.com/file/d/1tY-QZBgBoGggzbkF4o7mWlAeXEgx4dKZ/view" target="_blank" rel="noopener" aria-label="Open executive summary on Google Drive">Open on Drive</a>
+        </div>
+        <div class="meta" style="margin-top:6px">A 260‑page technical dossier is available upon request (secure PDF/A).</div>
+      </div>
     </section>
 
     <!-- Refugee Calculator -->
@@ -181,7 +214,14 @@
                 <option value="maize">Maize</option>
               </select>
             </div>
-            <p style="margin:10px 0 0">Every 0.1 °C increase may correspond to <strong id="rcRefugeesStep">0–0</strong> people/year additionally displaced (vs 1.55 °C baseline). Cumulative since 1.55 °C: <strong id="rcRefugeesCum">0–0</strong>. <span id="rcCropName">Wheat</span> yield change (vs 1.55 °C): <strong id="rcCrop">0.00%</strong>.</p>
+            <p style="margin:10px 0 0">
+              Every 0.1 °C increase may correspond to
+              <strong id="rcRefugeesStep" class="placeholder" aria-live="polite">—</strong>
+              people/year additionally displaced (vs 1.55 °C baseline). Cumulative since 1.55 °C:
+              <strong id="rcRefugeesCum" class="placeholder" aria-live="polite">—</strong>.
+              <span id="rcCropName">Wheat</span> yield change (vs 1.55 °C):
+              <strong id="rcCrop" class="placeholder" aria-live="polite">—</strong>.
+            </p>
           </div>
 
           <div id="rcWarn" class="card" style="margin-top:10px;display:none" aria-live="polite"></div>
@@ -190,9 +230,9 @@
           <div class="card" style="margin-top:10px">
             <div class="meta" style="margin-bottom:6px">Projected displacement at current temperature (illustrative)</div>
             <div style="display:flex;gap:16px;flex-wrap:wrap">
-              <div><span class="meta">After 1 year:</span> <strong id="rcYear1">0–0</strong></div>
-              <div><span class="meta">After 2 years:</span> <strong id="rcYear2">0–0</strong></div>
-              <div><span class="meta">After 3 years:</span> <strong id="rcYear3">0–0</strong></div>
+              <div><span class="meta">After 1 year:</span> <strong id="rcYear1" class="placeholder" aria-live="polite">—</strong></div>
+              <div><span class="meta">After 2 years:</span> <strong id="rcYear2" class="placeholder" aria-live="polite">—</strong></div>
+              <div><span class="meta">After 3 years:</span> <strong id="rcYear3" class="placeholder" aria-live="polite">—</strong></div>
             </div>
           </div>
 
@@ -201,9 +241,9 @@
 
         <div>
           <div class="kpis">
-            <div class="card"><div class="title">Live step (per +0.1 °C)</div><div id="rcKpiStep" class="num">—</div></div>
-            <div class="card"><div class="title">Cumulative since 1.55 °C</div><div id="rcKpiCum" class="num">—</div></div>
-            <div class="card"><div class="title">Selected crop Δyield</div><div id="rcKpiCrop" class="num">—</div></div>
+            <div class="card"><div class="title">Live step (per +0.1 °C)</div><div id="rcKpiStep" class="num placeholder" aria-live="polite">—</div></div>
+            <div class="card"><div class="title">Cumulative since 1.55 °C</div><div id="rcKpiCum" class="num placeholder" aria-live="polite">—</div></div>
+            <div class="card"><div class="title">Selected crop Δyield</div><div id="rcKpiCrop" class="num placeholder" aria-live="polite">—</div></div>
           </div>
         </div>
       </div>
@@ -288,50 +328,16 @@
       </div>
     </section>
 
+    <!-- Drop‑in box for the A/B/C initiative links -->
+    <section class="initiative-box" aria-label="Initiative links">
+      <h3>Planned next steps</h3>
+      <p>
+        (A) <a href="https://mcorp-ai.com" target="_blank" rel="noopener">mcorp-ai.com</a> — interest‑free microloans of approximately USD 1,000 per tent for refugees who voluntarily join localized AI assembly.<br>
+        (B) <a href="https://mcorpai.org" target="_blank" rel="noopener">mcorpai.org</a> — public‑interest hub for the offline, data‑minimizing AI Safety Necklace, including technical documentation, ethics principles, and future ordering.<br>
+        (C) <a href="https://mcorp.ai.kr" target="_blank" rel="noopener">mcorp.ai.kr</a> — Korean‑language portal for domestic investors, ESG‑oriented companies, and civic participation.
+      </p>
+    </section>
 
-    
-    
-<!-- Drop‑in box for the A/B/C initiative links. Paste this whole block where you want the box to appear. -->
-
-<style>
-  /* Scoped styles: safe to paste anywhere */
-  .initiative-box{ 
-    max-width: 980px; 
-    margin: 16px 0; 
-    padding: 18px 20px; 
-    background: linear-gradient(0deg,#ffffff,#ffffff),
-                radial-gradient(900px 420px at 8% -8%, rgba(37,99,235,.06), transparent 60%),
-                radial-gradient(900px 420px at 120% 120%, rgba(2,132,199,.06), transparent 60%);
-    border: 1px solid #91c9ff;
-    border-radius: 14px;
-    box-shadow: 0 10px 28px rgba(2,132,199,.08);
-    color: #0f2e4f; 
-    font-family: Arial, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.7; 
-  }
-  .initiative-box h3{
-    margin: 0 0 8px 0; 
-    font-size: 1.1rem; 
-    font-weight: 700; 
-    color: #0b5bd3; /* blue title like the screenshot */
-  }
-  .initiative-box p{ margin: 0; font-size: 15px; }
-  .initiative-box a{ color:#0b5bd3; text-decoration: underline; }
-</style>
-
-<section class="initiative-box" aria-label="Initiative links">
-  <h3>Planned next steps</h3>
-  <p>
-    (A) <a href="https://mcorp-ai.com" target="_blank" rel="noopener">mcorp-ai.com</a> — interest‑free microloans of approximately USD 1,000 per tent for refugees who voluntarily join localized AI assembly.<br>
-    (B) <a href="https://mcorpai.org" target="_blank" rel="noopener">mcorpai.org</a> — public‑interest hub for the offline, data‑minimizing AI Safety Necklace, including technical documentation, ethics principles, and future ordering.<br>
-    (C) <a href="https://mcorp.ai.kr" target="_blank" rel="noopener">mcorp.ai.kr</a> — Korean‑language portal for domestic investors, ESG‑oriented companies, and civic participation.
-  </p>
-</section>
-
-
-
-
-    
     <!-- Contact -->
     <section id="contact" class="card" aria-labelledby="contactTitle">
       <h2 id="contactTitle">Contact</h2>
@@ -379,12 +385,12 @@
         const sL=stepInc(T+1e-9,false), sH=stepInc(T+1e-9,true);
         const cL=cum(T,false), cH=cum(T,true);
         const cropPct = ((T-BASELINE)/STEP) * CROP_COEFF[crop];
-        $('rcRefugeesStep').textContent=`${fmt(sL)}–${fmt(sH)}`;
-        $('rcRefugeesCum').textContent=`${fmt(cL)}–${fmt(cH)}`;
-        $('rcCrop').textContent=(Math.round(cropPct*100)/100).toFixed(2)+'%';
-        $('rcKpiStep').textContent = `${fmt(sL)}–${fmt(sH)}`;
-        $('rcKpiCum').textContent = `${fmt(cL)}–${fmt(cH)}`;
-        $('rcKpiCrop').textContent = (Math.round(cropPct*100)/100).toFixed(2)+'%';
+        $('rcRefugeesStep').textContent=`${fmt(sL)}–${fmt(sH)}`; $('rcRefugeesStep').classList.remove('placeholder');
+        $('rcRefugeesCum').textContent=`${fmt(cL)}–${fmt(cH)}`; $('rcRefugeesCum').classList.remove('placeholder');
+        $('rcCrop').textContent=(Math.round(cropPct*100)/100).toFixed(2)+'%'; $('rcCrop').classList.remove('placeholder');
+        $('rcKpiStep').textContent = `${fmt(sL)}–${fmt(sH)}`; $('rcKpiStep').classList.remove('placeholder');
+        $('rcKpiCum').textContent = `${fmt(cL)}–${fmt(cH)}`; $('rcKpiCum').classList.remove('placeholder');
+        $('rcKpiCrop').textContent = (Math.round(cropPct*100)/100).toFixed(2)+'%'; $('rcKpiCrop').classList.remove('placeholder');
         warn(T); animateYears(cL,cH);
       }
       function warn(temp){
@@ -404,9 +410,9 @@
         const y1L=bL, y2L=bL*(1+(1+g.low)), y3L=bL*(1+(1+g.low)+Math.pow(1+g.low,2));
         const y1H=bH, y2H=bH*(1+(1+g.high)), y3H=bH*(1+(1+g.high)+Math.pow(1+g.high,2));
         let k=0, steps=6; timer=setInterval(()=>{k++; const p=k/steps; const L=(a,b)=>a+(b-a)*p;
-          $('rcYear1').textContent=`${fmt(L(0,y1L))}–${fmt(L(0,y1H))}`;
-          $('rcYear2').textContent=`${fmt(L(0,y2L))}–${fmt(L(0,y2H))}`;
-          $('rcYear3').textContent=`${fmt(L(0,y3L))}–${fmt(L(0,y3H))}`;
+          $('rcYear1').textContent=`${fmt(L(0,y1L))}–${fmt(L(0,y1H))}`; $('rcYear1').classList.remove('placeholder');
+          $('rcYear2').textContent=`${fmt(L(0,y2L))}–${fmt(L(0,y2H))}`; $('rcYear2').classList.remove('placeholder');
+          $('rcYear3').textContent=`${fmt(L(0,y3L))}–${fmt(L(0,y3H))}`; $('rcYear3').classList.remove('placeholder');
           if(k>=steps) clearInterval(timer);
         },200);
       }
