@@ -4,57 +4,62 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>M‑Corp AI — Ethical AI for Refugee Self‑Reliance</title>
-  <meta name="description" content="Rights‑based, offline AI for children with disabilities. A refugee‑led self‑reliance model with two in‑browser calculators for impact and livelihoods." />
+  <meta name="description" content="Rights‑based, offline AI for children with disabilities. Refugee‑led livelihoods with in‑browser calculators (illustrative only)." />
   <meta name="theme-color" content="#0b77d5" />
+  <meta name="robots" content="index,follow" />
   <meta property="og:title" content="M‑Corp AI — Ethical AI for Refugee Self‑Reliance" />
-  <meta property="og:description" content="Rights‑based, offline AI for children with disabilities. Refugee‑led manufacturing and self‑reliance." />
+  <meta property="og:description" content="Rights‑based, offline AI for children with disabilities. Refugee‑led livelihoods and self‑reliance." />
   <meta property="og:type" content="website" />
 
   <style>
-    /* ===== CSS variables ===== */
+    /* ===== Design tokens ===== */
     :root{
       --bg: #f5f7fb;
       --paper: #ffffff;
-      --ink: #10243a;
-      --muted: #52667a;
-      --line: #d7e2ee;
-      --accent: #0b77d5;
-      --accent-weak: #eaf4ff;
-      --ok: #22c55e;
-      --bad: #ef4444;
-      --soft-shadow: 0 10px 28px rgba(16,36,58,.07);
+      --ink: #10243a;     /* deep ink */
+      --muted: #52667a;   /* muted text */
+      --line: #d7e2ee;    /* soft border */
+      --accent: #0b77d5;  /* brand blue */
+      --accent-weak:#eaf4ff;
+      --ok:#16a34a; --bad:#dc2626; --info:#2563eb;
+      --shadow: 0 10px 28px rgba(16,36,58,.07);
       --radius: 16px;
     }
 
     /* ===== Global ===== */
-    html,body{height:100%}
     html{scroll-behavior:smooth}
     body{margin:0;background:linear-gradient(180deg,var(--bg),#fff 65%);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
     a{color:var(--accent)}
     .container{max-width:1100px;margin:0 auto;padding:24px}
-    .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--soft-shadow);padding:24px}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
     .btn{display:inline-block;border-radius:12px;border:1px solid var(--line);padding:10px 14px;background:#fff;color:var(--ink);cursor:pointer}
     .btn.primary{background:var(--accent);color:#fff;border-color:#0b69bb}
     .grid{display:grid;gap:12px}
-    .cols-2{grid-template-columns:1.1fr 1fr}
+    .cols-2{grid-template-columns:1.15fr 1fr}
     .cols-3{grid-template-columns:repeat(3,1fr)}
     @media (max-width:960px){.cols-2,.cols-3{grid-template-columns:1fr}}
-    .sr-only{position:absolute;left:-9999px}
+    .sr-only{position:absolute!important;left:-9999px!important}
 
-    /* ===== Header / hero ===== */
+    /* ===== Header / nav ===== */
+    nav.site{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#fff,rgba(255,255,255,.95));backdrop-filter:saturate(1.2) blur(6px)}
+    nav .bar{display:flex;gap:16px;align-items:center;justify-content:space-between}
+    nav .links{display:flex;gap:12px;flex-wrap:wrap}
+
     header.hero{padding:28px 0}
     header .title{font-size:1.9rem;margin:0}
     header .subtitle{margin:6px 0 0 0;color:var(--muted)}
+    header .meta{font-size:.92rem;color:#6b7f93}
 
-    /* ===== Diplomatic boxes ===== */
-    .diplom-wrap{max-width:1080px;margin:10px auto 18px;padding:0 24px}
-    .diplom{padding:18px;border-radius:14px;border:1px solid var(--line);box-shadow:var(--soft-shadow)}
+    /* ===== Diplomatic notes ===== */
+    .diplom-wrap{max-width:1100px;margin:8px auto 18px;padding:0 24px}
+    .diplom{padding:18px;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow)}
     .diplom.blue{background:var(--accent-weak);border-color:#cfe3ff}
-    .diplom.red{background:rgba(255,200,200,.28);border-color:#f5cccc}
+    .diplom.red{background:rgba(255,200,200,.26);border-color:#f5cccc}
 
-    /* ===== Section headings ===== */
+    /* ===== Sections ===== */
     section{margin:22px 0}
-    h2{font-size:1.25rem;margin:0 0 8px}
+    h2{font-size:1.25rem;margin:0 0 10px}
+    h3{font-size:1.05rem;margin:12px 0 6px}
     .meta{font-size:.9rem;color:var(--muted)}
     .hr{height:1px;background:#edf1f6;margin:16px 0}
 
@@ -62,7 +67,7 @@
     .report p{margin:10px 0}
     .report ul{margin:8px 0 14px 20px}
 
-    /* ===== Calculator cards (dark-on-dark contained) ===== */
+    /* ===== Dark panels (calculators) ===== */
     .panel-dark{--bg:#0f172a;--fg:#e2e8f0;--soft:#0b1220;--line:#334155;--muted:#94a3b8}
     .panel-dark{background:var(--bg);color:var(--fg);border-radius:18px;border:1px solid var(--line);box-shadow:0 12px 28px rgba(2,6,23,.25);padding:22px}
     .panel-dark .card{background:var(--soft);border-color:var(--line);color:var(--fg)}
@@ -78,20 +83,17 @@
     footer{margin:26px 0 12px;color:#1d4ed8}
     footer .small{font-size:.92rem}
 
-    /* Print helpers */
-    @media print{
-      nav, .no-print{display:none !important}
-      body{background:#fff}
-      .card, .panel-dark{box-shadow:none;border-color:#ddd}
-    }
+    /* Print */
+    @media print{nav, .no-print{display:none!important} body{background:#fff} .card, .panel-dark{box-shadow:none;border-color:#ddd}}
   </style>
 </head>
 <body>
   <a href="#content" class="sr-only">Skip to content</a>
-  <nav class="container no-print" aria-label="Site">
-    <div class="card" style="display:flex;gap:16px;align-items:center;justify-content:space-between">
-      <strong>M‑Corp AI</strong>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
+
+  <nav class="site" aria-label="Primary">
+    <div class="container bar card">
+      <strong aria-label="Site name">M‑Corp AI</strong>
+      <div class="links">
         <a href="#summary">Executive Summary</a>
         <a href="#tech">Technical Approach</a>
         <a href="#calc">Refugee Calculator</a>
@@ -112,12 +114,13 @@
   <!-- Diplomatic notes -->
   <div class="diplom-wrap">
     <section class="diplom blue" aria-label="Diplomatic request">
-      <p><strong>Your Excellency,</strong> I would be grateful if you could spare a brief moment to review a concise presentation on supporting children with disabilities and pathways to refugee self‑reliance. With your kind permission, I would be honored to deliver a brief, five‑minute overview. This initiative has reached preliminary consideration at GIZ (Germany) and is under future review at SIDA (Sweden), underscoring its alignment with global priorities in ethical technology and inclusive development. A world‑first humanitarian AI model, designed not to compete with Big Tech, but to protect children with disabilities and empower refugees — capable of being proven scalable in the field with only USD 1,000.</p>
+      <p><strong>Request:</strong> 5‑minute briefing & permission to share the 12‑page executive summary.</p>
+      <p><strong>Your Excellency,</strong> I would be grateful if you could spare a brief moment to review a concise presentation on supporting children with disabilities and pathways to refugee self‑reliance. With your kind permission, I would be honored to deliver a brief, five‑minute overview. This initiative has been <em>noted by</em> GIZ (Germany) and is under <em>future review</em> at SIDA (Sweden), underscoring its alignment with inclusive, ethical technology. To our knowledge, this is among the earliest humanitarian AI models designed not to compete with Big Tech, but to protect children with disabilities and empower refugees — capable of being field‑proven with only USD 1,000.</p>
     </section>
   </div>
   <div class="diplom-wrap">
     <section class="diplom red" aria-label="Japanese/French note">
-      <p>🇯🇵 倫理的AIは、日本の人道支援の強みである「海外現地での支援」と「技術協力」を融合し、難民が自ら生活を支えられる仕組みを構築します。倫理的AIによる自立支援は、日本のODAと国際協力方針に完全に合致する革新的モデルです。 🇫🇷 Aucun pays n’a encore pris l’ascendant dans le domaine de l’IA éthique.</p>
+      <p>🇯🇵 倫理的AIは、日本の強みである「現地支援」と「技術協力」を結びつけ、難民が自ら生活を支えられる仕組みを構築します。倫理的AIによる自立支援は、日本のODA・国際協力方針に適合する実践的モデルです。<br />🇫🇷 À notre connaissance, aucun pays n’a encore pris l’ascendant dans l’IA éthique.</p>
     </section>
   </div>
 
@@ -125,387 +128,329 @@
     <!-- Executive Summary / Report -->
     <section id="summary" class="card report" aria-labelledby="reportTitle">
       <h2 id="reportTitle">AI Necklace for Child Safety — A Refugee Self‑Reliance Model for Children with Disabilities</h2>
-      <p class="meta">(The world’s first concept of ethical AI in humanitarian protection)</p>
-      <div class="hr"></div>
+      <p class="meta">(To our knowledge, one of the earliest rights‑based applications of offline, privacy‑preserving AI in humanitarian protection.)</p>
+      <div class="hr" role="presentation"></div>
 
-      <h3>1) Purpose and Core Concept</h3>
-      <p>The <em>AI Necklace for Child Safety</em> is a life‑saving, offline, data‑free wearable designed for children with developmental and physical disabilities in low‑resource and displacement contexts. It places <strong>ethical AI</strong> at the center: human dignity first, zero personal data collection, and no cloud dependence. Refugee‑led assembly embeds livelihoods directly in camps.</p>
+      <h3>1) Purpose & Core Concept</h3>
+      <p>The <em>AI Necklace for Child Safety</em> is a life‑saving, offline, data‑minimizing wearable for children with developmental and physical disabilities in low‑resource and displacement contexts. It places <strong>ethical AI</strong> at the center: human dignity first, no cloud dependence, and—by design—no personal data is intended to be collected. Refugee‑led assembly embeds livelihoods directly in camps.</p>
 
-      <h3>2) Humanitarian Need</h3>
-      <p>Children with disabilities face heightened risks: wandering, traffic, and crises where they cannot call for help. A practical, low‑cost MVP can be demonstrated with ~<strong>USD 1,000</strong>, funded by the proposer.</p>
+      <h3>2) Need & Urgency</h3>
+      <p>Children with disabilities face heightened risks: sudden wandering, traffic hazards, and crises where they cannot call for help. A practical MVP can be demonstrated with ~<strong>USD 1,000</strong>, covered by the proposer, requiring no immediate funding commitment.</p>
 
-      <h3>3) Technical Approach (offline‑first)</h3>
+      <h3 id="tech">3) Technical Approach</h3>
       <ul>
-        <li><strong>Form factor:</strong> lightweight necklace with integrated sensors.</li>
-        <li><strong>On‑device inference:</strong> real‑time prompts for sudden movement, road proximity, abnormal vitals.</li>
-        <li><strong>Assembly:</strong> a few modern chips and simple circuitry; teachable in under two hours inside a tent.</li>
+        <li><strong>Form factor:</strong> Lightweight necklace with integrated sensors.</li>
+        <li><strong>Core functions:</strong> Detects sudden movement, road proximity, and abnormal physiological signs; issues child‑friendly voice prompts in real time.</li>
+        <li><strong>Architecture:</strong> Edge‑based inference on‑device; no internet or cloud dependency.</li>
+        <li><strong>Assembly:</strong> A few low‑cost chips and simple circuitry; feasible in a refugee tent with under two hours of training.</li>
+        <li><strong>Privacy:</strong> Designed to align with GDPR/COPPA; no personal data is intended to be collected. Final compliance to be confirmed with partner policies.</li>
       </ul>
 
       <h3>4) Strategic Alignment</h3>
-      <ul>
-        <li>Directly supports SDGs 3, 4, 9, 10, 11, and 17.</li>
-        <li>Shifts refugees from recipients to producers; complements SSE frameworks.</li>
-      </ul>
+      <p>Directly supports SDGs 3, 4, 9, 10, 11, and 17; shifts refugees from passive recipients to active producers, enhancing dignity and reducing aid dependency.</p>
 
-      <h3>5) Ethics & Compliance</h3>
+      <h3>5) Why this merits diplomatic inquiry (concise)</h3>
       <ul>
-        <li>Privacy: GDPR/COPPA‑aligned; zero personal data collected.</li>
-        <li>Design: inclusive, human‑centric, safety‑first.</li>
-      </ul>
-
-      <h3>6) Partnerships & Next Steps</h3>
-      <ul>
-        <li>Pilot in a selected settlement to validate technical + social feasibility.</li>
-        <li>Integrate with national disability protection and humanitarian plans.</li>
-        <li>Train refugee teams for assembly, maintenance, and distribution.</li>
-      </ul>
-
-      <p><strong>Docs:</strong> 12‑page executive summary available: <a href="https://drive.google.com/file/d/1tY-QZBgBoGggzbkF4o7mWlAeXEgx4dKZ/view" target="_blank" rel="noopener">AINecklace_Summary_Korea.pdf</a>. A 260‑page dossier is available upon request.</p>
-    </section>
-
-    <!-- Technical detail anchor (optional break-out) -->
-    <section id="tech" class="card">
-      <h2>Technical Approach (deeper dive)</h2>
-      <ul>
-        <li>Edge AI inference; no network required; multilingual, child‑friendly prompts.</li>
-        <li>Low‑power components; rechargeable and replaceable modules.</li>
-        <li>Manufacturing in micro “tent factories” with quality checklists and jigs.</li>
+        <li><strong>No‑budget ask for pilot:</strong> MVP financed by proposer (USD 1,000) → zero fiscal risk.</li>
+        <li><strong>Rights‑based & non‑controversial:</strong> Offline, privacy‑preserving design; protects children with disabilities; aligns with ODA and humanitarian mandates.</li>
+        <li><strong>Locally verifiable:</strong> Refugee‑assembled in a tent within hours → immediate, visible results suitable for diplomatic due diligence.</li>
       </ul>
     </section>
 
-    <!-- Refugee Calculator (educational) -->
+    <!-- Refugee Calculator -->
     <section id="calc" class="panel-dark" aria-labelledby="calcTitle">
       <h2 id="calcTitle">Refugee Calculator</h2>
-      <p class="meta">Educational estimates calibrated to public assessments; runs fully in your browser. Baseline ΔT = 1.55 °C.</p>
+      <p class="meta">Educational demo. <strong>Illustrative only; not a forecast.</strong> Runs locally in your browser. Figures are rough ranges to prompt policy discussion.</p>
 
-      <div class="card" role="region" aria-live="polite" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-        <span aria-hidden="true" style="display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;font-size:.85rem;background:#0b3869;color:#fff;border:1px solid #153e6a">ΔT</span>
-        <button type="button" class="btn" id="rcDown" aria-label="Decrease temperature">−</button>
-        <strong id="rcTemp" style="font-size:1.05rem">1.55</strong><span>°C</span>
-        <button type="button" class="btn" id="rcUp" aria-label="Increase temperature">+</button>
+      <div class="grid cols-2">
+        <div>
+          <div class="card" role="group" aria-labelledby="rcControls"><strong id="rcControls" class="meta">Controls</strong>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px">
+              <span title="Temperature anomaly" style="display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;font-size:.85rem;background:#0b1220;border:1px solid #334155;color:#e2e8f0">ΔT</span>
+              <button type="button" id="rcDown" class="btn" aria-label="Decrease temperature">−</button>
+              <strong id="rcTemp" aria-live="polite">1.55</strong><span>°C</span>
+              <button type="button" id="rcUp" class="btn" aria-label="Increase temperature">+</button>
 
-        <label for="rcCropSel" style="margin-left:6px">Crop</label>
-        <select id="rcCropSel">
-          <option value="wheat" selected>Wheat</option>
-          <option value="rice">Rice</option>
-          <option value="maize">Maize</option>
-        </select>
+              <label for="rcCropSel" style="margin-left:6px">Crop</label>
+              <select id="rcCropSel" aria-label="Crop selection">
+                <option value="wheat" selected>Wheat</option>
+                <option value="rice">Rice</option>
+                <option value="maize">Maize</option>
+              </select>
+            </div>
+            <p style="margin:10px 0 0">Every 0.1 °C increase may correspond to <strong id="rcRefugeesStep">0–0</strong> people/year additionally displaced (vs 1.55 °C baseline). Cumulative since 1.55 °C: <strong id="rcRefugeesCum">0–0</strong>. <span id="rcCropName">Wheat</span> yield change (vs 1.55 °C): <strong id="rcCrop">0.00%</strong>.</p>
+          </div>
 
-        <span id="rcReadout">Every 0.1 °C may correspond to <strong id="rcRefugeesStep">0–0</strong> people/year additionally displaced (vs 1.55 °C). Cumulative: <strong id="rcRefugeesCum">0–0</strong>. <span id="rcCropName">Wheat</span> yield change: <strong id="rcCrop">0.00%</strong>.</span>
-      </div>
+          <div id="rcWarn" class="card" style="margin-top:10px;display:none" aria-live="polite"></div>
+          <div id="rcApoc" class="card" style="margin-top:10px;display:none;font-weight:700;color:#fecaca;background:#7f1d1d" aria-live="polite"></div>
 
-      <div id="rcWarn" class="card" style="display:none;border-style:dashed"></div>
-      <div id="rcApoc" class="card" style="display:none;border-color:#f2c0c0;color:#fecaca;background:#2a0f12"></div>
+          <div class="card" style="margin-top:10px">
+            <div class="meta" style="margin-bottom:6px">Projected displacement at current temperature (illustrative)</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <div><span class="meta">After 1 year:</span> <strong id="rcYear1">0–0</strong></div>
+              <div><span class="meta">After 2 years:</span> <strong id="rcYear2">0–0</strong></div>
+              <div><span class="meta">After 3 years:</span> <strong id="rcYear3">0–0</strong></div>
+            </div>
+          </div>
 
-      <div class="card">
-        <div class="meta">Projected displacement at current temperature (illustrative)</div>
-        <div style="display:flex;gap:16px;flex-wrap:wrap">
-          <div>After 1 year: <strong id="rcYear1">0–0</strong></div>
-          <div>After 2 years: <strong id="rcYear2">0–0</strong></div>
-          <div>After 3 years: <strong id="rcYear3">0–0</strong></div>
+          <small class="meta" style="display:block;margin-top:8px">Calibrated to public assessments from global monitoring bodies; intended for discussion only.</small>
+        </div>
+
+        <div>
+          <div class="kpis">
+            <div class="card"><div class="title">Live step (per +0.1 °C)</div><div id="rcKpiStep" class="num">—</div></div>
+            <div class="card"><div class="title">Cumulative since 1.55 °C</div><div id="rcKpiCum" class="num">—</div></div>
+            <div class="card"><div class="title">Selected crop Δyield</div><div id="rcKpiCrop" class="num">—</div></div>
+          </div>
         </div>
       </div>
-
-      <small>Notes: uses non‑linear acceleration with bands; follows the spirit of Copernicus/WMO public analyses. Figures are didactic, not forecasts.</small>
     </section>
 
-    <!-- Impact Simulator ("$1,000 tent factory") -->
-    <section id="sim" class="panel-dark" aria-labelledby="simTitle">
-      <h2 id="simTitle">Impact Simulator — “$1,000 Tent Factory”</h2>
-      <p class="meta">Zero‑data; runs locally. Adjust inputs to match local reality.</p>
+    <!-- Impact Simulator -->
+    <section id="sim" class="panel-dark" aria-labelledby="simTitle" style="margin-top:18px">
+      <h2 id="simTitle">M‑Corp Impact Simulator — “$1,000 Tent Factory”</h2>
+      <p class="meta">All calculations run locally. <strong>Illustrative only; not a forecast.</strong> Adjust to match local reality.</p>
 
       <div class="grid cols-2">
         <div>
           <div class="grid cols-3">
-            <div><label>Tents</label><input id="tents" type="number" min="1" value="1"></div>
-            <div><label>Workers per tent</label><input id="workersPerTent" type="number" min="1" value="4"></div>
-            <div><label>Duration (months)</label><input id="months" type="number" min="1" value="6"></div>
+            <div><label for="tents">Tents</label><input id="tents" type="number" min="1" value="1" /></div>
+            <div><label for="workersPerTent">Workers per tent</label><input id="workersPerTent" type="number" min="1" value="4" /></div>
+            <div><label for="months">Duration (months)</label><input id="months" type="number" min="1" value="6" /></div>
           </div>
+
           <div class="grid cols-3" style="margin-top:10px">
-            <div><label>Units/worker/week</label><input id="unitsPerWorkerWeek" type="number" min="1" value="3"></div>
-            <div><label>Premium share (%)</label><input id="premiumShare" type="range" min="0" max="100" value="25" oninput="MC.syncShare(this.value)"></div>
-            <div><label>Camp population</label><input id="campPop" type="number" min="1" value="5000"></div>
+            <div><label for="unitsPerWorkerWeek">Units/worker/week</label><input id="unitsPerWorkerWeek" type="number" min="1" value="3" /></div>
+            <div><label for="premiumShare">Premium share (%)</label><input id="premiumShare" type="range" min="0" max="100" value="25" /></div>
+            <div><label for="campPop">Camp population</label><input id="campPop" type="number" min="1" value="5000" /></div>
           </div>
+
           <div class="grid cols-3" style="margin-top:10px">
-            <div><label>Microloan per tent (USD)</label><input id="loanPerTent" type="number" min="0" value="1000"></div>
-            <div><label>Payout ratio (%)</label><input id="payoutRatio" type="number" min="0" max="100" value="50"></div>
-            <div><label>Dividend/household (USD)</label><input id="dividendUnit" type="number" min="1" value="50"></div>
+            <div><label for="loanPerTent">Microloan per tent (USD)</label><input id="loanPerTent" type="number" min="0" value="1000" /></div>
+            <div><label for="payoutRatio">Payout ratio (%)</label><input id="payoutRatio" type="number" min="0" max="100" value="50" /></div>
+            <div><label for="dividendUnit">Dividend/household (USD)</label><input id="dividendUnit" type="number" min="1" value="50" /></div>
+          </div>
+
+          <div class="card" style="margin-top:10px"><strong>How wages & family dividends work</strong><br />
+            Participants receive <strong>$300/month</strong>. In addition, <strong>50%</strong> of net profit is distributed as <strong>$50/household/month</strong> dividends.
           </div>
         </div>
-        <div class="kpis">
-          <div class="card kpi"><div class="title">Total workers</div><div id="out_workers" class="num">—</div></div>
-          <div class="card kpi"><div class="title">Total units</div><div id="out_units" class="num">—</div></div>
-          <div class="card kpi"><div class="title">Revenue</div><div id="out_revenue" class="num">$0</div></div>
-          <div class="card kpi"><div class="title">Wage pool (coverage vs 10%)</div><div class="num" id="out_wagePool">$0</div><div class="title">Coverage: <span id="out_wageCoverage">—</span></div></div>
-          <div class="card kpi"><div class="title">Dividend pool → households</div><div id="out_divPool" class="num">$0</div><div class="title">Households: <span id="out_divHouseholds">—</span></div></div>
-          <div class="card kpi"><div class="title">Reinvestment / weeks to repay loan</div><div id="out_margin" class="num">$0</div><div class="title">ETA: <span id="out_weeksToRepay">—</span> weeks</div></div>
-          <div class="card kpi"><div class="title">GDP per capita</div><div class="num">Monthly: <span id="out_gdpPerCapMonthly">$0</span> · Annual: <span id="out_gdpPerCapAnnual">$0</span></div></div>
-          <div class="card kpi"><div class="title">Avg. per participating worker (monthly)</div><div id="out_avgPerWorker" class="num">$0</div></div>
+
+        <div>
+          <div class="kpis">
+            <div class="card"><div class="title">Total workers</div><div id="out_workers" class="num">—</div></div>
+            <div class="card"><div class="title">Total units</div><div id="out_units" class="num">—</div></div>
+            <div class="card"><div class="title">Revenue</div><div id="out_revenue" class="num">$0</div></div>
+          </div>
+          <div class="kpis" style="margin-top:10px">
+            <div class="card"><div class="title">Wage pool</div><div id="out_wagePool" class="num">$0</div><div class="title">Coverage vs 10% of sales: <span id="out_wageCoverage">—</span></div></div>
+            <div class="card"><div class="title">Dividend pool</div><div id="out_divPool" class="num">$0</div><div class="title">Beneficiary households: <span id="out_divHouseholds">—</span></div></div>
+            <div class="card"><div class="title">Reinvestment / Loan ETA</div><div id="out_weeksToRepay" class="num">—</div><div class="title">Reinvestment: <span id="out_margin">$0</span></div></div>
+          </div>
+          <div class="kpis" style="margin-top:10px">
+            <div class="card"><div class="title">GDP/cap (monthly)</div><div id="out_gdpPerCapMonthly" class="num">$0</div></div>
+            <div class="card"><div class="title">GDP/cap (annual)</div><div id="out_gdpPerCapAnnual" class="num">$0</div></div>
+            <div class="card"><div class="title">Avg/worker (monthly)</div><div id="out_avgPerWorker" class="num">$0</div></div>
+          </div>
         </div>
       </div>
 
       <div class="card" style="margin-top:12px">
         <div class="title">Product mix & costs</div>
         <div class="grid cols-3" style="margin-top:10px">
-          <div><label>Budget price (USD)</label><input id="priceBudget" type="number" min="1" value="20"></div>
-          <div><label>Budget BOM+other (USD)</label><input id="costBudget" type="number" min="0" value="12"></div>
-          <div><label>Budget share (%)</label><input id="budgetShare" type="number" readonly value="75"></div>
+          <div><label for="priceBudget">Budget price (USD)</label><input id="priceBudget" type="number" min="1" value="20" /></div>
+          <div><label for="costBudget">Budget BOM+other (USD)</label><input id="costBudget" type="number" min="0" value="12" /></div>
+          <div><label>Budget share (%)</label><input id="budgetShare" type="number" readonly value="75" aria-label="Budget share percent" /></div>
         </div>
         <div class="grid cols-3" style="margin-top:10px">
-          <div><label>Premium price (USD)</label><input id="pricePremium" type="number" min="1" value="200"></div>
-          <div><label>Premium BOM+other (USD)</label><input id="costPremium" type="number" min="0" value="120"></div>
-          <div><label>Premium share (%)</label><input id="premiumShareNum" type="number" readonly value="25"></div>
+          <div><label for="pricePremium">Premium price (USD)</label><input id="pricePremium" type="number" min="1" value="200" /></div>
+          <div><label for="costPremium">Premium BOM+other (USD)</label><input id="costPremium" type="number" min="0" value="120" /></div>
+          <div><label>Premium share (%)</label><input id="premiumShareNum" type="number" readonly value="25" aria-label="Premium share percent" /></div>
         </div>
         <div class="grid cols-3" style="margin-top:10px">
-          <div><label>Monthly wage per worker (USD)</label><input id="monthlyWage" type="number" min="0" value="300"></div>
-          <div><label>Wage target rate of sales (%)</label><input id="wageTargetRate" type="number" min="0" max="100" value="10"></div>
-          <div><label>Weeks per month (for conversion)</label><input id="weeksPerMonth" type="number" min="1" step="0.1" value="4"></div>
+          <div><label for="monthlyWage">Monthly wage/worker (USD)</label><input id="monthlyWage" type="number" min="0" value="300" /></div>
+          <div><label for="wageTargetRate">Wage target, % of sales</label><input id="wageTargetRate" type="number" min="0" max="100" value="10" /></div>
+          <div><label for="weeksPerMonth">Weeks per month</label><input id="weeksPerMonth" type="number" min="1" step="0.1" value="4" /></div>
         </div>
       </div>
 
       <div class="card" style="margin-top:12px">
         <div class="title">Cumulative financials</div>
-        <canvas id="chart" class="chart" width="640" height="180" aria-label="financial chart"></canvas>
+        <canvas id="chart" class="chart" width="640" height="180" aria-label="Financial chart"></canvas>
         <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" id="copySummary">Copy summary</button>
+          <button class="btn" id="btnCopy">Copy summary</button>
+          <button class="btn primary" id="btnCopyPrompt">Copy GPT prompt</button>
         </div>
+        <textarea id="gptPrompt" readonly aria-label="Generated GPT prompt" style="width:100%;min-height:120px;margin-top:8px"></textarea>
       </div>
     </section>
 
-    <!-- Contact / diplomatic notice -->
-    <section id="contact" class="card">
-      <h2>Diplomatic Notice</h2>
-
-
-      
-      
-      
-<p>
-  We are ready to provide the Refugee‑Camp Self‑Reliance PDF dossier at any time; please send a written request by email.
-</p>
-
-<p style="color: #0b77d5; font-size: 1.1em; font-weight: bold;">
-  Additional resources
-</p>
-<p>
-  <a href="https://mcorp-ai.com" target="_blank" rel="noopener">mcorp-ai.com</a> — detailed initiative materials<br>
-  <a href="https://mcorp.ai.kr" target="_blank" rel="noopener">mcorp.ai.kr</a> — Korean‑language edition
-</p>
-
-<p style="color: #0b77d5; font-size: 1.1em; font-weight: bold;">
-  Planned next steps
-</p>
-<p>
-  (A) <a href="https://mcorp-ai.com" target="_blank" rel="noopener">mcorp-ai.com</a> — interest‑free microloans of approximately USD 1,000 per tent for refugees who voluntarily join localized AI assembly.<br>
-  (B) <a href="https://mcorpai.org" target="_blank" rel="noopener">mcorpai.org</a> — public‑interest hub for the offline, data‑minimizing AI Safety Necklace, including technical documentation, ethics principles, and future ordering.<br>
-  (C) <a href="https://mcorp.ai.kr" target="_blank" rel="noopener">mcorp.ai.kr</a> — Korean‑language portal for domestic investors, ESG‑oriented companies, and civic participation.
-</p>
-
-<p style="color: #0b77d5; font-size: 1.1em; font-weight: bold;">
-  E‑mail
-</p>
-<p>
-  <a href="mailto:gyumin.jeon.childsafe@gmail.com">gyumin.jeon.childsafe@gmail.com</a> · Backup: <a href="mailto:jekymin2@naver.com">jekymin2@naver.com</a>
-</p>
-
-
-
-
-
-
-      
-      <p class="meta">“Self‑reliance” here means sustainable livelihoods <em>inside</em> camps — not external migration.</p>
+    <!-- Contact -->
+    <section id="contact" class="card" aria-labelledby="contactTitle">
+      <h2 id="contactTitle">Contact</h2>
+      <p>We can provide the 12‑page executive summary and 260‑page technical dossier upon request.</p>
+      <p>Email: <a href="mailto:gyumin.jeon.childsafe@gmail.com">gyumin.jeon.childsafe@gmail.com</a> · Backup: <a href="mailto:jekymin2@naver.com" rel="noopener noreferrer">jekymin2@naver.com</a></p>
+      <p class="meta">Compliance note: language here intentionally states “<em>designed to align; no personal data is intended to be collected</em>” to reflect design intent. Final policies will be validated with implementing partners.</p>
     </section>
   </main>
 
   <footer class="container">
-    <p class="small">This public‑interest site contains original work by the undersigned. Among other outputs, a 100‑page plan outlining how a ~$20 smartphone can help communities in electricity‑ and network‑scarce regions find food and water and reduce the risk of mass violence is available upon request.</p>
+    <div class="card">
+      <p class="small">© M‑Corp AI. All public‑interest materials may be shared with attribution. Calculators and simulators on this page are <strong>illustrative only</strong> and do not constitute forecasts or policy guidance.</p>
+    </div>
   </footer>
 
-  <noscript class="container">This page includes interactive calculators that require JavaScript (all computation runs locally in your browser).</noscript>
+  <noscript>
+    <div class="container"><div class="card" role="alert">This page includes interactive calculators. Please enable JavaScript to use them. The narrative content is still available above.</div></div>
+  </noscript>
 
   <script>
-  // ===================== Refugee Calculator (educational) =====================
-  (function(){
-    const STEP = 0.1;               // °C per click
-    const BASELINE = 1.55;          // observed 2023–24 state
-    const MAX_T = 3.5;              // UI cap
-    const CROP_COEFF = { wheat:-0.6, rice:-0.32, maize:-0.74 }; // % per +0.1°C vs baseline
+    /* ---------------- Refugee Calculator ---------------- */
+    (function(){
+      const STEP = 0.1; const BASELINE = 1.55; const MAX_T = 3.5;
+      const CROP_COEFF = { wheat:-0.6, rice:-0.32, maize:-0.74 }; // % per 0.1°C vs baseline
+      const LOW_BASE=15000, HIGH_BASE=60000; // people/year per 0.1°C at baseline
+      const GLOW=Math.log(2)/1.0, GHIGH=Math.log(2)/0.5; // doubling rates
+      const $ = id => document.getElementById(id);
+      const fmt = n => Math.round(n).toLocaleString();
+      const r1 = n => (Math.round(n*10)/10).toFixed(1);
+      let T=BASELINE, crop='wheat', timer=null;
 
-    const LOW_BASE_PER_STEP = 15000;      // people/0.1°C at baseline
-    const HIGH_BASE_PER_STEP = 60000;
-    const LOW_GROWTH_PER_DEG  = Math.log(2)/1.0;   // ×2 per +1.0°C
-    const HIGH_GROWTH_PER_DEG = Math.log(2)/0.5;   // ×2 per +0.5°C
+      function stepInc(temp, hi){
+        const g = hi? GHIGH : GLOW; const b = hi? HIGH_BASE : LOW_BASE;
+        return b * Math.exp(g * Math.max(0, temp - BASELINE));
+      }
+      function cum(temp, hi){
+        if(temp<=BASELINE) return 0; const steps=Math.round((temp-BASELINE)/STEP);
+        let s=0; for(let i=1;i<=steps;i++){ s += stepInc(BASELINE + i*STEP, hi); }
+        return s; }
+      function growths(temp){ const d=Math.max(0, temp-BASELINE); return { low:0.05+0.15*d, high:0.10+0.35*d }; }
 
-    const dangerNotes = [
-      {t:1.5, msg:'~1.5 °C: Heatwaves intensify in South Asia/Middle East; heavy rain & floods rise; coral reefs decline.'},
-      {t:1.7, msg:'~1.7 °C: Sahel/Horn of Africa face drought–flood swings; wildfire seasons intensify around Mediterranean/Western N. America.'},
-      {t:2.0, msg:'~2.0 °C: Once‑in‑10‑year heat extremes far more frequent; Arctic summer sea‑ice‑free conditions more likely ~once/decade.'},
-      {t:2.5, msg:'~2.5 °C: Multiple breadbaskets risk concurrent yield shocks; humanitarian needs can spike.'},
-      {t:3.0, msg:'~3.0 °C: Severe, pervasive risks to food, water, and habitability; larger displacement pressures may emerge.'}
-    ];
+      function update(){
+        $('rcTemp').textContent=r1(T);
+        $('rcCropName').textContent=crop.charAt(0).toUpperCase()+crop.slice(1);
+        const sL=stepInc(T+1e-9,false), sH=stepInc(T+1e-9,true);
+        const cL=cum(T,false), cH=cum(T,true);
+        const cropPct = ((T-BASELINE)/STEP) * CROP_COEFF[crop];
+        $('rcRefugeesStep').textContent=`${fmt(sL)}–${fmt(sH)}`;
+        $('rcRefugeesCum').textContent=`${fmt(cL)}–${fmt(cH)}`;
+        $('rcCrop').textContent=(Math.round(cropPct*100)/100).toFixed(2)+'%';
+        $('rcKpiStep').textContent = `${fmt(sL)}–${fmt(sH)}`;
+        $('rcKpiCum').textContent = `${fmt(cL)}–${fmt(cH)}`;
+        $('rcKpiCrop').textContent = (Math.round(cropPct*100)/100).toFixed(2)+'%';
+        warn(T); animateYears(cL,cH);
+      }
+      function warn(temp){
+        const ap=$('rcApoc'), w=$('rcWarn');
+        const notes=[
+          {t:1.5, msg:'~1.5 °C: Heatwaves intensify; heavy rainfall and flash floods more frequent.'},
+          {t:1.7, msg:'~1.7 °C: Drought–flood cycles amplify in Sahel/Horn; wildfire seasons intensify.'},
+          {t:2.0, msg:'~2.0 °C: Coral reefs risk near‑total loss; Arctic sea‑ice‑free summers more likely.'},
+          {t:2.5, msg:'~2.5 °C: Multiple breadbaskets face concurrent yield shocks.'},
+          {t:3.0, msg:'~3.0 °C: Severe, pervasive risks to food, water, and habitability.'}
+        ];
+        if(temp>=3.1){ w.style.display='none'; ap.textContent='≥3.1 °C scenario: outside this tool’s range.'; ap.style.display='block'; return; }
+        ap.style.display='none'; const note=notes.filter(d=>temp>=d.t).pop();
+        if(note){ w.textContent=note.msg; w.style.display='block'; } else { w.style.display='none'; }
+      }
+      function animateYears(bL,bH){ if(timer) clearInterval(timer); const g=growths(T);
+        const y1L=bL, y2L=bL*(1+(1+g.low)), y3L=bL*(1+(1+g.low)+Math.pow(1+g.low,2));
+        const y1H=bH, y2H=bH*(1+(1+g.high)), y3H=bH*(1+(1+g.high)+Math.pow(1+g.high,2));
+        let k=0, steps=6; timer=setInterval(()=>{k++; const p=k/steps; const L=(a,b)=>a+(b-a)*p;
+          $('rcYear1').textContent=`${fmt(L(0,y1L))}–${fmt(L(0,y1H))}`;
+          $('rcYear2').textContent=`${fmt(L(0,y2L))}–${fmt(L(0,y2H))}`;
+          $('rcYear3').textContent=`${fmt(L(0,y3L))}–${fmt(L(0,y3H))}`;
+          if(k>=steps) clearInterval(timer);
+        },200);
+      }
+      function inc(){ T=Math.min(MAX_T, +(T+STEP).toFixed(1)); update(); }
+      function dec(){ T=Math.max(BASELINE, +(T-STEP).toFixed(1)); update(); }
+      document.getElementById('rcUp').addEventListener('click', inc);
+      document.getElementById('rcDown').addEventListener('click', dec);
+      document.getElementById('rcCropSel').addEventListener('change', e=>{ crop=e.target.value; update(); });
+      update();
+    })();
 
-    const $ = (id) => document.getElementById(id);
-    const round1 = (n) => (Math.round(n*10)/10).toFixed(1);
-    const fmt = (n) => Math.round(n).toLocaleString();
-
-    let T = BASELINE; let crop = 'wheat'; let animTimer = null;
-
-    function stepIncrement(temp, bound){
-      const growth = bound==='low' ? LOW_GROWTH_PER_DEG : HIGH_GROWTH_PER_DEG;
-      const base   = bound==='low' ? LOW_BASE_PER_STEP : HIGH_BASE_PER_STEP;
-      const mult   = Math.exp(growth * Math.max(0, temp - BASELINE));
-      return base * mult;
-    }
-    function cumulativeDisplacement(temp, bound){
-      if(temp <= BASELINE) return 0;
-      const steps = Math.round((temp - BASELINE)/STEP);
-      let sum = 0;
-      for(let i=1;i<=steps;i++) sum += stepIncrement(BASELINE + i*STEP, bound);
-      return sum;
-    }
-    function yearlyGrowthRates(T){
-      const d = Math.max(0, T - BASELINE);
-      return { gLow: 0.05 + 0.15*d, gHigh: 0.10 + 0.35*d };
-    }
-    function refreshWarnings(temp){
-      const apoc = $('rcApoc'); const warn = $('rcWarn');
-      apoc.style.display='none'; warn.style.display='none';
-      if(temp >= 3.1){ apoc.textContent = '≥3.1 °C scenario is outside this tool’s range.'; apoc.style.display='block'; return; }
-      const note = dangerNotes.filter(d=>temp >= d.t).pop();
-      if(note){ warn.textContent = note.msg; warn.style.display='block'; }
-    }
-    function animateYears(baseLow, baseHigh){
-      if(animTimer) clearInterval(animTimer);
-      const { gLow, gHigh } = yearlyGrowthRates(T);
-      const target1Low = baseLow, target1High = baseHigh;
-      const target2Low = baseLow * (1 + (1+gLow));
-      const target3Low = baseLow * (1 + (1+gLow) + Math.pow(1+gLow,2));
-      const target2High = baseHigh * (1 + (1+gHigh));
-      const target3High = baseHigh * (1 + (1+gHigh) + Math.pow(1+gHigh,2));
-      const dur=1200, dt=200, steps=Math.ceil(dur/dt); let k=0;
-      animTimer = setInterval(()=>{
-        k++; const p=k/steps; const lerp=(a,b)=>a+(b-a)*p;
-        $('rcYear1').textContent = `${fmt(lerp(0, target1Low))}–${fmt(lerp(0, target1High))}`;
-        $('rcYear2').textContent = `${fmt(lerp(0, target2Low))}–${fmt(lerp(0, target2High))}`;
-        $('rcYear3').textContent = `${fmt(lerp(0, target3Low))}–${fmt(lerp(0, target3High))}`;
-        if(k>=steps) clearInterval(animTimer);
-      }, dt);
-    }
-    function update(){
-      $('rcTemp').textContent = round1(T);
-      $('rcCropName').textContent = crop[0].toUpperCase()+crop.slice(1);
-      const lowStep = stepIncrement(T+1e-9, 'low');
-      const highStep = stepIncrement(T+1e-9, 'high');
-      const lowCum = cumulativeDisplacement(T, 'low');
-      const highCum = cumulativeDisplacement(T, 'high');
-      const cropChange = ((T - BASELINE)/STEP) * CROP_COEFF[crop];
-      $('rcRefugeesStep').textContent = `${fmt(lowStep)}–${fmt(highStep)}`;
-      $('rcRefugeesCum').textContent = `${fmt(lowCum)}–${fmt(highCum)}`;
-      $('rcCrop').textContent = (Math.round(cropChange*100)/100).toFixed(2) + '%';
-      refreshWarnings(T); animateYears(lowCum, highCum);
-    }
-    function inc(){ T = Math.min(MAX_T, +(T + STEP).toFixed(1)); update(); }
-    function dec(){ T = Math.max(BASELINE, +(T - STEP).toFixed(1)); update(); }
-
-    document.getElementById('rcUp').addEventListener('click', inc);
-    document.getElementById('rcDown').addEventListener('click', dec);
-    document.getElementById('rcCropSel').addEventListener('change', (e)=>{ crop = e.target.value; update(); });
-    update();
-  })();
-
-  // ===================== Impact Simulator =====================
-  (function(){
-    const $ = id => document.getElementById(id);
-    const fmt = (n,cur)=> cur? '$'+Math.round(n).toLocaleString(): Math.round(n).toLocaleString();
-
-    const MC = {
-      syncShare(v){ $('premiumShareNum').value = +v; $('budgetShare').value = 100 - (+v); MC.calc(); },
-      calc(){
-        const tents = +$('tents').value;
-        const workersPerTent = +$('workersPerTent').value;
-        const months = +$('months').value;
-        const unitsPerWorkerWeek = +$('unitsPerWorkerWeek').value;
-        const weeksPerMonth = +$('weeksPerMonth').value;
-        const priceB = +$('priceBudget').value;
-        const priceP = +$('pricePremium').value;
-        const costB = +$('costBudget').value;
-        const costP = +$('costPremium').value;
-        const shareP = +$('premiumShare').value/100;
-        const shareB = 1 - shareP;
-        const monthlyWagePerWorker = +$('monthlyWage').value; // 300
-        const wageTargetRate = +$('wageTargetRate').value/100; // 10%
-        const payoutRatio = +$('payoutRatio').value/100; // 50%
-        const dividendUnit = +$('dividendUnit').value; // $50 per household per month
-        const loanPerTent = +$('loanPerTent').value;
-        const campPop = Math.max(1,+$('campPop').value);
-
-        const totalWorkers = tents * workersPerTent;
-        const totalWeeks = months * weeksPerMonth;
-        const totalUnits = totalWorkers * unitsPerWorkerWeek * totalWeeks;
-        const unitsB = totalUnits * shareB; const unitsP = totalUnits * shareP;
-        const revenue = unitsB*priceB + unitsP*priceP;
-        const directCosts = unitsB*costB + unitsP*costP;
-        const wagePool = totalWorkers * monthlyWagePerWorker * months;
-        const wageTarget = revenue * wageTargetRate;
-        const marginBeforePayout = revenue - directCosts - wagePool;
-        const dividendPool = Math.max(0, marginBeforePayout * payoutRatio);
-        const households = Math.floor(dividendPool / dividendUnit);
-        const reinvest = Math.max(0, marginBeforePayout - dividendPool);
-        const loanTotal = tents * loanPerTent;
-        const weeklyReinvest = totalWeeks>0 ? reinvest / totalWeeks : 0;
-        const weeksToRepay = weeklyReinvest>0 ? Math.ceil(loanTotal / weeklyReinvest) : '—';
-        const monthlyDiv = months>0 ? dividendPool / months : 0;
-        const monthlyDistrib = (wagePool / months) + monthlyDiv;
-        const gdpPerCapMonthly = monthlyDistrib / campPop;
-        const gdpPerCapAnnual = gdpPerCapMonthly * 12;
-        const avgPerWorkerMonthly = months>0 && totalWorkers>0 ? (wagePool / months)/ totalWorkers : 0;
-
-        $('out_workers').textContent = fmt(totalWorkers);
-        $('out_units').textContent = fmt(totalUnits);
-        $('out_revenue').textContent = fmt(revenue,true);
-        $('out_wagePool').textContent = fmt(wagePool,true);
-        $('out_wageCoverage').textContent = wageTarget>0 ? ((wagePool / wageTarget * 100).toFixed(1) + '%') : '—';
-        $('out_divPool').textContent = fmt(dividendPool,true);
-        $('out_divHouseholds').textContent = fmt(households);
-        $('out_margin').textContent = fmt(reinvest,true);
+    /* ---------------- Impact Simulator ---------------- */
+    (function(){
+      const $ = id => document.getElementById(id);
+      const money = n => '$'+Math.round(n).toLocaleString();
+      function syncShare(v){ $('premiumShareNum').value = +v; $('budgetShare').value = 100 - (+v); calc(); }
+      function draw(rev,cost,rein){ const c=$('chart'), ctx=c.getContext('2d'); const W=c.width,H=c.height; ctx.clearRect(0,0,W,H);
+        const data=[{l:'Revenue',v:rev,c:'#60a5fa'},{l:'Total cost (incl. wages)',v:cost,c:'#ef4444'},{l:'Reinvestment',v:rein,c:'#22c55e'}];
+        const max=Math.max(1,...data.map(d=>d.v)); const pad=30, gap=20, bw=(W-pad*2)/data.length-gap;
+        ctx.fillStyle='#0b1220'; ctx.fillRect(0,0,W,H); ctx.font='12px system-ui';
+        data.forEach((d,i)=>{ const x=pad+i*(bw+gap); const h=d.v/max*(H-40); const y=H-20-h; ctx.fillStyle=d.c; ctx.fillRect(x,y,bw,h); ctx.fillStyle='#94a3b8'; ctx.fillText(d.l,x,H-6); ctx.fillText('$'+Math.round(d.v).toLocaleString(),x,y-6); });
+      }
+      function buildPrompt(s){
+        const shareP=Math.round(s.shareP*100), shareB=100-shareP;
+        const p = `You are an inclusive-design & humanitarian ops expert. Propose 3 ways to maximize disability-inclusive impact while keeping the offline, data-minimizing design.\n\n`+
+        `Context:\n- Tents: ${s.tents}, Workers/Tent: ${s.workersPerTent}, Months: ${s.months}\n`+
+        `- Units/worker/week: ${s.unitsPerWorkerWeek}, Weeks/month: ${s.weeksPerMonth}\n`+
+        `- Mix: Budget ${shareB}% at $${s.priceB} (cost $${s.costB}), Premium ${shareP}% at $${s.priceP} (cost $${s.costP})\n`+
+        `- Monthly wage: $${s.monthlyWage} (~${Math.round(s.wageTargetRate*100)}% of revenue target)\n`+
+        `- Payout ratio: ${Math.round(s.payoutRatio*100)}%, Dividend/household: $${s.dividendUnit}\n`+
+        `- Loan/tent: $${s.loanPerTent}, Camp pop: ${s.campPop}\n\n`+
+        `Results:\n- Total workers: ${s.totalWorkers}, Units: ${Math.round(s.totalUnits)}\n`+
+        `- Revenue: $${Math.round(s.revenue).toLocaleString()}, Direct costs: $${Math.round(s.directCosts).toLocaleString()}\n`+
+        `- Wage pool: $${Math.round(s.wagePool).toLocaleString()}, Dividend pool: $${Math.round(s.dividendPool).toLocaleString()} (households: ${s.households})\n`+
+        `- Reinvestment: $${Math.round(s.reinvest).toLocaleString()}, Weeks to repay loan: ${s.weeksToRepay}\n`+
+        `- GDP/cap (monthly/annual): $${s.gdpPerCapMonthly.toFixed(2)} / $${s.gdpPerCapAnnual.toFixed(2)}\n\n`+
+        `Constraints: No personal data intended to be collected; offline-first; rights-based. Output: short step-by-step plan.`;
+        $('gptPrompt').value=p;
+      }
+      function calc(){
+        const tents=+$('tents').value, workersPerTent=+$('workersPerTent').value, months=+$('months').value;
+        const unitsPerWorkerWeek=+$('unitsPerWorkerWeek').value, weeksPerMonth=+$('weeksPerMonth').value;
+        const priceB=+$('priceBudget').value, priceP=+$('pricePremium').value, costB=+$('costBudget').value, costP=+$('costPremium').value;
+        const shareP=+$('premiumShare').value/100, shareB=1-shareP; const monthlyWage=+$('monthlyWage').value;
+        const wageTargetRate=+$('wageTargetRate').value/100, payoutRatio=+$('payoutRatio').value/100, dividendUnit=+$('dividendUnit').value;
+        const loanPerTent=+$('loanPerTent').value, campPop=Math.max(1,+$('campPop').value);
+        const totalWorkers=tents*workersPerTent, totalWeeks=months*weeksPerMonth, totalUnits=totalWorkers*unitsPerWorkerWeek*totalWeeks;
+        const unitsB=totalUnits*shareB, unitsP=totalUnits*shareP; const revenue=unitsB*priceB + unitsP*priceP; const directCosts=unitsB*costB + unitsP*costP;
+        const wagePool=totalWorkers*monthlyWage*months; const wageTarget=revenue*wageTargetRate;
+        const marginBeforePayout=revenue - directCosts - wagePool; const dividendPool=Math.max(0, marginBeforePayout*payoutRatio);
+        const households=Math.floor(dividendPool/dividendUnit); const reinvest=Math.max(0, marginBeforePayout - dividendPool);
+        const loanTotal=tents*loanPerTent; const weeklyReinvest= totalWeeks>0 ? reinvest/totalWeeks : 0; const weeksToRepay= weeklyReinvest>0 ? Math.ceil(loanTotal/weeklyReinvest) : '—';
+        const monthlyDiv = months>0 ? dividendPool/months : 0; const monthlyDistrib = (wagePool/months) + monthlyDiv;
+        const gdpPerCapMonthly = monthlyDistrib/campPop; const gdpPerCapAnnual = gdpPerCapMonthly*12; const avgPerWorkerMonthly = months>0 && totalWorkers>0 ? (wagePool/months)/totalWorkers : 0;
+        $('out_workers').textContent = totalWorkers.toLocaleString();
+        $('out_units').textContent = Math.round(totalUnits).toLocaleString();
+        $('out_revenue').textContent = money(revenue);
+        $('out_wagePool').textContent = money(wagePool);
+        $('out_wageCoverage').textContent = wageTarget>0 ? ((wagePool / wageTarget * 100).toFixed(1)+'%') : '—';
+        $('out_divPool').textContent = money(dividendPool);
+        $('out_divHouseholds').textContent = households.toLocaleString();
+        $('out_margin').textContent = money(reinvest);
         $('out_weeksToRepay').textContent = weeksToRepay;
         $('out_gdpPerCapMonthly').textContent = '$' + gdpPerCapMonthly.toFixed(2);
         $('out_gdpPerCapAnnual').textContent = '$' + gdpPerCapAnnual.toFixed(2);
-        $('out_avgPerWorker').textContent = fmt(avgPerWorkerMonthly,true);
-
-        // draw chart
-        const c=$('chart'), ctx=c.getContext('2d');
-        const W=c.width, H=c.height; ctx.clearRect(0,0,W,H);
-        const data=[{l:'Revenue',v:revenue},{l:'Total cost (incl. wages)',v:directCosts + wagePool},{l:'Reinvestment',v:reinvest}];
-        const max=Math.max(1,...data.map(d=>d.v));
-        const pad=30, bw=(W-pad*2)/data.length-20; ctx.fillStyle='#0b1220'; ctx.fillRect(0,0,W,H);
-        data.forEach((d,i)=>{ const x=pad+i*(bw+20); const h=d.v/max*(H-40); const y=H-20-h; ctx.fillStyle=['#60a5fa','#ef4444','#22c55e'][i]; ctx.fillRect(x,y,bw,h); ctx.fillStyle='#94a3b8'; ctx.font='12px system-ui'; ctx.fillText(d.l,x,H-6); ctx.fillText('$'+Math.round(d.v).toLocaleString(),x,y-6); });
+        $('out_avgPerWorker').textContent = money(avgPerWorkerMonthly);
+        draw(revenue, directCosts + wagePool, reinvest);
+        buildPrompt({tents,workersPerTent,months,unitsPerWorkerWeek,weeksPerMonth,priceB,priceP,costB,costP,shareB,shareP,monthlyWage,wageTargetRate,payoutRatio,dividendUnit,loanPerTent,campPop,totalWorkers,totalUnits,revenue,directCosts,wagePool,dividendPool,households,reinvest,weeksToRepay,gdpPerCapMonthly,gdpPerCapAnnual});
       }
-    };
-
-    // wire up
-    ['tents','workersPerTent','months','unitsPerWorkerWeek','weeksPerMonth','priceBudget','pricePremium','costBudget','costPremium','premiumShare','monthlyWage','wageTargetRate','payoutRatio','dividendUnit','loanPerTent','campPop']
-      .forEach(id=> document.getElementById(id).addEventListener('input', ()=>MC.calc()));
-
-    document.getElementById('copySummary').addEventListener('click', ()=>{
-      const text = [
-        'M‑Corp Impact Simulator summary',
-        `1. Workers: ${document.getElementById('out_workers').textContent}, Units: ${document.getElementById('out_units').textContent}`,
-        `2. Revenue: ${document.getElementById('out_revenue').textContent}, Wage pool: ${document.getElementById('out_wagePool').textContent} (coverage: ${document.getElementById('out_wageCoverage').textContent})`,
-        `3. Dividends: ${document.getElementById('out_divPool').textContent} → households: ${document.getElementById('out_divHouseholds').textContent}`,
-        `4. Reinvestment: ${document.getElementById('out_margin').textContent}, Loan repayment ETA: ${document.getElementById('out_weeksToRepay').textContent} weeks`,
-        `5. GDP/capita (monthly/annual): ${document.getElementById('out_gdpPerCapMonthly').textContent} / ${document.getElementById('out_gdpPerCapAnnual').textContent}`
-      ].join('\n');
-      navigator.clipboard.writeText(text).then(()=>alert('Summary copied.'));
-    });
-
-    // init
-    document.getElementById('premiumShareNum').value = +document.getElementById('premiumShare').value;
-    document.getElementById('budgetShare').value = 100 - (+document.getElementById('premiumShare').value);
-    MC.calc();
-    window.MC = MC; // expose for range slider sync
-  })();
+      function copy(){
+        const text = [
+          'M‑Corp Impact Simulator summary',
+          `1. Workers: ${$('out_workers').textContent}, Units: ${$('out_units').textContent}`,
+          `2. Revenue: ${$('out_revenue').textContent}, Wage pool: ${$('out_wagePool').textContent} (coverage: ${$('out_wageCoverage').textContent})`,
+          `3. Dividends: ${$('out_divPool').textContent} → households: ${$('out_divHouseholds').textContent}`,
+          `4. Reinvestment: ${$('out_margin').textContent}, Loan repayment ETA: ${$('out_weeksToRepay').textContent} weeks`,
+          `5. GDP/capita (monthly/annual): ${$('out_gdpPerCapMonthly').textContent} / ${$('out_gdpPerCapAnnual').textContent}`
+        ].join('\n');
+        navigator.clipboard.writeText(text).then(()=>alert('Summary copied to clipboard.'));
+      }
+      function copyPrompt(){ $('gptPrompt').select(); document.execCommand('copy'); alert('GPT prompt copied.'); }
+      document.getElementById('premiumShare').addEventListener('input', e=>{ syncShare(e.target.value); });
+      document.getElementById('btnCopy').addEventListener('click', copy);
+      document.getElementById('btnCopyPrompt').addEventListener('click', copyPrompt);
+      ['tents','workersPerTent','months','unitsPerWorkerWeek','weeksPerMonth','priceBudget','pricePremium','costBudget','costPremium','monthlyWage','wageTargetRate','payoutRatio','dividendUnit','loanPerTent','campPop']
+        .forEach(id=>document.getElementById(id).addEventListener('input', calc));
+      // initial sync
+      document.getElementById('premiumShareNum').value = +document.getElementById('premiumShare').value;
+      document.getElementById('budgetShare').value = 100 - (+document.getElementById('premiumShare').value);
+      calc();
+    })();
   </script>
 </body>
 </html>
