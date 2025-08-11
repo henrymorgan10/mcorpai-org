@@ -551,22 +551,21 @@ Final two‑line transparent panel for https://mcorpai.org/
 JSON‑first (optional) + ReliefWeb API fallback. 60s refresh. No service worker.  
 Paste this block just before </body> in index.html.  
 
-Also create /refugee_feed.json in the site root if you want to override the API.  
-Example refugee_feed.json schema is included at the very end of this file as a comment.  
+If you want manual control, place /refugee_feed.json at site root (schema at bottom comment).  
 ========================== -->
 
-<section id="rt-panel" aria-label="Real-time Refugee & Scam Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.58);backdrop-filter:saturate(1.1) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
-  <h3 style="margin:0 0 8px;font-size:1.02rem;font-weight:700;color:#111">Real‑time Refugee Map & Scam‑Compound Risk</h3>
+<section id="rt-panel" aria-label="Real-time Refugee & Scam Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
+  <h3 style="margin:0 0 8px;font-size:.98rem;font-weight:700;color:#111">Real‑time Refugee Map & Scam‑Compound Risk</h3>
 
   <!-- Line 1: Refugee Map (JSON‑first, then API) -->
-  <div role="status" aria-live="polite" style="text-align:center;font-size:.92rem;color:#111;letter-spacing:.1px;margin:6px 0 8px">
+  <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 8px">
     <span style="font-weight:700;margin-right:6px">1.</span>
     <span style="font-weight:700;margin-right:6px">Refugee Map</span>
     <span id="rt-line1">Initializing…</span>
   </div>
 
   <!-- Line 2: Scam index, single sentence from /scam_feed.json -->
-  <div role="status" aria-live="polite" style="text-align:center;font-size:.92rem;color:#111;letter-spacing:.1px;margin:6px 0 2px">
+  <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 2px">
     <span style="font-weight:700;margin-right:6px">2.</span>
     <span style="font-weight:700;margin-right:6px">스캠 컴파운드 지수 :</span>
     <span id="rt-line2">Loading…</span>
@@ -586,19 +585,46 @@ Example refugee_feed.json schema is included at the very end of this file as a c
   var L2 = document.getElementById('rt-line2');
   if(!L1 || !L2) return;
 
-  function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]);}); }
-  function ago(iso){ if(!iso) return ''; var t=Date.now()-new Date(iso).getTime(); if(!isFinite(t)) return ''; var s=t/1000; if(s<90) return '· just now'; var m=Math.floor(s/60); if(m<60) return '· '+m+' min ago'; var h=Math.floor(m/60); if(h<24) return '· '+h+' h ago'; var d=Math.floor(h/24); return '· '+d+' d ago'; }
+  function esc(s){
+    return String(s||'').replace(/[&<>"']/g,function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]);
+    });
+  }
+  function ago(iso){
+    if(!iso) return '';
+    var t = Date.now() - new Date(iso).getTime();
+    if(!isFinite(t)) return '';
+    var s = t/1000; if(s < 90) return '· just now';
+    var m = Math.floor(s/60); if(m < 60) return '· ' + m + ' min ago';
+    var h = Math.floor(m/60); if(h < 24) return '· ' + h + ' h ago';
+    var d = Math.floor(h/24); return '· ' + d + ' d ago';
+  }
 
   // ---------- Line 1: JSON‑first then API ----------
-  var LOCAL_REFUGEE_JSON = '/refugee_feed.json'; // optional JSON you can manage in GitHub
+  var LOCAL_REFUGEE_JSON = '/refugee_feed.json'; // optional JSON managed in GitHub
   var RW_URL = 'https://api.reliefweb.int/v2/reports?appname=mcorpai';
   var basePayload = { limit:1, preset:'latest', profile:'list', slim:1, fields:{ include:['title','primary_country.name','date.created'] } };
-  function qRefugee(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] } ] }, query:{ value:'refugee OR displacement' } }); }
-  function qWx(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] } ] }, query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') } }); }
+  function qRefugee(){
+    return Object.assign({}, basePayload, {
+      filter:{ operator:'AND', conditions:[
+        { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } },
+        { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] }
+      ]},
+      query:{ value:'refugee OR displacement' }
+    });
+  }
+  function qWx(){
+    return Object.assign({}, basePayload, {
+      filter:{ operator:'AND', conditions:[
+        { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } },
+        { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] }
+      ]},
+      query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') }
+    });
+  }
 
   async function fetchJSONFirst(){
     try{
-      // Cache buster to avoid GitHub Pages caching
       var r = await fetch(LOCAL_REFUGEE_JSON + '?ts=' + Date.now(), { cache:'no-store' });
       if(!r.ok) throw new Error('no local');
       var j = await r.json();
@@ -656,15 +682,13 @@ Example refugee_feed.json schema is included at the very end of this file as a c
 </script>
 
 <!-- ==========================  
-Example refugee_feed.json you can place at https://mcorpai.org/refugee_feed.json  
-This overrides API output if the timestamp here is the newest.  
+Example refugee_feed.json (optional override) 
 {
   "country": "Jordan",
   "title": "Jordan Operational Update – January 2025",
   "iso": "2025-01-15T03:10:00Z"
 }
 ========================== -->
-
 
   
 
