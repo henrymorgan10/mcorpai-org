@@ -542,71 +542,96 @@ Should you seek a precise and in-depth understanding of the foundational princip
   
 
 
+  
 
 
   
   
-<!-- ==========================  
-API‑only two‑line transparent panel for https://mcorpai.org/  
-ReliefWeb API only (no local JSON). 60s refresh. No service worker.  
-Paste this block just before </body> in index.html.  
-========================== -->
-
-<section id="rt-panel" aria-label="Real-time Refugee & Scam Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
-  <h3 style="margin:0 0 8px;font-size:.98rem;font-weight:700;color:#111">Real‑time Refugee Map & Scam‑Compound Risk</h3>
-
-  <!-- Line 1: Refugee Map (ReliefWeb API only) -->
-  <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 8px">
-    <span style="font-weight:700;margin-right:6px">1.</span>
-    <span style="font-weight:700;margin-right:6px">Refugee Map</span>
-    <span id="rt-line1">Initializing…</span>
-  </div>
-
-  <!-- Line 2: Scam index, single sentence from /scam_feed.json -->
+<!-- === Real‑time Scam‑Compound Risk panel (drop‑in). Paste this block just before </body> in index.html === -->
+<section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
+  <h3 style="margin:0 0 8px;font-size:1rem;font-weight:700;color:#111">Real‑time Scam‑Compound Risk</h3>
   <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 2px">
-    <span style="font-weight:700;margin-right:6px">2.</span>
-    <span style="font-weight:700;margin-right:6px">스캠 컴파운드 지수 :</span>
-    <span id="rt-line2">Loading…</span>
+    <span style="font-weight:700;margin-right:6px">Scam‑Compound Index :</span>
+    <span id="scam-line">Loading…</span>
   </div>
 </section>
 
 <style>
-  #rt-panel .country{color:#111;font-weight:600}
-  #rt-panel .risk-high{color:#ef4444;font-weight:700}
-  #rt-panel .risk-med{color:#f59e0b;font-weight:700}
-  #rt-panel .risk-low{color:#10b981;font-weight:700}
+  #scam-panel .country{color:#111;font-weight:600}
+  #scam-panel .risk-high{color:#ef4444;font-weight:700}
+  #scam-panel .risk-med{color:#f59e0b;font-weight:700}
+  #scam-panel .risk-low{color:#10b981;font-weight:700}
+  #scam-panel .pulse{animation:pulse-bg .26s linear 1}
+  @keyframes pulse-bg{from{background-color:rgba(255,255,0,.12)}to{background-color:transparent}}
 </style>
 
 <script>
 (function(){
-  var L1 = document.getElementById('rt-line1');
-  var L2 = document.getElementById('rt-line2');
-  if(!L1 || !L2) return;
+  const FEEDS = (window.SCAM_FEEDS && Array.isArray(window.SCAM_FEEDS) && window.SCAM_FEEDS.length ? window.SCAM_FEEDS : ['/scam_feed.json']);
+  const REFRESH_MS = 10*60*1000; // 10 minutes
+  const line = document.getElementById('scam-line');
+  if(!line) return;
 
-  function esc(s){ return String(s||'').replace(/[&<>"']/g,function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]); }); }
-  function ago(iso){ if(!iso) return ''; var t=Date.now()-new Date(iso).getTime(); if(!isFinite(t)) return ''; var s=t/1000; if(s<90) return '· just now'; var m=Math.floor(s/60); if(m<60) return '· '+m+' min ago'; var h=Math.floor(m/60); if(h<24) return '· '+h+' h ago'; var d=Math.floor(h/24); return '· '+d+' d ago'; }
+  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+  const order = {HIGH:3, MED:2, LOW:1};
+  function word(r){ r=String(r||'MED').toUpperCase(); return r==='HIGH'?{w:'위험',cls:'risk-high'}:r==='LOW'?{w:'낮음',cls:'risk-low'}:{w:'보통',cls:'risk-med'}; }
 
-  // ---------- Line 1: ReliefWeb API only ----------
-  var RW_URL = 'https://api.reliefweb.int/v2/reports?appname=mcorpai';
-  var basePayload = { limit:1, preset:'latest', profile:'list', slim:1, fields:{ include:['title','primary_country.name','date.created'] } };
-  function qRefugee(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] } ] }, query:{ value:'refugee OR displacement' } }); }
-  function qWx(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from:new Date(Date.now()-7*24*60*60*1000).toISOString() } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] } ] }, query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') } }); }
-  async function fetchRW(body){ try{ var r=await fetch(RW_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'}); if(!r.ok) throw 0; var j=await r.json(); var f=j&&j.data&&j.data[0]&&j.data[0].fields; return f||null; }catch(e){ return null; } }
-  async function updateLine1(){ if(document.hidden) return; L1.textContent='Updating…'; var A=await fetchRW(qRefugee()); var B=await fetchRW(qWx()); var pick=!A?B:(!B?A:(new Date(A.date&&A.date.created||0)>=new Date(B.date&&B.date.created||0)?A:B)); if(!pick){ L1.textContent='Global: Monitoring displacement activity'; return; } var c=(pick.primary_country&&pick.primary_country.name)||'Global'; var t=String(pick.title||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/,'').replace(/\s*\|\s*ReliefWeb.*$/i,'').trim(); var iso=(pick.date&&(pick.date.created||pick.date.original||pick.date.changed))||''; L1.innerHTML=esc(c)+': '+esc(t)+' '+esc(ago(iso)); }
+  async function jget(url){
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 6000);
+    try{
+      const res = await fetch(url + (url.indexOf('?')>-1?'&':'?') + 'ts=' + Date.now(), {cache:'no-store',signal:ctrl.signal});
+      if(!res.ok) throw 0;
+      return await res.json();
+    }catch(e){
+      return null;
+    }finally{ clearTimeout(t); }
+  }
 
-  // ---------- Line 2: Scam from /scam_feed.json ----------
-  var FEED_URL = '/scam_feed.json';
-  function riskWord(code){ code=String(code||'').toUpperCase(); return code==='HIGH'?{w:'위험',cls:'risk-high'}:code==='LOW'?{w:'낮음',cls:'risk-low'}:{w:'보통',cls:'risk-med'}; }
-  async function updateLine2(){ try{ var r=await fetch(FEED_URL+'?ts='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; var j=await r.json(); if(!j||!Array.isArray(j.items)) throw 0; var parts=[]; j.items.forEach(function(x){ var R=riskWord(x.risk); parts.push('<span class="country">'+esc(x.country)+'</span> <span class="'+R.cls+'">'+R.w+'</span>'); }); L2.innerHTML=parts.join(', '); }catch(e){ L2.textContent='데이터를 불러오지 못했습니다'; } }
+  function merge(feeds){
+    const map = new Map();
+    feeds.forEach(f=>{
+      if(!f || !Array.isArray(f.items)) return;
+      f.items.forEach(x=>{
+        const c = String(x.country||'').trim(); if(!c) return;
+        const r = String(x.risk||'MED').toUpperCase();
+        const last = new Date(x.last||0).getTime()||0;
+        const prev = map.get(c);
+        if(!prev || order[r] > order[prev.r] || (order[r]===order[prev.r] && last > prev.last)){
+          map.set(c, {c, r, last, city:x.city||'', pattern:x.pattern||''});
+        }
+      });
+    });
+    const arr = Array.from(map.values());
+    arr.sort((a,b)=> order[b.r]-order[a.r] || a.c.localeCompare(b.c));
+    return arr;
+  }
 
-  updateLine1();
-  updateLine2();
-  var iv1=setInterval(function(){ if(!document.hidden) updateLine1(); },60*1000);
-  var iv2=setInterval(function(){ if(!document.hidden) updateLine2(); },10*60*1000);
-  window.addEventListener('pagehide',function(){ clearInterval(iv1); clearInterval(iv2); },{once:true});
+  async function load(){
+    line.textContent = 'Loading…';
+    const results = await Promise.all(FEEDS.map(jget));
+    const items = merge(results);
+    if(!items.length){ line.textContent='데이터를 불러오지 못했습니다'; return; }
+    const parts = items.map(x=>{
+      const W = word(x.r);
+      const tip = [x.city?`City: ${x.city}`:'', x.pattern?`Pattern: ${x.pattern}`:'', x.last?`Last: ${new Date(x.last).toISOString().slice(0,10)}`:''].filter(Boolean).join(' · ');
+      return `<span class="country" title="${esc(tip)}">${esc(x.c)}</span> <span class="${W.cls}">${W.w}</span>`;
+    });
+    const html = parts.join(', ');
+    if(line.innerHTML !== html){
+      line.innerHTML = html;
+      line.parentElement.classList.add('pulse');
+      setTimeout(()=>line.parentElement.classList.remove('pulse'), 260);
+    }
+  }
+
+  load();
+  const iv = setInterval(()=>{ if(!document.hidden) load(); }, REFRESH_MS);
+  window.addEventListener('pagehide', ()=>clearInterval(iv), {once:true});
 })();
 </script>
 
+  
 
   
 
