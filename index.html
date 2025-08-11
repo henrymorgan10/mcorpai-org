@@ -547,7 +547,7 @@ Should you seek a precise and in-depth understanding of the foundational princip
   
   
 
-<!-- === PASTE THIS SNIPPET JUST BEFORE </body> IN YOUR index.html === -->
+<!-- === PASTE THIS WHOLE BLOCK JUST BEFORE </body> IN YOUR index.html === -->
 
 <!-- Transparent panel: Real-time Refugee Map & Scam‑Compound Risk -->
 <section id="rt-panel" aria-label="Real-time Refugee & Scam Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.58);backdrop-filter:saturate(1.1) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
@@ -591,11 +591,35 @@ Should you seek a precise and in-depth understanding of the foundational princip
   const msgEl = $('rt-msg');
   if(!msgEl) return; // safety if pasted twice
 
-  // ===== ReliefWeb v2 (7-day, 3-min; only when visible) =====
+  const REFRESH_MS = 3*60*1000; // 3 minutes
   const RW_URL = 'https://api.reliefweb.int/v2/reports';
   const APP = 'mcorpai';
-  const REFRESH_MS = 3*60*1000;
 
+  // ================= Service Worker registration =================
+  let swReady = false;
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try{
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        // controller may be null on first install; re-fetch on activation
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          swReady = true;
+          fetchFromSW();
+        });
+        if (reg.active) {
+          swReady = true;
+          // optional: ask SW to update now
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ type:'RW_UPDATE_NOW' });
+          }
+        }
+        // try initial load from SW cache endpoint regardless
+        fetchFromSW();
+      }catch(e){ console.warn('[SW] registration failed:', e); }
+    });
+  }
+
+  // ================= ReliefWeb direct fetch (fallback) =================
   const basePayload = {
     limit: 1,
     preset: 'latest',
@@ -603,21 +627,9 @@ Should you seek a precise and in-depth understanding of the foundational princip
     slim: 1,
     fields: { include:['title','primary_country.name','date.created','url'] }
   };
-  const since = new Date(Date.now()-7*24*60*60*1000).toISOString();
-  const qRefugee = Object.assign({}, basePayload, {
-    filter:{ operator:'AND', conditions:[
-      { field:'date.created', range:{ from: since } },
-      { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] }
-    ]},
-    query:{ value:'refugee OR displacement' }
-  });
-  const qWx = Object.assign({}, basePayload, {
-    filter:{ operator:'AND', conditions:[
-      { field:'date.created', range:{ from: since } },
-      { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] }
-    ]},
-    query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') }
-  });
+  function sinceISO(days){ return new Date(Date.now()-days*24*60*60*1000).toISOString(); }
+  function qRefugee(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from: sinceISO(7) } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Refugees','IDPs','Protection'] }] } ] }, query:{ value:'refugee OR displacement' } }); }
+  function qWx(){ return Object.assign({}, basePayload, { filter:{ operator:'AND', conditions:[ { field:'date.created', range:{ from: sinceISO(7) } }, { operator:'OR', conditions:[{ field:'theme.name', value:['Natural Disasters','Climate Change and Environment'] }] } ] }, query:{ value:['flood','cyclone','hurricane','storm','heatwave','"heat wave"','wildfire','drought','landslide','earthquake','tsunami','typhoon','monsoon','blizzard','"cold wave"'].join(' OR ') } }); }
 
   function fetchRW(body, maxRetries=3){
     const url = RW_URL + '?appname=' + encodeURIComponent(APP);
@@ -642,18 +654,48 @@ Should you seek a precise and in-depth understanding of the foundational princip
   function cleanTitle(t){ return (t||'').replace(/\s+/g,' ').replace(/^\[.*?\]\s*/, '').replace(/\s*\|\s*ReliefWeb.*$/i,'').replace(/\s+-\s+ReliefWeb.*$/i,'').trim(); }
   function ago(iso){ if(!iso) return ''; const s=(Date.now()-new Date(iso))/1000; if(s<90) return '· just now'; const m=Math.floor(s/60); if(m<60) return `· ${m} min ago`; const h=Math.floor(m/60); if(h<24) return `· ${h} h ago`; const d=Math.floor(h/24); return `· ${d} d ago`; }
 
-  async function updateTicker(){
+  async function updateTickerDirect(){
     if(document.hidden) return;
     msgEl.textContent = 'Fetching latest update…';
-    const [r1, r2] = await Promise.all([ fetchRW(qRefugee), fetchRW(qWx) ]);
+    const [r1, r2] = await Promise.all([ fetchRW(qRefugee()), fetchRW(qWx()) ]);
     if(!r1 && !r2){ msgEl.textContent = 'Global: Monitoring displacement and climate-related disruptions.'; return; }
     const pick = !r1 ? r2 : (!r2 ? r1 : (new Date(isoDate(r1)) >= new Date(isoDate(r2)) ? r1 : r2));
-    const line = `${countryOf(pick)}: ${cleanTitle(pick.title)} ${ago(isoDate(pick))}`;
-    msgEl.textContent = line;
+    msgEl.textContent = `${countryOf(pick)}: ${cleanTitle(pick.title)} ${ago(isoDate(pick))}`;
   }
 
-  updateTicker();
-  const iv = setInterval(updateTicker, REFRESH_MS);
+  // ================= Read from Service Worker (SWR endpoint) =================
+  async function fetchFromSW(){
+    try{
+      const r = await fetch('/rw/latest.json', { cache:'reload' });
+      if(!r.ok) throw new Error('no sw json');
+      const j = await r.json();
+      msgEl.textContent = `${j.where}: ${j.title} ${j.ago || ''}`.trim();
+    }catch(_){
+      // if SW not ready yet, use direct fetch fallback
+      updateTickerDirect();
+    }
+  }
+
+  // Listen for SW cache refresh notifications
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (evt) => {
+      if (evt.data && evt.data.type === 'RW_UPDATED') {
+        fetchFromSW();
+      }
+    });
+  }
+
+  // First paint + 3‑minute refresh
+  fetchFromSW();
+  const iv = setInterval(() => {
+    if (document.hidden) return;
+    if (swReady && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type:'RW_UPDATE_NOW' });
+      fetchFromSW();
+    } else {
+      updateTickerDirect();
+    }
+  }, REFRESH_MS);
   window.addEventListener('pagehide', ()=> clearInterval(iv), { once:true });
 
   // ===== Scam-Compound compact table (static demo data) =====
@@ -670,7 +712,6 @@ Should you seek a precise and in-depth understanding of the foundational princip
   const tbody = $('rt-rows');
   const riskCls = (r)=> r==='HIGH'? 'color:#ef4444;font-weight:700' : (r==='MED'?'color:#f59e0b;font-weight:700' : 'color:#10b981;font-weight:700');
 
-  // Populate filter options
   (function(){ const set=new Set(['All']); DATA.forEach(x=>set.add(x.country)); set.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; countrySel.appendChild(o); }); })();
 
   function render(){
@@ -690,11 +731,11 @@ Should you seek a precise and in-depth understanding of the foundational princip
   countrySel.addEventListener('change', render);
   render();
 
-  // ===== Self-checks (safe to keep; console-only) =====
+  // ===== Self-checks (console only) =====
   try{ console.info('[rt-panel] mounted'); if(!('fetch' in window)) console.warn('fetch API missing'); }catch(e){}
 })();
 </script>
-<!-- === END SNIPPET === -->
+<!-- === END BLOCK === -->
 
 
 
