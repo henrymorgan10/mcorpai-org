@@ -785,6 +785,8 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
   4) 배경음악은 게임 진행 중에만 1회 재생(loop=false)하고,
      엔딩창이 뜨거나 게임 종료 시 즉시 정지(점프 SFX도 정지)합니다.
   5) 기존 게임 로직은 변경하지 않고 필요한 부분만 추가/수정했습니다.
+  6) 혹시 10초 타이머만 길게 바꾸고 싶으면 코드 안의
+endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸면 돼.
   ==================================================================
 -->
 
