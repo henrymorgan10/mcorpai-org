@@ -1276,8 +1276,8 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       // 배경음악: 게임 중에만 1회 재생
       audioOn=true; try{ music.currentTime=0; safePlay(music); }catch(e){}
       requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
-      // 60초 뒤 엔딩창
-      endingTimer=setTimeout(endByTimer,60000);
+      // 900초 뒤 엔딩창
+      endingTimer=setTimeout(endByTimer,900000);
     }
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
