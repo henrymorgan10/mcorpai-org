@@ -768,23 +768,25 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
 
 
-
-  <!-- 
+<!-- 
   ========================= 한국어 주석 블록 =========================
   목적: 10초 뒤 박스 내부 게임 엔딩창 표시 + 엔딩창 열렸을 때 
        스페이스/엔터 등 키 입력이 게임에 전달되지 않도록 차단.
 
-  ◻︎ 요청 반영 요약
+  ◻︎ 요청 반영 요약 (충돌 없이 통합된 최종본)
   1) PDF 경로: https://mcorpai.org/Love Children with Disabilities(265 Pages).pdf →
      새 탭에서 바로 열기(다운로드 아님). 버튼 라벨 "Open PDF".
   2) 엔딩창이 떠 있을 때는 키보드/터치/캔버스 클릭을 무시하고,
-     엔딩창 버튼(마우스/터치)만 동작합니다. (모바일 포함)
-  3) Exit Game 누르면 배너의 GAME START 버튼이 다시 보입니다.
-  4) 배경음악은 게임 진행 중에만 1회 재생(loop=false)하고,
-     엔딩창이 뜨거나 게임 종료 시 즉시 정지(점프 SFX도 정지)합니다.
-  5) 기존 게임 로직은 변경하지 않고 필요한 부분만 추가/수정했습니다.
-  6) 혹시 10초 타이머만 길게 바꾸고 싶으면 코드 안의
-endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸면 돼.
+     엔딩창 버튼(마우스/터치)만 동작 (모바일 포함).
+  3) Exit Game 누르면 배너의 GAME START 버튼이 다시 보임.
+  4) 배경음악: 게임 중에만 재생. 시작 시 랜덤 곡 재생하고, 재생이 끝나면 또다시 랜덤 곡을 자연 전환.
+     (엔딩/게임오버/엔딩패널 열림 시 즉시 정지. 점프 SFX도 정지)
+  5) 난이도 유지 + 초보자 생존 완화형 밸런스 (초반 25초 동안만 서서히 효력 사라짐)
+     - 초반 Hazard/Boss 출현율·최대 동시장애물·가속을 소폭 감소
+     - 초반 QTE 발동/판정 여유 증가 (거리·지속시간)
+     - 시작 직후 생존 타이머 10s→12s
+     - 첫 충돌 1회에 한해 자동 세이브(초보자 그레이스) 제공
+  6) 엔딩 타이머: 900초 → 1,800초(=30분)로 확대
   ==================================================================
 -->
 
@@ -891,7 +893,7 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
     const clamp=(v,a,b)=> Math.max(a, Math.min(b, v));
     const lerp=(a,b,t)=> a+(b-a)*t;
 
-    // ===== Audio (play only during game; music no loop) =====
+    // ===== Audio utils =====
     function makeAudio(srcs, volume, loop){
       const a = new Audio();
       a.preload = 'auto';
@@ -904,11 +906,40 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       next();
       return a;
     }
-    const music = makeAudio([
-      'https://mcorpai.org/Cherokee Shuffle.mp3',
-      '/Cherokee Shuffle.mp3'
-    ], 0.42, false); // loop=false : 1회 재생
 
+    // --- BGM: 랜덤 재생 전용 오디오 (loop=false, 트랙 끝나면 랜덤으로 다음 곡)
+    const TRACKS = [
+      'https://mcorpai.org/Cherokee%20Shuffle.mp3',
+      'https://mcorpai.org/Cumberland%20Gap.mp3',
+      'https://mcorpai.org/Daisy%20Dukes.mp3',
+      'https://mcorpai.org/Gold%20Bug%20Island.mp3',
+      'https://mcorpai.org/Michigan%20Greens.mp3',
+      "https://mcorpai.org/Reuben's%20Train.mp3",
+      'https://mcorpai.org/adventuremusic.mp3'
+    ];
+    const bgm = new Audio();
+    bgm.preload = 'auto';
+    bgm.crossOrigin = 'anonymous';
+    bgm.loop = false;
+    bgm.volume = 0.42;
+    let currentTrackIndex = -1;
+    function pickNextTrack(){
+      if(TRACKS.length===0) return null;
+      let idx = Math.floor(Math.random()*TRACKS.length);
+      if(TRACKS.length>1 && idx===currentTrackIndex){
+        idx = (idx+1)%TRACKS.length;
+      }
+      currentTrackIndex = idx;
+      return TRACKS[idx];
+    }
+    function playRandomTrack(){
+      const src = pickNextTrack();
+      if(!src) return;
+      try{ bgm.src = src; bgm.currentTime = 0; bgm.load(); safePlay(bgm); }catch(e){}
+    }
+    bgm.addEventListener('ended', ()=>{ if(audioOn){ playRandomTrack(); } });
+
+    // --- SFX (점프)
     const jumpSfx = makeAudio([
       'https://mcorpai.org/jump6462.mp3',
       '/jump6462.mp3'
@@ -916,8 +947,8 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
 
     let audioOn = false; // 게임 중에만 true
 
-    function safePlay(a){ if(!audioOn) return; try{ a.currentTime = 0; const p=a.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
-    function stopAllAudio(){ try{ music.pause(); music.currentTime=0; }catch(e){} try{ jumpSfx.pause(); }catch(e){} }
+    function safePlay(a){ if(!audioOn) return; try{ const p=a.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+    function stopAllAudio(){ try{ bgm.pause(); bgm.currentTime=0; }catch(e){} try{ jumpSfx.pause(); }catch(e){} }
 
     // Small toast helper
     let toastTimer=null; function toast(msg, sec=5){ gameToast.textContent=msg; gameToast.style.display='block'; if(toastTimer){ clearTimeout(toastTimer); toastTimer=null; } toastTimer=setTimeout(()=>{ gameToast.style.display='none'; }, Math.max(1000, sec*1000)); }
@@ -926,7 +957,7 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
     controlsEl.textContent = DEFAULT_HINT;
 
     // Best score
-    const BEST_KEY='careCanvasBest_v13';
+    const BEST_KEY='careCanvasBest_v14';
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
@@ -950,7 +981,7 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
     // Time scale (for slow‑mo)
     let slowmoTimer=0; const SLOWMO_FACTOR=0.4;
 
-    // QTE director (now ~10% chance)
+    // QTE director (now ~10% base chance)
     let qteActive=false, qteTimer=0, qteCooldown=0; const QTE_CHANCE=0.10; const QTE_COOLDOWN=4.0;
 
     // Speed growth
@@ -1068,17 +1099,28 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       }
     }
 
+    // ===== 초보자 완화용 보정 (초반 25초만, 점진 소멸) =====
+    let beginnerGrace = true; // 첫 충돌 1회 자동 세이브
+    function beginnerEase(){ return clamp(1 - gameTime/25, 0, 1); } // 0~25s 동안 1→0으로 감소
+
     function spawn(dt){
       if(lonelyTimer>0){ spawnTimer=0.2; return; }
       spawnTimer -= dt; if(spawnTimer>0) return;
 
       const timeDf = clamp(gameTime/240, 0, 1);
-      let hazardChance = 0.60 + 0.18*timeDf + 0.06*hardLevel + (hardSpikeTimer>0?0.18:0); hazardChance = Math.min(0.9, hazardChance);
+      let hazardChance = 0.60 + 0.18*timeDf + 0.06*hardLevel + (hardSpikeTimer>0?0.18:0);
       let bossChance   = 0.10 + 0.08*timeDf + 0.03*hardLevel + (hardSpikeTimer>0?0.06:0);
+
+      // 초보자 완화: 초반엔 출현율과 보스율을 낮춤
+      const ease = beginnerEase();
+      hazardChance *= (1 - 0.25*ease);
+      bossChance   *= (1 - 0.40*ease);
+      hazardChance = Math.min(0.9, hazardChance);
 
       if(goldenTimer>0){ const type = Math.random()<0.2? HEART : RUPEE; const y = rand(GROUND_Y-110, GROUND_Y-40); pickups.push({x:WORLD.w+10,y,w:20,h:20,type: type==='💎'? 'rupee':'heart'}); spawnTimer = rand(0.15,0.35); return; }
 
-      const MAX_HAZARDS = 9 + Math.min(3, hardLevel);
+      let MAX_HAZARDS = 9 + Math.min(3, hardLevel);
+      MAX_HAZARDS -= Math.round(2*ease); // 초반엔 동시장애물 1~2개 줄임
       const wantHazard = Math.random() < hazardChance && hazards.length<MAX_HAZARDS;
 
       if(wantHazard){
@@ -1095,7 +1137,8 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       }
 
       const effectiveSpeed = speed * speedScale;
-      let MIN_SPAWN = 0.55 - 0.11*timeDf - 0.04*hardLevel - (hardSpikeTimer>0?0.10:0); MIN_SPAWN = Math.max(0.30, MIN_SPAWN);
+      let MIN_SPAWN = 0.55 - 0.11*timeDf - 0.04*hardLevel - (hardSpikeTimer>0?0.10:0);
+      MIN_SPAWN = Math.max(0.30, MIN_SPAWN);
       const base = rand(0.9,1.6)*(220/Math.max(220,effectiveSpeed));
       spawnTimer = Math.max(MIN_SPAWN, base);
     }
@@ -1127,10 +1170,12 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       // Time scale
       const scale = (slowmoTimer>0)? SLOWMO_FACTOR : 1; const edt = dt*scale; if(slowmoTimer>0){ slowmoTimer -= dt; }
 
-      // QTE
+      // QTE (초보자 완화: 발동 거리/시간 살짝 증가)
       if(!qteActive && qteCooldown<=0 && invulnTimer<=0 && goldenTimer<=0){
         const {dx} = nearestHazardDx();
-        if(dx>0 && dx<34 && Math.random()<QTE_CHANCE){ qteActive=true; qteTimer=0.6; slowmoTimer = Math.max(slowmoTimer, 1.0); addFx('QTE!', player.x+4, player.y-52, '#2563eb'); }
+        const ease = beginnerEase();
+        const qteRange = 34 + 10*ease; // 초반 34→44픽셀
+        if(dx>0 && dx<qteRange && Math.random()<QTE_CHANCE){ qteActive=true; qteTimer=0.6 + 0.15*ease; slowmoTimer = Math.max(slowmoTimer, 1.0); addFx('QTE!', player.x+4, player.y-52, '#2563eb'); }
       }
       if(qteActive){ qteTimer -= dt; if(qteTimer<=0){ qteActive=false; qteCooldown=QTE_COOLDOWN; } }
       if(qteCooldown>0){ qteCooldown-=dt; }
@@ -1138,9 +1183,11 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       // Score multiplier decay
       if(scoreMultTimer>0){ scoreMultTimer -= dt; if(scoreMultTimer<=0){ scoreMult=1; }}
 
-      // Speed & spikes
+      // Speed & spikes (초보자 완화: 초반 가속을 약 35%까지 경감)
       const t = clamp(speed/MAX_SPEED, 0, 1);
       let accel = (baseAccel + hardLevel*1.2) * (1 - t);
+      const ease = beginnerEase();
+      accel *= (1 - 0.35*ease);
       if(hardSpikeTimer>0){ accel += 0.8; hardSpikeTimer -= dt; speed = Math.min(MAX_SPEED, speed + 120*edt); }
       if(slowItemTimer>0){ slowItemTimer -= dt; if(slowItemTimer<=0){ speedScale=1; } }
       speed = Math.min(MAX_SPEED, speed + accel*edt);
@@ -1184,6 +1231,8 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
       // hazards
       for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
           if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; }
+          // 초보자 그레이스: 초반 25초 내 첫 충돌 1회 자동 세이브
+          if(beginnerGrace && beginnerEase()>0){ beginnerGrace=false; h.safe=true; invulnTimer=Math.max(invulnTimer,1.5); addFx('Grace ✚', player.x+6, player.y-50, '#10b981'); toast('Beginner grace consumed.', 4); continue; }
           if(reviveStored){ h.safe=true; useRevive('hit'); continue; }
           return true;
       } }
@@ -1276,12 +1325,12 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
     }
 
     function startGame(){
-      running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=10; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0; reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; hideEnding(); clearEndingTimer();
-      // 배경음악: 게임 중에만 1회 재생
-      audioOn=true; try{ music.currentTime=0; safePlay(music); }catch(e){}
+      running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=12; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0; reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true; hideEnding(); clearEndingTimer();
+      // 배경음악: 게임 중에만 랜덤 재생 (곡 종료 시 자동으로 다음 랜덤 곡)
+      audioOn=true; try{ playRandomTrack(); }catch(e){}
       requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
-      // 900초 뒤 엔딩창
-      endingTimer=setTimeout(endByTimer,900000);
+      // 1,800초(30분) 뒤 엔딩창
+      endingTimer=setTimeout(endByTimer,1800000);
     }
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
@@ -1326,7 +1375,7 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
 
     /* ========================
        Add‑on: Total Score HUD + Item Scoring + 2,000 step difficulty + 50,000 ending
-       (원본 로직은 수정하지 않고, 동일 스코프 내에서 확장)
+       (원본 로직은 변경하지 않고, 동일 스코프 내에서 확장)
     =========================*/
     const hudEl = document.querySelector('#care-canvas-game .hud');
     const totalWrap = document.createElement('div');
@@ -1361,12 +1410,11 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
     const __startGame = startGame;
     startGame = function(){ totalScore=0; nextStep=SCORE_STEP; updateScoreHud(); return __startGame(); };
 
-    // check 확장: 픽업별 total score 반영
+    // check 확장: 픽업별 total score 반영 보강
     const __check = check;
     check = function(){
       const result = __check.apply(this, arguments);
-      // 위 원본 check가 픽업을 제거하기 전에 개입하기 어렵기 때문에,
-      // 매 프레임 플레이어와 가까운 픽업을 재검사하여 충돌 시 점수만 별도로 반영합니다.
+      // 매 프레임 플레이어와 가까운 픽업을 재검사하여 점수만 별도로 반영
       const c=CHARS[0]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
       for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; if(!a || a.box) continue; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
           if(ITEM_POINTS[a.type]){ updateTotalScore(ITEM_POINTS[a.type]); }
@@ -1378,12 +1426,12 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
   </script>
 </section>
 
+  
+
 
 
 
   
-
-
   
   
 </html>
