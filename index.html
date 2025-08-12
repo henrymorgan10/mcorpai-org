@@ -768,9 +768,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
 
 
-  
-
-<!-- ===== Canvas mini‑game: “Love Children with Disabilities” — EN only, click‑to‑start, triple jump, day/night, glide & dash, combo, missions, 👨 Dad events (rarer), 🐌 slow (5s), capped difficulty, 🟩 Health‑bar survival ===== -->
+<!-- ===== Canvas mini‑game: “Love Children with Disabilities” — click‑to‑start, triple jump, day/night, glide & dash, combo, missions, 👨 Dad events, 🐌 slow (5s), capped difficulty, 🟩 Health survival, 🎡 wheel toast, QTE ~10% ===== -->
 <section id="care-canvas-game" aria-label="Love Children with Disabilities game" style="margin:24px auto;max-width:980px">
   <style>
     #care-canvas-game{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221}
@@ -789,6 +787,11 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     #dad-toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(255,255,255,.96);border:1px solid #e5e7eb;border-radius:12px;padding:10px 14px;font-size:1rem;color:#111827;box-shadow:0 10px 24px rgba(2,6,23,.08);z-index:4;display:none}
     /* Survival big message */
     #survival-msg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.96);border:1px solid #e5e7eb;border-radius:14px;padding:14px 18px;font-size:1.05rem;font-weight:800;color:#0b1221;box-shadow:0 10px 24px rgba(2,6,23,.08);z-index:4;display:none;text-align:center}
+    /* Mission popup (small, top-center) */
+    #mission-pop{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:rgba(14,21,38,.96);color:#fff;border:1px solid #0ea5e9;border-radius:12px;padding:10px 14px;font-size:.95rem;box-shadow:0 10px 24px rgba(2,6,23,.18);z-index:4;display:none}
+    /* Game toast (balloon message) */
+    #game-toast{position:absolute;right:10px;top:10px;max-width:52%;background:rgba(17,24,39,.92);color:#f8fafc;border:1px solid rgba(148,163,184,.4);border-radius:12px;padding:8px 12px;font-size:.9rem;line-height:1.35;box-shadow:0 10px 22px rgba(2,6,23,.18);z-index:6;display:none}
+    #game-toast b{color:#fbbf24}
     @media (prefers-reduced-motion: reduce){ #care-canvas-game canvas{transition:none} }
   </style>
 
@@ -800,7 +803,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       <div>Best Care <b id="ccg-best">0</b></div>
       <div>Stage <b id="ccg-stage">Day</b></div>
       <div>Combo <b id="ccg-combo">x1</b></div>
-      <div>Mission <b id="ccg-mission">Airborne 50m</b></div>
+      <div>Mission <b id="ccg-mission">—</b></div>
       <div>Dash <b id="ccg-dash">Ready</b></div>
     </div>
     <div class="controls" id="ccg-controls">Click to start. Space for triple jump, hold to glide. X to dash. Enter converts obstacle. Collect 💎, ❤, 🐌 to get bonuses. Rare ⭐ opens a 5s Golden Stage with no hazards.</div>
@@ -808,6 +811,8 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       <canvas id="ccg-canvas" width="960" height="256" aria-label="Game canvas"></canvas>
       <div id="dad-toast" aria-live="polite"></div>
       <div id="survival-msg" aria-live="polite">You must collect the health bar to survive.</div>
+      <div id="mission-pop" aria-live="polite"></div>
+      <div id="game-toast" aria-live="polite"></div>
       <div id="ccg-banner" aria-live="polite">
         <h4>GAME START</h4>
         <div style="font-size:.95rem;color:#374151">Click anywhere on the canvas to begin. Space ✨ for triple jump, hold to glide 🪂. X for dash ⚡. Collect 💎❤ for Care, 🐌 to slow time, ⭐ for Golden Stage.</div>
@@ -827,6 +832,8 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const startBtn = document.getElementById('ccg-start-btn');
     const dadToast = document.getElementById('dad-toast');
     const survivalMsg = document.getElementById('survival-msg');
+    const missionPop = document.getElementById('mission-pop');
+    const gameToast = document.getElementById('game-toast');
     const footerEl = document.getElementById('ccg-footer');
     const hudDist = document.getElementById('ccg-dist');
     const hudCare = document.getElementById('ccg-care');
@@ -841,15 +848,39 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const clamp=(v,a,b)=> Math.max(a, Math.min(b, v));
     const lerp=(a,b,t)=> a+(b-a)*t;
 
-    // ===== No external assets: stub audio =====
-    const jumpSfx = { currentTime:0, play:()=>Promise.resolve() };
-    const music   = { paused:true, currentTime:0, loop:true, volume:0.5, playbackRate:1.0, play:()=>{ music.paused=false; return Promise.resolve(); } };
+    // ===== Audio real implementation (gesture unlock) =====
+    function makeAudio(srcs, volume, loop){
+      const a = new Audio();
+      a.preload = 'auto';
+      a.crossOrigin = 'anonymous';
+      a.loop = !!loop;
+      a.volume = typeof volume==='number'? volume : 1;
+      let i = 0;
+      function next(){ if(i < srcs.length){ a.src = srcs[i++]; a.load(); } }
+      a.addEventListener('error', ()=>{ next(); });
+      next();
+      return a;
+    }
+    const music = makeAudio([
+      'https://mcorpai.org/adventuremusic.mp3',
+      '/adventuremusic.mp3'
+    ], 0.42, true);
+
+    const jumpSfx = makeAudio([
+      'https://mcorpai.org/jump6462.mp3',
+      '/jump6462.mp3'
+    ], 0.7, false);
+
+    function playSafe(a){ try{ a.currentTime = 0; const p=a.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+
+    // Small toast helper
+    let toastTimer=null; function toast(msg, sec=5){ gameToast.textContent=msg; gameToast.style.display='block'; if(toastTimer){ clearTimeout(toastTimer); toastTimer=null; } toastTimer=setTimeout(()=>{ gameToast.style.display='none'; }, Math.max(1000, sec*1000)); }
 
     const DEFAULT_HINT = 'Click to start. Space (triple) to jump, hold to glide, ↓ to duck, X to dash. Enter converts obstacle.';
     controlsEl.textContent = DEFAULT_HINT;
 
     // Best score
-    const BEST_KEY='careCanvasBest_v10';
+    const BEST_KEY='careCanvasBest_v12';
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
@@ -857,7 +888,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26,'🙂'); }}];
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
-    const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩';
+    const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩', WHEEL='🎡';
 
     // World & physics
     const WORLD={w:canvas.width,h:canvas.height};
@@ -866,14 +897,15 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     let tPrev=0; let gameTime=0; // seconds since start
 
     // Difficulty & speed (capped)
-    let speed=220; // base grows to MAX_SPEED
-    const MAX_SPEED=540; // hard cap
-    let speedScale=1; // snail slows for 5s
+    let speed=220; const MAX_SPEED=540; let speedScale=1;
 
     let dist=0; let care=0; let spawnTimer=0; const gravity=1800; const baseJumpVy=560;
 
     // Time scale (for slow‑mo)
     let slowmoTimer=0; const SLOWMO_FACTOR=0.4;
+
+    // QTE director (now ~10% chance)
+    let qteActive=false, qteTimer=0, qteCooldown=0; const QTE_CHANCE=0.10; const QTE_COOLDOWN=4.0;
 
     // Speed growth (baseline + random spikes) with easing to cap
     let baseAccel = 6; let spikeTimer = 0; function scheduleSpike(){ spikeTimer = rand(4.5,8.0); } scheduleSpike();
@@ -888,7 +920,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     let supportTimer=0, supportCooldown=1.2;
 
     const player={x:72,y:GROUND_Y,vy:0,duck:false,onGround:true};
-    const hazards=[]; const pickups=[]; // rupees/hearts/snails/stars/health
+    const hazards=[]; const pickups=[]; // rupees/hearts/snails/stars/health/wheel
 
     // Hazard labels
     const SAFE_LABELS={ stairs:'Ramp', noise:'Quiet Zone', crowd:'Signage', block:'Safe Path' };
@@ -903,35 +935,46 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     // Combo system
     let combo=0; let comboTimer=0; const COMBO_WINDOW=3.0; const MAX_MULT=5; function comboMult(){ return Math.min(MAX_MULT, 1 + Math.floor(combo/5)); }
 
-    // Missions (kept simple)
-    const MISSIONS=[{ key:'air50', label:'Airborne 50m', active:true, progress:0, target:50, type:'air' }];
-    function setMissionText(){ const m = MISSIONS.find(m=>m.active); hudMission.textContent = m? m.label : '—'; } setMissionText();
+    // Score multiplier from wheel
+    let scoreMult=1, scoreMultTimer=0;
+
+    // Random Mission system
+    let mission=null; let missionGap=rand(16,28); // a bit rarer
+    function setMissionText(){ hudMission.textContent = mission? mission.label : '—'; }
+    function showMission(text){ missionPop.textContent=text; missionPop.style.display='block'; setTimeout(()=>{ missionPop.style.display='none'; }, 1500); }
+    function startRandomMission(){
+      if(mission) return;
+      const roll = Math.random();
+      if(roll<0.5){ mission = {type:'hearts', label:'Get 3 Hearts in 30s', target:3, progress:0, timeLeft:30}; }
+      else { mission = {type:'clear', label:'Clear 5 Obstacles in 20s', target:5, progress:0, timeLeft:20}; }
+      setMissionText();
+      showMission('Mission: ' + mission.label);
+    }
+    function finishMission(success){
+      if(!mission) return;
+      if(success){ award(20); invulnTimer = Math.max(invulnTimer, 3); toast('Mission complete. Reward applied.', 5); }
+      else { toast('Mission failed. No penalty.', 5); }
+      mission=null; setMissionText(); missionGap=rand(18,30);
+    }
 
     // Info line
     let infoTimer=0; const INFO_DURATION=10; function showInfo(text){ controlsEl.textContent=text; infoTimer=INFO_DURATION; }
 
     // Golden stage
-    let goldenTimer=0; const GOLDEN_DURATION=5; function startGolden(){ goldenTimer=GOLDEN_DURATION; hazards.length=0; showInfo('⭐ Golden Stage! 5s — Grab all the bonuses!'); }
+    let goldenTimer=0; const GOLDEN_DURATION=5; function startGolden(){ goldenTimer=GOLDEN_DURATION; hazards.length=0; toast('Golden Stage for 5s', 5); }
+
+    // Wheel system (no center overlay, only toast)
+    function spinWheel(){ toast('Wheel spinning…', 2); setTimeout(()=>{ const r=Math.random(); if(r<0.25){ speed = Math.min(MAX_SPEED, speed + 120); toast('Wheel reward: Speed boost.', 5); } else if(r<0.5){ speedScale = 0.8; toast('Wheel reward: Smooth slowdown 3s.', 5); setTimeout(()=>{ speedScale=1; }, 3000); } else if(r<0.75){ invulnTimer = Math.max(invulnTimer, 2.5); toast('Wheel reward: Invulnerability 2.5s.', 5); } else { scoreMult = 2; scoreMultTimer = 6; toast('Wheel reward: Score x2 for 6s.', 5); } }, 2000); }
 
     // Snail (slow) — exactly 5s and then restore
-    let slowItemTimer=0; const SLOW_ITEM_FACTOR=0.7; const SLOW_ITEM_TIME=5; // ★ 5 seconds fixed
+    let slowItemTimer=0; const SLOW_ITEM_FACTOR=0.7; const SLOW_ITEM_TIME=5;
 
     // Floating effects
     const fx=[]; function addFx(text,x,y,color){ fx.push({text,x,y,vy:-22,life:1,color}); }
 
-    // ===== Dad random events (rarer) =====
-    const DAD_CHOICES=[
-      {key:'love', text:'I love you.'},
-      {key:'hurt', text:'Are you hurt anywhere?'},
-      {key:'travel', text:"I'm going on a long trip."}
-    ];
-    let dadEventTimer = rand(18,32); // rarer initial
-    let dadMsgTimer = 0; // 3s message on screen
-    let dadEffectPending = null; // which effect to apply after 3s
-    let dadBonusTimer = 0; // bonus window for love/hurt
-    let dadBonusFactor = 1; // >1 more bonus, <1 less
-    let lonelyTimer = 0; // travel -> 10s dark, no hazards/bonuses
-    let lastDadAt = -999; const DAD_MIN_GAP=20; // at least 20s between events
+    // Dad random events
+    const DAD_CHOICES=[ {key:'love', text:'I love you.'}, {key:'hurt', text:'Are you hurt anywhere?'}, {key:'travel', text:"I'm going on a long trip."} ];
+    let dadEventTimer = rand(18,32); let dadMsgTimer = 0; let dadEffectPending = null; let dadBonusTimer = 0; let dadBonusFactor = 1; let lonelyTimer = 0; let lastDadAt = -999; const DAD_MIN_GAP=20;
 
     function triggerDadEvent(){
       if(!running || goldenTimer>0 || dadMsgTimer>0 || lonelyTimer>0) { dadEventTimer = rand(20,34); return; }
@@ -939,111 +982,88 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       const c = DAD_CHOICES[Math.floor(Math.random()*DAD_CHOICES.length)];
       dadEffectPending = c.key; dadMsgTimer = 3; lastDadAt = gameTime;
       dadToast.textContent = `👨 ${c.text}`; dadToast.style.display='block';
-      dadEventTimer = rand(26,42); // much rarer next time
+      dadEventTimer = rand(26,42);
     }
 
     function applyDadEffect(){
       if(!dadEffectPending) return;
-      if(dadEffectPending==='love'){
-        speed = Math.min(MAX_SPEED, speed + 360); dadBonusFactor = 2.0; dadBonusTimer = 8; showInfo('👨 "I love you." — Speed ↑, bonus ↑ for 8s');
-      } else if(dadEffectPending==='hurt'){
-        speed = Math.max(180, speed * 0.8); dadBonusFactor = 0.5; dadBonusTimer = 6; showInfo('👨 "Are you hurt anywhere?" — Speed ↓, bonus ↓ for 6s');
-      } else if(dadEffectPending==='travel'){
-        lonelyTimer = 10; hazards.length=0; pickups.length=0; dadBonusFactor=1; dadBonusTimer=0; showInfo('👨 "I\'m going on a long trip." — 10s dark, no hazards/bonuses');
-      }
+      if(dadEffectPending==='love'){ speed = Math.min(MAX_SPEED, speed + 360); dadBonusFactor = 2.0; dadBonusTimer = 8; toast('Dad: bonus up for 8s.', 5); }
+      else if(dadEffectPending==='hurt'){ speed = Math.max(180, speed * 0.8); dadBonusFactor = 0.5; dadBonusTimer = 6; toast('Dad: slowdown and lower bonus for 6s.', 5); }
+      else if(dadEffectPending==='travel'){ lonelyTimer = 10; hazards.length=0; pickups.length=0; dadBonusFactor=1; dadBonusTimer=0; toast('Dad: dark 10s, no hazards or bonuses.', 5); }
       dadEffectPending=null; dadToast.style.display='none';
     }
 
-    function award(points){ if(lonelyTimer>0) return; const add = Math.max(0, Math.floor(points * comboMult() * dadBonusFactor)); care += add; }
+    function award(points){ if(lonelyTimer>0) return; const add = Math.max(0, Math.floor(points * comboMult() * dadBonusFactor * scoreMult)); care += add; }
 
-    // ===== Health‑bar survival =====
-    let survivalTimer = 0; // countdown to death if no HEALTH collected
-    let survivalMsgTimer = 0; // big message 3s at start
-    let healthSpawnTimer = 0; // next HEALTH spawn time
-
-    function difficulty01(){ // 0..1 over ~120s of gameplay
-      return clamp(gameTime/120, 0, 1);
-    }
-    function scheduleHealthSpawn(){
-      const t = difficulty01();
-      const minI = lerp(1.4, 5.0, t); // starts frequent → rarer
-      const maxI = lerp(3.0, 9.0, t); // capped, never crazy rare
-      healthSpawnTimer = rand(minI, maxI);
-    }
-
-    function spawnHealth(dt){
-      healthSpawnTimer -= dt; if(healthSpawnTimer>0) return;
-      // spawn a HEALTH pickup around mid‑air
-      const y = rand(GROUND_Y-110, GROUND_Y-70);
-      pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'health'});
-      scheduleHealthSpawn();
-    }
+    // ===== Health survival =====
+    let survivalTimer = 0; let survivalMsgTimer = 0; let healthSpawnTimer = 0;
+    function difficulty01(){ return clamp(gameTime/120, 0, 1); }
+    function scheduleHealthSpawn(){ const t = difficulty01(); const minI = lerp(1.4, 5.0, t); const maxI = lerp(3.0, 9.0, t); healthSpawnTimer = rand(minI, maxI); }
+    function spawnHealth(dt){ healthSpawnTimer -= dt; if(healthSpawnTimer>0) return; const y = rand(GROUND_Y-110, GROUND_Y-70); pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'health'}); scheduleHealthSpawn(); }
 
     function spawn(dt){
       if(lonelyTimer>0){ spawnTimer=0.2; return; }
       spawnTimer -= dt; if(spawnTimer>0) return;
 
-      // In Golden stage, only spawn bonuses fast
       if(goldenTimer>0){ const type = Math.random()<0.2? HEART : RUPEE; const y = rand(GROUND_Y-110, GROUND_Y-40); pickups.push({x:WORLD.w+10,y,w:20,h:20,type: type===RUPEE? 'rupee':'heart'}); spawnTimer = rand(0.15,0.35); return; }
 
-      // Balance cap: limit hazard density & spawn floor
-      const MAX_HAZARDS = 9; // upper bound for difficulty
-      const wantHazard = Math.random()<0.6 && hazards.length<MAX_HAZARDS;
-
+      const MAX_HAZARDS = 9; const wantHazard = Math.random()<0.6 && hazards.length<MAX_HAZARDS;
       if(wantHazard){
-        if(Math.random()<0.10){
-          const b=BOSSES[Math.floor(Math.random()*BOSSES.length)]; const y=b.kind==='ground'?(GROUND_Y-b.h):(b.y||92);
-          hazards.push({x:WORLD.w+10,y,w:b.w,h:b.h,type:b.key,kind:b.kind,label:b.label,safe:false,boss:true});
-          spawnTimer=2.8; // bosses are spaced out
-          return;
-        }
-        const t=TYPES[Math.floor(Math.random()*TYPES.length)]; const y=t.kind==='ground'?(GROUND_Y-t.h):(t.y||90);
-        const label=HAZARD_LABELS[t.key]; hazards.push({x:WORLD.w+10,y,w:t.w,h:t.h,type:t.key,kind:t.kind,label,safe:false,boss:false});
+        if(Math.random()<0.10){ const b=BOSSES[Math.floor(Math.random()*BOSSES.length)]; const y=b.kind==='ground'?(GROUND_Y-b.h):(b.y||92); hazards.push({x:WORLD.w+10,y,w:b.w,h:b.h,type:b.key,kind:b.kind,label:b.label,safe:false,boss:true}); spawnTimer=2.8; return; }
+        const t=TYPES[Math.floor(Math.random()*TYPES.length)]; const y=t.kind==='ground'?(GROUND_Y-t.h):(t.y||90); const label=HAZARD_LABELS[t.key]; hazards.push({x:WORLD.w+10,y,w:t.w,h:t.h,type:t.key,kind:t.kind,label,safe:false,boss:false});
       } else {
-        // spawn a normal bonus
         const roll = Math.random();
-        if(roll<0.5){ const y= GROUND_Y-60; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'rupee'}); }
-        else if(roll<0.8){ const y= GROUND_Y-90; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'heart'}); }
-        else if(roll<0.9){ const y= GROUND_Y-30; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'snail'}); }
-        else { const y= GROUND_Y-80; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'star'}); }
+        if(roll<0.46){ const y= GROUND_Y-60; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'rupee'}); }
+        else if(roll<0.77){ const y= GROUND_Y-90; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'heart'}); }
+        else if(roll<0.88){ const y= GROUND_Y-30; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'snail'}); }
+        else if(roll<0.94){ const y= GROUND_Y-80; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'star'}); }
+        else { const y= GROUND_Y-70; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'wheel'}); }
       }
 
-      // Spawn pacing respects effective speed but has a hard minimum
-      const effectiveSpeed = speed * speedScale;
-      const base = rand(0.9,1.6)*(220/Math.max(220,effectiveSpeed));
-      const MIN_SPAWN=0.55; spawnTimer = Math.max(MIN_SPAWN, base);
+      const effectiveSpeed = speed * speedScale; const base = rand(0.9,1.6)*(220/Math.max(220,effectiveSpeed)); const MIN_SPAWN=0.55; spawnTimer = Math.max(MIN_SPAWN, base);
     }
 
     function transformNearest(){ if(supportTimer>0) return; let target=null, minDx=1e9; for(const h of hazards){ if(h.safe) continue; const dx=h.x-player.x; if(dx>=-24 && dx<160 && dx<minDx){minDx=dx; target=h;} } if(!target) return; if(target.boss){ for(const h of hazards){ const near=Math.abs((h.x+h.w*0.5)-(target.x+target.w*0.5))<target.w*0.8; if(!h.safe && near) h.safe=true; } } else { target.safe=true; } award(1); supportTimer=supportCooldown; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
     }
 
     // Special counters
-    let rupeeCount=0, heartCount=0; let shieldTimer=0; const SHIELD_TIME=4; // seconds
+    let rupeeCount=0, heartCount=0; let shieldTimer=0; const SHIELD_TIME=4;
 
     function update(dt){
       gameTime += dt;
 
-      // Dad event
+      // Dad events
       dadEventTimer -= dt; if(dadEventTimer<=0){ triggerDadEvent(); }
       if(dadMsgTimer>0){ dadMsgTimer -= dt; if(dadMsgTimer<=0){ applyDadEffect(); } }
       if(dadBonusTimer>0){ dadBonusTimer -= dt; if(dadBonusTimer<=0){ dadBonusFactor=1; }}
       if(lonelyTimer>0){ lonelyTimer -= dt; }
 
-      // Survival system
+      // Missions
+      if(!mission){ missionGap -= dt; if(missionGap<=0){ startRandomMission(); } }
+      else { mission.timeLeft -= dt; if(mission.timeLeft<=0){ finishMission(false); } }
+
+      // Survival
       survivalMsgTimer -= dt; if(survivalMsgTimer<=0 && survivalMsg.style.display!=='none'){ survivalMsg.style.display='none'; }
       survivalTimer -= dt; if(survivalTimer<=0){ endGame(); return; }
       spawnHealth(dt);
 
-      // Slow‑mo
-      const scale = (slowmoTimer>0)? SLOWMO_FACTOR : 1; const edt = dt*scale;
-      if(slowmoTimer>0){ slowmoTimer -= dt; }
+      // Time scale
+      const scale = (slowmoTimer>0)? SLOWMO_FACTOR : 1; const edt = dt*scale; if(slowmoTimer>0){ slowmoTimer -= dt; }
 
-      // Speed growth eased to cap
-      const t = clamp(speed/MAX_SPEED, 0, 1);
-      let accel = baseAccel*(1 - t); // fades as we approach cap
-      if(slowItemTimer>0){ slowItemTimer -= dt; if(slowItemTimer<=0){ speedScale=1; } }
-      speed = Math.min(MAX_SPEED, speed + accel*edt);
-      spikeTimer -= edt; if(spikeTimer<=0 && goldenTimer<=0){ speed = Math.min(MAX_SPEED, speed + rand(8,26)*edt); scheduleSpike(); }
+      // QTE director with 10% chance
+      if(!qteActive && qteCooldown<=0 && invulnTimer<=0 && goldenTimer<=0){
+        const {dx} = nearestHazardDx();
+        if(dx>0 && dx<34 && Math.random()<QTE_CHANCE){ qteActive=true; qteTimer=0.6; slowmoTimer = Math.max(slowmoTimer, 1.0); addFx('QTE!', player.x+4, player.y-52, '#2563eb'); }
+      }
+      if(qteActive){ qteTimer -= dt; if(qteTimer<=0){ qteActive=false; qteCooldown=QTE_COOLDOWN; } }
+      if(qteCooldown>0){ qteCooldown-=dt; }
+
+      // Score multiplier decay
+      if(scoreMultTimer>0){ scoreMultTimer -= dt; if(scoreMultTimer<=0){ scoreMult=1; }}
+
+      // Speed & spikes
+      const t = clamp(speed/MAX_SPEED, 0, 1); let accel = baseAccel*(1 - t); if(slowItemTimer>0){ slowItemTimer -= dt; if(slowItemTimer<=0){ speedScale=1; } }
+      speed = Math.min(MAX_SPEED, speed + accel*edt); spikeTimer -= edt; if(spikeTimer<=0 && goldenTimer<=0){ speed = Math.min(MAX_SPEED, speed + rand(8,26)*edt); scheduleSpike(); }
 
       if(infoTimer>0){ infoTimer-=dt; if(infoTimer<=0){ controlsEl.textContent = DEFAULT_HINT; }}
 
@@ -1053,28 +1073,28 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       if(invulnTimer>0){ invulnTimer-=edt; }
       if(shieldTimer>0){ shieldTimer-=edt; }
       if(comboTimer>0){ comboTimer-=edt; if(comboTimer<=0){ combo=0; }}
-      if(goldenTimer>0){ goldenTimer-=dt; if(goldenTimer<=0){ showInfo('⭐ Golden Stage ended'); }}
+      if(goldenTimer>0){ goldenTimer-=dt; if(goldenTimer<=0){ toast('Golden ended.', 3); }}
 
       // gravity with glide
       let effectiveG = gravity; if(!player.onGround && spaceHeld && glideTime>0){ effectiveG = gravity*0.36; glideTime -= edt; if(glideTime<0) glideTime=0; }
-      player.vy += -effectiveG*edt; player.y += -player.vy*edt; 
+      player.vy += -effectiveG*edt; player.y += -player.vy*edt;
       if(player.y>=GROUND_Y){ player.y=GROUND_Y; player.vy=0; if(!player.onGround){ jumpsUsed=0; glideTime=MAX_GLIDE; } player.onGround=true; } else { player.onGround=false; }
 
-      const v = speed * speedScale; // effective speed for world motion
-      for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(h.x+h.w<-20) hazards.splice(i,1); }
-      for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; const pv = p.vx? p.vx : v; p.x -= (p.vx? 0 : v*edt); if(p.vx){ p.x += p.vx*edt; p.y += p.vy*edt; p.vy += 380*edt; } if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
+      const v = speed * speedScale;
+      for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(!h.passed && h.x+h.w<player.x){ h.passed=true; if(mission && mission.type==='clear'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } } } if(h.x+h.w<-20) hazards.splice(i,1); }
+      for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x -= v*edt; if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
 
       // FX
       for(let i=fx.length-1;i>=0;i--){ const f=fx[i]; f.y += f.vy*edt; f.life -= edt; if(f.life<=0) fx.splice(i,1); }
 
-      dist += v*edt*0.01; // meters
+      dist += v*edt*0.01;
 
-      // stage switch (skip during lonely)
       const stageIndex = Math.floor(dist/STAGE_LEN)%2; const shouldBeDay = stageIndex===0; if(shouldBeDay!==isDay && goldenTimer<=0 && lonelyTimer<=0){ isDay=shouldBeDay; }
       setStageText();
 
       hudDash.textContent = dashCooldown>0 ? 'Cooling' : 'Ready';
       hudCombo.textContent = 'x'+comboMult();
+      if(mission){ hudMission.textContent = `${mission.label}  [${mission.progress}/${mission.target}]  ${Math.max(0,mission.timeLeft).toFixed(0)}s`; }
     }
 
     function collide(a,b){ return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
@@ -1088,17 +1108,19 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
           combo += 1; comboTimer = COMBO_WINDOW;
           if(a.type==='rupee'){
-            rupeeCount+=1; award(1);
-            if(rupeeCount>=10){ shieldTimer = SHIELD_TIME; rupeeCount=0; showInfo('Item: 💎 Shield ON for 4s'); }
+            rupeeCount+=1; award(1); if(rupeeCount>=10){ shieldTimer = SHIELD_TIME; rupeeCount=0; toast('Shield on for 4s.', 5); }
           } else if(a.type==='heart'){
             heartCount+=1; award(2);
-            if(heartCount>=3){ for(const h of hazards){ h.safe=true; } heartCount=0; showInfo('Item: ❤ Field Clear'); }
+            if(mission && mission.type==='hearts'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } }
+            if(heartCount>=3){ for(const h of hazards){ h.safe=true; } heartCount=0; toast('Field Clear.', 3); }
           } else if(a.type==='snail'){
-            slowItemTimer = SLOW_ITEM_TIME; speedScale = SLOW_ITEM_FACTOR; showInfo('Item: 🐌 Slow down for 5s');
+            slowItemTimer = SLOW_ITEM_TIME; speedScale = SLOW_ITEM_FACTOR; toast('Slow down for 5s.', 5);
           } else if(a.type==='star'){
             startGolden();
           } else if(a.type==='health'){
             survivalTimer = 10; addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); award(1);
+          } else if(a.type==='wheel'){
+            spinWheel();
           }
           pickups.splice(i,1);
           try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
@@ -1107,70 +1129,50 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     }
 
     function draw(){
-      // background priority: Lonely (dark) > Golden > Day/Night
       if(lonelyTimer>0){ ctx.fillStyle='#0b1221'; }
       else if(goldenTimer>0){ ctx.fillStyle='#fff7d6'; }
       else if(isDay){ ctx.fillStyle='#eaf2ff'; } else { ctx.fillStyle='#0b1221'; }
       ctx.fillRect(0,0,WORLD.w,WORLD.h);
       ctx.fillStyle=(goldenTimer>0)? '#f0cc4a' : (isDay? '#cfe0ff' : '#172033'); ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
 
-      // player
       const c=CHARS[0]; c.draw(player.x, player.y-2, player.duck);
 
-      // Dad emoji shown while message/effect/lonely
       if(dadMsgTimer>0 || dadBonusTimer>0 || lonelyTimer>0){ const ex=Math.min(WORLD.w-36, player.x+48); const ey=Math.max(28, player.y-70); drawEmoji(ex, ey, 28, '👨'); }
 
-      // shield ring
+      if(qteActive){ ctx.font='bold 14px system-ui'; ctx.fillStyle = '#2563eb'; ctx.fillText('QTE', player.x-6, player.y-58); }
+
       if(shieldTimer>0){ ctx.strokeStyle = isDay? '#22c55e' : '#a7f3d0'; if(goldenTimer>0) ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(player.x+14, player.y-18, 18, 0, Math.PI*2); ctx.stroke(); }
 
-      // hazards
       ctx.font='12px system-ui';
-      for(const h of hazards){
-        if(h.type==='ring'){ continue; }
-        ctx.fillStyle = h.safe? '#34d399' : '#fca5a5'; ctx.fillRect(h.x, h.y, h.w, h.h);
-        ctx.fillStyle=(goldenTimer>0)? '#b45309' : (isDay? '#0b1221':'#dbeafe'); if(h.label) ctx.fillText(h.label, h.x+4, Math.max(12,h.y-2));
-        if(h.safe){ const key=h.type; const text= key==='longNoise'? SAFE_LABELS['noise'] : key==='stairsWall'? SAFE_LABELS['stairs'] : key==='crowdMass'? SAFE_LABELS['crowd'] : SAFE_LABELS[key]||''; if(text) ctx.fillText(text, h.x+4, h.y+h.h+12); }
-      }
+      for(const h of hazards){ ctx.fillStyle = h.safe? '#34d399' : '#fca5a5'; ctx.fillRect(h.x, h.y, h.w, h.h); ctx.fillStyle=(goldenTimer>0)? '#b45309' : (isDay? '#0b1221':'#dbeafe'); if(h.label) ctx.fillText(h.label, h.x+4, Math.max(12,h.y-2)); if(h.safe){ const key=h.type; const text= key==='longNoise'? SAFE_LABELS['noise'] : key==='stairsWall'? SAFE_LABELS['stairs'] : key==='crowdMass'? SAFE_LABELS['crowd'] : SAFE_LABELS[key]||''; if(text) ctx.fillText(text, h.x+4, h.y+h.h+12); } }
 
-      // pickups (emoji‑rich)
-      for(const p of pickups){
-        ctx.font='18px serif'; ctx.fillStyle = (goldenTimer>0)? '#b45309' : (isDay? '#111' : '#fff');
-        const ch = p.type==='rupee'?RUPEE : p.type==='heart'? HEART : p.type==='snail'? SNAIL : p.type==='star'? STAR : p.type==='health'? HEALTH : '•';
-        ctx.fillText(ch, p.x, p.y);
-      }
+      for(const p of pickups){ ctx.font='18px serif'; ctx.fillStyle = (goldenTimer>0)? '#b45309' : (isDay? '#111' : '#fff'); const ch = p.type==='rupee'?RUPEE : p.type==='heart'? HEART : p.type==='snail'? SNAIL : p.type==='star'? STAR : p.type==='health'? HEALTH : p.type==='wheel'? WHEEL : '•'; ctx.fillText(ch, p.x, p.y); }
 
-      // survival warning (last 4s)
       if(survivalTimer<=4){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
 
-      // FX texts
       for(const f of fx){ ctx.globalAlpha = Math.max(0,f.life); ctx.fillStyle = f.color || '#111827'; ctx.font='bold 14px system-ui'; ctx.fillText(f.text, f.x, f.y); ctx.globalAlpha=1; }
 
-      // HUD values
       hudDist.textContent = dist.toFixed(1);
       hudCare.textContent = care;
     }
 
     function loop(ts){ if(!running){ tPrev=ts; return; } let dt=Math.min(0.033,(ts-tPrev)/1000||0); tPrev=ts; if(!paused){ spawn(dt); update(dt); if(check()){ endGame(); return; } draw(); } requestAnimationFrame(loop); }
 
-    function startGame(){ running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); MISSIONS[0].active=true; MISSIONS[0].progress=0; setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=10; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); if(music.paused){ music.currentTime=0; music.play().catch(()=>{}); } requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);}); }
+    function startGame(){ running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=10; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0; if(music.paused){ music.currentTime=0; const p=music.play(); if(p&&p.catch){ p.catch(()=>{}); } } requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);}); }
 
-    function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
+    function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
 
-    function performJump(mult=1){ const jumpVy = baseJumpVy * mult; player.vy = jumpVy; player.onGround=false; jumpSfx.currentTime=0; jumpSfx.play().catch(()=>{}); }
+    function performJump(mult=1){ const jumpVy = baseJumpVy * mult; player.vy = jumpVy; player.onGround=false; playSafe(jumpSfx); }
 
     function nearestHazardDx(){ let dxMin=1e9, target=null; for(const h of hazards){ if(h.safe) continue; const dx=h.x - player.x; if(dx>=-10 && dx<dxMin){ dxMin=dx; target=h; } } return {dx:dxMin, target}; }
 
-    function onSpacePress(){ const now = performance.now(); if(!running){ startGame(); return; } if(now - lastPressTime <= JUMP_CHAIN_WINDOW){ /* keep chain */ } lastPressTime = now; if(player.onGround) { jumpsUsed = 0; glideTime=MAX_GLIDE; }
-      const {dx} = nearestHazardDx(); if(dx>0 && dx<36 && player.onGround){ award(3); addFx('Perfect! ✨', player.x+6, player.y-40, '#f59e0b'); }
-      if(jumpsUsed < MAX_JUMPS){ const mult = (jumpsUsed===0)? 1 : (jumpsUsed===1? 0.92 : 0.86); performJump(mult); jumpsUsed += 1; } }
+    function onSpacePress(){ const now = performance.now(); if(!running){ startGame(); return; } if(now - lastPressTime <= JUMP_CHAIN_WINDOW){ /* keep chain */ } lastPressTime = now; if(player.onGround) { jumpsUsed = 0; glideTime=MAX_GLIDE; } const {dx} = nearestHazardDx(); if(dx>0 && dx<36 && player.onGround){ award(3); addFx('Perfect! ✨', player.x+6, player.y-40, '#f59e0b'); } if(jumpsUsed < MAX_JUMPS){ const mult = (jumpsUsed===0)? 1 : (jumpsUsed===1? 0.92 : 0.86); performJump(mult); jumpsUsed += 1; } }
 
-    function tryDash(){ if(!running) return; if(dashCooldown>0) return; dashTimer = DASH_DURATION; invulnTimer = Math.max(invulnTimer, DASH_DURATION); dashCooldown = DASH_COOLDOWN; const {dx} = nearestHazardDx(); if(dx>0 && dx<80){ slowmoTimer = 1.0; addFx('Slo‑mo! 🕒', player.x+2, player.y-50, '#2563eb'); } }
+    function tryDash(){ if(!running) return; if(dashCooldown>0) return; dashTimer = DASH_DURATION; invulnTimer = Math.max(invulnTimer, DASH_DURATION); dashCooldown = DASH_COOLDOWN; const {dx, target} = nearestHazardDx(); if(dx>0 && dx<80){ slowmoTimer = Math.max(slowmoTimer, 1.0); addFx('Slo‑mo! 🕒', player.x+2, player.y-50, '#2563eb'); if(qteActive && target){ target.safe=true; award(4); qteActive=false; qteCooldown=QTE_COOLDOWN; toast('QTE success. Nearest obstacle cleared.', 5); } } }
 
-    // Keyboard
     function onKeyDown(e){ const active=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName); if(active) return; if(['ArrowDown','Space','Enter','KeyX'].includes(e.code)) e.preventDefault(); if(e.code==='Space'){ spaceHeld=true; onSpacePress(); } else if(e.key==='ArrowDown'){ if(running) player.duck=true; } else if(e.key==='Enter'){ if(running) transformNearest(); } else if(e.code==='KeyX'){ tryDash(); } else if(e.code==='KeyP'){ if(running) paused=!paused; } }
     function onKeyUp(e){ if(e.code==='Space') spaceHeld=false; if(e.key==='ArrowDown') player.duck=false; }
 
-    // Mouse & touch
     canvas.addEventListener('click', ()=>{ if(!running){ startGame(); } else { onSpacePress(); } });
     if(startBtn){ startBtn.addEventListener('click', (ev)=>{ ev.stopPropagation(); startGame(); }); }
     banner.addEventListener('click', (ev)=>{ ev.stopPropagation(); startGame(); });
@@ -1186,8 +1188,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 </section>
 
 
-
-
+  
   
 
 
