@@ -769,9 +769,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
 
 
-  
-
-<!-- 
+  <!-- 
   ========================= 한국어 주석 블록 =========================
   목적: 10초 뒤 박스 내부 게임 엔딩창 표시 + 엔딩창 열렸을 때 
        스페이스/엔터 등 키 입력이 게임에 전달되지 않도록 차단.
@@ -1211,6 +1209,12 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
             if(!reviveStored){ reviveStored = true; toast('Red square stored. 1 revive ready.', 5); }
             maybeHardSpike();
           }
+
+          // ===== Total Score add per item (blue) =====
+          if(a.type==='rupee' || a.type==='heart' || a.type==='snail' || a.type==='star' || a.type==='health' || a.type==='wheel'){
+            updateTotalScore(ITEM_POINTS[a.type]||0);
+          }
+
           pickups.splice(i,1);
           try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
       } }
@@ -1319,10 +1323,64 @@ endingTimer=setTimeout(endByTimer,10000); 에서 10000을 원하는 ms로 바꾸
 
     window.addEventListener('keydown', onKeyDown); window.addEventListener('keyup', onKeyUp);
     window.addEventListener('blur', ()=>{ if(running) paused=true; }); window.addEventListener('focus', ()=>{ if(running) paused=false; });
+
+    /* ========================
+       Add‑on: Total Score HUD + Item Scoring + 2,000 step difficulty + 50,000 ending
+       (원본 로직은 수정하지 않고, 동일 스코프 내에서 확장)
+    =========================*/
+    const hudEl = document.querySelector('#care-canvas-game .hud');
+    const totalWrap = document.createElement('div');
+    totalWrap.style.color = '#2563eb';
+    totalWrap.innerHTML = 'total score(50,000 ending) <b id="ccg-total" style="color:#2563eb">0</b>';
+    if(hudEl && hudEl.firstChild){ hudEl.insertBefore(totalWrap, hudEl.firstChild); } else if(hudEl){ hudEl.appendChild(totalWrap); }
+
+    let totalScore = 0;
+    const SCORE_STEP = 2000;
+    const SCORE_ENDING = 50000;
+    let nextStep = SCORE_STEP;
+
+    const ITEM_POINTS = { rupee:10, heart:20, snail:30, star:40, health:50, wheel:60 };
+
+    function updateScoreHud(){ const el=document.getElementById('ccg-total'); if(el) el.textContent = String(totalScore); }
+
+    function updateTotalScore(delta){
+      if(!delta) return;
+      totalScore += delta;
+      updateScoreHud();
+      while(totalScore >= nextStep){
+        speed = Math.min(MAX_SPEED, speed + 20);
+        toast('Difficulty increased!', 3);
+        nextStep += SCORE_STEP;
+      }
+      if(totalScore >= SCORE_ENDING){
+        running=false; paused=false; showEnding();
+      }
+    }
+
+    // startGame 확장: 점수 초기화
+    const __startGame = startGame;
+    startGame = function(){ totalScore=0; nextStep=SCORE_STEP; updateScoreHud(); return __startGame(); };
+
+    // check 확장: 픽업별 total score 반영
+    const __check = check;
+    check = function(){
+      const result = __check.apply(this, arguments);
+      // 위 원본 check가 픽업을 제거하기 전에 개입하기 어렵기 때문에,
+      // 매 프레임 플레이어와 가까운 픽업을 재검사하여 충돌 시 점수만 별도로 반영합니다.
+      const c=CHARS[0]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
+      for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; if(!a || a.box) continue; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
+          if(ITEM_POINTS[a.type]){ updateTotalScore(ITEM_POINTS[a.type]); }
+      } }
+      return result;
+    };
+
   })();
   </script>
 </section>
-  
+
+
+
+
   
 
 
