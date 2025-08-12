@@ -1200,7 +1200,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
         }
       }
 
-      if(survivalTimer<=10){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
+      if(survivalTimer<=8){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
 
       for(const f of fx){ ctx.globalAlpha = Math.max(0,f.life); ctx.fillStyle = f.color || '#111827'; ctx.font='bold 14px system-ui'; ctx.fillText(f.text, f.x, f.y); ctx.globalAlpha=1; }
 
