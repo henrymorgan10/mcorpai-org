@@ -766,15 +766,26 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
 
 
+
+
+
+  
+
 <!-- 
-  ========================= 한국어 주석 블록 (PATCH 버전) =========================
-  변경 요청 반영:
-  1) 엔딩창에 PDF 뷰어(iframe)로 바로 보기: src="mcorpai-org/Love Children with Disabilities(265 Pages).pdf#view=FitH"
-  2) 엔딩창 열린 동안에는 키보드(특히 Space)와 터치/클릭이 게임에 전달되지 않도록 차단.
-     - 오직 엔딩창 내부 버튼(마우스/터치 클릭)으로만 동작하도록 제한.
-     - 모바일도 동일하게 touchstart/touchend 차단.
-  3) 전체 코드는 기존 구조 유지, 수정 부분은 // PATCH 주석으로 표시.
-  =============================================================================
+  ========================= 한국어 주석 블록 =========================
+  목적: 10초 뒤 박스 내부 게임 엔딩창 표시 + 엔딩창 열렸을 때 
+       스페이스/엔터 등 키 입력이 게임에 전달되지 않도록 차단.
+
+  ◻︎ 요청 반영 요약
+  1) PDF 경로: https://mcorpai.org/Love Children with Disabilities(265 Pages).pdf →
+     새 탭에서 바로 열기(다운로드 아님). 버튼 라벨 "Open PDF".
+  2) 엔딩창이 떠 있을 때는 키보드/터치/캔버스 클릭을 무시하고,
+     엔딩창 버튼(마우스/터치)만 동작합니다. (모바일 포함)
+  3) Exit Game 누르면 배너의 GAME START 버튼이 다시 보입니다.
+  4) 배경음악은 게임 진행 중에만 1회 재생(loop=false)하고,
+     엔딩창이 뜨거나 게임 종료 시 즉시 정지(점프 SFX도 정지)합니다.
+  5) 기존 게임 로직은 변경하지 않고 필요한 부분만 추가/수정했습니다.
+  ==================================================================
 -->
 
 <section id="care-canvas-game" aria-label="Love Children with Disabilities game" style="margin:24px auto;max-width:980px">
@@ -788,33 +799,28 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     #care-canvas-game .controls{font-size:.86rem;color:#4b5563;margin-top:8px;min-height:36px;display:flex;align-items:center}
     #care-canvas-game .footer{margin-top:10px;text-align:center;color:#6b7280;font-size:.86rem}
     #care-canvas-game .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
     #ccg-banner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.96);border:1px solid #e5e7eb;border-radius:16px;padding:18px 22px;font-size:1.1rem;color:#0b1221;box-shadow:0 10px 24px rgba(2,6,23,.08);text-align:center;width:min(86%,560px);z-index:5;pointer-events:auto}
     #ccg-banner h4{margin:0 0 8px;font-size:1.25rem}
     #ccg-banner .start{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:12px;border:1px solid #111827;background:#111827;color:#fff;font-weight:800;cursor:pointer}
-    /* Dad toast */
+
+    /* Toasts */
     #dad-toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(255,255,255,.96);border:1px solid #e5e7eb;border-radius:12px;padding:10px 14px;font-size:1rem;color:#111827;box-shadow:0 10px 24px rgba(2,6,23,.08);z-index:4;display:none}
-    /* Survival big message */
     #survival-msg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.96);border:1px solid #e5e7eb;border-radius:14px;padding:14px 18px;font-size:1.05rem;font-weight:800;color:#0b1221;box-shadow:0 10px 24px rgba(2,6,23,.08);z-index:4;display:none;text-align:center}
-    /* Mission popup (small, top-center) */
     #mission-pop{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:rgba(14,21,38,.96);color:#fff;border:1px solid #0ea5e9;border-radius:12px;padding:10px 14px;font-size:.95rem;box-shadow:0 10px 24px rgba(2,6,23,.18);z-index:4;display:none}
-    /* Game toast (balloon message) */
     #game-toast{position:absolute;right:10px;top:10px;max-width:52%;background:rgba(17,24,39,.92);color:#f8fafc;border:1px solid rgba(148,163,184,.4);border-radius:12px;padding:8px 12px;font-size:.9rem;line-height:1.35;box-shadow:0 10px 22px rgba(2,6,23,.18);z-index:6;display:none}
     #game-toast b{color:#fbbf24}
 
-    /* ===== Ending panel INSIDE the game box ===== */
-    #ccg-ending{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,820px);background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 18px 46px rgba(2,6,23,.18);padding:18px;display:none;z-index:20}
+    /* ===== Ending panel: inside the box, mouse-only to close/restart/exit ===== */
+    #ccg-ending{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,760px);background:#ffffff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 18px 46px rgba(2,6,23,.18);padding:18px;display:none;z-index:20}
     #ccg-ending .ending-title{margin:0 0 6px;font:800 1.25rem/1.25 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0b1221;text-align:center}
     #ccg-ending .ending-line{margin:2px 0 4px;font:700 1.05rem/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111827;text-align:center}
     #ccg-ending .ending-sub{margin:0 10px 10px;font:.92rem/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#374151;text-align:center}
-    /* PATCH: 뷰어 영역 스타일 */
-    #ccg-ending .ending-view{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#f9fafb}
-    #ccg-ending .ending-view iframe{display:block;width:100%;height:56vh;border:0}
     #ccg-ending .ending-actions{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:12px;flex-wrap:wrap}
     #ccg-ending .btn{display:inline-block;padding:9px 14px;border-radius:12px;border:1px solid #0f172a;background:#0f172a;color:#fff;text-decoration:none;font-weight:800;cursor:pointer}
     #ccg-ending .btn.gray{border-color:#d1d5db;background:#fff;color:#111827;font-weight:700}
 
     @media (prefers-reduced-motion: reduce){ #care-canvas-game canvas{transition:none} }
-    @media (max-width:640px){ #ccg-ending .ending-view iframe{height:52vh} }
   </style>
 
   <div class="wrap" role="group" aria-roledescription="game container">
@@ -842,16 +848,12 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       </div>
 
       <!-- Ending panel (inside the box) -->
-      <div id="ccg-ending" role="dialog" aria-modal="true" aria-live="polite" tabindex="-1"><!-- PATCH: tabindex 로 포커스 고정 -->
+      <div id="ccg-ending" role="dialog" aria-modal="true" aria-live="polite">
         <h4 class="ending-title">GAME ENDING</h4>
         <p class="ending-line">I will love you forever.</p>
         <p class="ending-sub">Love Children with Disabilities — Full PDF (260 pages)</p>
-        <!-- PATCH: PDF 뷰어 바로 보기 -->
-        <div class="ending-view">
-          <iframe title="Love Children with Disabilities PDF viewer" id="ending-pdf" src="http://mcorpai.org/Love Children with Disabilities(265 Pages).pdf#view=FitH" loading="lazy"></iframe>
-        </div>
         <div class="ending-actions">
-          <a class="btn" id="btn-download" href="mcorpai.org/Love Children with Disabilities(265 Pages).pdf" download>Download PDF</a>
+          <a class="btn" id="btn-open-pdf" href="https://mcorpai.org/Love%20Children%20with%20Disabilities(265%20Pages).pdf#view=FitH" target="_blank" rel="noopener">Open PDF</a>
           <button type="button" class="btn" id="btn-restart">Restart</button>
           <button type="button" class="btn gray" id="btn-exit">Exit Game</button>
         </div>
@@ -889,137 +891,327 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const clamp=(v,a,b)=> Math.max(a, Math.min(b, v));
     const lerp=(a,b,t)=> a+(b-a)*t;
 
+    // ===== Audio (play only during game; music no loop) =====
     function makeAudio(srcs, volume, loop){
-      const a = new Audio(); a.preload = 'auto'; a.crossOrigin = 'anonymous'; a.loop = !!loop; a.volume = typeof volume==='number'? volume : 1; let i = 0;
+      const a = new Audio();
+      a.preload = 'auto';
+      a.crossOrigin = 'anonymous';
+      a.loop = !!loop;
+      a.volume = typeof volume==='number'? volume : 1;
+      let i = 0;
       function next(){ if(i < srcs.length){ a.src = srcs[i++]; a.load(); } }
-      a.addEventListener('error', ()=>{ next(); }); next(); return a;
+      a.addEventListener('error', ()=>{ next(); });
+      next();
+      return a;
     }
-    const music = makeAudio(['https://mcorpai.org/adventuremusic.mp3','/adventuremusic.mp3'], 0.42, true);
-    const jumpSfx = makeAudio(['https://mcorpai.org/jump6462.mp3','/jump6462.mp3'], 0.7, false);
-    function playSafe(a){ try{ a.currentTime = 0; const p=a.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+    const music = makeAudio([
+      'https://mcorpai.org/adventuremusic.mp3',
+      '/adventuremusic.mp3'
+    ], 0.42, false); // loop=false : 1회 재생
 
+    const jumpSfx = makeAudio([
+      'https://mcorpai.org/jump6462.mp3',
+      '/jump6462.mp3'
+    ], 0.7, false);
+
+    let audioOn = false; // 게임 중에만 true
+
+    function safePlay(a){ if(!audioOn) return; try{ a.currentTime = 0; const p=a.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+    function stopAllAudio(){ try{ music.pause(); music.currentTime=0; }catch(e){} try{ jumpSfx.pause(); }catch(e){} }
+
+    // Small toast helper
     let toastTimer=null; function toast(msg, sec=5){ gameToast.textContent=msg; gameToast.style.display='block'; if(toastTimer){ clearTimeout(toastTimer); toastTimer=null; } toastTimer=setTimeout(()=>{ gameToast.style.display='none'; }, Math.max(1000, sec*1000)); }
 
     const DEFAULT_HINT = 'Click to start. Space (triple) to jump, hold to glide, ↓ to duck, X to dash. Enter converts obstacle.';
     controlsEl.textContent = DEFAULT_HINT;
 
+    // Best score
     const BEST_KEY='careCanvasBest_v13';
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
+    // Character (emoji)
     const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26,'🙂'); }}];
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
     const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩', WHEEL='🎡';
 
+    // World & physics
     const WORLD={w:canvas.width,h:canvas.height};
     const GROUND_Y = WORLD.h - 40;
-    let running=false, paused=false; let tPrev=0; let gameTime=0;
+    let running=false, paused=false;
+    let tPrev=0; let gameTime=0; // seconds since start
+
+    // Difficulty & speed (capped)
     let speed=220; const MAX_SPEED=540; let speedScale=1;
+
     let dist=0; let care=0; let spawnTimer=0; const gravity=1800; const baseJumpVy=560;
+
+    // Time scale (for slow‑mo)
     let slowmoTimer=0; const SLOWMO_FACTOR=0.4;
+
+    // QTE director (now ~10% chance)
     let qteActive=false, qteTimer=0, qteCooldown=0; const QTE_CHANCE=0.10; const QTE_COOLDOWN=4.0;
+
+    // Speed growth
     let baseAccel = 6; let spikeTimer = 0; function scheduleSpike(){ spikeTimer = rand(4.5,8.0); } scheduleSpike();
+
+    // Triple jump / glide
     const MAX_JUMPS = 3; const JUMP_CHAIN_WINDOW = 500; let jumpsUsed = 0; let lastPressTime = 0; let spaceHeld=false; let glideTime=0, MAX_GLIDE=0.35;
+
+    // Dash (X key)
     let dashTimer=0; const DASH_DURATION=0.35; const DASH_COOLDOWN=2.5; let dashCooldown=0; let invulnTimer=0;
+
+    // Support ability (Enter)
     let supportTimer=0, supportCooldown=1.2;
 
     const player={x:72,y:GROUND_Y,vy:0,duck:false,onGround:true};
-    const hazards=[]; const pickups=[];
+    const hazards=[]; const pickups=[]; // rupees/hearts/snails/stars/health/wheel/revive
 
+    // Hazard labels
     const SAFE_LABELS={ stairs:'Ramp', noise:'Quiet Zone', crowd:'Signage', block:'Safe Path' };
     const HAZARD_LABELS={ stairs:'Stairs', noise:'Noise', crowd:'Crowd', block:'Obstacle' };
 
     const TYPES=[ {key:'stairs',kind:'ground',w:40,h:24}, {key:'noise',kind:'air',w:48,h:16,y:96}, {key:'crowd',kind:'ground',w:42,h:22}, {key:'block',kind:'ground',w:30,h:26} ];
     const BOSSES=[ {key:'longNoise',kind:'air',w:200,h:16,y:92,label:'Loud Corridor'}, {key:'stairsWall',kind:'ground',w:160,h:30,label:'Steep Steps'}, {key:'crowdMass',kind:'ground',w:220,h:24,label:'Dense Crowd'} ];
 
+    // Stage cycle (Day/Night) every 300m
     let isDay=true; const STAGE_LEN=300; function setStageText(){ hudStage.textContent = (goldenTimer>0? 'Golden' : (lonelyTimer>0? 'Dark' : (isDay? 'Day':'Night'))); }
+
+    // Combo system
     let combo=0; let comboTimer=0; const COMBO_WINDOW=3.0; const MAX_MULT=5; function comboMult(){ return Math.min(MAX_MULT, 1 + Math.floor(combo/5)); }
+
+    // Score multiplier from wheel
     let scoreMult=1, scoreMultTimer=0;
 
-    let mission=null; let missionGap=rand(16,28);
+    // Random Mission system
+    let mission=null; let missionGap=rand(16,28); // a bit rarer
     function setMissionText(){ hudMission.textContent = mission? mission.label : '—'; }
     function showMission(text){ missionPop.textContent=text; missionPop.style.display='block'; setTimeout(()=>{ missionPop.style.display='none'; }, 1500); }
-    function startRandomMission(){ if(mission) return; const roll=Math.random(); if(roll<0.5){ mission={type:'hearts',label:'Get 3 Hearts in 30s',target:3,progress:0,timeLeft:30}; } else { mission={type:'clear',label:'Clear 5 Obstacles in 20s',target:5,progress:0,timeLeft:20}; } setMissionText(); showMission('Mission: '+mission.label); }
-    function finishMission(success){ if(!mission) return; if(success){ award(20); invulnTimer=Math.max(invulnTimer,3); toast('Mission complete. Reward applied.',5);} else { toast('Mission failed. No penalty.',5);} mission=null; setMissionText(); missionGap=rand(18,30); }
-
-    let infoTimer=0; const INFO_DURATION=10; function showInfo(text){ controlsEl.textContent=text; infoTimer=INFO_DURATION; }
-    let goldenTimer=0; const GOLDEN_DURATION=5; function startGolden(){ goldenTimer=GOLDEN_DURATION; hazards.length=0; toast('Golden Stage for 5s',5); }
-    function spinWheel(){ toast('Wheel spinning…',2); setTimeout(()=>{ const r=Math.random(); if(r<0.25){ speed=Math.min(MAX_SPEED,speed+120); toast('Wheel reward: Speed boost.',5);} else if(r<0.5){ speedScale=0.8; toast('Wheel reward: Smooth slowdown 3s.',5); setTimeout(()=>{ speedScale=1; },3000);} else if(r<0.75){ invulnTimer=Math.max(invulnTimer,2.5); toast('Wheel reward: Invulnerability 2.5s.',5);} else { scoreMult=2; scoreMultTimer=6; toast('Wheel reward: Score x2 for 6s.',5);} },2000); }
-
-    let slowItemTimer=0; const SLOW_ITEM_FACTOR=0.7; const SLOW_ITEM_TIME=5;
-    const fx=[]; function addFx(text,x,y,color){ fx.push({text,x,y,vy:-22,life:1,color}); }
-
-    const DAD_CHOICES=[ {key:'love', text:'I love you.'}, {key:'hurt', text:'Are you hurt anywhere?'}, {key:'travel', text:"I'm going on a long trip."} ];
-    let dadEventTimer = rand(18,32); let dadMsgTimer = 0; let dadEffectPending = null; let dadBonusTimer = 0; let dadBonusFactor = 1; let lonelyTimer = 0; let lastDadAt = -999; const DAD_MIN_GAP=20;
-    function triggerDadEvent(){ if(!running || goldenTimer>0 || dadMsgTimer>0 || lonelyTimer>0){ dadEventTimer=rand(20,34); return;} if(gameTime-lastDadAt < DAD_MIN_GAP){ dadEventTimer=rand(10,16); return;} const c=DAD_CHOICES[Math.floor(Math.random()*DAD_CHOICES.length)]; dadEffectPending=c.key; dadMsgTimer=3; lastDadAt=gameTime; dadToast.textContent=`👨 ${c.text}`; dadToast.style.display='block'; dadEventTimer=rand(26,42);}    
-    function applyDadEffect(){ if(!dadEffectPending) return; if(dadEffectPending==='love'){ speed=Math.min(MAX_SPEED,speed+360); dadBonusFactor=2.0; dadBonusTimer=8; toast('Dad: bonus up for 8s.',5);} else if(dadEffectPending==='hurt'){ speed=Math.max(180,speed*0.8); dadBonusFactor=0.5; dadBonusTimer=6; toast('Dad: slowdown and lower bonus for 6s.',5);} else if(dadEffectPending==='travel'){ lonelyTimer=10; hazards.length=0; pickups.length=0; dadBonusFactor=1; dadBonusTimer=0; toast('Dad: dark 10s, no hazards or bonuses.',5);} dadEffectPending=null; dadToast.style.display='none'; }
-
-    function award(points){ if(lonelyTimer>0) return; const add=Math.max(0,Math.floor(points*comboMult()*dadBonusFactor*scoreMult)); care+=add; }
-
-    let survivalTimer = 0; let survivalMsgTimer = 0; let healthSpawnTimer = 0; function difficulty01(){ return clamp(gameTime/120,0,1);} function scheduleHealthSpawn(){ const t=difficulty01(); const minI=lerp(1.4,5.0,t); const maxI=lerp(3.0,9.0,t); healthSpawnTimer=rand(minI,maxI);} function spawnHealth(dt){ healthSpawnTimer-=dt; if(healthSpawnTimer>0) return; const y=rand(GROUND_Y-110,GROUND_Y-70); pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'health'}); scheduleHealthSpawn(); }
-
-    let reviveStored=false; let redTotal=0; let redNextThreshold=10; let hardLevel=0; let hardSpikeTimer=0; function useRevive(reason){ reviveStored=false; invulnTimer=Math.max(invulnTimer,2.5); for(const h of hazards){ const cx=h.x+h.w*0.5; if(Math.abs(cx-(player.x+14))<90) h.safe=true; } if(reason==='survival'){ survivalTimer=10; } addFx('Revive ✚',player.x+6,player.y-50,'#ef4444'); toast('Revived once. Charge consumed.',5);} function maybeHardSpike(){ if(redTotal>=redNextThreshold){ hardLevel+=1; hardSpikeTimer=12; redNextThreshold+=10; toast('Difficulty spike! Red squares reached '+(redNextThreshold-10)+'.',5);} else { const remain=redNextThreshold-redTotal; toast('Revive ready. '+redTotal+'/'+(redNextThreshold-(redNextThreshold%10?redNextThreshold%10:0) || 10)+' toward hard spike. '+remain+' to go.',5);} }
-
-    function spawn(dt){ if(lonelyTimer>0){ spawnTimer=0.2; return;} spawnTimer-=dt; if(spawnTimer>0) return; const timeDf=clamp(gameTime/240,0,1); let hazardChance=0.60+0.18*timeDf+0.06*hardLevel+(hardSpikeTimer>0?0.18:0); hazardChance=Math.min(0.9,hazardChance); let bossChance=0.10+0.08*timeDf+0.03*hardLevel+(hardSpikeTimer>0?0.06:0); if(goldenTimer>0){ const type=Math.random()<0.2? HEART : RUPEE; const y=rand(GROUND_Y-110,GROUND_Y-40); pickups.push({x:WORLD.w+10,y,w:20,h:20,type: type==='💎'? 'rupee':'heart'}); spawnTimer=rand(0.15,0.35); return;} const MAX_HAZARDS=9+Math.min(3,hardLevel); const wantHazard=Math.random()<hazardChance && hazards.length<MAX_HAZARDS; if(wantHazard){ if(Math.random()<bossChance){ const b=BOSSES[Math.floor(Math.random()*BOSSES.length)]; const y=b.kind==='ground'?(GROUND_Y-b.h):(b.y||92); hazards.push({x:WORLD.w+10,y,w:b.w,h:b.h,type:b.key,kind:b.kind,label:b.label,safe:false,boss:true}); spawnTimer=2.6; return;} const t=TYPES[Math.floor(Math.random()*TYPES.length)]; const y=t.kind==='ground'?(GROUND_Y-t.h):(t.y||90); const label=HAZARD_LABELS[t.key]; hazards.push({x:WORLD.w+10,y,w:t.w,h:t.h,type:t.key,kind:t.kind,label,safe:false,boss:false}); } else { const roll=Math.random(); if(roll<0.46){ const y=GROUND_Y-60; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'rupee'});} else if(roll<0.77){ const y=GROUND_Y-90; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'heart'});} else if(roll<0.88){ const y=GROUND_Y-30; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'snail'});} else if(roll<0.93){ const y=GROUND_Y-80; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'star'});} else if(roll<0.96){ const y=GROUND_Y-70; pickups.push({x:WORLD.w+10,y,w:18,h:18,type:'revive',box:true});} else { const y=GROUND_Y-70; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'wheel'});} } const effectiveSpeed=speed*speedScale; let MIN_SPAWN=0.55-0.11*timeDf-0.04*hardLevel-(hardSpikeTimer>0?0.10:0); MIN_SPAWN=Math.max(0.30,MIN_SPAWN); const base=rand(0.9,1.6)*(220/Math.max(220,effectiveSpeed)); spawnTimer=Math.max(MIN_SPAWN,base); }
-
-    function transformNearest(){ if(supportTimer>0) return; let target=null,minDx=1e9; for(const h of hazards){ if(h.safe) continue; const dx=h.x-player.x; if(dx>=-24 && dx<160 && dx<minDx){minDx=dx; target=h;} } if(!target) return; if(target.boss){ for(const h of hazards){ const near=Math.abs((h.x+h.w*0.5)-(target.x+target.w*0.5))<target.w*0.8; if(!h.safe && near) h.safe=true; } } else { target.safe=true; } award(1); supportTimer=supportCooldown; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
+    function startRandomMission(){
+      if(mission) return;
+      const roll = Math.random();
+      if(roll<0.5){ mission = {type:'hearts', label:'Get 3 Hearts in 30s', target:3, progress:0, timeLeft:30}; }
+      else { mission = {type:'clear', label:'Clear 5 Obstacles in 20s', target:5, progress:0, timeLeft:20}; }
+      setMissionText();
+      showMission('Mission: ' + mission.label);
+    }
+    function finishMission(success){
+      if(!mission) return;
+      if(success){ award(20); invulnTimer = Math.max(invulnTimer, 3); toast('Mission complete. Reward applied.', 5); }
+      else { toast('Mission failed. No penalty.', 5); }
+      mission=null; setMissionText(); missionGap=rand(18,30);
     }
 
+    // Info line
+    let infoTimer=0; const INFO_DURATION=10; function showInfo(text){ controlsEl.textContent=text; infoTimer=INFO_DURATION; }
+
+    // Golden stage
+    let goldenTimer=0; const GOLDEN_DURATION=5; function startGolden(){ goldenTimer=GOLDEN_DURATION; hazards.length=0; toast('Golden Stage for 5s', 5); }
+
+    // Wheel system
+    function spinWheel(){ toast('Wheel spinning…', 2); setTimeout(()=>{ const r=Math.random(); if(r<0.25){ speed = Math.min(MAX_SPEED, speed + 120); toast('Wheel reward: Speed boost.', 5); } else if(r<0.5){ speedScale = 0.8; toast('Wheel reward: Smooth slowdown 3s.', 5); setTimeout(()=>{ speedScale=1; }, 3000); } else if(r<0.75){ invulnTimer = Math.max(invulnTimer, 2.5); toast('Wheel reward: Invulnerability 2.5s.', 5); } else { scoreMult = 2; scoreMultTimer = 6; toast('Wheel reward: Score x2 for 6s.', 5); } }, 2000); }
+
+    // Snail (slow)
+    let slowItemTimer=0; const SLOW_ITEM_FACTOR=0.7; const SLOW_ITEM_TIME=5;
+
+    // Effects
+    const fx=[]; function addFx(text,x,y,color){ fx.push({text,x,y,vy:-22,life:1,color}); }
+
+    // Dad random events
+    const DAD_CHOICES=[ {key:'love', text:'I love you.'}, {key:'hurt', text:'Are you hurt anywhere?'}, {key:'travel', text:"I'm going on a long trip."} ];
+    let dadEventTimer = rand(18,32); let dadMsgTimer = 0; let dadEffectPending = null; let dadBonusTimer = 0; let dadBonusFactor = 1; let lonelyTimer = 0; let lastDadAt = -999; const DAD_MIN_GAP=20;
+
+    function triggerDadEvent(){
+      if(!running || goldenTimer>0 || dadMsgTimer>0 || lonelyTimer>0) { dadEventTimer = rand(20,34); return; }
+      if(gameTime - lastDadAt < DAD_MIN_GAP) { dadEventTimer = rand(10,16); return; }
+      const c = DAD_CHOICES[Math.floor(Math.random()*DAD_CHOICES.length)];
+      dadEffectPending = c.key; dadMsgTimer = 3; lastDadAt = gameTime;
+      dadToast.textContent = `👨 ${c.text}`; dadToast.style.display='block';
+      dadEventTimer = rand(26,42);
+    }
+
+    function applyDadEffect(){
+      if(!dadEffectPending) return;
+      if(dadEffectPending==='love'){ speed = Math.min(MAX_SPEED, speed + 360); dadBonusFactor = 2.0; dadBonusTimer = 8; toast('Dad: bonus up for 8s.', 5); }
+      else if(dadEffectPending==='hurt'){ speed = Math.max(180, speed * 0.8); dadBonusFactor = 0.5; dadBonusTimer = 6; toast('Dad: slowdown and lower bonus for 6s.', 5); }
+      else if(dadEffectPending==='travel'){ lonelyTimer = 10; hazards.length=0; pickups.length=0; dadBonusFactor=1; dadBonusTimer=0; toast('Dad: dark 10s, no hazards or bonuses.', 5); }
+      dadEffectPending=null; dadToast.style.display='none';
+    }
+
+    function award(points){ if(lonelyTimer>0) return; const add = Math.max(0, Math.floor(points * comboMult() * dadBonusFactor * scoreMult)); care += add; }
+
+    // ===== Health survival =====
+    let survivalTimer = 0; let survivalMsgTimer = 0; let healthSpawnTimer = 0;
+    function difficulty01(){ return clamp(gameTime/120, 0, 1); }
+    function scheduleHealthSpawn(){ const t = difficulty01(); const minI = lerp(1.4, 5.0, t); const maxI = lerp(3.0, 9.0, t); healthSpawnTimer = rand(minI, maxI); }
+    function spawnHealth(dt){ healthSpawnTimer -= dt; if(healthSpawnTimer>0) return; const y = rand(GROUND_Y-110, GROUND_Y-70); pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'health'}); scheduleHealthSpawn(); }
+
+    // ===== Revive system =====
+    let reviveStored=false; let redTotal=0; let redNextThreshold=10; let hardLevel=0; let hardSpikeTimer=0;
+    function useRevive(reason){
+      reviveStored=false;
+      invulnTimer = Math.max(invulnTimer, 2.5);
+      for(const h of hazards){ const cx=h.x+h.w*0.5; if(Math.abs(cx - (player.x+14)) < 90) h.safe=true; }
+      if(reason==='survival'){ survivalTimer = 10; }
+      addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
+      toast('Revived once. Charge consumed.', 5);
+    }
+    function maybeHardSpike(){
+      if(redTotal >= redNextThreshold){
+        hardLevel += 1; hardSpikeTimer = 12;
+        redNextThreshold += 10;
+        toast('Difficulty spike! Red squares reached '+(redNextThreshold-10)+'.', 5);
+      } else {
+        const remain = redNextThreshold - redTotal;
+        toast('Revive ready. '+redTotal+'/'+(redNextThreshold- (redNextThreshold%10?redNextThreshold%10:0) || 10)+' toward hard spike. '+remain+' to go.', 5);
+      }
+    }
+
+    function spawn(dt){
+      if(lonelyTimer>0){ spawnTimer=0.2; return; }
+      spawnTimer -= dt; if(spawnTimer>0) return;
+
+      const timeDf = clamp(gameTime/240, 0, 1);
+      let hazardChance = 0.60 + 0.18*timeDf + 0.06*hardLevel + (hardSpikeTimer>0?0.18:0); hazardChance = Math.min(0.9, hazardChance);
+      let bossChance   = 0.10 + 0.08*timeDf + 0.03*hardLevel + (hardSpikeTimer>0?0.06:0);
+
+      if(goldenTimer>0){ const type = Math.random()<0.2? HEART : RUPEE; const y = rand(GROUND_Y-110, GROUND_Y-40); pickups.push({x:WORLD.w+10,y,w:20,h:20,type: type==='💎'? 'rupee':'heart'}); spawnTimer = rand(0.15,0.35); return; }
+
+      const MAX_HAZARDS = 9 + Math.min(3, hardLevel);
+      const wantHazard = Math.random() < hazardChance && hazards.length<MAX_HAZARDS;
+
+      if(wantHazard){
+        if(Math.random()<bossChance){ const b=BOSSES[Math.floor(Math.random()*BOSSES.length)]; const y=b.kind==='ground'?(GROUND_Y-b.h):(b.y||92); hazards.push({x:WORLD.w+10,y,w:b.w,h:b.h,type:b.key,kind:b.kind,label:b.label,safe:false,boss:true}); spawnTimer=2.6; return; }
+        const t=TYPES[Math.floor(Math.random()*TYPES.length)]; const y=t.kind==='ground'?(GROUND_Y-t.h):(t.y||90); const label=HAZARD_LABELS[t.key]; hazards.push({x:WORLD.w+10,y,w:t.w,h:t.h,type:t.key,kind:t.kind,label,safe:false,boss:false});
+      } else {
+        const roll = Math.random();
+        if(roll<0.46){ const y= GROUND_Y-60; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'rupee'}); }
+        else if(roll<0.77){ const y= GROUND_Y-90; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'heart'}); }
+        else if(roll<0.88){ const y= GROUND_Y-30; pickups.push({x:WORLD.w+10,y,w:20,h:20,type:'snail'}); }
+        else if(roll<0.93){ const y= GROUND_Y-80; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'star'}); }
+        else if(roll<0.96){ const y= GROUND_Y-70; pickups.push({x:WORLD.w+10,y,w:18,h:18,type:'revive',box:true}); }
+        else { const y= GROUND_Y-70; pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'wheel'}); }
+      }
+
+      const effectiveSpeed = speed * speedScale;
+      let MIN_SPAWN = 0.55 - 0.11*timeDf - 0.04*hardLevel - (hardSpikeTimer>0?0.10:0); MIN_SPAWN = Math.max(0.30, MIN_SPAWN);
+      const base = rand(0.9,1.6)*(220/Math.max(220,effectiveSpeed));
+      spawnTimer = Math.max(MIN_SPAWN, base);
+    }
+
+    function transformNearest(){ if(supportTimer>0) return; let target=null, minDx=1e9; for(const h of hazards){ if(h.safe) continue; const dx=h.x-player.x; if(dx>=-24 && dx<160 && dx<minDx){minDx=dx; target=h;} } if(!target) return; if(target.boss){ for(const h of hazards){ const near=Math.abs((h.x+h.w*0.5)-(target.x+target.w*0.5))<target.w*0.8; if(!h.safe && near) h.safe=true; } } else { target.safe=true; } award(1); supportTimer=supportCooldown; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
+    }
+
+    // Special counters
     let rupeeCount=0, heartCount=0; let shieldTimer=0; const SHIELD_TIME=4;
 
     function update(dt){
       gameTime += dt;
+
+      // Dad events
       dadEventTimer -= dt; if(dadEventTimer<=0){ triggerDadEvent(); }
       if(dadMsgTimer>0){ dadMsgTimer -= dt; if(dadMsgTimer<=0){ applyDadEffect(); } }
       if(dadBonusTimer>0){ dadBonusTimer -= dt; if(dadBonusTimer<=0){ dadBonusFactor=1; }}
       if(lonelyTimer>0){ lonelyTimer -= dt; }
 
+      // Missions
       if(!mission){ missionGap -= dt; if(missionGap<=0){ startRandomMission(); } }
       else { mission.timeLeft -= dt; if(mission.timeLeft<=0){ finishMission(false); } }
 
+      // Survival
       survivalMsgTimer -= dt; if(survivalMsgTimer<=0 && survivalMsg.style.display!=='none'){ survivalMsg.style.display='none'; }
       survivalTimer -= dt; if(survivalTimer<=0){ if(reviveStored){ useRevive('survival'); } else { endGame(); return; } }
       spawnHealth(dt);
 
+      // Time scale
       const scale = (slowmoTimer>0)? SLOWMO_FACTOR : 1; const edt = dt*scale; if(slowmoTimer>0){ slowmoTimer -= dt; }
 
-      if(!qteActive && qteCooldown<=0 && invulnTimer<=0 && goldenTimer<=0){ const {dx}=nearestHazardDx(); if(dx>0 && dx<34 && Math.random()<QTE_CHANCE){ qteActive=true; qteTimer=0.6; slowmoTimer=Math.max(slowmoTimer,1.0); addFx('QTE!',player.x+4,player.y-52,'#2563eb'); } }
+      // QTE
+      if(!qteActive && qteCooldown<=0 && invulnTimer<=0 && goldenTimer<=0){
+        const {dx} = nearestHazardDx();
+        if(dx>0 && dx<34 && Math.random()<QTE_CHANCE){ qteActive=true; qteTimer=0.6; slowmoTimer = Math.max(slowmoTimer, 1.0); addFx('QTE!', player.x+4, player.y-52, '#2563eb'); }
+      }
       if(qteActive){ qteTimer -= dt; if(qteTimer<=0){ qteActive=false; qteCooldown=QTE_COOLDOWN; } }
       if(qteCooldown>0){ qteCooldown-=dt; }
 
+      // Score multiplier decay
       if(scoreMultTimer>0){ scoreMultTimer -= dt; if(scoreMultTimer<=0){ scoreMult=1; }}
 
-      const t = clamp(speed/MAX_SPEED,0,1); let accel=(baseAccel+hardLevel*1.2)*(1-t); if(hardSpikeTimer>0){ accel+=0.8; hardSpikeTimer-=dt; speed=Math.min(MAX_SPEED,speed+120*edt);} if(slowItemTimer>0){ slowItemTimer-=dt; if(slowItemTimer<=0){ speedScale=1; } } speed=Math.min(MAX_SPEED,speed+accel*edt); spikeTimer-=edt; if(spikeTimer<=0 && goldenTimer<=0){ speed=Math.min(MAX_SPEED,speed+rand(8,26)*edt); scheduleSpike(); }
+      // Speed & spikes
+      const t = clamp(speed/MAX_SPEED, 0, 1);
+      let accel = (baseAccel + hardLevel*1.2) * (1 - t);
+      if(hardSpikeTimer>0){ accel += 0.8; hardSpikeTimer -= dt; speed = Math.min(MAX_SPEED, speed + 120*edt); }
+      if(slowItemTimer>0){ slowItemTimer -= dt; if(slowItemTimer<=0){ speedScale=1; } }
+      speed = Math.min(MAX_SPEED, speed + accel*edt);
+      spikeTimer -= edt; if(spikeTimer<=0 && goldenTimer<=0){ speed = Math.min(MAX_SPEED, speed + rand(8,26)*edt); scheduleSpike(); }
 
       if(infoTimer>0){ infoTimer-=dt; if(infoTimer<=0){ controlsEl.textContent = DEFAULT_HINT; }}
 
+      // timers
       if(dashCooldown>0){ dashCooldown-=edt; if(dashCooldown<0) dashCooldown=0; }
-      if(dashTimer>0){ dashTimer-=edt; invulnTimer=Math.max(invulnTimer,dashTimer); speed=Math.min(MAX_SPEED,speed+360*edt); }
+      if(dashTimer>0){ dashTimer-=edt; invulnTimer=Math.max(invulnTimer, dashTimer); speed = Math.min(MAX_SPEED, speed + 360*edt); }
       if(invulnTimer>0){ invulnTimer-=edt; }
       if(shieldTimer>0){ shieldTimer-=edt; }
       if(comboTimer>0){ comboTimer-=edt; if(comboTimer<=0){ combo=0; }}
-      if(goldenTimer>0){ goldenTimer-=dt; if(goldenTimer<=0){ toast('Golden ended.',3); }}
+      if(goldenTimer>0){ goldenTimer-=dt; if(goldenTimer<=0){ toast('Golden ended.', 3); }}
 
-      let effectiveG=gravity; if(!player.onGround && spaceHeld && glideTime>0){ effectiveG=gravity*0.36; glideTime-=edt; if(glideTime<0) glideTime=0; }
+      // gravity with glide
+      let effectiveG = gravity; if(!player.onGround && spaceHeld && glideTime>0){ effectiveG = gravity*0.36; glideTime -= edt; if(glideTime<0) glideTime=0; }
       player.vy += -effectiveG*edt; player.y += -player.vy*edt;
       if(player.y>=GROUND_Y){ player.y=GROUND_Y; player.vy=0; if(!player.onGround){ jumpsUsed=0; glideTime=MAX_GLIDE; } player.onGround=true; } else { player.onGround=false; }
 
-      const v=speed*speedScale; for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(!h.passed && h.x+h.w<player.x){ h.passed=true; if(mission && mission.type==='clear'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } } } if(h.x+h.w<-20) hazards.splice(i,1); }
-      for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x-=v*edt; if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
+      const v = speed * speedScale;
+      for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(!h.passed && h.x+h.w<player.x){ h.passed=true; if(mission && mission.type==='clear'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } } } if(h.x+h.w<-20) hazards.splice(i,1); }
+      for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x -= v*edt; if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
 
       for(let i=fx.length-1;i>=0;i--){ const f=fx[i]; f.y += f.vy*edt; f.life -= edt; if(f.life<=0) fx.splice(i,1); }
 
-      dist += v*edt*0.01; const stageIndex=Math.floor(dist/STAGE_LEN)%2; const shouldBeDay=stageIndex===0; if(shouldBeDay!==isDay && goldenTimer<=0 && lonelyTimer<=0){ isDay=shouldBeDay; } setStageText();
-      hudDash.textContent = dashCooldown>0 ? 'Cooling' : 'Ready'; hudCombo.textContent='x'+comboMult(); if(mission){ hudMission.textContent=`${mission.label}  [${mission.progress}/${mission.target}]  ${Math.max(0,mission.timeLeft).toFixed(0)}s`; }
+      dist += v*edt*0.01;
+
+      const stageIndex = Math.floor(dist/STAGE_LEN)%2; const shouldBeDay = stageIndex===0; if(shouldBeDay!==isDay && goldenTimer<=0 && lonelyTimer<=0){ isDay=shouldBeDay; }
+      setStageText();
+
+      hudDash.textContent = dashCooldown>0 ? 'Cooling' : 'Ready';
+      hudCombo.textContent = 'x'+comboMult();
+      if(mission){ hudMission.textContent = `${mission.label}  [${mission.progress}/${mission.target}]  ${Math.max(0,mission.timeLeft).toFixed(0)}s`; }
     }
 
     function collide(a,b){ return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 
     function check(){
-      const c=CHARS[0]; const ph=player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
-      for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){ if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; } if(reviveStored){ h.safe=true; useRevive('hit'); continue; } return true; } }
-      for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){ combo+=1; comboTimer=COMBO_WINDOW; if(a.type==='rupee'){ rupeeCount+=1; award(1); if(rupeeCount>=10){ shieldTimer=SHIELD_TIME; rupeeCount=0; toast('Shield on for 4s.',5);} } else if(a.type==='heart'){ heartCount+=1; award(2); if(mission && mission.type==='hearts'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true);} } if(heartCount>=3){ for(const h of hazards){ h.safe=true; } heartCount=0; toast('Field Clear.',3);} } else if(a.type==='snail'){ slowItemTimer=SLOW_ITEM_TIME; speedScale=SLOW_ITEM_FACTOR; toast('Slow down for 5s.',5);} else if(a.type==='star'){ startGolden(); } else if(a.type==='health'){ survivalTimer=10; addFx('+SURVIVE',player.x+6,player.y-40,'#10b981'); award(1);} else if(a.type==='wheel'){ spinWheel(); } else if(a.type==='revive'){ redTotal+=1; if(!reviveStored){ reviveStored=true; toast('Red square stored. 1 revive ready.',5);} maybeHardSpike(); } pickups.splice(i,1); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){} } }
+      const c=CHARS[0]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
+      // hazards
+      for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
+          if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; }
+          if(reviveStored){ h.safe=true; useRevive('hit'); continue; }
+          return true;
+      } }
+      // pickups
+      for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
+          combo += 1; comboTimer = COMBO_WINDOW;
+          if(a.type==='rupee'){
+            rupeeCount+=1; award(1); if(rupeeCount>=10){ shieldTimer = SHIELD_TIME; rupeeCount=0; toast('Shield on for 4s.', 5); }
+          } else if(a.type==='heart'){
+            heartCount+=1; award(2);
+            if(mission && mission.type==='hearts'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } }
+            if(heartCount>=3){ for(const h of hazards){ h.safe=true; } heartCount=0; toast('Field Clear.', 3); }
+          } else if(a.type==='snail'){
+            slowItemTimer = SLOW_ITEM_TIME; speedScale = SLOW_ITEM_FACTOR; toast('Slow down for 5s.', 5);
+          } else if(a.type==='star'){
+            startGolden();
+          } else if(a.type==='health'){
+            survivalTimer = 10; addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); award(1);
+          } else if(a.type==='wheel'){
+            spinWheel();
+          } else if(a.type==='revive'){
+            redTotal += 1;
+            if(!reviveStored){ reviveStored = true; toast('Red square stored. 1 revive ready.', 5); }
+            maybeHardSpike();
+          }
+          pickups.splice(i,1);
+          try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
+      } }
       return false;
     }
 
@@ -1029,70 +1221,109 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       else if(isDay){ ctx.fillStyle='#eaf2ff'; } else { ctx.fillStyle='#0b1221'; }
       ctx.fillRect(0,0,WORLD.w,WORLD.h);
       ctx.fillStyle=(goldenTimer>0)? '#f0cc4a' : (isDay? '#cfe0ff' : '#172033'); ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
+
       const c=CHARS[0]; c.draw(player.x, player.y-2, player.duck);
+
       if(dadMsgTimer>0 || dadBonusTimer>0 || lonelyTimer>0){ const ex=Math.min(WORLD.w-36, player.x+48); const ey=Math.max(28, player.y-70); drawEmoji(ex, ey, 28, '👨'); }
+
       if(qteActive){ ctx.font='bold 14px system-ui'; ctx.fillStyle = '#2563eb'; ctx.fillText('QTE', player.x-6, player.y-58); }
+
       if(shieldTimer>0){ ctx.strokeStyle = isDay? '#22c55e' : '#a7f3d0'; if(goldenTimer>0) ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(player.x+14, player.y-18, 18, 0, Math.PI*2); ctx.stroke(); }
+
       ctx.font='12px system-ui';
       for(const h of hazards){ ctx.fillStyle = h.safe? '#34d399' : '#fca5a5'; ctx.fillRect(h.x, h.y, h.w, h.h); ctx.fillStyle=(goldenTimer>0)? '#b45309' : (isDay? '#0b1221':'#dbeafe'); if(h.label) ctx.fillText(h.label, h.x+4, Math.max(12,h.y-2)); if(h.safe){ const key=h.type; const text= key==='longNoise'? SAFE_LABELS['noise'] : key==='stairsWall'? SAFE_LABELS['stairs'] : key==='crowdMass'? SAFE_LABELS['crowd'] : SAFE_LABELS[key]||''; if(text) ctx.fillText(text, h.x+4, h.y+h.h+12); } }
-      for(const p of pickups){ if(p.box){ ctx.fillStyle='#ef4444'; ctx.fillRect(p.x-9, p.y-18, 18, 18); ctx.strokeStyle = isDay? '#fee2e2' : '#fecaca'; ctx.strokeRect(p.x-9, p.y-18, 18, 18); } else { ctx.font='18px serif'; ctx.fillStyle=(goldenTimer>0)? '#b45309' : (isDay? '#111' : '#fff'); const ch=p.type==='rupee'?RUPEE : p.type==='heart'? HEART : p.type==='snail'? SNAIL : p.type==='star'? STAR : p.type==='health'? HEALTH : p.type==='wheel'? WHEEL : '•'; ctx.fillText(ch, p.x, p.y); } }
+
+      for(const p of pickups){ if(p.box){
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(p.x-9, p.y-18, 18, 18);
+          ctx.strokeStyle = isDay? '#fee2e2' : '#fecaca'; ctx.strokeRect(p.x-9, p.y-18, 18, 18);
+        } else {
+          ctx.font='18px serif'; ctx.fillStyle = (goldenTimer>0)? '#b45309' : (isDay? '#111' : '#fff');
+          const ch = p.type==='rupee'?RUPEE : p.type==='heart'? HEART : p.type==='snail'? SNAIL : p.type==='star'? STAR : p.type==='health'? HEALTH : p.type==='wheel'? WHEEL : '•';
+          ctx.fillText(ch, p.x, p.y);
+        }
+      }
+
       if(survivalTimer<=8){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
+
       for(const f of fx){ ctx.globalAlpha = Math.max(0,f.life); ctx.fillStyle = f.color || '#111827'; ctx.font='bold 14px system-ui'; ctx.fillText(f.text, f.x, f.y); ctx.globalAlpha=1; }
-      hudDist.textContent = dist.toFixed(1); hudCare.textContent = care;
+
+      hudDist.textContent = dist.toFixed(1);
+      hudCare.textContent = care;
     }
 
     function loop(ts){ if(!running){ tPrev=ts; return; } let dt=Math.min(0.033,(ts-tPrev)/1000||0); tPrev=ts; if(!paused){ spawn(dt); update(dt); if(check()){ endGame(); return; } draw(); } requestAnimationFrame(loop); }
 
     // ===== Ending helpers =====
-    let endingTimer=null; function clearEndingTimer(){ if(endingTimer){ clearTimeout(endingTimer); endingTimer=null; } }
-    function isEndingOpen(){ return endingPanel && endingPanel.style.display!=='none'; } // PATCH: 엔딩 열림 여부
-    function showEnding(){ endingPanel.style.display='block'; endingPanel.focus(); }
-    function hideEnding(){ endingPanel.style.display='none'; }
+    let endingTimer=null; let endingOpen=false;
+    function clearEndingTimer(){ if(endingTimer){ clearTimeout(endingTimer); endingTimer=null; } }
+    function showEnding(){ endingPanel.style.display='block'; endingOpen=true; audioOn=false; stopAllAudio(); }
+    function hideEnding(){ endingPanel.style.display='none'; endingOpen=false; }
     function endByTimer(){ running=false; paused=false; showEnding(); }
 
+    function resetToStartScreen(){
+      // 게임 루프 정지 및 UI 초기상태
+      running=false; paused=false; clearEndingTimer(); hideEnding(); stopAllAudio(); audioOn=false;
+      banner.style.display='block';
+      const title = banner.querySelector('h4'); if(title) title.textContent='GAME START';
+      controlsEl.textContent = DEFAULT_HINT;
+      canvas.style.visibility='visible';
+    }
+
     function startGame(){
-      running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=10; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0; reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; hideEnding(); clearEndingTimer(); if(music.paused){ music.currentTime=0; const p=music.play(); if(p&&p.catch){ p.catch(()=>{}); } } requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
-      // 10초 후 자동 엔딩
+      running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=10; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0; reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; hideEnding(); clearEndingTimer();
+      // 배경음악: 게임 중에만 1회 재생
+      audioOn=true; try{ music.currentTime=0; safePlay(music); }catch(e){}
+      requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
+      // 10초 뒤 엔딩창
       endingTimer=setTimeout(endByTimer,10000);
     }
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
 
-    function performJump(mult=1){ const jumpVy = baseJumpVy * mult; player.vy = jumpVy; player.onGround=false; playSafe(jumpSfx); }
+    function performJump(mult=1){ const jumpVy = baseJumpVy * mult; player.vy = jumpVy; player.onGround=false; safePlay(jumpSfx); }
+
     function nearestHazardDx(){ let dxMin=1e9, target=null; for(const h of hazards){ if(h.safe) continue; const dx=h.x - player.x; if(dx>=-10 && dx<dxMin){ dxMin=dx; target=h; } } return {dx:dxMin, target}; }
 
-    function onSpacePress(){ const now=performance.now(); if(!running){ startGame(); return; } if(now-lastPressTime <= JUMP_CHAIN_WINDOW){ /* chain */ } lastPressTime=now; if(player.onGround){ jumpsUsed=0; glideTime=MAX_GLIDE; } const {dx}=nearestHazardDx(); if(dx>0 && dx<36 && player.onGround){ award(3); addFx('Perfect! ✨', player.x+6, player.y-40, '#f59e0b'); } if(jumpsUsed<MAX_JUMPS){ const mult=(jumpsUsed===0)?1:(jumpsUsed===1?0.92:0.86); performJump(mult); jumpsUsed+=1; } }
-    function tryDash(){ if(!running) return; if(dashCooldown>0) return; dashTimer=DASH_DURATION; invulnTimer=Math.max(invulnTimer,DASH_DURATION); dashCooldown=DASH_COOLDOWN; const {dx,target}=nearestHazardDx(); if(dx>0 && dx<80){ slowmoTimer=Math.max(slowmoTimer,1.0); addFx('Slo‑mo! 🕒', player.x+2, player.y-50, '#2563eb'); if(qteActive && target){ target.safe=true; award(4); qteActive=false; qteCooldown=QTE_COOLDOWN; toast('QTE success. Nearest obstacle cleared.',5); } } }
+    function onSpacePress(){ const now = performance.now(); if(!running){ startGame(); return; } if(now - lastPressTime <= JUMP_CHAIN_WINDOW){ /* keep chain */ } lastPressTime = now; if(player.onGround) { jumpsUsed = 0; glideTime=MAX_GLIDE; } const {dx} = nearestHazardDx(); if(dx>0 && dx<36 && player.onGround){ award(3); addFx('Perfect! ✨', player.x+6, player.y-40, '#f59e0b'); } if(jumpsUsed < MAX_JUMPS){ const mult = (jumpsUsed===0)? 1 : (jumpsUsed===1? 0.92 : 0.86); performJump(mult); jumpsUsed += 1; } }
 
-    // PATCH: 엔딩 열림 시에는 모든 키 입력/클릭/터치 차단
-    function onKeyDown(e){ const active=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName); if(active) return; if(isEndingOpen()){ e.preventDefault(); e.stopPropagation(); return; } if(['ArrowDown','Space','Enter','KeyX'].includes(e.code)) e.preventDefault(); if(e.code==='Space'){ spaceHeld=true; onSpacePress(); } else if(e.key==='ArrowDown'){ if(running) player.duck=true; } else if(e.key==='Enter'){ if(running) transformNearest(); } else if(e.code==='KeyX'){ tryDash(); } else if(e.code==='KeyP'){ if(running) paused=!paused; } }
-    function onKeyUp(e){ if(isEndingOpen()){ e.preventDefault(); e.stopPropagation(); return; } if(e.code==='Space') spaceHeld=false; if(e.key==='ArrowDown') player.duck=false; }
+    function tryDash(){ if(!running) return; if(dashCooldown>0) return; dashTimer = DASH_DURATION; invulnTimer = Math.max(invulnTimer, DASH_DURATION); dashCooldown = DASH_COOLDOWN; const {dx, target} = nearestHazardDx(); if(dx>0 && dx<80){ slowmoTimer = Math.max(slowmoTimer, 1.0); addFx('Slo‑mo! 🕒', player.x+2, player.y-50, '#2563eb'); if(qteActive && target){ target.safe=true; award(4); qteActive=false; qteCooldown=QTE_COOLDOWN; toast('QTE success. Nearest obstacle cleared.', 5); } } }
 
-    // PATCH: 엔딩 열림 시에는 캔버스 클릭/터치 무시
-    canvas.addEventListener('click', ()=>{ if(isEndingOpen()) return; if(!running){ startGame(); } else { onSpacePress(); } });
-    if(startBtn){ startBtn.addEventListener('click', (ev)=>{ ev.stopPropagation(); startGame(); }); }
-    banner.addEventListener('click', (ev)=>{ ev.stopPropagation(); startGame(); });
+    // === Input handlers ===
+    function onKeyDown(e){
+      const active=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+      if(active) return;
+      // 엔딩창이 열려 있으면 모든 키 입력 무시 (모바일 하드웨어 키 포함)
+      if(endingOpen){ if(['Space','Enter','KeyX','ArrowDown','KeyP'].includes(e.code)){ e.preventDefault(); return; } }
+      if(['ArrowDown','Space','Enter','KeyX'].includes(e.code)) e.preventDefault();
+      if(e.code==='Space'){ spaceHeld=true; onSpacePress(); }
+      else if(e.key==='ArrowDown'){ if(running) player.duck=true; }
+      else if(e.key==='Enter'){ if(running) transformNearest(); }
+      else if(e.code==='KeyX'){ tryDash(); }
+      else if(e.code==='KeyP'){ if(running) paused=!paused; }
+    }
+    function onKeyUp(e){ if(e.code==='Space') spaceHeld=false; if(e.key==='ArrowDown') player.duck=false; }
+
+    // 클릭/터치: 엔딩창 오픈 시에는 캔버스/배너 입력 무시
+    canvas.addEventListener('click', ()=>{ if(endingOpen) return; if(!running){ startGame(); } else { onSpacePress(); } });
+    if(startBtn){ startBtn.addEventListener('click', (ev)=>{ if(endingOpen) return; ev.stopPropagation(); startGame(); }); }
+    banner.addEventListener('click', (ev)=>{ if(endingOpen) return; ev.stopPropagation(); startGame(); });
 
     if(btnRestart){ btnRestart.addEventListener('click', ()=>{ hideEnding(); startGame(); }); }
-    if(btnExit){ btnExit.addEventListener('click', ()=>{ hideEnding(); running=false; paused=true; canvas.style.visibility='hidden'; controlsEl.textContent='Game closed. Refresh the page to play again.'; }); }
+    if(btnExit){ btnExit.addEventListener('click', ()=>{ resetToStartScreen(); }); }
 
-    let touchStart=0, lastTap=0; 
-    canvas.addEventListener('touchstart', (e)=>{ if(isEndingOpen()) { e.preventDefault(); return; } const now=performance.now(); if(!running){ startGame(); return; } const rect=canvas.getBoundingClientRect(); const x=e.touches[0].clientX-rect.left; const left=x<rect.width*0.45; if(now-lastTap<260 && left){ transformNearest(); lastTap=0; return; } lastTap=now; touchStart=now; player.duck=true; }, {passive:false});
-    canvas.addEventListener('touchend', (e)=>{ if(isEndingOpen()) { e.preventDefault(); return; } if(!running) return; const dur=performance.now()-touchStart; if(dur<180){ onSpacePress(); } player.duck=false; }, {passive:false});
-
-    // 캡처 단계에서 키 차단(안전망)
-    window.addEventListener('keydown', (e)=>{ if(isEndingOpen()){ e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+    let touchStart=0, lastTap=0;
+    canvas.addEventListener('touchstart', (e)=>{ if(endingOpen){ e.preventDefault(); return; } const now=performance.now(); if(!running){ startGame(); return; } const rect=canvas.getBoundingClientRect(); const x=e.touches[0].clientX-rect.left; const left=x<rect.width*0.45; if(now-lastTap<260 && left){ transformNearest(); lastTap=0; return; } lastTap=now; touchStart=now; player.duck=true; }, {passive:true});
+    canvas.addEventListener('touchend', (e)=>{ if(endingOpen){ e.preventDefault(); return; } if(!running) return; const dur=performance.now()-touchStart; if(dur<180){ onSpacePress(); } player.duck=false; }, {passive:true});
 
     window.addEventListener('keydown', onKeyDown); window.addEventListener('keyup', onKeyUp);
     window.addEventListener('blur', ()=>{ if(running) paused=true; }); window.addEventListener('focus', ()=>{ if(running) paused=false; });
   })();
   </script>
 </section>
-
-
-  
   
   
 
+
+  
   
 </html>
