@@ -764,14 +764,13 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
 
 
-
-
-
-
-
-
   
-<!-- ===== Canvas mini‑game: “Love Children with Disabilities” — EN only, click‑to‑start, triple jump, day/night cycle, glide & dash ===== -->
+
+
+
+
+
+<!-- ===== Canvas mini‑game: “Love Children with Disabilities” — EN only, click‑to‑start, triple jump, day/night, glide & dash, combo, missions, random speed ===== -->
 <section id="care-canvas-game" aria-label="Love Children with Disabilities game" style="margin:24px auto;max-width:980px">
   <style>
     #care-canvas-game{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221}
@@ -780,10 +779,12 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     #care-canvas-game .hud{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;color:#374151;font-size:.9rem;margin-bottom:8px}
     #care-canvas-game .hud b{color:#111827}
     #care-canvas-game canvas{width:100%;height:248px;display:block;border:1px solid #dbe6ff;border-radius:12px;background:linear-gradient(180deg,#eef4ff 0%,#ffffff 60%)}
-    #care-canvas-game .controls{font-size:.86rem;color:#4b5563;margin-top:8px}
+    #care-canvas-game .controls{font-size:.86rem;color:#4b5563;margin-top:8px;min-height:36px;display:flex;align-items:center}
     #care-canvas-game .footer{margin-top:10px;text-align:center;color:#6b7280;font-size:.86rem}
     #care-canvas-game .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    #ccg-banner{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.85);border:1px solid #e5e7eb;border-radius:10px;padding:6px 10px;font-size:.78rem;color:#0b1221}
+    #ccg-banner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.92);border:1px solid #e5e7eb;border-radius:16px;padding:18px 22px;font-size:1.1rem;color:#0b1221;box-shadow:0 10px 24px rgba(2,6,23,.08);text-align:center;width:min(86%,560px)}
+    #ccg-banner h4{margin:0 0 8px;font-size:1.25rem}
+    #ccg-banner .start{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:12px;border:1px solid #111827;background:#111827;color:#fff;font-weight:800}
     @media (prefers-reduced-motion: reduce){ #care-canvas-game canvas{transition:none} }
   </style>
 
@@ -794,13 +795,18 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       <div>Care <b id="ccg-care">0</b></div>
       <div>Best Care <b id="ccg-best">0</b></div>
       <div>Stage <b id="ccg-stage">Day</b></div>
-      <div>Support <b id="ccg-sup">Ready</b></div>
+      <div>Combo <b id="ccg-combo">x1</b></div>
+      <div>Mission <b id="ccg-mission">Airborne 50m</b></div>
       <div>Dash <b id="ccg-dash">Ready</b></div>
     </div>
-    <div class="controls" id="ccg-controls">Click the canvas to start. Space to jump (press three times quickly for triple jump). Hold Space to glide briefly. ↓ to duck. Enter to place support. X to dash with short invulnerability. Tap on mobile to jump; hold to duck; double‑tap left to place support.</div>
+    <div class="controls" id="ccg-controls">Click the canvas to start. Space to jump (press three times quickly for triple jump). Hold Space to glide. ↓ to duck. X to dash. Enter to convert the nearest obstacle into a safe path.</div>
     <div style="position:relative">
       <canvas id="ccg-canvas" width="960" height="256" aria-label="Game canvas"></canvas>
-      <div id="ccg-banner" aria-live="polite">Click to start — Day</div>
+      <div id="ccg-banner" aria-live="polite">
+        <h4>GAME START</h4>
+        <div style="font-size:.95rem;color:#374151">Click anywhere on the canvas to begin. Space for triple jump, hold to glide. X to dash. Collect 💎 and ❤ to power up.</div>
+        <button class="start" id="ccg-start-btn" type="button">Start</button>
+      </div>
     </div>
     <div id="ccg-live" class="sr-only" aria-live="polite"></div>
   </div>
@@ -812,13 +818,16 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const canvas = document.getElementById('ccg-canvas');
     const ctx = canvas.getContext('2d');
     const banner = document.getElementById('ccg-banner');
+    const startBtn = document.getElementById('ccg-start-btn');
     const footerEl = document.getElementById('ccg-footer');
     const hudDist = document.getElementById('ccg-dist');
     const hudCare = document.getElementById('ccg-care');
     const hudBest = document.getElementById('ccg-best');
     const hudStage = document.getElementById('ccg-stage');
-    const hudSup  = document.getElementById('ccg-sup');
-    const hudDash = document.getElementById('ccg-dash');
+    const hudDash  = document.getElementById('ccg-dash');
+    const hudCombo = document.getElementById('ccg-combo');
+    const hudMission = document.getElementById('ccg-mission');
+    const controlsEl = document.getElementById('ccg-controls');
 
     const rand = (a,b)=> Math.random()*(b-a)+a;
 
@@ -827,14 +836,16 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const music = new Audio('https://mcorpai.org/adventuremusic.mp3');
     music.loop = true; music.volume = 0.5;
 
+    const DEFAULT_HINT = 'Click the canvas to start. Space to jump (triple jump), hold to glide, ↓ to duck, X to dash, Enter to convert obstacle.';
+    controlsEl.textContent = DEFAULT_HINT;
+
     // Best score
-    const BEST_KEY='careCanvasBest_v6';
+    const BEST_KEY='careCanvasBest_v7';
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
     // Characters (emoji)
     const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26,'🙂'); }}];
-    let charIndex=0;
 
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
@@ -846,13 +857,19 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     let running=false, paused=false;
     let tPrev=0; let speed=220; let dist=0; let care=0; let spawnTimer=0; const gravity=1800; const baseJumpVy=560;
 
-    // Triple jump
-    const MAX_JUMPS = 3; const JUMP_CHAIN_WINDOW = 500; let jumpsUsed = 0; let lastPressTime = 0; let spaceHeld=false; let glideTime=0, MAX_GLIDE=0.35; // seconds of gentle fall per air time
+    // Speed growth (baseline + random spikes)
+    let baseAccel = 6;                 // gradual increase
+    let spikeTimer = 0;                // next spike countdown
+    function scheduleSpike(){ spikeTimer = rand(3.5,7.5); } // seconds
+    scheduleSpike();
+
+    // Triple jump / glide
+    const MAX_JUMPS = 3; const JUMP_CHAIN_WINDOW = 500; let jumpsUsed = 0; let lastPressTime = 0; let spaceHeld=false; let glideTime=0, MAX_GLIDE=0.35;
 
     // Dash (X key)
     let dashTimer=0; const DASH_DURATION=0.35; const DASH_COOLDOWN=2.5; let dashCooldown=0; let invulnTimer=0;
 
-    // Support ability
+    // Support ability (Enter)
     let supportTimer=0, supportCooldown=1.2;
 
     const player={x:72,y:GROUND_Y,vy:0,duck:false,onGround:true};
@@ -866,8 +883,21 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     const BOSSES=[ {key:'longNoise',kind:'air',w:200,h:16,y:92,label:'Loud Corridor'}, {key:'stairsWall',kind:'ground',w:160,h:30,label:'Steep Steps'}, {key:'crowdMass',kind:'ground',w:220,h:24,label:'Dense Crowd'} ];
 
     // Stage cycle (Day/Night) every 300m
-    let isDay=true; const STAGE_LEN=300; function applyStage(){ hudStage.textContent=isDay? 'Day':'Night'; banner.textContent = (running? '':'Click to start — ') + (isDay? 'Day':'Night'); }
-    applyStage();
+    let isDay=true; const STAGE_LEN=300; function applyStage(){ hudStage.textContent=isDay? 'Day':'Night'; banner.querySelector('h4').textContent = running? '': 'GAME START'; banner.style.display = running? 'none':'block'; }
+
+    // Combo system
+    let combo=0; let comboTimer=0; const COMBO_WINDOW=3.0; const MAX_MULT=5; function comboMult(){ return Math.min(MAX_MULT, 1 + Math.floor(combo/5)); }
+
+    // Missions
+    const MISSIONS=[
+      { key:'air50', label:'Airborne 50m', active:true, progress:0, target:50, type:'air' },
+      { key:'rupee5', label:'5 💎 in 15s', active:false, progress:0, target:5, type:'rupee', timer:0, limit:15 }
+    ];
+    function setMissionText(){ const m = MISSIONS.find(m=>m.active); hudMission.textContent = m? m.label : '—'; }
+    setMissionText();
+
+    // Item effect message (10s)
+    let infoTimer=0; const INFO_DURATION=10; function showInfo(text){ controlsEl.textContent=text; infoTimer=INFO_DURATION; }
 
     function spawn(dt){
       spawnTimer -= dt; if(spawnTimer>0) return;
@@ -878,18 +908,25 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       spawnTimer=rand(0.85,1.55)*(220/speed);
     }
 
-    function transformNearest(){ if(supportTimer>0) return; let target=null, minDx=1e9; for(const h of hazards){ if(h.safe) continue; const dx=h.x-player.x; if(dx>=-24 && dx<160 && dx<minDx){minDx=dx; target=h;} } if(!target) return; if(target.boss){ for(const h of hazards){ const near=Math.abs((h.x+h.w*0.5)-(target.x+target.w*0.5))<target.w*0.8; if(!h.safe && near) h.safe=true; } } else { target.safe=true; } care+=1; supportTimer=supportCooldown; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
+    function transformNearest(){ if(supportTimer>0) return; let target=null, minDx=1e9; for(const h of hazards){ if(h.safe) continue; const dx=h.x-player.x; if(dx>=-24 && dx<160 && dx<minDx){minDx=dx; target=h;} } if(!target) return; if(target.boss){ for(const h of hazards){ const near=Math.abs((h.x+h.w*0.5)-(target.x+target.w*0.5))<target.w*0.8; if(!h.safe && near) h.safe=true; } } else { target.safe=true; } care+=1*comboMult(); supportTimer=supportCooldown; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
     }
 
     // Special abilities by pickups
     let rupeeCount=0, heartCount=0; let shieldTimer=0; const SHIELD_TIME=4; // seconds
 
     function update(dt){
-      if(supportTimer>0){ supportTimer-=dt; if(supportTimer<0) supportTimer=0; }
+      // baseline and random speed growth
+      speed += baseAccel*dt; // gradual
+      spikeTimer -= dt; if(spikeTimer<=0){ speed += rand(10,38); scheduleSpike(); }
+
+      if(infoTimer>0){ infoTimer-=dt; if(infoTimer<=0){ controlsEl.textContent = DEFAULT_HINT; }}
+
+      // timers
       if(dashCooldown>0){ dashCooldown-=dt; if(dashCooldown<0) dashCooldown=0; }
       if(dashTimer>0){ dashTimer-=dt; invulnTimer=Math.max(invulnTimer, dashTimer); speed += 380*dt; }
       if(invulnTimer>0){ invulnTimer-=dt; }
       if(shieldTimer>0){ shieldTimer-=dt; }
+      if(comboTimer>0){ comboTimer-=dt; if(comboTimer<=0){ combo=0; }}
 
       // gravity with glide
       let effectiveG = gravity;
@@ -907,27 +944,40 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       dist += speed*dt*0.01; // meters
 
       // stage switch
-      const stageIndex = Math.floor(dist/STAGE_LEN)%2; const shouldBeDay = stageIndex===0; if(shouldBeDay!==isDay){ isDay=shouldBeDay; applyStage(); }
+      const stageIndex = Math.floor(dist/STAGE_LEN)%2; const shouldBeDay = stageIndex===0; if(shouldBeDay!==isDay){ isDay=shouldBeDay; hudStage.textContent=isDay? 'Day':'Night'; }
 
-      hudSup.textContent = supportTimer>0 ? 'Cooling' : 'Ready';
+      // mission tracking
+      const air = (!player.onGround) ? speed*dt*0.01 : 0; // air distance
+      const m1 = MISSIONS[0];
+      if(m1.active){ m1.progress += air; if(m1.progress>=m1.target){ care += 10*comboMult(); m1.active=false; MISSIONS[1].active=true; MISSIONS[1].timer = MISSIONS[1].limit; setMissionText(); showInfo('Mission complete: Airborne 50m — Bonus Care +10'); }}
+      const m2 = MISSIONS[1];
+      if(m2.active){ m2.timer -= dt; if(m2.timer<=0){ m2.active=false; setMissionText(); showInfo('Mission failed: 5 💎 in 15s'); } }
+
       hudDash.textContent = dashCooldown>0 ? 'Cooling' : 'Ready';
+      hudCombo.textContent = 'x'+comboMult();
     }
 
     function collide(a,b){ return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 
     function check(){
-      const c=CHARS[charIndex]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
+      const c=CHARS[0]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
       for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
           if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; }
           return true;
       } }
       for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
-          if(a.type==='rupee'){ rupeeCount+=1; care+=1; if(rupeeCount>=10){ shieldTimer = SHIELD_TIME; rupeeCount=0; } }
-          else { heartCount+=1; care+=2; if(heartCount>=3){ // clear all onscreen hazards
-              for(const h of hazards){ h.safe=true; }
-              heartCount=0; }
+          // combo
+          combo += 1; comboTimer = COMBO_WINDOW; // refresh window on each pickup
+          if(a.type==='rupee'){
+            rupeeCount+=1; let gained = 1*comboMult(); care+=gained;
+            if(rupeeCount>=5 && MISSIONS[1].active){ MISSIONS[1].progress+=5; MISSIONS[1].active=false; setMissionText(); care += 8*comboMult(); showInfo('Mission complete: 5 💎 — Bonus Care +8'); rupeeCount=0; }
+            if(rupeeCount>=10){ shieldTimer = SHIELD_TIME; rupeeCount=0; showInfo('Item: 💎 Shield ON for 4s'); }
+          } else {
+            heartCount+=1; let gained = 2*comboMult(); care+=gained;
+            if(heartCount>=3){ for(const h of hazards){ h.safe=true; } heartCount=0; showInfo('Item: ❤ Field Clear'); }
           }
           pickups.splice(i,1);
+          try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
       } }
       return false;
     }
@@ -938,11 +988,8 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       ctx.fillRect(0,0,WORLD.w,WORLD.h);
       ctx.fillStyle=isDay? '#cfe0ff' : '#172033'; ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
 
-      // banner text
-      banner.textContent = (running? '' : 'Click to start — ') + (isDay? 'Day':'Night');
-
       // player
-      const c=CHARS[charIndex]; c.draw(player.x, player.y-2, player.duck);
+      const c=CHARS[0]; c.draw(player.x, player.y-2, player.duck);
 
       // shield ring
       if(shieldTimer>0){ ctx.strokeStyle = isDay? '#22c55e' : '#a7f3d0'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(player.x+14, player.y-18, 18, 0, Math.PI*2); ctx.stroke(); }
@@ -961,18 +1008,13 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
     function loop(ts){ if(!running){ tPrev=ts; return; } const dt=Math.min(0.033,(ts-tPrev)/1000||0); tPrev=ts; if(!paused){ spawn(dt); update(dt); if(check()){ endGame(); return; } draw(); } requestAnimationFrame(loop); }
 
-    function startGame(){ running=true; paused=false; speed=220; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; banner.style.opacity=0.9; banner.textContent=isDay? 'Day':'Night'; if(music.paused){ music.currentTime=0; music.play().catch(()=>{}); } requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);}); }
+    function startGame(){ running=true; paused=false; speed=220; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; MISSIONS[0].active=true; MISSIONS[0].progress=0; MISSIONS[1].active=false; MISSIONS[1].progress=0; setMissionText(); banner.style.display='none'; if(music.paused){ music.currentTime=0; music.play().catch(()=>{}); } requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);}); }
 
-    function endGame(){
-      running=false; paused=false; banner.style.opacity=1; banner.textContent='Click to start — '+(isDay?'Day':'Night');
-      try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
-      footerEl.textContent = 'Please support mcorpai.org';
-      // music keeps looping
-    }
+    function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
 
     function performJump(mult=1){ const jumpVy = baseJumpVy * mult; player.vy = jumpVy; player.onGround=false; jumpSfx.currentTime=0; jumpSfx.play().catch(()=>{}); }
 
-    function onSpacePress(){ const now = performance.now(); if(!running){ startGame(); return; } if(now - lastPressTime <= JUMP_CHAIN_WINDOW){ /* chain */ } lastPressTime = now; if(player.onGround) { jumpsUsed = 0; glideTime=MAX_GLIDE; } if(jumpsUsed < MAX_JUMPS){ const mult = (jumpsUsed===0)? 1 : (jumpsUsed===1? 0.92 : 0.86); performJump(mult); jumpsUsed += 1; } }
+    function onSpacePress(){ const now = performance.now(); if(!running){ startGame(); return; } if(now - lastPressTime <= JUMP_CHAIN_WINDOW){ /* keep chain loose */ } lastPressTime = now; if(player.onGround) { jumpsUsed = 0; glideTime=MAX_GLIDE; } if(jumpsUsed < MAX_JUMPS){ const mult = (jumpsUsed===0)? 1 : (jumpsUsed===1? 0.92 : 0.86); performJump(mult); jumpsUsed += 1; } }
 
     function tryDash(){ if(!running) return; if(dashCooldown>0) return; dashTimer = DASH_DURATION; invulnTimer = Math.max(invulnTimer, DASH_DURATION); dashCooldown = DASH_COOLDOWN; }
 
@@ -982,6 +1024,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
     // Mouse & touch
     canvas.addEventListener('click', ()=>{ if(!running){ startGame(); } else { onSpacePress(); } });
+    startBtn.addEventListener('click', startGame);
 
     let touchStart=0, lastTap=0; 
     canvas.addEventListener('touchstart', (e)=>{ const now=performance.now(); if(!running){ startGame(); return; } const rect=canvas.getBoundingClientRect(); const x=e.touches[0].clientX-rect.left; const left=x<rect.width*0.45; if(now-lastTap<260 && left){ transformNearest(); lastTap=0; return; } lastTap=now; touchStart=now; player.duck=true; }, {passive:true});
@@ -993,9 +1036,9 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
   </script>
 </section>
 
+
+
   
-
-
   
   
   
