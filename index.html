@@ -763,6 +763,263 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
 
 
 
+
+
+
+
+
+  
+
+
+
+  <!-- ===== Canvas mini‑game: “장애아동을 사랑해주세요” — Inline drop‑in (paste anywhere before </body>) ===== -->
+<section id="care-canvas-game" aria-label="장애아동을 사랑해주세요 게임" style="margin:24px auto;max-width:980px">
+  <style>
+    #care-canvas-game{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221}
+    #care-canvas-game .wrap{border:1px solid rgba(0,0,0,.08);border-radius:14px;background:#fff;box-shadow:0 10px 26px rgba(2,6,23,.06);padding:14px}
+    #care-canvas-game h3{margin:0 0 8px;font-size:1rem;font-weight:800}
+    #care-canvas-game .hud{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;color:#374151;font-size:.9rem;margin-bottom:8px}
+    #care-canvas-game .hud b{color:#111827}
+    #care-canvas-game canvas{width:100%;height:248px;display:block;border:1px solid #dbe6ff;border-radius:12px;background:linear-gradient(180deg,#eef4ff 0%,#ffffff 60%)}
+    #care-canvas-game .controls{font-size:.86rem;color:#4b5563;margin-top:8px}
+    #care-canvas-game .kbd{display:inline-block;padding:.5px 6px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#111827;font-weight:700;font-size:.78rem}
+    #care-canvas-game .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.88);backdrop-filter:saturate(1.05) blur(3px);z-index:9999}
+    #care-canvas-game .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;box-shadow:0 10px 24px rgba(2,6,23,.08);text-align:center;max-width:560px}
+    #care-canvas-game .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid #d1d5db;background:#111827;color:#fff;font-weight:700;text-decoration:none;cursor:pointer}
+    #care-canvas-game .lang{display:flex;gap:8px;justify-content:center;margin:8px 0 12px}
+    #care-canvas-game .footer{margin-top:10px;text-align:center;color:#6b7280;font-size:.86rem}
+    #care-canvas-game .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media (prefers-reduced-motion: reduce){ #care-canvas-game canvas{transition:none} }
+  </style>
+
+  <div class="wrap" role="group" aria-roledescription="게임 컨테이너">
+    <h3 id="ccg-title">Love Children with Disabilities</h3>
+    <div class="hud" aria-live="polite">
+      <div>Distance <b id="ccg-dist">0.0</b> m</div>
+      <div>Care <b id="ccg-care">0</b></div>
+      <div>Best Care <b id="ccg-best">0</b></div>
+      <div>Character <b id="ccg-char">1</b>/3</div>
+      <div>Support <b id="ccg-sup">Ready</b></div>
+    </div>
+    <canvas id="ccg-canvas" width="960" height="256" aria-label="Game canvas"></canvas>
+    <div class="controls" id="ccg-controls"></div>
+    <div id="ccg-live" class="sr-only" aria-live="polite"></div>
+  </div>
+
+  <div class="overlay" id="ccg-overlay" role="dialog" aria-modal="true" aria-labelledby="ccg-ov-title">
+    <div class="card">
+      <h3 id="ccg-ov-title" style="margin:0 0 8px">Select Language / 언어 선택 / 言語選択</h3>
+      <div class="lang">
+        <button class="btn" data-lang="en">English</button>
+        <button class="btn" data-lang="ko">한국어</button>
+        <button class="btn" data-lang="ja">日本語</button>
+      </div>
+      <p id="ccg-ov-desc" style="margin:12px 0 12px;color:#374151">
+        Press <b>Space</b> three times in quick succession to perform a triple jump. Press <b>Space</b> to jump, <b>↓</b> to duck, <b>Enter</b> to place support. Tap to jump, hold to duck, double‑tap left to place support.
+      </p>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn" id="ccg-start">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer" id="ccg-footer">Please support mcorpai.org</div>
+
+  <script>
+  (function(){
+    const canvas = document.getElementById('ccg-canvas');
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('ccg-overlay');
+    const startBtn = document.getElementById('ccg-start');
+    const footerEl = document.getElementById('ccg-footer');
+    const titleEl = document.getElementById('ccg-title');
+    const hudDist = document.getElementById('ccg-dist');
+    const hudCare = document.getElementById('ccg-care');
+    const hudBest = document.getElementById('ccg-best');
+    const hudChar = document.getElementById('ccg-char');
+    const hudSup  = document.getElementById('ccg-sup');
+    const controlsEl = document.getElementById('ccg-controls');
+
+    const rand = (a,b)=> Math.random()*(b-a)+a;
+
+    // Audio (GitHub-hosted)
+    const jumpSfx = new Audio('https://mcorpai.org/jump6462.mp3');
+    const music = new Audio('https://mcorpai.org/adventuremusic.mp3');
+    music.loop = true; music.volume = 0.5;
+
+    // I18N
+    const I18N = {
+      en:{title:"Love Children with Disabilities", controls:"Space to jump, ↓ to duck, Enter to support. C or 1–3 to change character, P to pause. Triple jump by pressing Space three times quickly.", start:"Start", footer:"Please support mcorpai.org", gameOver:"Game Over", restart:"Press Space to restart", boss:"Barrier Appears", supportReady:"Ready", supportCD:"Cooling", charNames:["Caregiver","Friend","Guide"], emotes:{player:"🙂", friend:"🤝", guide:"🧭"}},
+      ko:{title:"장애아동을 사랑해주세요", controls:"스페이스 점프, ↓ 숙이기, 엔터 지원. C 또는 1–3 캐릭터, P 일시정지. 스페이스를 연속 세 번 빠르게 눌러 3단 점프가 가능합니다.", start:"시작", footer:"mcorpai.org 많이 사랑해주세요.", gameOver:"게임 종료", restart:"스페이스를 누르면 다시 시작합니다", boss:"장애물이 나타났습니다", supportReady:"준비", supportCD:"대기", charNames:["보호자","동행 친구","안내자"], emotes:{player:"🙂", friend:"🤝", guide:"🧭"}},
+      ja:{title:"障がいのある子どもたちを大切に", controls:"Spaceジャンプ、↓しゃがみ、Enter支援。Cまたは1–3でキャラ変更、P一時停止。Spaceを素早く3回で3段ジャンプ。", start:"開始", footer:"mcorpai.org を応援してください。", gameOver:"ゲームオーバー", restart:"Space で再開", boss:"バリア出現", supportReady:"準備", supportCD:"待機", charNames:["ケアギバー","フレンド","ガイド"], emotes:{player:"🙂", friend:"🤝", guide:"🧭"}}
+    };
+    let lang='en';
+    function applyLang(){ const t=I18N[lang]; titleEl.textContent=t.title; controlsEl.textContent=t.controls; startBtn.textContent=t.start; footerEl.textContent=t.footer; document.documentElement.lang=lang; }
+    document.querySelectorAll('#ccg-overlay [data-lang]').forEach(btn=>btn.addEventListener('click',()=>{ lang=btn.getAttribute('data-lang'); applyLang(); }));
+    applyLang();
+
+    // Best score
+    const BEST_KEY='careCanvasBest_v5';
+    let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
+    hudBest.textContent = best;
+
+    // Characters: emoji‑driven glyphs
+    const CHARS=[
+      {nameKey:0, w:26, h:30, draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26, I18N[lang].emotes.player); }},
+      {nameKey:1, w:26, h:28, draw:(x,y,duck)=>{ drawEmoji(x,y,duck?20:24, I18N[lang].emotes.friend); }},
+      {nameKey:2, w:24, h:32, draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:28, I18N[lang].emotes.guide); }}
+    ];
+    let charIndex=0;
+
+    function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
+
+    const RUPEE = '💎'; const HEART='❤';
+
+    // Physics & world
+    const WORLD={w:canvas.width,h:canvas.height};
+    const GROUND_Y = WORLD.h - 40;
+    let running=false, paused=false;
+    let tPrev=0; let speed=220; let dist=0; let care=0; let spawnTimer=0; const gravity=1800; const baseJumpVy=560;
+
+    // Triple jump tracking
+    const MAX_JUMPS = 3;                 // up to triple jump
+    const JUMP_CHAIN_WINDOW = 500;       // generous window in ms ("민감하게")
+    let jumpsUsed = 0;                   // jumps used since last touch of ground
+    let lastPressTime = 0;               // for detecting quick successive presses
+    let chainCount = 0;                  // how many Space presses in the current chain
+
+    let supportTimer=0, supportCooldown=1.2;
+
+    const player={x:72,y:GROUND_Y,vy:0,duck:false,onGround:true};
+    const hazards=[]; // {x,y,w,h,label,safe,boss,kind,type}
+    const pickups=[]; // {x,y,w,h,type}
+
+    const SAFE_LABELS={ stairs:{en:'Ramp',ko:'경사로',ja:'スロープ'}, noise:{en:'Quiet Zone',ko:'조용한 공간',ja:'静かな空間'}, crowd:{en:'Signage',ko:'안내 표시',ja:'案内表示'}, block:{en:'Safe Path',ko:'안전 경로',ja:'安全ルート'} };
+    const HAZARD_LABELS={ stairs:{en:'Stairs',ko:'계단',ja:'階段'}, noise:{en:'Noise',ko:'소음',ja:'騒音'}, crowd:{en:'Crowd',ko:'군중',ja:'人ごみ'}, block:{en:'Obstacle',ko:'장애물',ja:'障害物'} };
+
+    const TYPES=[ {key:'stairs',kind:'ground',w:40,h:24}, {key:'noise',kind:'air',w:48,h:16,y:96}, {key:'crowd',kind:'ground',w:42,h:22}, {key:'block',kind:'ground',w:30,h:26} ];
+    const BOSSES=[ {key:'longNoise',kind:'air',w:200,h:16,y:92,label:{en:'Loud Corridor',ko:'소음 통로',ja:'騒音の廊下'}}, {key:'stairsWall',kind:'ground',w:160,h:30,label:{en:'Steep Steps',ko:'가파른 계단',ja:'急な 계단'}}, {key:'crowdMass',kind:'ground',w:220,h:24,label:{en:'Dense Crowd',ko:'밀집 군중',ja:'密集した群衆'}} ];
+
+    function spawn(dt){
+      spawnTimer -= dt; if(spawnTimer>0) return;
+      if(Math.random()<0.28){ const type=Math.random()<0.7?'rupee':'heart'; const y= type==='rupee'? GROUND_Y-60 : GROUND_Y-90; pickups.push({x:WORLD.w+10,y,w:20,h:20,type}); spawnTimer = rand(0.35,0.9); return; }
+      if(Math.random()<0.10){ const b=BOSSES[Math.floor(Math.random()*BOSSES.length)]; const y=b.kind==='ground'?(GROUND_Y-b.h):(b.y||92); hazards.push({x:WORLD.w+10,y,w:b.w,h:b.h,type:b.key,kind:b.kind,label:(b.label[lang]||b.label.en),safe:false,boss:true}); spawnTimer=3.6; return; }
+      const t=TYPES[Math.floor(Math.random()*TYPES.length)]; const y=t.kind==='ground'?(GROUND_Y-t.h):(t.y||90);
+      const label=HAZARD_LABELS[t.key][lang]; hazards.push({x:WORLD.w+10,y,w:t.w,h:t.h,type:t.key,kind:t.kind,label,safe:false,boss:false});
+      spawnTimer=rand(0.85,1.55)*(220/speed);
+    }
+
+    function transformNearest(){ if(supportTimer>0) return; let target=null, minDx=1e9; for(const h of hazards){ if(h.safe) continue; const dx=h.x-player.x; if(dx>=-24 && dx<160 && dx<minDx){minDx=dx; target=h;} } if(!target) return; if(target.boss){ for(const h of hazards){ const near=Math.abs((h.x+h.w*0.5)-(target.x+target.w*0.5))<target.w*0.8; if(!h.safe && near) h.safe=true; } } else { target.safe=true; } care+=1; supportTimer=supportCooldown; try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
+    }
+
+    function update(dt){
+      if(supportTimer>0){ supportTimer-=dt; if(supportTimer<0) supportTimer=0; }
+      speed += 2.2*dt;
+      player.vy += -gravity*dt; 
+      player.y += -player.vy*dt; 
+      if(player.y>=GROUND_Y){
+        player.y=GROUND_Y; player.vy=0; if(!player.onGround){ jumpsUsed=0; chainCount=0; }
+        player.onGround=true; 
+      } else { player.onGround=false; }
+      for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= speed*dt; if(h.x+h.w<-20) hazards.splice(i,1); }
+      for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x -= speed*dt; if(p.x+p.w<-20) pickups.splice(i,1); }
+      dist += speed*dt*0.01;
+      hudSup.textContent = supportTimer>0 ? I18N[lang].supportCD : I18N[lang].supportReady;
+    }
+
+    function collide(a,b){ return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+
+    function check(){
+      const c=CHARS[charIndex]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
+      for(const h of hazards){ if(h.safe) continue; if(collide(p,h)) return true; }
+      for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){ if(a.type==='rupee'){ care+=1; } else { care+=2; } pickups.splice(i,1); } }
+      return false;
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,WORLD.w,WORLD.h);
+      ctx.fillStyle='#cfe0ff'; ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
+      const c=CHARS[charIndex]; c.draw(player.x, player.y-2, player.duck);
+      ctx.font='12px system-ui';
+      for(const h of hazards){ ctx.fillStyle = h.safe? '#34d399' : '#fca5a5'; ctx.fillRect(h.x, h.y, h.w, h.h); ctx.fillStyle='#0b1221'; if(h.label) ctx.fillText(h.label, h.x+4, Math.max(12,h.y-2)); if(h.safe){ const key=h.type; const map=SAFE_LABELS[key]; const text= key==='longNoise'? SAFE_LABELS['noise'][lang] : key==='stairsWall'? SAFE_LABELS['stairs'][lang] : key==='crowdMass'? SAFE_LABELS['crowd'][lang] : map? map[lang] : ''; if(text) ctx.fillText(text, h.x+4, h.y+h.h+12); } }
+      for(const p of pickups){ ctx.font='18px serif'; ctx.fillText(p.type==='rupee'?RUPEE:HEART, p.x, p.y); }
+      hudDist.textContent = dist.toFixed(1);
+      hudCare.textContent = care;
+      hudChar.textContent = (charIndex+1);
+    }
+
+    function loop(ts){ if(!running){ tPrev=ts; return; } const dt=Math.min(0.033,(ts-tPrev)/1000||0); tPrev=ts; if(!paused){ spawn(dt); update(dt); if(check()){ endGame(); return; } draw(); } requestAnimationFrame(loop); }
+
+    function startGame(){ running=true; paused=false; speed=220; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; overlay.style.display='none'; if(music.paused){ music.currentTime=0; music.play().catch(()=>{}); } requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);}); }
+
+    function endGame(){
+      running=false; paused=false;
+      try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
+      overlay.style.display='flex'; document.getElementById('ccg-ov-title').textContent=I18N[lang].gameOver; document.getElementById('ccg-ov-desc').textContent=I18N[lang].restart; footerEl.textContent = I18N[lang].footer;
+      // Do NOT pause music here, so background music keeps looping infinitely
+    }
+
+    function performJump(mult=1){
+      const jumpVy = baseJumpVy * mult;
+      player.vy = jumpVy; player.onGround=false;
+      jumpSfx.currentTime=0; jumpSfx.play().catch(()=>{});
+    }
+
+    function onSpacePress(){
+      const now = performance.now();
+      if(!running){ startGame(); return; }
+
+      // update chain window generously
+      if(now - lastPressTime <= JUMP_CHAIN_WINDOW){ chainCount += 1; } else { chainCount = 1; }
+      lastPressTime = now;
+
+      // reset jumpsUsed if just landed
+      if(player.onGround) jumpsUsed = 0;
+
+      if(jumpsUsed < MAX_JUMPS){
+        // scale later jumps slightly lower for better control
+        const mult = (jumpsUsed===0)? 1 : (jumpsUsed===1? 0.92 : 0.86);
+        performJump(mult);
+        jumpsUsed += 1;
+      }
+    }
+
+    function onKeyDown(e){
+      const active=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName); if(active) return; 
+      if(['ArrowDown','Space','Enter'].includes(e.code)) e.preventDefault();
+      if(e.code==='Space'){ onSpacePress(); }
+      else if(e.key==='ArrowDown'){ if(running) player.duck=true; }
+      else if(e.key==='Enter'){ if(running) transformNearest(); }
+      else if(e.key==='KeyC'){ charIndex=(charIndex+1)%CHARS.length; }
+      else if(e.key==='Digit1'){ charIndex=0; }
+      else if(e.key==='Digit2'){ charIndex=1; }
+      else if(e.key==='Digit3'){ charIndex=2; }
+      else if(e.key==='KeyP'){ if(running) paused=!paused; }
+    }
+    function onKeyUp(e){ if(e.key==='ArrowDown') player.duck=false; }
+
+    // Touch controls
+    let touchStart=0, lastTap=0; 
+    canvas.addEventListener('touchstart', (e)=>{ 
+      const now=performance.now();
+      if(!running){ startGame(); return; }
+      const rect=canvas.getBoundingClientRect(); const x=e.touches[0].clientX-rect.left; const left=x<rect.width*0.45; 
+      if(now-lastTap<260 && left){ transformNearest(); lastTap=0; return; } 
+      lastTap=now; touchStart=now; player.duck=true; 
+    }, {passive:true});
+    canvas.addEventListener('touchend', ()=>{ if(!running) return; const dur=performance.now()-touchStart; if(dur<180){ onSpacePress(); } player.duck=false; }, {passive:true});
+
+    window.addEventListener('keydown', onKeyDown); window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', ()=>{ if(running) paused=true; }); window.addEventListener('focus', ()=>{ if(running) paused=false; });
+
+    startBtn.addEventListener('click', startGame);
+  })();
+  </script>
+</section>
+
+
+
+  
   
   
 
