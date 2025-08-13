@@ -359,9 +359,9 @@ function useRevive(reason){
     const cx = h.x + h.w * 0.5;
     if(Math.abs(cx - (player.x + 14)) < 90) h.safe = true;
   }
-  // HEALTH 아이템과 일관되게 15초로 복구
+  // HEALTH 아이템과 일관되게 20초로 복구
   if(reason === 'survival'){
-    survivalTimer = 15;
+    survivalTimer = 20;
   }
   addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
   toast('Revived once. Charge consumed.', 5);
@@ -589,8 +589,8 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
           } else if(a.type==='star'){
             startGolden();
  } else if(a.type === 'health'){
-  // 생존 타이머 회복: +15초, 최대 15초
-  survivalTimer = Math.min(15, survivalTimer + 15);
+  // 생존 타이머 회복: +20초, 최대 20초
+  survivalTimer = Math.min(20, survivalTimer + 20);
   addFx('+SURVIVE', player.x + 6, player.y - 40, '#10b981');
   award(1);
 
@@ -658,8 +658,8 @@ if(heli){
   // y 위치에 heli.h를 더해 바닥 기준으로 적절히 보이도록 합니다.
   drawEmoji(heli.x, heli.y + heli.h, 26, '🚁');
 }
-
-      if(survivalTimer<=12){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
+  // 타이머 15초
+      if(survivalTimer<=15){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
       for(const f of fx){ ctx.globalAlpha = Math.max(0,f.life); ctx.fillStyle = f.color || '#111827'; ctx.font='bold 14px system-ui'; ctx.fillText(f.text, f.x, f.y); ctx.globalAlpha=1; }
 
       hudDist.textContent = dist.toFixed(1);
@@ -708,8 +708,8 @@ function endByTimer(){ running=false; paused=false; showEnding('timer'); }
 
 function startGame(){
   running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none';
-  // survival 초기값 (요구사항: 12초로 통일)
-  survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must collect the health bar to survive.'; survivalMsg.style.display = 'block';
+  // survival 초기값 (요구사항: 15초로 통일)
+  survivalTimer = 15; survivalMsgTimer = 3; survivalMsg.textContent = 'You must collect the health bar to survive.'; survivalMsg.style.display = 'block';
 
   scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
   reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true;
