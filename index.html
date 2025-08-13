@@ -1366,13 +1366,7 @@ if(heli){
 
       dist += v*edt*0.01;
 
-      // ✅ 간단/안전: 300m마다 낮/밤만 토글 (0~300=낮, 300~600=밤, 600~900=낮 …)
-      //    페이드용 보조변수(dayNightTransition) 전면 제거로 초기 어둠/캐릭터 미표시 버그 해결
-      const stageIndex = Math.floor(dist / STAGE_LEN) % 2;
-      const shouldBeDay = (stageIndex === 0);
-      if(goldenTimer<=0 && lonelyTimer<=0 && shouldBeDay !== isDay){
-        isDay = shouldBeDay; // 변경: 단순 토글만 적용
-      }
+      const stageIndex = Math.floor(dist/STAGE_LEN)%2; const shouldBeDay = stageIndex===0; if(shouldBeDay!==isDay && goldenTimer<=0 && lonelyTimer<=0){ isDay=shouldBeDay; }
       setStageText();
 
       hudDash.textContent = dashCooldown>0 ? 'Cooling' : 'Ready';
@@ -1459,13 +1453,11 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
     }
 
     function draw(){
-      // ✅ 단순 로직 복원: 스테이지 상태만으로 배경 결정 (오버레이/페이드 제거)
       if(lonelyTimer>0){ ctx.fillStyle='#0b1221'; }
       else if(goldenTimer>0){ ctx.fillStyle='#fff7d6'; }
       else if(isDay){ ctx.fillStyle='#eaf2ff'; } else { ctx.fillStyle='#0b1221'; }
       ctx.fillRect(0,0,WORLD.w,WORLD.h);
-      ctx.fillStyle = (goldenTimer>0)? '#f0cc4a' : (isDay? '#cfe0ff' : '#172033');
-      ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
+      ctx.fillStyle=(goldenTimer>0)? '#f0cc4a' : (isDay? '#cfe0ff' : '#172033'); ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
 
       const c=CHARS[0]; c.draw(player.x, player.y-2, player.duck);
 
