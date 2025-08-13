@@ -1366,24 +1366,14 @@ if(heli){
 
       dist += v*edt*0.01;
 
- // 전환 구간에서 부드럽게 페이드하기 위해 진행도 변수를 추가합니다.
-// dayNightTransition은 draw에서 밤 오버레이 알파로 사용됩니다.
-if(typeof dayNightTransition === 'undefined'){ window.dayNightTransition = 0; }
-const TRANSITION_WIDTH = 0.08; // 스테이지 길이의 8%를 전환 구간으로 사용
-const stagePos = (dist % STAGE_LEN) / STAGE_LEN; // 0~1
-if(stagePos < TRANSITION_WIDTH){
-  dayNightTransition = 1 - (stagePos / TRANSITION_WIDTH); // 밤→낮 페이드아웃
-} else if(stagePos > 1 - TRANSITION_WIDTH){
-  dayNightTransition = (stagePos - (1 - TRANSITION_WIDTH)) / TRANSITION_WIDTH; // 낮→밤 페이드인
-} else {
-  dayNightTransition = 0; // 전환 구간이 아니면 0
-}
-
-// 기존 즉시 전환 로직은 유지하되, 이벤트가 없을 때만 동기화합니다.
-const stageIndex = Math.floor(dist/STAGE_LEN)%2;
-const shouldBeDay = stageIndex===0;
-if(goldenTimer<=0 && lonelyTimer<=0 && shouldBeDay!==isDay){ isDay=shouldBeDay; }
-setStageText();
+      // ✅ 간단/안전: 300m마다 낮/밤만 토글 (0~300=낮, 300~600=밤, 600~900=낮 …)
+      //    페이드용 보조변수(dayNightTransition) 전면 제거로 초기 어둠/캐릭터 미표시 버그 해결
+      const stageIndex = Math.floor(dist / STAGE_LEN) % 2;
+      const shouldBeDay = (stageIndex === 0);
+      if(goldenTimer<=0 && lonelyTimer<=0 && shouldBeDay !== isDay){
+        isDay = shouldBeDay; // 변경: 단순 토글만 적용
+      }
+      setStageText();
 
       hudDash.textContent = dashCooldown>0 ? 'Cooling' : 'Ready';
       hudCombo.textContent = 'x'+comboMult();
@@ -1469,25 +1459,13 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
     }
 
     function draw(){
- // 낮 배경을 먼저 그리고, 밤을 반투명 오버레이로 덮어 자연스럽게 전환합니다.
-ctx.fillStyle = '#eaf2ff';
-ctx.fillRect(0,0,WORLD.w,WORLD.h);
-ctx.fillStyle = (goldenTimer>0)? '#fff7d6' : '#cfe0ff';
-ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
-
-// lonelyTimer는 완전 암전, Golden은 자체 색상 유지, 일반 낮/밤은 페이드 알파 적용
-let overlayAlpha = 0;
-if(lonelyTimer>0){
-  overlayAlpha = 1; // 완전 암전
-} else if(goldenTimer>0){
-  overlayAlpha = 0; // 황금 스테이지는 덮지 않음
-} else {
-  const baseNight = isDay ? 0 : 1; // 현재 스테이지가 밤이면 1
-  const t = Math.max(baseNight * 0.9, dayNightTransition || 0); // 페이드 진행도 반영
-  overlayAlpha = Math.min(1, Math.max(0, t));
-}
-ctx.fillStyle = `rgba(3,9,18,${overlayAlpha})`;
-ctx.fillRect(0,0,WORLD.w,WORLD.h);
+      // ✅ 단순 로직 복원: 스테이지 상태만으로 배경 결정 (오버레이/페이드 제거)
+      if(lonelyTimer>0){ ctx.fillStyle='#0b1221'; }
+      else if(goldenTimer>0){ ctx.fillStyle='#fff7d6'; }
+      else if(isDay){ ctx.fillStyle='#eaf2ff'; } else { ctx.fillStyle='#0b1221'; }
+      ctx.fillRect(0,0,WORLD.w,WORLD.h);
+      ctx.fillStyle = (goldenTimer>0)? '#f0cc4a' : (isDay? '#cfe0ff' : '#172033');
+      ctx.fillRect(0, GROUND_Y+12, WORLD.w, 2);
 
       const c=CHARS[0]; c.draw(player.x, player.y-2, player.duck);
 
