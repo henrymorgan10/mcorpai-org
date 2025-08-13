@@ -549,131 +549,155 @@ Should you seek a precise and in-depth understanding of the foundational princip
   
 
 
+
   
-  
 
-<!-- === Real‑time Scam‑Compound Risk (serverless‑ready) ===
-Paste this block near the end of your HTML (just before </body>)
-If you are opening the file directly (file://), put your JSON inside the <script id="scam-json"> tag below.
-If you are serving over http(s), you may delete the inline JSON and keep scam_feed.json next to index.html. -->
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Scam‑Compound Risk – Minimal Demo</title>
+  <style>
+    :root{--ink:#111;--muted:#6b7280;--ok:#10b981;--warn:#f59e0b;--bad:#ef4444}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;margin:0;padding:24px;background:#f8fafc;color:var(--ink)}
+    #scam-panel{max-width:980px;margin:0 auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06)}
+    #scam-panel h3{margin:0 0 4px;font-size:1rem;font-weight:700;color:var(--ink)}
+    #scam-panel p{margin:0 0 8px;font-size:.86rem;color:var(--muted)}
+    #scam-status{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;justify-content:center;margin:6px 0 2px;font-size:.9rem;color:var(--ink);letter-spacing:.08px}
+    .country{color:var(--ink);font-weight:600}
+    .risk-high{color:var(--bad);font-weight:700}
+    .risk-med{color:var(--warn);font-weight:700}
+    .risk-low{color:var(--ok);font-weight:700}
+    .pulse{animation:pulse-bg .26s linear 1}
+    @keyframes pulse-bg{from{background-color:rgba(255,255,0,.12)}to{background-color:transparent}}
+    .meta{margin-top:8px;text-align:center;font-size:.78rem;color:var(--muted)}
+    .meta button{font:inherit;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:8px;padding:6px 10px;cursor:pointer}
+  </style>
+</head>
+<body>
 
-<section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
-  <h3 style="margin:0 0 4px;font-size:1rem;font-weight:700;color:#111">
-    Real‑time Scam‑Compound Risk <span style="font-weight:600;color:#6b7280">(auto‑refresh when online)</span>
-  </h3>
-  <p style="margin:0 0 8px;font-size:.84rem;color:#6b7280">
-    A concise indicator summarizing public reports of coerced online‑fraud compounds by country; not a verification or legal finding.
-  </p>
-  <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 2px">
-    <span style="font-weight:700;margin-right:6px">Scam‑Compound Index:</span>
-    <span id="scam-line">Loading…</span>
-  </div>
-</section>
+  <!-- === Real‑time Scam‑Compound Risk (drop‑in panel) === -->
+  <section id="scam-panel" aria-label="Real-time Scam-Compound Risk">
+    <h3>
+      Real‑time Scam‑Compound Risk <span style="font-weight:600;color:#6b7280">(auto‑refresh online)</span>
+    </h3>
+    <p>
+      A concise indicator summarizing public reports of coerced online‑fraud compounds by country; not a verification or legal finding.
+    </p>
+    <div id="scam-status" role="status" aria-live="polite">
+      <span style="font-weight:700;margin-right:6px">Scam‑Compound Index:</span>
+      <span id="scam-line">Loading…</span>
+    </div>
+    <div class="meta" id="scam-meta"></div>
+  </section>
 
-<style>
-  #scam-panel .country{color:#111;font-weight:600}
-  #scam-panel .risk-high{color:#ef4444;font-weight:700}
-  #scam-panel .risk-med{color:#f59e0b;font-weight:700}
-  #scam-panel .risk-low{color:#10b981;font-weight:700}
-  #scam-panel .pulse{animation:pulse-bg .26s linear 1}
-  @keyframes pulse-bg{from{background-color:rgba(255,255,0,.12)}to{background-color:transparent}}
-</style>
+  <!-- Optional inline JSON fallback for file:// usage.
+       Leave EMPTY when deploying over http(s) so the app always fetches scam_feed.json next to index.html.
+       If you need an offline demo, paste valid JSON inside this tag. -->
+  <script id="scam-json" type="application/json"></script>
 
-<!-- Inline JSON for serverless use (safe to replace with your scam_feed.json content). -->
-<script id="scam-json" type="application/json">
-{
-  "source": "Inline feed (you can replace this with your own)",
-  "last_updated": "2025-08-11T00:00:00+09:00",
-  "items": [
-    {"country":"Cambodia","city":"Sihanoukville (various sites)","pattern":"Compelled online scams / document seizure","last":"2025-06-30","risk":"MED"},
-    {"country":"Laos","city":"Golden Triangle SEZ","pattern":"Coerced cyberfraud / movement restriction","last":"2025-07-20","risk":"HIGH"},
-    {"country":"Myanmar","city":"Myawaddy SEZ","pattern":"Human trafficking / fenced compounds / armed guards","last":"2025-07-29","risk":"HIGH"},
-    {"country":"Philippines","city":"Clark area (reports vary)","pattern":"Recruitment scams targeting foreign workers","last":"2025-06-12","risk":"MED"},
-    {"country":"Thailand","city":"Sakon Nakhon (border belt)","pattern":"Forced scamming / passport confiscation / confinement","last":"2025-07-10","risk":"HIGH"},
-    {"country":"UAE","city":"Dubai (front-office recruitment)","pattern":"Sham job offers leading to debt bondage","last":"2025-05-02","risk":"LOW"},
-    {"country":"Malaysia","city":"Johor Bahru (industrial zones)","pattern":"Call-center style scam workshops reported","last":"2025-07-05","risk":"MED"},
-    {"country":"Vietnam","city":"Ho Chi Minh City (suburban parks)","pattern":"Luring via tech-support vacancies; passport withholding","last":"2025-06-28","risk":"MED"},
-    {"country":"Indonesia","city":"Batam (free-trade zone)","pattern":"Cross-border cyberfraud crews recruiting foreigners","last":"2025-07-02","risk":"MED"},
-    {"country":"China","city":"Fujian (coastal clusters)","pattern":"Online romance-fraud hubs shifting locations","last":"2025-07-18","risk":"MED"}
-  ]
-}
-</script>
+  <script>
+  (function(){
+    const line = document.getElementById('scam-line');
+    const meta = document.getElementById('scam-meta');
+    if(!line) return;
 
-<script>
-(function(){
-  const line = document.getElementById('scam-line');
-  if(!line) return;
+    const REFRESH_MS = 10*60*1000; // 10 minutes
+    const FEED_URL = new URL('scam_feed.json', location.href).toString();
+    const order = {HIGH:3, MED:2, LOW:1};
 
-  const REFRESH_MS = 10*60*1000; // 10 minutes when online
-  const order = {HIGH:3, MED:2, LOW:1};
-  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
-  function word(r){ r=String(r||'MED').toUpperCase(); return r==='HIGH'?{w:'High',cls:'risk-high'}:r==='LOW'?{w:'Low',cls:'risk-low'}:{w:'Medium',cls:'risk-med'}; }
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    const word = r => { r=String(r||'MED').toUpperCase(); return r==='HIGH'?{w:'High',cls:'risk-high'}:r==='LOW'?{w:'Low',cls:'risk-low'}:{w:'Medium',cls:'risk-med'}; };
 
-  // Optional two extra monitoring countries requested by user
-  const SUGGEST = [
-    {country:'Sri Lanka', risk:'LOW', city:'—', pattern:'Monitoring potential recruitment hubs', last:'2025-07-15'},
-    {country:'Bangladesh', risk:'LOW', city:'—', pattern:'Monitoring potential recruitment hubs', last:'2025-07-12'}
-  ];
+    function normalize(feed){
+      const map = new Map();
+      (feed.items||[]).forEach(x=>{
+        const c = String(x.country||'').trim(); if(!c) return;
+        const r = String(x.risk||'MED').toUpperCase();
+        const last = new Date(x.last||0).getTime()||0;
+        const prev = map.get(c);
+        if(!prev || order[r] > order[prev.r] || (order[r]===order[prev.r] && last > prev.last)){
+          map.set(c, {c, r, last, city:x.city||'', pattern:x.pattern||''});
+        }
+      });
+      const arr = Array.from(map.values());
+      arr.sort((a,b)=> order[b.r]-order[a.r] || a.c.localeCompare(b.c));
+      return {items:arr, last_updated: feed.last_updated || ''};
+    }
 
-  function normalize(feed){
-    const map = new Map();
-    (feed.items||[]).forEach(x=>{
-      const c = String(x.country||'').trim(); if(!c) return;
-      const r = String(x.risk||'MED').toUpperCase();
-      const last = new Date(x.last||0).getTime()||0;
-      const prev = map.get(c);
-      if(!prev || order[r] > order[prev.r] || (order[r]===order[prev.r] && last > prev.last)){
-        map.set(c, {c, r, last, city:x.city||'', pattern:x.pattern||''});
+    function render(model){
+      const items = model.items || [];
+      if(!items.length){ line.textContent='No data'; meta.textContent=''; return; }
+      const parts = items.map(x=>{
+        const W = word(x.r);
+        const tip = [
+          x.city ? `City: ${x.city}` : '',
+          x.pattern ? `Pattern: ${x.pattern}` : '',
+          x.last ? `Last: ${new Date(x.last).toISOString().slice(0,10)}` : ''
+        ].filter(Boolean).join(' · ');
+        return `<span class="country" title="${esc(tip)}">${esc(x.c)}</span> <span class="${W.cls}">${W.w}</span>`;
+      });
+      const html = parts.join(', ');
+      if(line.innerHTML !== html){
+        line.innerHTML = html;
+        line.parentElement.classList.add('pulse');
+        setTimeout(()=>line.parentElement.classList.remove('pulse'), 260);
       }
-    });
-    SUGGEST.forEach(s=>{ if(!map.has(s.country)){ map.set(s.country, {c:s.country, r:String(s.risk||'LOW').toUpperCase(), last:new Date(s.last||0).getTime()||0, city:s.city||'', pattern:s.pattern||''}); } });
-    const arr = Array.from(map.values());
-    arr.sort((a,b)=> order[b.r]-order[a.r] || a.c.localeCompare(b.c));
-    return arr;
-  }
-
-  function render(items){
-    if(!items.length){ line.textContent='No data'; return; }
-    const parts = items.map(x=>{
-      const W = word(x.r);
-      const tip = [x.city?`City: ${x.city}`:'', x.pattern?`Pattern: ${x.pattern}`:'', x.last?`Last: ${new Date(x.last).toISOString().slice(0,10)}`:''].filter(Boolean).join(' · ');
-      return `<span class="country" title="${esc(tip)}">${esc(x.c)}</span> <span class="${W.cls}">${W.w}</span>`;
-    });
-    const html = parts.join(', ');
-    if(line.innerHTML !== html){
-      line.innerHTML = html; line.parentElement.classList.add('pulse'); setTimeout(()=>line.parentElement.classList.remove('pulse'), 260);
+      const ts = model.last_updated ? `Last updated: ${esc(model.last_updated)}` : '';
+      meta.innerHTML = `${ts} ${ts? '· ' : ''}<button type="button" id="scam-refresh" aria-label="Refresh now">Refresh</button>`;
+      const btn = document.getElementById('scam-refresh');
+      if(btn) btn.onclick = ()=> load(true);
     }
-  }
 
-  async function loadFromJsonFile(){
-    try{
-      const res = await fetch('scam_feed.json?ts='+Date.now(), {cache:'no-store'});
-      if(!res.ok) throw 0; const data = await res.json(); return data;
-    }catch(e){ return null; }
-  }
-
-  async function load(){
-    // Priority 1: inline JSON for file:// usage
-    const inlineTag = document.getElementById('scam-json');
-    if(inlineTag && inlineTag.textContent.trim().length){
-      try{ const data = JSON.parse(inlineTag.textContent); render(normalize(data)); return; }catch(_){ /* fall through */ }
+    async function fetchExternal(){
+      const res = await fetch(FEED_URL + `?ts=${Date.now()}`, {cache:'no-store'});
+      if(!res.ok) throw new Error('Failed to fetch feed.json');
+      return res.json();
     }
-    // Priority 2: fetch external JSON when served over http(s)
+
+    function readInline(){
+      const tag = document.getElementById('scam-json');
+      const raw = tag && tag.textContent ? tag.textContent.trim() : '';
+      if(!raw) return null;
+      try { return JSON.parse(raw); } catch{ return null; }
+    }
+
+    async function load(force){
+      // Prefer external feed on http(s)
+      const onWeb = location.protocol === 'http:' || location.protocol === 'https:';
+      if(onWeb){
+        try{ const data = await fetchExternal(); render(normalize(data)); return; }
+        catch(e){ /* fallthrough to inline */ }
+      }
+      // Fallback to inline JSON (for file:// or when offline)
+      const inline = readInline();
+      if(inline){ render(normalize(inline)); return; }
+      line.textContent = 'Failed to load data';
+      meta.textContent = '';
+    }
+
+    load();
+    // Auto refresh when on web and visible
     if(location.protocol === 'http:' || location.protocol === 'https:'){
-      const data = await loadFromJsonFile(); if(data){ render(normalize(data)); return; }
+      const iv = setInterval(()=>{ if(!document.hidden) load(); }, REFRESH_MS);
+      document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) load(true); });
+      addEventListener('pagehide', ()=>clearInterval(iv), {once:true});
     }
-    line.textContent = 'Failed to load data';
-  }
+  })();
+  </script>
 
-  load();
-  if(location.protocol === 'http:' || location.protocol === 'https:'){
-    const iv = setInterval(()=>{ if(!document.hidden) load(); }, REFRESH_MS);
-    window.addEventListener('pagehide', ()=>clearInterval(iv), {once:true});
-  }
-})();
-</script>
+</body>
+</html>
 
 
+
+
+
+
+
+
+  
   
 
   <!-- === Scam‑Compound one‑page notice (paste under your desired section) === -->
