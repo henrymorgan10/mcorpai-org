@@ -1182,16 +1182,17 @@ function useRevive(reason){
 heliSpawnTimer -= dt;
 if(dist >= HELI_MIN_DIST && !heli){
   if(heliSpawnTimer <= 0){
-    // 화면 우/좌측 중 랜덤으로 등장
-    const hy = GROUND_Y - 120; // 필요시 높이 조정
-    const dir = Math.random() < 0.5 ? 'left' : 'right';
-    if(dir === 'left'){
-      // 오른쪽에서 왼쪽으로
-      heli = { x: WORLD.w + 12, y: hy, w: 34, h: 22, type: 'heli', dir: 'left' };
-    } else {
-      // 왼쪽에서 오른쪽으로 출현 — x를 화면 왼쪽 바깥으로 배치
-      heli = { x: - (34 + 12), y: hy, w: 34, h: 22, type: 'heli', dir: 'right' };
-    }
+    // 항상 플레이어 앞쪽(우측)에서만 등장. 접근 높이와 약간의 오프셋을 랜덤.
+    const hy = rand(GROUND_Y - 160, GROUND_Y - 80);  // 공중 높이 랜덤
+    const xOffset = rand(0, 48);                      // 오른쪽 바깥 위치 미세 랜덤화
+    heli = {
+      x: WORLD.w + 12 + xOffset,
+      y: hy,
+      w: 34,
+      h: 22,
+      type: 'heli',
+      dir: 'left' // 항상 왼쪽(플레이어 쪽)으로 진입
+    };
     scheduleHeli();
   }
 }
@@ -1306,18 +1307,18 @@ if(dist >= HELI_MIN_DIST && !heli){
       for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(!h.passed && h.x+h.w<player.x){ h.passed=true; if(mission && mission.type==='clear'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } } } if(h.x+h.w<-20) hazards.splice(i,1); }
       for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x -= v*edt; if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
 
-// 헬기 이동 처리: heli 객체가 있으면 방향에 따라 이동시키고, 화면 밖으로 나가면 제거
+// 헬기 이동 처리: 항상 앞쪽(우측)에서 왼쪽으로 진입
 if(heli){
-  // 속도 계산 (게임 속도에 약간 비례)
   const heliVel = (HELI_SPEED + speed*0.08);
-  // 방향에 따라 x를 더하거나 뺍니다
-  if(heli.dir === 'left'){
-    heli.x -= heliVel * edt;
-  } else {
-    heli.x += heliVel * edt;
-  }
+  heli.x -= heliVel * edt; // 전방에서 후방(플레이어 방향)으로 고정 이동
+
+  // 선택: 약간의 상하 흔들림으로 자연스러움 추가
+  if(!heli._jit){ heli._jit = { t: 0, amp: rand(2, 8) }; }
+  heli._jit.t += edt;
+  heli.y += Math.sin(heli._jit.t * 4) * (heli._jit.amp * 0.02);
+
   // 화면 밖으로 나가면 제거
-  if(heli.x + heli.w < -20 || heli.x > WORLD.w + 20){
+  if(heli.x + heli.w < -20){
     heli = null;
   }
 }
@@ -1496,23 +1497,24 @@ function endByTimer(){ running=false; paused=false; showEnding('timer'); }
 function startGame(){
   running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none';
   // survival 초기값 (요구사항: 12초로 통일)
-survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must collect the health bar to survive.'; survivalMsg.style.display = 'block';
+  survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must collect the health bar to survive.'; survivalMsg.style.display = 'block';
 
-   scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
+  scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
   reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true;
   // Lives 초기화
   lives = 1; healthPickupCount = 0; // reset health pickup counter
   // 헬기 초기화 및 타이머 스케줄
   heli = null; scheduleHeli();
+  // ★ 중요: 산타 축복 타이머 초기화
+  santaBlessTimer = 0; // 시작 직후 🎅 표시 방지
+
   // HUD에 반영
   const livesEl = document.getElementById('ccg-lives'); if(livesEl) livesEl.textContent = String(lives);
   hideEnding(); clearEndingTimer();
-      // 배경음악: 게임 중에만 랜덤 재생 (곡 종료 시 자동으로 다음 랜덤 곡)
-      audioOn=true; try{ playRandomTrack(); }catch(e){}
-      requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
-      // 12000000 ms = 200분(≈3시간 20분) 
-endingTimer = setTimeout(endByTimer, 12000000) 
-    }
+  audioOn=true; try{ playRandomTrack(); }catch(e){}
+  requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
+  endingTimer = setTimeout(endByTimer, 12000000)
+}
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
 
