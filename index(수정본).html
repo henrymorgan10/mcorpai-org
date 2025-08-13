@@ -36,7 +36,7 @@
   </style>
 
   <div class="wrap" role="group" aria-roledescription="game container">
-    <h3 id="ccg-title"> 👨 Love Children with Disabilities 🟩 No data is collected, Playable entirely offline </h3>
+    <h3 id="ccg-title"> 👨 Love Children with Disabilities 🟩 No data is collected, Playable entirely offline 💎Game size: 48KB </h3>
     <div class="hud" aria-live="polite">
       <div>Distance <b id="ccg-dist">0.0</b> m</div>
       <div>Care <b id="ccg-care">0</b></div>
@@ -61,9 +61,9 @@
 
       <!-- Ending panel (inside the box) -->
       <div id="ccg-ending" role="dialog" aria-modal="true" aria-live="polite">
-        <h4 class="ending-title">GAME ENDING</h4>
-        <p class="ending-line">I will love you forever.</p>
-        <p class="ending-sub">Love Children with Disabilities — Full PDF (260 pages)</p>
+        <h4 class="ending-title"> Nintendo Satoru Iwata, Directly to you! </h4>
+        <p class="ending-line"> I will love you forever. </p>
+        <p class="ending-sub"> Ideas over size. Love Children with Disabilities — Full PDF (260 pages)</p>
         <div class="ending-actions">
           <a class="btn" id="btn-open-pdf" href="https://mcorpai.org/Love%20Children%20with%20Disabilities(265%20Pages).pdf#view=FitH" target="_blank" rel="noopener">Open PDF</a>
           <button type="button" class="btn" id="btn-restart">Restart</button>
@@ -243,8 +243,8 @@ function scheduleHeli(){
 }
 
 
-    // Stage cycle (Day/Night) every 300m
-    let isDay=true; const STAGE_LEN=300; function setStageText(){ hudStage.textContent = (goldenTimer>0? 'Golden' : (lonelyTimer>0? 'Dark' : (isDay? 'Day':'Night'))); }
+    // Stage cycle (Day/Night) every 50000(50km)
+    let isDay=true; const STAGE_LEN=50000; function setStageText(){ hudStage.textContent = (goldenTimer>0? 'Golden' : (lonelyTimer>0? 'Dark' : (isDay? 'Day':'Night'))); }
 
     // Combo system
     let combo=0; let comboTimer=0; const COMBO_WINDOW=3.0; const MAX_MULT=5; function comboMult(){ return Math.min(MAX_MULT, 1 + Math.floor(combo/5)); }
@@ -290,7 +290,7 @@ let santaBlessTimer = 0; // 15s Santa blessing timer
     // Dad random events
 // Dad random events
 const DAD_CHOICES=[
-  {key:'love', text:'I love you.'},
+  {key:'love', text:'I love you.Daddy is 50,000 meters away.'},
   {key:'hurt', text:'Listening to folk music, huh? Come eat.'},
   {key:'travel', text:"Dad is going on a long trip by helicopter."},
   {key:'santa', text:"Dad's coming today. Santa Claus said so."}
