@@ -1121,21 +1121,32 @@ function applyDadEffect(){
     function scheduleHealthSpawn(){ const t = difficulty01(); const minI = lerp(1.4, 5.0, t); const maxI = lerp(3.0, 9.0, t); healthSpawnTimer = rand(minI, maxI); }
     function spawnHealth(dt){ healthSpawnTimer -= dt; if(healthSpawnTimer>0) return; const y = rand(GROUND_Y-110, GROUND_Y-70); pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'health'}); scheduleHealthSpawn(); }
 
-    // ===== Revive system =====
 // ===== Revive & Lives system =====
-let reviveStored=false; let redTotal=0; let redNextThreshold=10; let hardLevel=0; let hardSpikeTimer=0;
-// Lives / health‑pickup 카운트
-let lives = 1; // 기본 1 life
-const MAX_LIVES = 2; // 최대 2
-let healthPickupCount = 0; // 🟩 개수(누적)
-const HEALTHS_FOR_LIFE = 10; // 10개 모으면 목숨 +1
+let reviveStored = false;
+let redTotal = 0;
+let redNextThreshold = 10;
+let hardLevel = 0;
+let hardSpikeTimer = 0;
+
+// Lives / health‑pickup 카운트 (초보자용)
+let lives = 1;                // 기본 목숨 1
+const MAX_LIVES = 2;          // 최대 목숨 2
+let healthPickupCount = 0;    // 🟩 픽업 누적 카운트
+const HEALTHS_FOR_LIFE = 10;  // 🟩 10개 당 목숨 +1
 
     
 function useRevive(reason){
-  reviveStored=false;
+  reviveStored = false;
   invulnTimer = Math.max(invulnTimer, 2.5);
-  for(const h of hazards){ const cx=h.x+h.w*0.5; if(Math.abs(cx - (player.x+14)) < 90) h.safe=true; }
-  if(reason==='survival'){ survivalTimer = 15; }
+  // 근처 장애물 안전 처리
+  for(const h of hazards){
+    const cx = h.x + h.w * 0.5;
+    if(Math.abs(cx - (player.x + 14)) < 90) h.safe = true;
+  }
+  // HEALTH 아이템과 일관되게 15초로 복구
+  if(reason === 'survival'){
+    survivalTimer = 15;
+  }
   addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
   toast('Revived once. Charge consumed.', 5);
 }
@@ -1314,18 +1325,18 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
             slowItemTimer = SLOW_ITEM_TIME; speedScale = SLOW_ITEM_FACTOR; toast('Slow down for 5s.', 5);
           } else if(a.type==='star'){
             startGolden();
-     } else if(a.type==='health'){
-  // 기존: 생존 타이머 회복 (최대 15)
+ } else if(a.type === 'health'){
+  // 생존 타이머 회복: +15초, 최대 15초
   survivalTimer = Math.min(15, survivalTimer + 15);
-  addFx('+SURVIVE', player.x+6, player.y-40, '#10b981');
+  addFx('+SURVIVE', player.x + 6, player.y - 40, '#10b981');
   award(1);
-  // HEALTH 픽업 누적: 10개당 목숨 +1 (최대 MAX_LIVES)
+
+  // HEALTH 픽업 누적: HEALTHS_FOR_LIFE(10)개마다 추가 목숨 지급 (최대 MAX_LIVES)
   healthPickupCount += 1;
   if(healthPickupCount >= HEALTHS_FOR_LIFE){
     healthPickupCount -= HEALTHS_FOR_LIFE;
     if(lives < MAX_LIVES){
       lives += 1;
-      // HUD 갱신
       const livesEl = document.getElementById('ccg-lives'); if(livesEl) livesEl.textContent = String(lives);
       toast('Extra life gained! Lives: ' + lives, 4);
     }
@@ -1406,7 +1417,8 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
 function startGame(){
   running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none';
   // survival 초기값 (요구사항: 12초로 통일)
-  survivalTimer=12; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block';
+survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must collect the health bar to survive.'; survivalMsg.style.display = 'block';
+
   scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
   reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true;
   // Lives 초기화
@@ -1418,7 +1430,7 @@ function startGame(){
       audioOn=true; try{ playRandomTrack(); }catch(e){}
       requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
       // 1,800초(30분) 뒤 엔딩창
-      endingTimer=setTimeout(endByTimer,1800000);
+endingTimer = setTimeout(endByTimer, 1800000);
     }
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
