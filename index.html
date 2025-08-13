@@ -963,8 +963,8 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
-    // Character (emoji)
-    const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26,'🙂'); }}];
+// Character (emoji)
+const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26, santaBlessTimer>0 ? '🎅' : '🙂'); }}];
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
     const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩', WHEEL='🎡';
@@ -1048,11 +1048,18 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
     // Snail (slow)
     let slowItemTimer=0; const SLOW_ITEM_FACTOR=0.7; const SLOW_ITEM_TIME=5;
 
-    // Effects
-    const fx=[]; function addFx(text,x,y,color){ fx.push({text,x,y,vy:-22,life:1,color}); }
+// Effects
+const fx=[]; function addFx(text,x,y,color){ fx.push({text,x,y,vy:-22,life:1,color}); }
+let santaBlessTimer = 0; // 15s Santa blessing timer
 
     // Dad random events
-    const DAD_CHOICES=[ {key:'love', text:'I love you.'}, {key:'hurt', text:'Are you hurt anywhere?'}, {key:'travel', text:"I'm going on a long trip."} ];
+// Dad random events
+const DAD_CHOICES=[
+  {key:'love', text:'I love you.'},
+  {key:'hurt', text:'Are you hurt anywhere?'},
+  {key:'travel', text:"I'm going on a long trip."},
+  {key:'santa', text:"Dad's coming today. Santa Claus said so."}
+];    
     let dadEventTimer = rand(18,32); let dadMsgTimer = 0; let dadEffectPending = null; let dadBonusTimer = 0; let dadBonusFactor = 1; let lonelyTimer = 0; let lastDadAt = -999; const DAD_MIN_GAP=20;
 
     function triggerDadEvent(){
@@ -1064,13 +1071,26 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       dadEventTimer = rand(26,42);
     }
 
-    function applyDadEffect(){
-      if(!dadEffectPending) return;
-      if(dadEffectPending==='love'){ speed = Math.min(MAX_SPEED, speed + 360); dadBonusFactor = 2.0; dadBonusTimer = 8; toast('Dad: bonus up for 8s.', 5); }
-      else if(dadEffectPending==='hurt'){ speed = Math.max(180, speed * 0.8); dadBonusFactor = 0.5; dadBonusTimer = 6; toast('Dad: slowdown and lower bonus for 6s.', 5); }
-      else if(dadEffectPending==='travel'){ lonelyTimer = 10; hazards.length=0; pickups.length=0; dadBonusFactor=1; dadBonusTimer=0; toast('Dad: dark 10s, no hazards or bonuses.', 5); }
-      dadEffectPending=null; dadToast.style.display='none';
-    }
+function applyDadEffect(){
+  if(!dadEffectPending) return;
+  if(dadEffectPending==='love'){
+    speed = Math.min(MAX_SPEED, speed + 360);
+    dadBonusFactor = 2.0; dadBonusTimer = 8; toast('Dad: bonus up for 8s.', 5);
+  }
+  else if(dadEffectPending==='hurt'){
+    speed = Math.max(180, speed * 0.8);
+    dadBonusFactor = 0.5; dadBonusTimer = 6; toast('Dad: slowdown and lower bonus for 6s.', 5);
+  }
+  else if(dadEffectPending==='travel'){
+    lonelyTimer = 10; hazards.length=0; pickups.length=0; dadBonusFactor=1; dadBonusTimer=0; toast('Dad: dark 10s, no hazards or bonuses.', 5);
+  }
+  else if(dadEffectPending==='santa'){
+    santaBlessTimer = 15;                 // 15초 버프 시작
+    invulnTimer = Math.max(invulnTimer, 15); // 15초 완전 무적
+    toast('Santa blessing: 15s invulnerability & survival freeze.', 5);
+  }
+  dadEffectPending=null; dadToast.style.display='none';
+}
 
     function award(points){ if(lonelyTimer>0) return; const add = Math.max(0, Math.floor(points * comboMult() * dadBonusFactor * scoreMult)); care += add; }
 
@@ -1164,10 +1184,13 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
       if(!mission){ missionGap -= dt; if(missionGap<=0){ startRandomMission(); } }
       else { mission.timeLeft -= dt; if(mission.timeLeft<=0){ finishMission(false); } }
 
-      // Survival
-      survivalMsgTimer -= dt; if(survivalMsgTimer<=0 && survivalMsg.style.display!=='none'){ survivalMsg.style.display='none'; }
-      survivalTimer -= dt; if(survivalTimer<=0){ if(reviveStored){ useRevive('survival'); } else { endGame(); return; } }
-      spawnHealth(dt);
+       // Survival
+  survivalMsgTimer -= dt; if(survivalMsgTimer<=0 && survivalMsg.style.display!=='none'){ survivalMsg.style.display='none'; }
+  if (santaBlessTimer<=0) survivalTimer -= dt; // 산타 15초 동안 생존 타이머 정지
+  if(survivalTimer<=0){ if(reviveStored){ useRevive('survival'); } else { endGame(); return; } }
+  spawnHealth(dt);
+  // Santa timer down
+  if (santaBlessTimer>0) santaBlessTimer -= dt;
 
       // Time scale
       const scale = (slowmoTimer>0)? SLOWMO_FACTOR : 1; const edt = dt*scale; if(slowmoTimer>0){ slowmoTimer -= dt; }
