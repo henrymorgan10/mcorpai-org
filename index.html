@@ -1031,13 +1031,32 @@ const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26, santaBlessT
     const TYPES=[ {key:'stairs',kind:'ground',w:40,h:24}, {key:'noise',kind:'air',w:48,h:16,y:96}, {key:'crowd',kind:'ground',w:42,h:22}, {key:'block',kind:'ground',w:30,h:26} ];
     const BOSSES=[ {key:'longNoise',kind:'air',w:200,h:16,y:92,label:'Loud Corridor'}, {key:'stairsWall',kind:'ground',w:160,h:30,label:'Steep Steps'}, {key:'crowdMass',kind:'ground',w:220,h:24,label:'Dense Crowd'} ];
 
-    // ===== 헬기 변수 (추가) =====
-    // 50m 이후부터 헬기를 등장시키고, 한 번에 1대만 출현하도록 하는 로직에 사용됩니다.
-    let heli = null; // 현재 활성화된 헬기 객체(없으면 null)
-    let heliSpawnTimer = 0; // 헬기 재생성 타이머
-    const HELI_MIN_DIST = 50; // 헬기 출현 시작 거리(미터)
-    const HELI_SPEED = 380; // 헬기 고정 속도(px/s, 필요시 조정)
-    function scheduleHeli(){ heliSpawnTimer = rand(2.0,6.0); }
+  // ===== 헬기 변수 (수정) =====
+// 목표: ① 약 20초 간격으로만 등장(조금의 지터), ② 등장(=20초 경과)할 때마다 헬기 속도 소폭 증가
+let heli = null;
+let heliSpawnTimer = 0;
+
+const HELI_MIN_DIST = 50;
+
+// ⬇️ 새 파라미터
+const HELI_INTERVAL = 20;                   // 기본 간격(초)
+const HELI_JITTER   = 2;                    // 간격 지터(±초)
+const HELI_BASE_SPEED = 360;                // 시작 속도(px/s)
+const HELI_SPEED_STEP = 30;                 // 20초마다(한 번 등장할 때마다) 증가량
+const HELI_MAX_SPEED  = 680;                // 상한선(선택)
+
+let heliWave = 0;                           // 몇 번째 20초/등장 사이클인지
+let heliSpeed = HELI_BASE_SPEED;            // 현재 사이클의 헬기 기본속도
+
+function scheduleHeli(){
+  // 20±2초 간격으로 느슨하게 등장
+  heliSpawnTimer = rand(HELI_INTERVAL - HELI_JITTER, HELI_INTERVAL + HELI_JITTER);
+
+  // 다음 등장을 위한 ‘웨이브’ 증가와 속도 갱신
+  heliWave += 1;
+  heliSpeed = Math.min(HELI_MAX_SPEED, HELI_BASE_SPEED + (heliWave - 1) * HELI_SPEED_STEP);
+}
+
 
     // Stage cycle (Day/Night) every 300m
     let isDay=true; const STAGE_LEN=300; function setStageText(){ hudStage.textContent = (goldenTimer>0? 'Golden' : (lonelyTimer>0? 'Dark' : (isDay? 'Day':'Night'))); }
@@ -1178,24 +1197,27 @@ function useRevive(reason){
      function spawn(dt){
       if(lonelyTimer>0){ spawnTimer=0.2; return; }
 
-// 헬기 스폰 타이머 감산 및 스폰 조건 확인 (50m 이후, 한 대만 유지)
+// spawn(dt) 내부 — 헬기 스폰 로직 (수정)
+// 변경점: 20초 주기 스케줄 사용 + 스폰 시점의 속도를 각 헬기 객체에 박제(heli.speed)
 heliSpawnTimer -= dt;
 if(dist >= HELI_MIN_DIST && !heli){
   if(heliSpawnTimer <= 0){
     // 항상 플레이어 앞쪽(우측)에서만 등장. 접근 높이와 약간의 오프셋을 랜덤.
-    const hy = rand(GROUND_Y - 160, GROUND_Y - 80);  // 공중 높이 랜덤
-    const xOffset = rand(0, 48);                      // 오른쪽 바깥 위치 미세 랜덤화
+    const hy = rand(GROUND_Y - 160, GROUND_Y - 80);
+    const xOffset = rand(0, 48);
     heli = {
       x: WORLD.w + 12 + xOffset,
       y: hy,
       w: 34,
       h: 22,
       type: 'heli',
-      dir: 'left' // 항상 왼쪽(플레이어 쪽)으로 진입
+      dir: 'left',
+      speed: heliSpeed        // ⬅️ 이번 사이클의 고유 속도 저장
     };
-    scheduleHeli();
+    scheduleHeli();           // ⬅️ 다음 20초 간격 예약 + 속도 단계 갱신
   }
 }
+
 
       spawnTimer -= dt; if(spawnTimer>0) return;
 
@@ -1307,21 +1329,22 @@ if(dist >= HELI_MIN_DIST && !heli){
       for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(!h.passed && h.x+h.w<player.x){ h.passed=true; if(mission && mission.type==='clear'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } } } if(h.x+h.w<-20) hazards.splice(i,1); }
       for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x -= v*edt; if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
 
-// 헬기 이동 처리: 항상 앞쪽(우측)에서 왼쪽으로 진입
+// update(dt) 내부 — 헬기 이동 (수정)
+// 변경점: 전역 상수 HELI_SPEED 사용 → 개별 객체의 heli.speed 사용
 if(heli){
-  const heliVel = (HELI_SPEED + speed*0.08);
-  heli.x -= heliVel * edt; // 전방에서 후방(플레이어 방향)으로 고정 이동
+  const heliVel = (heli.speed + speed*0.05);  // ⬅️ 게임 진행속도 보정 비중 약간 낮춤
+  heli.x -= heliVel * edt;
 
-  // 선택: 약간의 상하 흔들림으로 자연스러움 추가
+  // 자연스런 상하 흔들림 유지
   if(!heli._jit){ heli._jit = { t: 0, amp: rand(2, 8) }; }
   heli._jit.t += edt;
   heli.y += Math.sin(heli._jit.t * 4) * (heli._jit.amp * 0.02);
 
-  // 화면 밖으로 나가면 제거
   if(heli.x + heli.w < -20){
     heli = null;
   }
 }
+
 
       for(let i=fx.length-1;i>=0;i--){ const f=fx[i]; f.y += f.vy*edt; f.life -= edt; if(f.life<=0) fx.splice(i,1); }
 
@@ -1504,7 +1527,14 @@ function startGame(){
   // Lives 초기화
   lives = 1; healthPickupCount = 0; // reset health pickup counter
   // 헬기 초기화 및 타이머 스케줄
-  heli = null; scheduleHeli();
+// startGame() 일부 — 초기화 (수정)
+// 변경점: 웨이브/속도 초기화 후 스케줄 시작
+// ...
+heli = null;
+heliWave = 0;
+heliSpeed = HELI_BASE_SPEED;
+scheduleHeli();
+
   // ★ 중요: 산타 축복 타이머 초기화
   santaBlessTimer = 0; // 시작 직후 🎅 표시 방지
 
