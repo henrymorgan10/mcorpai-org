@@ -1031,6 +1031,14 @@ const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26, santaBlessT
     const TYPES=[ {key:'stairs',kind:'ground',w:40,h:24}, {key:'noise',kind:'air',w:48,h:16,y:96}, {key:'crowd',kind:'ground',w:42,h:22}, {key:'block',kind:'ground',w:30,h:26} ];
     const BOSSES=[ {key:'longNoise',kind:'air',w:200,h:16,y:92,label:'Loud Corridor'}, {key:'stairsWall',kind:'ground',w:160,h:30,label:'Steep Steps'}, {key:'crowdMass',kind:'ground',w:220,h:24,label:'Dense Crowd'} ];
 
+    // ===== 헬기 변수 (추가) =====
+    // 50m 이후부터 헬기를 등장시키고, 한 번에 1대만 출현하도록 하는 로직에 사용됩니다.
+    let heli = null; // 현재 활성화된 헬기 객체(없으면 null)
+    let heliSpawnTimer = 0; // 헬기 재생성 타이머
+    const HELI_MIN_DIST = 50; // 헬기 출현 시작 거리(미터)
+    const HELI_SPEED = 380; // 헬기 고정 속도(px/s, 필요시 조정)
+    function scheduleHeli(){ heliSpawnTimer = rand(2.0,6.0); }
+
     // Stage cycle (Day/Night) every 300m
     let isDay=true; const STAGE_LEN=300; function setStageText(){ hudStage.textContent = (goldenTimer>0? 'Golden' : (lonelyTimer>0? 'Dark' : (isDay? 'Day':'Night'))); }
 
@@ -1167,8 +1175,20 @@ function useRevive(reason){
     let beginnerGrace = true; // 첫 충돌 1회 자동 세이브
     function beginnerEase(){ return clamp(1 - gameTime/25, 0, 1); } // 0~25s 동안 1→0으로 감소
 
-    function spawn(dt){
+     function spawn(dt){
       if(lonelyTimer>0){ spawnTimer=0.2; return; }
+
+      // 헬기 스폰 타이머 감산 및 스폰 조건 확인 (50m 이후, 한 대만 유지)
+      heliSpawnTimer -= dt;
+      if(dist >= HELI_MIN_DIST && !heli){
+        if(heliSpawnTimer <= 0){
+          // 화면 오른쪽에서 등장하도록 위치 설정 (y는 공중에 뜨도록 조정)
+          const hy = GROUND_Y - 120; // 필요시 높이 조정
+          heli = { x: WORLD.w + 12, y: hy, w: 34, h: 22, type: 'heli' };
+          scheduleHeli();
+        }
+      }
+
       spawnTimer -= dt; if(spawnTimer>0) return;
 
       const timeDf = clamp(gameTime/240, 0, 1);
@@ -1275,9 +1295,16 @@ function useRevive(reason){
       player.vy += -effectiveG*edt; player.y += -player.vy*edt;
       if(player.y>=GROUND_Y){ player.y=GROUND_Y; player.vy=0; if(!player.onGround){ jumpsUsed=0; glideTime=MAX_GLIDE; } player.onGround=true; } else { player.onGround=false; }
 
-      const v = speed * speedScale;
+            const v = speed * speedScale;
       for(let i=hazards.length-1;i>=0;i--){ const h=hazards[i]; h.x -= v*edt; if(!h.passed && h.x+h.w<player.x){ h.passed=true; if(mission && mission.type==='clear'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } } } if(h.x+h.w<-20) hazards.splice(i,1); }
       for(let i=pickups.length-1;i>=0;i--){ const p=pickups[i]; p.x -= v*edt; if(p.x+p.w<-20 || p.y>WORLD.h+40) pickups.splice(i,1); }
+
+      // 헬기 이동 처리: heli 객체가 있으면 좌측으로 이동시키고, 화면 밖으로 나가면 제거
+      if(heli){
+        // 헬기는 일정 고정 속도로 왼쪽으로 이동합니다. 필요시 HELI_SPEED 값을 조정하세요.
+        heli.x -= (HELI_SPEED + speed*0.08) * edt;
+        if(heli.x + heli.w < -20){ heli = null; }
+      }
 
       for(let i=fx.length-1;i>=0;i--){ const f=fx[i]; f.y += f.vy*edt; f.life -= edt; if(f.life<=0) fx.splice(i,1); }
 
@@ -1293,8 +1320,15 @@ function useRevive(reason){
 
     function collide(a,b){ return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 
-    function check(){
+       function check(){
       const c=CHARS[0]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
+
+      // 헬기 즉사 체크: 헬기가 존재하고 충돌하면 무조건 게임 오버
+      if(heli && collide(p, heli)){
+        // 헬기 충돌은 즉사 처리(목숨 무시)
+        return true;
+      }
+
       // hazards
 for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
     if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; }
@@ -1380,7 +1414,7 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
       ctx.font='12px system-ui';
       for(const h of hazards){ ctx.fillStyle = h.safe? '#34d399' : '#fca5a5'; ctx.fillRect(h.x, h.y, h.w, h.h); ctx.fillStyle=(goldenTimer>0)? '#b45309' : (isDay? '#0b1221':'#dbeafe'); if(h.label) ctx.fillText(h.label, h.x+4, Math.max(12,h.y-2)); if(h.safe){ const key=h.type; const text= key==='longNoise'? SAFE_LABELS['noise'] : key==='stairsWall'? SAFE_LABELS['stairs'] : key==='crowdMass'? SAFE_LABELS['crowd'] : SAFE_LABELS[key]||''; if(text) ctx.fillText(text, h.x+4, h.y+h.h+12); } }
 
-      for(const p of pickups){ if(p.box){
+         for(const p of pickups){ if(p.box){
           ctx.fillStyle = '#ef4444'; ctx.fillRect(p.x-9, p.y-18, 18, 18);
           ctx.strokeStyle = isDay? '#fee2e2' : '#fecaca'; ctx.strokeRect(p.x-9, p.y-18, 18, 18);
         } else {
@@ -1390,8 +1424,13 @@ for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
         }
       }
 
-      if(survivalTimer<=12){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
+      // 헬기 렌더링
+      if(heli){
+        // drawEmoji는 이미 정의된 함수입니다. 필요 시 글자 크기(size) 조정하세요.
+        drawEmoji(heli.x, heli.y + heli.h, 26, '🚁');
+      }
 
+      if(survivalTimer<=12){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
       for(const f of fx){ ctx.globalAlpha = Math.max(0,f.life); ctx.fillStyle = f.color || '#111827'; ctx.font='bold 14px system-ui'; ctx.fillText(f.text, f.x, f.y); ctx.globalAlpha=1; }
 
       hudDist.textContent = dist.toFixed(1);
@@ -1441,10 +1480,12 @@ function startGame(){
   // survival 초기값 (요구사항: 12초로 통일)
 survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must collect the health bar to survive.'; survivalMsg.style.display = 'block';
 
-  scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
+   scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
   reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true;
   // Lives 초기화
   lives = 1; healthPickupCount = 0; // reset health pickup counter
+  // 헬기 초기화 및 타이머 스케줄
+  heli = null; scheduleHeli();
   // HUD에 반영
   const livesEl = document.getElementById('ccg-lives'); if(livesEl) livesEl.textContent = String(lives);
   hideEnding(); clearEndingTimer();
