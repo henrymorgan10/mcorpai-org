@@ -803,6 +803,11 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
   if(reason==='survival'){ survivalTimer = 10; }
   addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
   toast('Revived once. Charge consumed.', 5);
+
+  헬스 먹은 직후 survivalTimer가 12초보다 커지므로(> 12) Find 경고문은 사라집니다.
+
+그 이후 survivalTimer가 15 → 14 → 13 → 12로 줄어들 때까지는 Find가 다시 표시되지 않습니다.
+따라서 헬스가 완전히 15로 채워졌다면 최대 3초(15 − 12 = 3s) 동안 Find가 안 뜹니다.
 }
   
   ==================================================================
