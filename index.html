@@ -1122,7 +1122,15 @@ function applyDadEffect(){
     function spawnHealth(dt){ healthSpawnTimer -= dt; if(healthSpawnTimer>0) return; const y = rand(GROUND_Y-110, GROUND_Y-70); pickups.push({x:WORLD.w+10,y,w:22,h:22,type:'health'}); scheduleHealthSpawn(); }
 
     // ===== Revive system =====
-    let reviveStored=false; let redTotal=0; let redNextThreshold=10; let hardLevel=0; let hardSpikeTimer=0;
+// ===== Revive & Lives system =====
+let reviveStored=false; let redTotal=0; let redNextThreshold=10; let hardLevel=0; let hardSpikeTimer=0;
+// Lives / health‑pickup 카운트
+let lives = 1; // 기본 1 life
+const MAX_LIVES = 2; // 최대 2
+let healthPickupCount = 0; // 🟩 개수(누적)
+const HEALTHS_FOR_LIFE = 10; // 10개 모으면 목숨 +1
+
+    
 function useRevive(reason){
   reviveStored=false;
   invulnTimer = Math.max(invulnTimer, 2.5);
@@ -1275,13 +1283,24 @@ function useRevive(reason){
     function check(){
       const c=CHARS[0]; const ph = player.duck? c.h*0.6 : c.h; const p={x:player.x+2,y:player.y-ph+2,w:Math.max(18,c.w-4),h:Math.max(18,ph-4)};
       // hazards
-      for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
-          if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; }
-          // 초보자 그레이스: 초반 25초 내 첫 충돌 1회 자동 세이브
-          if(beginnerGrace && beginnerEase()>0){ beginnerGrace=false; h.safe=true; invulnTimer=Math.max(invulnTimer,1.5); addFx('Grace ✚', player.x+6, player.y-50, '#10b981'); toast('Beginner grace consumed.', 4); continue; }
-          if(reviveStored){ h.safe=true; useRevive('hit'); continue; }
-          return true;
-      } }
+for(const h of hazards){ if(h.safe) continue; if(collide(p,h)){
+    if(invulnTimer>0 || shieldTimer>0){ h.safe=true; continue; }
+    // 초보자 그레이스: 초반 25초 내 첫 충돌 1회 자동 세이브
+    if(beginnerGrace && beginnerEase()>0){ beginnerGrace=false; h.safe=true; invulnTimer=Math.max(invulnTimer,1.5); addFx('Grace ✚', player.x+6, player.y-50, '#10b981'); toast('Beginner grace consumed.', 4); continue; }
+    if(reviveStored){ h.safe=true; useRevive('hit'); continue; }
+    // Lives가 있으면 목숨을 소모하고 즉시 무적/근접 장애물 안전처리
+    if(lives > 1){
+      lives -= 1;
+      invulnTimer = Math.max(invulnTimer, 2.5);
+      for(const hh of hazards){ const cx=hh.x+hh.w*0.5; if(Math.abs(cx - (player.x+14)) < 90) hh.safe=true; }
+      addFx('Life −1', player.x+6, player.y-50, '#ef4444');
+      toast('Life lost. Lives: ' + lives, 4);
+      const livesEl = document.getElementById('ccg-lives'); if(livesEl) livesEl.textContent = String(lives);
+      continue; // 게임 계속
+    }
+    // 더 이상 목숨이 없으면 게임 오버로 처리
+    return true;
+} }
       // pickups
       for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
           combo += 1; comboTimer = COMBO_WINDOW;
@@ -1295,9 +1314,23 @@ function useRevive(reason){
             slowItemTimer = SLOW_ITEM_TIME; speedScale = SLOW_ITEM_FACTOR; toast('Slow down for 5s.', 5);
           } else if(a.type==='star'){
             startGolden();
-        } else if(a.type==='health'){
-            survivalTimer = Math.min(15, survivalTimer + 15); addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); award(1);
-          } else if(a.type==='wheel'){
+     } else if(a.type==='health'){
+  // 기존: 생존 타이머 회복 (최대 15)
+  survivalTimer = Math.min(15, survivalTimer + 15);
+  addFx('+SURVIVE', player.x+6, player.y-40, '#10b981');
+  award(1);
+  // HEALTH 픽업 누적: 10개당 목숨 +1 (최대 MAX_LIVES)
+  healthPickupCount += 1;
+  if(healthPickupCount >= HEALTHS_FOR_LIFE){
+    healthPickupCount -= HEALTHS_FOR_LIFE;
+    if(lives < MAX_LIVES){
+      lives += 1;
+      // HUD 갱신
+      const livesEl = document.getElementById('ccg-lives'); if(livesEl) livesEl.textContent = String(lives);
+      toast('Extra life gained! Lives: ' + lives, 4);
+    }
+  }
+}else if(a.type==='wheel'){
             spinWheel();
           } else if(a.type==='revive'){
             redTotal += 1;
@@ -1370,8 +1403,17 @@ function useRevive(reason){
       canvas.style.visibility='visible';
     }
 
-    function startGame(){
-      running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none'; survivalTimer=12; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block'; scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0; reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true; hideEnding(); clearEndingTimer();
+function startGame(){
+  running=true; paused=false; speed=220; speedScale=1; dist=0; care=0; hazards.length=0; pickups.length=0; player.y=GROUND_Y; player.vy=0; player.duck=false; spawnTimer=0.2; combo=0; comboTimer=0; rupeeCount=0; heartCount=0; goldenTimer=0; slowItemTimer=0; dadEventTimer = rand(18,32); dadMsgTimer=0; dadEffectPending=null; dadBonusTimer=0; dadBonusFactor=1; lonelyTimer=0; gameTime=0; lastDadAt=-999; setStageText(); mission=null; missionGap=rand(16,28); setMissionText(); banner.style.display='none'; dadToast.style.display='none';
+  // survival 초기값 (요구사항: 12초로 통일)
+  survivalTimer=12; survivalMsgTimer=3; survivalMsg.textContent='You must collect the health bar to survive.'; survivalMsg.style.display='block';
+  scheduleHealthSpawn(); qteActive=false; qteCooldown=0; scoreMult=1; scoreMultTimer=0;
+  reviveStored=false; redTotal=0; redNextThreshold=10; hardLevel=0; hardSpikeTimer=0; beginnerGrace=true;
+  // Lives 초기화
+  lives = 1; healthPickupCount = 0; // reset health pickup counter
+  // HUD에 반영
+  const livesEl = document.getElementById('ccg-lives'); if(livesEl) livesEl.textContent = String(lives);
+  hideEnding(); clearEndingTimer();
       // 배경음악: 게임 중에만 랜덤 재생 (곡 종료 시 자동으로 다음 랜덤 곡)
       audioOn=true; try{ playRandomTrack(); }catch(e){}
       requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
@@ -1423,11 +1465,19 @@ function useRevive(reason){
        Add‑on: Total Score HUD + Item Scoring + 2,000 step difficulty + 50,000 ending
        (원본 로직은 변경하지 않고, 동일 스코프 내에서 확장)
     =========================*/
-    const hudEl = document.querySelector('#care-canvas-game .hud');
-    const totalWrap = document.createElement('div');
-    totalWrap.style.color = '#2563eb';
-    totalWrap.innerHTML = 'total score(50,000 ending) <b id="ccg-total" style="color:#2563eb">0</b>';
-    if(hudEl && hudEl.firstChild){ hudEl.insertBefore(totalWrap, hudEl.firstChild); } else if(hudEl){ hudEl.appendChild(totalWrap); }
+  const hudEl = document.querySelector('#care-canvas-game .hud');
+// Lives HUD (영어, 빨간색)
+const lifeWrap = document.createElement('div');
+lifeWrap.style.color = 'red';
+lifeWrap.innerHTML = 'Lives <b id="ccg-lives" style="color:red">1</b>';
+// Total score (기존)
+const totalWrap = document.createElement('div');
+totalWrap.style.color = '#2563eb';
+totalWrap.innerHTML = 'total score(50,000 ending) <b id="ccg-total" style="color:#2563eb">0</b>';
+// 삽입: lifeWrap을 먼저 넣고 totalWrap을 그 다음에 둡니다.
+if(hudEl && hudEl.firstChild){ hudEl.insertBefore(lifeWrap, hudEl.firstChild); hudEl.insertBefore(totalWrap, lifeWrap.nextSibling); } else if(hudEl){ hudEl.appendChild(lifeWrap); hudEl.appendChild(totalWrap); }
+
+    
 
     let totalScore = 0;
     const SCORE_STEP = 2000;
