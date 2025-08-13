@@ -789,10 +789,22 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
      - 첫 충돌 1회에 한해 자동 세이브(초보자 그레이스) 제공
   6) 엔딩 타이머: 900초 → 1,800초(=30분)로 확대
   7) Find 🟩 ! …s survivalTimer<=12
+  if(survivalTimer<=12){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
   
   8)     } else if(a.type==='health'){
             survivalTimer = Math.min(15, survivalTimer + 15); addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); award(1);
           }  15초 여유
+  9)
+  둘째. useRevive 함수에서 생존 타이머를 복구하는 값은 현재 10초로 되어 있으므로, HEALTH(🟩) 아이템과 동일한 최대 복구값(15초)을 원하시면 useRevive도 15로 바꾸시는 것이 일관적입니다. 아래 원본 블록을 삭제하시고 수정본으로 교체해 주십시오.
+  function useRevive(reason){
+  reviveStored=false;
+  invulnTimer = Math.max(invulnTimer, 2.5);
+  for(const h of hazards){ const cx=h.x+h.w*0.5; if(Math.abs(cx - (player.x+14)) < 90) h.safe=true; }
+  if(reason==='survival'){ survivalTimer = 10; }
+  addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
+  toast('Revived once. Charge consumed.', 5);
+}
+  
   ==================================================================
 -->
 
@@ -1106,14 +1118,14 @@ function applyDadEffect(){
 
     // ===== Revive system =====
     let reviveStored=false; let redTotal=0; let redNextThreshold=10; let hardLevel=0; let hardSpikeTimer=0;
-    function useRevive(reason){
-      reviveStored=false;
-      invulnTimer = Math.max(invulnTimer, 2.5);
-      for(const h of hazards){ const cx=h.x+h.w*0.5; if(Math.abs(cx - (player.x+14)) < 90) h.safe=true; }
-      if(reason==='survival'){ survivalTimer = 10; }
-      addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
-      toast('Revived once. Charge consumed.', 5);
-    }
+function useRevive(reason){
+  reviveStored=false;
+  invulnTimer = Math.max(invulnTimer, 2.5);
+  for(const h of hazards){ const cx=h.x+h.w*0.5; if(Math.abs(cx - (player.x+14)) < 90) h.safe=true; }
+  if(reason==='survival'){ survivalTimer = 15; }
+  addFx('Revive ✚', player.x+6, player.y-50, '#ef4444');
+  toast('Revived once. Charge consumed.', 5);
+}
     function maybeHardSpike(){
       if(redTotal >= redNextThreshold){
         hardLevel += 1; hardSpikeTimer = 12;
