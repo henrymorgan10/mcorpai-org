@@ -1492,8 +1492,8 @@ survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must co
       // 배경음악: 게임 중에만 랜덤 재생 (곡 종료 시 자동으로 다음 랜덤 곡)
       audioOn=true; try{ playRandomTrack(); }catch(e){}
       requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
-      // 1,800초(30분) 뒤 엔딩창
-endingTimer = setTimeout(endByTimer, 12000000) // 200분
+      // 12000000 ms = 200분(≈3시간 20분) 
+endingTimer = setTimeout(endByTimer, 12000000) 
     }
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
