@@ -1285,37 +1285,79 @@ function applyDadEffect(){
           if(reviveStored){ h.safe=true; useRevive('hit'); continue; }
           return true;
       } }
-      // pickups
-      for(let i=pickups.length-1;i>=0;i--){ const a=pickups[i]; const box={x:a.x,y:a.y,w:a.w,h:a.h}; if(collide(p,box)){
-          combo += 1; comboTimer = COMBO_WINDOW;
-          if(a.type==='rupee'){
-            rupeeCount+=1; award(1); if(rupeeCount>=10){ shieldTimer = SHIELD_TIME; rupeeCount=0; toast('Shield on for 4s.', 5); }
-          } else if(a.type==='heart'){
-            heartCount+=1; award(2);
-            if(mission && mission.type==='hearts'){ mission.progress++; setMissionText(); if(mission.progress>=mission.target){ finishMission(true); } }
-            if(heartCount>=3){ for(const h of hazards){ h.safe=true; } heartCount=0; toast('Field Clear.', 3); }
-          } else if(a.type==='snail'){
-            slowItemTimer = SLOW_ITEM_TIME; speedScale = SLOW_ITEM_FACTOR; toast('Slow down for 5s.', 5);
-          } else if(a.type==='star'){
-            startGolden();
-          } else if(a.type==='health'){
-            survivalTimer = 10; addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); award(1);
-          } else if(a.type==='wheel'){
-            spinWheel();
-          } else if(a.type==='revive'){
-            redTotal += 1;
-            if(!reviveStored){ reviveStored = true; toast('Red square stored. 1 revive ready.', 5); }
-            maybeHardSpike();
-          }
+ // pickups
+for(let i=pickups.length-1;i>=0;i--){ 
+  const a=pickups[i]; 
+  const box={x:a.x,y:a.y,w:a.w,h:a.h}; 
+  if(collide(p,box)){
+      combo += 1; 
+      comboTimer = COMBO_WINDOW;
 
-          // ===== Total Score add per item (blue) =====
-          if(a.type==='rupee' || a.type==='heart' || a.type==='snail' || a.type==='star' || a.type==='health' || a.type==='wheel'){
-            updateTotalScore(ITEM_POINTS[a.type]||0);
-          }
+      if(a.type==='rupee'){
+        rupeeCount+=1; 
+        award(1); 
+        if(rupeeCount>=10){ 
+          shieldTimer = SHIELD_TIME; 
+          rupeeCount=0; 
+          toast('Shield on for 4s.', 5); 
+        }
+      } else if(a.type==='heart'){
+        heartCount+=1; 
+        award(2);
 
-          pickups.splice(i,1);
-          try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}
-      } }
+        // HEART를 먹으면 생존 타이머 1초 증가, 최대 12초로 캡
+        survivalTimer = Math.min(12, survivalTimer + 1);
+
+        if(mission && mission.type==='hearts'){ 
+          mission.progress++; 
+          setMissionText(); 
+          if(mission.progress>=mission.target){ 
+            finishMission(true); 
+          } 
+        }
+        if(heartCount>=3){ 
+          for(const h of hazards){ h.safe=true; } 
+          heartCount=0; 
+          toast('Field Clear.', 3); 
+        }
+      } else if(a.type==='snail'){
+        slowItemTimer = SLOW_ITEM_TIME; 
+        speedScale = SLOW_ITEM_FACTOR; 
+        toast('Slow down for 5s.', 5);
+      } else if(a.type==='star'){
+        startGolden();
+      } else if(a.type==='health'){
+        // HEALTH를 먹으면 생존 타이머 2초 증가, 최대 12초로 캡
+        survivalTimer = Math.min(12, survivalTimer + 2);
+        addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); 
+        award(1);
+      } else if(a.type==='wheel'){
+        spinWheel();
+      } else if(a.type==='revive'){
+        redTotal += 1;
+        if(!reviveStored){ 
+          reviveStored = true; 
+          toast('Red square stored. 1 revive ready.', 5); 
+        }
+        maybeHardSpike();
+      }
+
+      // ===== Total Score add per item (blue) =====
+      if(a.type==='rupee' || a.type==='heart' || a.type==='snail' || a.type==='star' || a.type==='health' || a.type==='wheel'){
+        updateTotalScore(ITEM_POINTS[a.type]||0);
+      }
+
+      pickups.splice(i,1);
+      try{ 
+        if(care>best){ 
+          best=care; 
+          localStorage.setItem(BEST_KEY,String(best)); 
+          hudBest.textContent=best; 
+        } 
+      }catch(e){}
+  } 
+}
+
       return false;
     }
 
