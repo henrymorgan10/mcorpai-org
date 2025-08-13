@@ -1450,7 +1450,7 @@ survivalTimer = 12; survivalMsgTimer = 3; survivalMsg.textContent = 'You must co
       audioOn=true; try{ playRandomTrack(); }catch(e){}
       requestAnimationFrame((t)=>{tPrev=t; requestAnimationFrame(loop);});
       // 1,800초(30분) 뒤 엔딩창
-endingTimer = setTimeout(endByTimer, 1800000);
+endingTimer = setTimeout(endByTimer, 12000000) // 200분
     }
 
     function endGame(){ running=false; paused=false; banner.style.display='block'; banner.querySelector('h4').textContent='GAME OVER'; dadToast.style.display='none'; survivalMsg.style.display='none'; mission=null; setMissionText(); clearEndingTimer(); showEnding(); try{ if(care>best){ best=care; localStorage.setItem(BEST_KEY,String(best)); hudBest.textContent=best; } }catch(e){}; footerEl.textContent='Please support mcorpai.org'; }
