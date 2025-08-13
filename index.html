@@ -807,7 +807,7 @@ If you are serving over http(s), you may delete the inline JSON and keep scam_fe
             survivalTimer = Math.min(20, survivalTimer + 20); addFx('+SURVIVE', player.x+6, player.y-40, '#10b981'); award(1);
           }  20초 여유
 
-  survivalTimer = 검색
+  survivalTimer = 현재 15초 타이머 /  HEALTH 먹으면 대기 시간 20초
   9)
   둘째. useRevive 함수에서 생존 타이머를 복구하는 값은 현재 20초로 되어 있으므로, HEALTH(🟩) 아이템과 동일한 최대 복구값(15초)을 원하시면 useRevive도 15로 바꾸시는 것이 일관적입니다. 아래 원본 블록을 삭제하시고 수정본으로 교체해 주십시오.
   function useRevive(reason){
@@ -1489,7 +1489,7 @@ if(heli){
   // y 위치에 heli.h를 더해 바닥 기준으로 적절히 보이도록 합니다.
   drawEmoji(heli.x, heli.y + heli.h, 26, '🚁');
 }
-
+  // 타이머 15초
       if(survivalTimer<=15){ ctx.font='bold 16px system-ui'; ctx.fillStyle = (isDay? '#b91c1c':'#fecaca'); ctx.fillText(`Find ${HEALTH}! ${survivalTimer.toFixed(1)}s`, WORLD.w*0.5-60, 22); }
       for(const f of fx){ ctx.globalAlpha = Math.max(0,f.life); ctx.fillStyle = f.color || '#111827'; ctx.font='bold 14px system-ui'; ctx.fillText(f.text, f.x, f.y); ctx.globalAlpha=1; }
 
