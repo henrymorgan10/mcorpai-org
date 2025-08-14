@@ -2081,25 +2081,34 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 
   
-  <!-- Paste inside <body>. Compact left sticky World Food Ticker. Single-language (English). No JSON, all inline. -->
+ <!-- Paste inside <body>. Compact left sticky World Food Ticker. Single-language (English). No JSON, all inline. -->
 
 <style>
   @media (min-width: 992px){
-    #foodRail{ position:fixed; left:14px; top:150px; width:200px; z-index:80; }
+    #foodRail{ position:fixed; left:14px; top:150px; width:160px; z-index:80; }
   }
   @media (max-width: 991.98px){
-    #foodRail{ position:fixed; left:10px; bottom:12px; width:min(85vw,340px); z-index:80; }
+    #foodRail{ position:fixed; left:10px; bottom:12px; width:min(75vw,280px); z-index:80; }
   }
-  #foodBox{ background:#fffbea; /* light yellow */ border:1px solid rgba(0,0,0,.12); border-radius:10px; box-shadow:0 8px 18px rgba(2,6,23,.08); overflow:hidden; font:.88rem/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221 }
-  #foodBox header{ padding:6px 8px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.9rem }
-  #foodBox .row{ padding:6px 8px }
-  #controls{ display:flex; gap:6px; align-items:center }
-  #countryInput{ flex:1; padding:4px 6px; border:1px solid rgba(0,0,0,.16); border-radius:8px; outline:none; font-size:.85rem }
-  #btnRandom{ padding:4px 6px; border-radius:8px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.8rem }
-  #country{ font-weight:800; color:#2563eb; /* blue */ }
-  #dish{ font-weight:800; color:#16a34a; /* green */ }
-  #desc{ color:#0b0f19; font-weight:700 }
-  #more a{ color:#2563eb; font-weight:800; text-decoration:underline }
+  #foodBox{ background:#fffbea; border:1px solid rgba(0,0,0,.12); border-radius:8px; box-shadow:0 6px 14px rgba(2,6,23,.08); overflow:hidden; font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221; opacity:.55; filter:saturate(.85) contrast(.95); transition:opacity .18s ease, filter .18s ease, box-shadow .18s ease, transform .18s ease }
+  #foodBox header{ padding:4px 6px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.82rem }
+  #foodBox .row{ padding:4px 6px }
+  #controls{ display:flex; gap:4px; align-items:center }
+  #countryInput{ flex:1; padding:3px 5px; border:1px solid rgba(0,0,0,.16); border-radius:6px; outline:none; font-size:.75rem }
+  #btnRandom{ padding:3px 5px; border-radius:6px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.72rem }
+  #country{ font-weight:800; color:#2563eb; }
+  #dish{ font-weight:800; color:#16a34a; }
+  #desc{ color:#0b0f19; font-weight:700; font-size:.78rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis }
+  #more{ font-size:.72rem }
+  #more a{ color:#2563eb; font-weight:800; text-decoration:underline; font-size:.72rem }
+  #more .emergency{ display:block; font-weight:800; color:#2563eb; text-decoration:underline; font-size:.75rem; white-space:normal; margin-top:4px }
+  #more .num{ display:block; font-weight:800; color:#0b1221; margin-top:4px }
+  #more .num strong{ font-weight:800 }
+  #more .meta{ display:block; margin-top:4px }
+  #more .soft{ opacity:0; transition:opacity .18s ease }
+  #view:hover #more .soft{ opacity:1 }
+  #foodBox:hover{ opacity:1; filter:none; box-shadow:0 10px 22px rgba(2,6,23,.12); transform:translateY(-1px) }
+  #foodBox:hover #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
 </style>
 
 <aside id="foodRail" aria-label="Sticky world food ticker">
@@ -2112,18 +2121,18 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
       <button id="btnRandom" type="button" title="Random pick">Rnd</button>
     </div>
 
-    <div class="row" id="view">
+    <div class="row" id="view" aria-live="polite">
       <div id="country">—</div>
       <div id="dish">—</div>
       <div id="desc">Choose a country or press Rnd.</div>
-      <div id="more" style="font-size:.8rem"></div>
+      <div id="more"></div>
     </div>
   </div>
 </aside>
 
 <script>
 (function(){
-  // Inline dataset (English only). Add more countries or dishes freely.
+  // Inline dataset (English only).
   const DB = {
     "Japan": [
       { name:"Onigiri", desc:"Hand‑pressed rice ball often filled with salmon or pickled plum." },
@@ -2152,6 +2161,66 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
     ]
   };
 
+  // Country emergency and meta data (English). Keep scope tiny and inline.
+  const META = {
+    "Japan": {
+      numbers:{ emergency:"119", police:"110" },
+      exchange: "Moderate",
+      crime: "Low levels of petty theft; rare violent crime. Be cautious.",
+      english: "Moderate",
+      orgs: ["Japanese Red Cross Society","Japan National Tourism Organization (JNTO)"],
+      tipQuery: "omiyage gift etiquette"
+    },
+    "Costa Rica": {
+      numbers:{ emergency:"911", police:"911" },
+      exchange: "Moderate",
+      crime: "Petty theft in tourist areas; occasional robberies. Be cautious.",
+      english: "Moderate",
+      orgs: ["Costa Rican Red Cross","Tourism Police (Policia de Turismo)"],
+      tipQuery: "tuanis slang Costa Rica"
+    },
+    "United States": {
+      numbers:{ emergency:"911", police:"911" },
+      exchange: "Easy",
+      crime: "Property crime and vehicle break-ins in some cities; violent crime varies by area. Be cautious.",
+      english: "Easy",
+      orgs: ["American Red Cross"],
+      tipQuery: "tipping etiquette USA"
+    },
+    "Korea, Republic of (South Korea)": {
+      numbers:{ emergency:"119", police:"112" },
+      exchange: "Easy",
+      crime: "Petty theft in crowded areas; occasional scams targeting tourists. Be cautious.",
+      english: "Moderate",
+      orgs: ["Korean Red Cross","Korea Tourism Organization"],
+      tipQuery: "how to use T-money card"
+    },
+    "Korea, Democratic People's Republic of (North Korea)": {
+      numbers:{ emergency:"Not publicly listed", police:"Not publicly listed" },
+      exchange: "Difficult",
+      crime: "Restrictions and state security risks; criminal definitions differ. Be cautious.",
+      english: "Difficult",
+      orgs: [],
+      tipQuery: "Pyongyang etiquette"
+    },
+    "India": {
+      numbers:{ emergency:"112", police:"100" },
+      exchange: "Easy",
+      crime: "Petty theft and scams in crowded places; some areas pose risks for solo travelers. Be cautious.",
+      english: "Moderate",
+      orgs: ["Indian Red Cross Society"],
+      tipQuery: "how to use UPI India"
+    },
+    "Italy": {
+      numbers:{ emergency:"112", police:"112" },
+      exchange: "Moderate",
+      crime: "Pickpocketing in tourist areas; scams at train stations. Be cautious.",
+      english: "Moderate",
+      orgs: ["Italian Red Cross"],
+      tipQuery: "validate train ticket Trenitalia"
+    }
+  };
+
   const input = document.getElementById('countryInput');
   const list = document.getElementById('countryList');
   const btnRandom = document.getElementById('btnRandom');
@@ -2159,6 +2228,7 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   const elDish = document.getElementById('dish');
   const elDesc = document.getElementById('desc');
   const elMore = document.getElementById('more');
+  const box = document.getElementById('foodBox');
 
   // Build datalist
   Object.keys(DB).sort().forEach(name => { const o=document.createElement('option'); o.value=name; list.appendChild(o); });
@@ -2166,29 +2236,138 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   function randomCountry(){ const names = Object.keys(DB); return names[Math.floor(Math.random()*names.length)]; }
 
-  function render(country){
-    if(!country || !DB[country]){ elCountry.textContent='—'; elDish.textContent='—'; elDesc.textContent='Choose a country or press Rnd.'; elMore.innerHTML=''; return; }
-    const dish = pick(DB[country]);
-    elCountry.textContent = country;
-    elDish.textContent = dish.name;
-    elDesc.textContent = dish.desc;
-    const q = encodeURIComponent(country + ' ' + dish.name);
-    elMore.innerHTML = '<a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">More details here</a>';
+  // Alias & light fuzzy normalization
+  const ALIAS = {
+    "south korea":"Korea, Republic of (South Korea)",
+    "korea":"Korea, Republic of (South Korea)",
+    "kr":"Korea, Republic of (South Korea)",
+    "kor":"Korea, Republic of (South Korea)",
+    "north korea":"Korea, Democratic People's Republic of (North Korea)",
+    "united states":"United States",
+    "usa":"United States",
+    "us":"United States",
+    "u.s.":"United States",
+    "jp":"Japan",
+    "it":"Italy",
+    "in":"India",
+    "costa rica":"Costa Rica"
+  };
+  function normalizeCountry(raw){
+    if(!raw) return "";
+    const s = raw.trim().toLowerCase();
+    if(ALIAS[s]) return ALIAS[s];
+    const hit = Object.keys(DB).find(k => k.toLowerCase().startsWith(s));
+    return hit || raw.trim();
   }
 
-  // Interactions
-  btnRandom.addEventListener('click', function(){ render(randomCountry()); });
-  input.addEventListener('change', function(){ render(this.value.trim()); });
-  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ render(this.value.trim()); }});
+  // Auto-rotate control
+  let autoTimer=null, autoMs=8000, paused=false;
+  function startAuto(){ if(autoTimer) return; autoTimer=setInterval(()=>{ if(!paused) render(randomCountry()); }, autoMs); }
+  function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
 
-  // Initial view: show one of Japan, Costa Rica, or United States
-  (function init(){ const seeds = ['Japan','Costa Rica','United States']; render(pick(seeds)); })();
+  // User-lock control: when user types a country, lock display for 10s
+  let userLockTimer = null;
+  const USER_LOCK_MS = 10000; // 10 seconds
+  function lockForUserInteraction(){
+    paused = true; // Pause auto rotation
+    stopAuto();
+    if(userLockTimer) clearTimeout(userLockTimer);
+    userLockTimer = setTimeout(()=>{
+      input.value = '';
+      paused = false;
+      userLockTimer = null;
+      startAuto();
+    }, USER_LOCK_MS);
+  }
+
+  // Clear only the input field on hover/click so user can type a new country quickly
+  input.addEventListener('mouseenter', ()=>{ input.value=''; });
+  input.addEventListener('pointerdown', ()=>{ input.value=''; });
+  input.addEventListener('focus', ()=>{ paused=true; });
+  input.addEventListener('blur', ()=>{ if(!userLockTimer) paused=false; });
+
+  // Render function accepts user flag
+  function render(country, opts){
+    opts = opts || {};
+    const key = DB[country] ? country : normalizeCountry(country);
+    if(!key || !DB[key]){
+      elCountry.textContent='—';
+      elDish.textContent='—';
+      elDesc.textContent='Choose a country or press Rnd.';
+      elMore.innerHTML = '';
+      return;
+    }
+    const dish = pick(DB[key]);
+    elCountry.textContent = key;
+    elDish.textContent = dish.name;
+    elDesc.textContent = dish.desc;
+
+    const meta = META[key];
+    if(meta){
+      const e = meta.numbers.emergency, p = meta.numbers.police;
+      let html = '<span class="num">Emergency number: <strong>'+ e +'</strong></span>'+
+                 '<span class="num">Police number: <strong>'+ p +'</strong></span>';
+      html += '<span class="meta">Currency exchange: <strong>' + meta.exchange + '</strong></span>';
+      html += '<span class="meta">Common crimes: ' + meta.crime + '</span>';
+      html += '<span class="meta">English communication: <strong>' + meta.english + '</strong></span>';
+      if(meta.orgs && meta.orgs.length){ html += '<span class="meta">Support organizations: ' + meta.orgs.join(', ') + '</span>'; }
+      if(meta.tipQuery){
+        const q = encodeURIComponent(meta.tipQuery);
+        html += '<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">' + meta.tipQuery + '</a> — This tip helps you connect with locals.</span>';
+      }
+      elMore.innerHTML = html;
+    } else {
+      const q = encodeURIComponent(key + ' emergency number');
+      elMore.innerHTML = '<a class="emergency" href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">Emergency numbers</a>';
+    }
+
+    if(opts.user){ lockForUserInteraction(); }
+  }
+
+  // Clipboard: double-click dish to copy "Country, Dish"
+  elDish.addEventListener('dblclick', async ()=>{
+    try{
+      const text = elCountry.textContent + ', ' + elDish.textContent;
+      await navigator.clipboard.writeText(text);
+      const prev = elMore.innerHTML;
+      elMore.innerHTML = prev + (prev? ' ' : '') + '<span class="soft">(Copied)</span>';
+      setTimeout(()=>{ elMore.innerHTML = prev; }, 900);
+    }catch(_){ /* no-op */ }
+  });
+
+  // Interactions
+  btnRandom.addEventListener('click', function(){ render(randomCountry(), {user:true}); });
+  input.addEventListener('change', function(){ const c = this.value; if(c) render(c, {user:true}); });
+  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ const c = this.value; if(c) render(c, {user:true}); }});
+  // Live preview while typing (no lock)
+  let liveTimer=null; const LIVE_DELAY=300;
+  input.addEventListener('input', function(){
+    clearTimeout(liveTimer);
+    const val=this.value;
+    liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY);
+  });
+
+  // Keyboard shortcuts: '/' to focus, 'r' to random (when input not focused)
+  document.addEventListener('keydown', e=>{
+    if(e.key==='/' && document.activeElement!==input){ e.preventDefault(); input.focus(); }
+    else if(e.key && e.key.toLowerCase()==='r' && document.activeElement!==input){ render(randomCountry()); }
+  });
+
+  // Pause auto on mouseleave/tab hidden
+  box.addEventListener('mouseleave', ()=>{ if(!userLockTimer) paused=false; });
+  document.addEventListener('visibilitychange', ()=>{ paused=document.hidden; });
+
+  // Initial view: seed list.
+  (function init(){
+    const seeds = ['Japan','Costa Rica','United States'];
+    render(pick(seeds));
+    startAuto();
+  })();
 })();
 </script>
 
+
   
-
-
   
 </html>
 
