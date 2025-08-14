@@ -2080,12 +2080,12 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 
 
-
-
-  
-<!-- Paste inside <body>. No <html>/<head>/<body> wrappers. World Travel Ticker (hover opacity unified; risk always expanded height only). -->
+<!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
 
 <style>
+  :root{
+    color-scheme: light dark;
+  }
   @media (min-width: 992px){
     #infoRail{ position:fixed; left:14px; top:150px; width:160px; z-index:80; }
   }
@@ -2093,11 +2093,12 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
     #infoRail{ position:fixed; left:10px; bottom:12px; width:min(75vw,280px); z-index:80; }
   }
 
+  /* Box visuals */
   #infoBox{ background:#fffbea; border:1px solid rgba(0,0,0,.12); border-radius:8px; box-shadow:0 6px 14px rgba(2,6,23,.08); overflow:hidden; font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221; opacity:.55; filter:saturate(.85) contrast(.95); transition:max-height .24s ease, opacity .18s ease, filter .18s ease, box-shadow .18s ease, transform .18s ease; max-height:var(--collapsed-h,160px) }
   #infoBox header{ padding:4px 6px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.82rem }
   #infoBox .row{ padding:4px 6px }
 
-  /* Risk countries: height expanded only; visual intensity follows hover same as tourism */
+  /* Risk countries: keep height expanded only; visual intensity follows hover/focus like tourism */
   #infoBox.nocollapse{ max-height: var(--expanded-h) !important; }
   #infoBox.nocollapse #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
 
@@ -2106,13 +2107,13 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   #btnRandom{ padding:3px 5px; border-radius:6px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.72rem }
 
   #country{ font-weight:800; color:#0b1221 }
-  #country.risk{ color:#dc2626 }
+  #country.risk{ color:#b01919 }
 
   #rank{ font-weight:800; color:#16a34a }
-  #rank .riskBadge{ color:#b91c1c; font-weight:800 }
+  #rank .riskBadge{ color:#b01919; font-weight:800 }
 
   #desc{ color:#0b0f19; font-weight:700; font-size:.78rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis }
-  #desc.risk{ color:#b91c1c }
+  #desc.risk{ color:#b01919 }
 
   #more{ font-size:.72rem; color:#0b1221 }
   #more a{ color:#2563eb; font-weight:800; text-decoration:underline; font-size:.72rem }
@@ -2122,9 +2123,17 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   #more .soft{ opacity:0; transition:opacity .18s ease }
   #view:hover #more .soft{ opacity:1 }
 
-  /* Hover reveal for all */
-  #infoBox:hover{ opacity:1; filter:none; box-shadow:0 10px 22px rgba(2,6,23,.12); transform:translateY(-1px); max-height:var(--expanded-h,1000px) }
-  #infoBox:hover #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
+  /* Hover/focus/active reveal for all */
+  #infoBox:is(:hover, :focus-within), #infoBox.active{ opacity:1; filter:none; box-shadow:0 10px 22px rgba(2,6,23,.12); transform:translateY(-1px); max-height:var(--expanded-h,1000px) }
+  #infoBox:is(:hover, :focus-within), #infoBox.active #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
+
+  /* Reduce motion preference */
+  @media (prefers-reduced-motion: reduce){
+    #infoBox{ transition:none }
+  }
+
+  /* Visually hidden for screen reader status */
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
 </style>
 
 <aside id="infoRail" aria-label="Sticky world info ticker">
@@ -2143,12 +2152,14 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
       <div id="desc">Choose a country or press Rnd.</div>
       <div id="more"></div>
     </div>
+
+    <div id="srStatus" class="sr-only" aria-live="polite"></div>
   </div>
 </aside>
 
 <script>
 (function(){
-  // ===== Tourism countries (ranked). Extended to 30 per request. =====
+  // ===== Tourism countries (ranked). Extended to 40. Numbers "—" where uncertain; fill later as verified. =====
   const META = {
     "France": { rank:1, summary:"Money: Easy. English: Moderate in hubs. Crime: pickpockets in Paris and transit. Be cautious.", numbers:{ emergency:"112", police:"17" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets in tourist zones and transit. Be cautious.", orgs:["French Red Cross"], tipQuery:"first Sunday free museums Paris" },
     "Spain": { rank:2, summary:"Money: Easy. English: Moderate. Crime: bag snatching in Barcelona and coasts. Be cautious.", numbers:{ emergency:"112", police:"091" }, exchange:"Easy", english:"Moderate", crime:"Bag snatch and pickpockets in hotspots. Be cautious.", orgs:["Spanish Red Cross"], tipQuery:"menu del dia Spain" },
@@ -2179,10 +2190,20 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
     "Ireland": { rank:27, summary:"Money: Easy. English: Easy. Crime low; nightlife pickpockets. Be cautious.", numbers:{ emergency:"112", police:"999" }, exchange:"Easy", english:"Easy", crime:"Pickpockets in nightlife streets. Be cautious.", orgs:["Irish Red Cross"], tipQuery:"Leap Card visitor" },
     "Belgium": { rank:28, summary:"Money: Easy. English: Easy in cities. Crime: station and festival pickpockets. Be cautious.", numbers:{ emergency:"112", police:"101" }, exchange:"Easy", english:"Easy", crime:"Pickpockets around stations and events. Be cautious.", orgs:["Belgian Red Cross"], tipQuery:"STIB/MIVB day pass" },
     "Norway": { rank:29, summary:"Money: Easy. English: Easy. Crime very low; weather safety matters. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Very low; prepare for weather and terrain. Be cautious.", orgs:["Norwegian Red Cross"], tipQuery:"Vy app rail tickets" },
-    "Sweden": { rank:30, summary:"Money: Easy. English: Easy. Crime low; bike theft in cities. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Bike theft and pickpockets in hubs. Be cautious.", orgs:["Swedish Red Cross"], tipQuery:"SL card vs single tickets" }
+    "Sweden": { rank:30, summary:"Money: Easy. English: Easy. Crime low; bike theft in cities. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Bike theft and pickpockets in hubs. Be cautious.", orgs:["Swedish Red Cross"], tipQuery:"SL card vs single tickets" },
+    "Indonesia": { rank:31, summary:"Money: Easy in cities and Bali. English: Moderate in tourism. Crime: beach theft, taxi overcharge. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Easy", english:"Moderate", crime:"Beach theft; unmetered taxi overcharge. Be cautious.", orgs:["Indonesian Red Cross"], tipQuery:"Blue Bird taxi Bali tips" },
+    "Vietnam": { rank:32, summary:"Money: Easy in cities. English: Moderate in tourism. Crime: motorbike snatch theft. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Easy", english:"Moderate", crime:"Snatch theft near traffic; tour scams. Be cautious.", orgs:["Vietnam Red Cross"], tipQuery:"Grab pay Vietnam airport" },
+    "Taiwan": { rank:33, summary:"Money: Easy. English: Moderate. Crime very low; night markets crowd. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Easy", english:"Moderate", crime:"Very low; watch bags in markets. Be cautious.", orgs:["Taiwan Tourism"], tipQuery:"EasyCard airport purchase" },
+    "Morocco": { rank:34, summary:"Money: Easy in cities. English: Moderate in tourism. Crime: market scams, pickpockets. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Easy", english:"Moderate", crime:"Souk hustles, taxi overcharge. Be cautious.", orgs:["Moroccan Red Crescent"], tipQuery:"Petit taxi meter Marrakech" },
+    "Argentina": { rank:35, summary:"Money: Moderate; exchange tricky. English: Moderate in tourism. Crime: card skimmers, pickpockets. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Moderate", english:"Moderate", crime:"ATM/card skimming; night theft. Be cautious.", orgs:["Argentine Red Cross"], tipQuery:"EZE airport transport options" },
+    "Chile": { rank:36, summary:"Money: Easy. English: Moderate. Crime: bus terminal pickpockets. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets in hubs and terminals. Be cautious.", orgs:["Chilean Red Cross"], tipQuery:"TurBus vs Pullman tickets" },
+    "Croatia": { rank:37, summary:"Money: Easy. English: Easy in tourism. Crime: high-season scams. Be cautious.", numbers:{ emergency:"—", police:"—" }, exchange:"Easy", english:"Easy", crime:"Accommodation overcharge; pickpockets. Be cautious.", orgs:["Croatian Red Cross"], tipQuery:"Jadrolinija ferry booking" },
+    "Poland": { rank:38, summary:"Money: Easy. English: Moderate. Crime: old town pickpockets; exchange kiosks. Be cautious.", numbers:{ emergency:"112", police:"997" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets and unfair exchange. Be cautious.", orgs:["Polish Red Cross"], tipQuery:"PKP Intercity seat booking" },
+    "Denmark": { rank:39, summary:"Money: Easy. English: Easy. Crime very low; bike rules matter. Be cautious.", numbers:{ emergency:"112", police:"114" }, exchange:"Easy", english:"Easy", crime:"Very low; bike theft in cities. Be cautious.", orgs:["Danish Red Cross"], tipQuery:"Rejsekort vs City Pass" },
+    "Finland": { rank:40, summary:"Money: Easy. English: Easy. Crime very low; weather caution. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Very low; winter conditions. Be cautious.", orgs:["Finnish Red Cross"], tipQuery:"HSL app tickets Helsinki" }
   };
 
-  // ===== Risk countries (unranked). Added 6 more per request. =====
+  // ===== Risk countries (unranked). Added per expansion. =====
   const RISK = {
     "Cambodia": { risks:"Scam compounds, kidnapping", advice:"Use licensed transport, avoid job offers and remote casinos, keep passport and phone hidden. If targeted, reach a busy shop or hotel, ask staff to call help, comply and exit. Based on five‑year data; status may change." },
     "Philippines": { risks:"Express kidnapping, gun crime", advice:"Stick to well‑lit areas and official taxis, avoid cash‑heavy nightlife, split valuables. If followed, enter a staffed place and call police or hotel. Based on five‑year data; status may change." },
@@ -2209,7 +2230,13 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
     "Papua New Guinea": { risks:"Armed robbery, carjacking", advice:"Avoid isolated roads after dark, travel in groups or with guides, secure vehicles and valuables. Head to guarded compounds if concerned." },
     "Democratic Republic of the Congo": { risks:"Armed groups, kidnapping in border regions", advice:"Use security‑advised routes only, register with embassy, avoid night travel and demonstrations. Seek protected facilities when uncertain." },
     "Algeria": { risks:"Terror risk in remote areas, robbery", advice:"Stay in urban cores, avoid desert travel without permits and convoys, use registered guides. Report incidents to police promptly." },
-    "Tunisia": { risks:"Terrorism near borders, petty crime in resorts", advice:"Avoid border zones, stay in known resort areas, use hotel transfers, keep bags closed and phones concealed in crowds." }
+    "Tunisia": { risks:"Terrorism near borders, petty crime in resorts", advice:"Avoid border zones, stay in known resort areas, use hotel transfers, keep bags closed and phones concealed in crowds." },
+    "Myanmar": { risks:"Civil conflict, checkpoints", advice:"Minimize movement, comply at checkpoints, use reputable hotels and transport in populated areas only; avoid demonstrations and curfews." },
+    "Bangladesh": { risks:"Night robberies, crowd theft", advice:"Travel in daylight, use registered taxis or app rides, keep valuables split and concealed; avoid dense crowds when possible." },
+    "Tanzania": { risks:"Snatch theft in cities, ferry terminal theft", advice:"Use hotel or registered taxis, limit night walking, keep cameras/phones concealed near traffic; report from secure locations." },
+    "Mozambique": { risks:"Vehicle break‑ins, armed robbery in some areas", advice:"Avoid dusk travel, use hotel safes, carry minimal cash; stick to main routes and guarded parking." },
+    "Madagascar": { risks:"Armed robbery in remote regions, night walking risk", advice:"Join daytime tours, avoid isolated night travel, keep valuables hidden; seek assistance from hotels and authorities if concerned." },
+    "Bolivia": { risks:"Long‑haul bus theft, currency scams", advice:"Use official counters, avoid night buses, keep valuables on person; verify notes and exchange only at trusted places." }
   };
 
   const input = document.getElementById('countryInput');
@@ -2220,6 +2247,8 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   const elDesc = document.getElementById('desc');
   const elMore = document.getElementById('more');
   const box = document.getElementById('infoBox');
+  const sr = document.getElementById('srStatus');
+  const view = document.getElementById('view');
 
   // Build datalist from META and RISK (no duplicates). Risk shows a "(Risk)" label.
   const names = Array.from(new Set([...Object.keys(META), ...Object.keys(RISK)])).sort();
@@ -2228,18 +2257,34 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   function randomCountry(){ return pick(names); }
 
-  // Aliases
-  const ALIAS = { "south korea":"Korea, Republic of (South Korea)", "korea":"Korea, Republic of (South Korea)", "kr":"Korea, Republic of (South Korea)", "kor":"Korea, Republic of (South Korea)", "united states":"United States", "usa":"United States", "us":"United States", "u.s.":"United States", "uk":"United Kingdom", "britain":"United Kingdom", "england":"United Kingdom", "uae":"United Arab Emirates", "emirates":"United Arab Emirates", "ksa":"Saudi Arabia", "china":"China", "hong kong":"Hong Kong", "deutschland":"Germany", "holland":"Netherlands" };
-  function normalizeCountry(raw){ if(!raw) return ""; const s=raw.trim().toLowerCase(); if(ALIAS[s]) return ALIAS[s]; const hit=names.find(k=>k.toLowerCase().startsWith(s)); return hit || raw.trim(); }
+  // Aliases (extend as needed)
+  const ALIAS = { "south korea":"Korea, Republic of (South Korea)", "korea":"Korea, Republic of (South Korea)", "kr":"Korea, Republic of (South Korea)", "kor":"Korea, Republic of (South Korea)", "united states":"United States", "usa":"United States", "us":"United States", "u.s.":"United States", "uk":"United Kingdom", "britain":"United Kingdom", "england":"United Kingdom", "uae":"United Arab Emirates", "emirates":"United Arab Emirates", "ksa":"Saudi Arabia", "china":"China", "hong kong":"Hong Kong", "deutschland":"Germany", "holland":"Netherlands", "vietnam":"Vietnam", "viet nam":"Vietnam", "indonesia":"Indonesia", "taiwan":"Taiwan", "morocco":"Morocco", "argentina":"Argentina", "chile":"Chile", "croatia":"Croatia", "poland":"Poland", "denmark":"Denmark", "finland":"Finland" };
+  function normalizeCountry(raw){
+    if(!raw) return "";
+    const s = raw.trim().toLowerCase().replace(/[\u200B-\u200D\uFEFF]/g,"");
+    if(ALIAS[s]) return ALIAS[s];
+    const hit = names.find(k => k.toLowerCase().startsWith(s));
+    return hit || raw.trim();
+  }
 
-  // Auto-rotate
-  let autoTimer=null, autoMs=8000, paused=false;
-  function startAuto(){ if(autoTimer) return; autoTimer=setInterval(()=>{ if(!paused) render(randomCountry()); }, autoMs); }
+  // Auto-rotate control + visibility gating
+  let autoTimer=null, autoMs=8000, paused=false, visible=true;
+  function startAuto(){ if(autoTimer || !visible) return; autoTimer=setInterval(()=>{ if(!paused && visible) render(randomCountry()); }, autoMs); }
   function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
 
-  // Lock after user interaction (20s)
-  let userLockTimer=null;
-  function lockForUserInteraction(){ paused=true; stopAuto(); if(userLockTimer) clearTimeout(userLockTimer); userLockTimer=setTimeout(()=>{ input.value=''; input.style.color=''; paused=false; userLockTimer=null; startAuto(); }, 20000); }
+  // IntersectionObserver: only run when visible
+  const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ visible = e.isIntersecting; if(visible){ startAuto(); } else { stopAuto(); } }); });
+  io.observe(box);
+
+  // User-lock control: when user selects a country, lock 20s
+  let userLockTimer = null;
+  function lockForUserInteraction(){ paused = true; stopAuto(); if(userLockTimer) clearTimeout(userLockTimer); userLockTimer = setTimeout(()=>{ input.value=''; input.style.color=''; paused=false; userLockTimer=null; startAuto(); }, 20000); }
+
+  // Pointer active class for touch devices (hover-like feedback)
+  box.addEventListener('pointerdown', ()=>{ box.classList.add('active'); });
+  const clearActive=()=>box.classList.remove('active');
+  box.addEventListener('pointerup', clearActive);
+  box.addEventListener('pointerleave', clearActive);
 
   // Input helpers
   input.addEventListener('mouseenter', ()=>{ input.value=''; });
@@ -2247,46 +2292,112 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   input.addEventListener('focus', ()=>{ paused=true; });
   input.addEventListener('blur', ()=>{ if(!userLockTimer) paused=false; });
 
-  // Box height calc
-  function recalcBoxHeights(){ try{ const prev=box.style.maxHeight; box.style.maxHeight='none'; const full=box.scrollHeight; const collapsed=Math.max(120, Math.round(full*0.6)); box.style.maxHeight=prev; box.style.setProperty('--expanded-h', full+'px'); box.style.setProperty('--collapsed-h', collapsed+'px'); }catch(_){} }
+  // --- Height calculation (debounced & RO-safe) ---
+  let roPending=false; let lastFull=0, lastCollapsed=0;
+  function recalcBoxHeights(){
+    try{
+      const prev = box.style.maxHeight; box.style.maxHeight = 'none';
+      const full = box.scrollHeight; const collapsed = Math.max(120, Math.round(full * 0.6));
+      box.style.maxHeight = prev;
+      if(full===lastFull && collapsed===lastCollapsed) return; // no-op if unchanged
+      lastFull = full; lastCollapsed = collapsed;
+      box.style.setProperty('--expanded-h', full + 'px');
+      box.style.setProperty('--collapsed-h', collapsed + 'px');
+    }catch(_){ /* no-op */ }
+  }
+  function queueRecalc(){ if(roPending) return; roPending=true; requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ roPending=false; recalcBoxHeights(); }); }); }
 
-  // Render
+  // ResizeObserver: observe child (#view) to avoid self-trigger loop, and debounce to next frame
+  if('ResizeObserver' in window){
+    const ro = new ResizeObserver(()=>{ queueRecalc(); });
+    ro.observe(view);
+  }
+  window.addEventListener('resize', queueRecalc);
+  document.addEventListener('visibilitychange', ()=>{ paused=document.hidden; if(paused){ stopAuto(); } else { startAuto(); } queueRecalc(); });
+
+  // Screen reader status helper
+  function updateSrStatus(txt){ try{ sr.textContent = txt; }catch(_){} }
+
+  // Save/restore state
+  const LS_KEY = 'worldTicker.lastCountry';
+  function saveState(country){ try{ localStorage.setItem(LS_KEY, country); }catch(_){}}
+  function loadState(){ try{ return localStorage.getItem(LS_KEY)||''; }catch(_){ return ''; }}
+
+  // Deep link via URL param
+  function getQueryCountry(){ try{ const u=new URL(location.href); return u.searchParams.get('country')||''; }catch(_){ return ''; }}
+  function setQueryCountry(c){ try{ const u=new URL(location.href); if(c){ u.searchParams.set('country', c); } else { u.searchParams.delete('country'); } history.replaceState(null,'',u); }catch(_){} }
+
   function render(country, opts){
-    opts=opts||{}; const key=normalizeCountry(country); const isRisk=!!RISK[key];
-    if(!key || (!META[key] && !isRisk)){ elCountry.textContent='—'; elCountry.classList.remove('risk'); elRank.textContent='—'; elRank.innerHTML='—'; elDesc.textContent='Choose a country or press Rnd.'; elDesc.classList.remove('risk'); elMore.innerHTML=''; box.classList.remove('nocollapse'); recalcBoxHeights(); return; }
+    opts = opts || {};
+    const key = normalizeCountry(country);
+    const isRisk = !!RISK[key];
 
-    elCountry.textContent=key; elCountry.classList.toggle('risk', isRisk);
-    box.classList.toggle('nocollapse', isRisk); // risk: expanded height only
+    if(!key || (!META[key] && !isRisk)){
+      elCountry.textContent='—'; elCountry.classList.remove('risk');
+      elRank.textContent='—'; elRank.innerHTML='—';
+      elDesc.textContent='Choose a country or press Rnd.'; elDesc.classList.remove('risk');
+      elMore.innerHTML=''; box.classList.remove('nocollapse'); queueRecalc(); updateSrStatus('Cleared'); return;
+    }
 
-    if(isRisk){ const r=RISK[key]; elRank.innerHTML='<span class="riskBadge">(Risk)</span>'; elDesc.textContent='Major Risk: '+r.risks; elDesc.classList.add('risk'); elMore.innerHTML='<span class="meta">'+r.advice+'</span>'; }
-    else { const m=META[key]; elRank.textContent='Tourism Rank #'+m.rank; elDesc.textContent=m.summary; elDesc.classList.remove('risk'); let html='<span class="num">Emergency number: <strong>'+m.numbers.emergency+'</strong></span>'+'<span class="num">Police number: <strong>'+m.numbers.police+'</strong></span>'+'<span class="meta">Currency exchange: <strong>'+m.exchange+'</strong></span>'+'<span class="meta">Common crimes: '+m.crime+'</span>'+'<span class="meta">English communication: <strong>'+m.english+'</strong></span>'; if(m.orgs&&m.orgs.length){ html+='<span class="meta">Support organizations: '+m.orgs.join(', ')+'</span>'; } if(m.tipQuery){ const q=encodeURIComponent(m.tipQuery); html+='<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">'+m.tipQuery+'</a> — This tip helps you connect with locals.</span>'; } elMore.innerHTML=html; }
+    elCountry.textContent = key;
+    elCountry.classList.toggle('risk', isRisk);
 
-    if(opts.user){ lockForUserInteraction(); }
-    recalcBoxHeights();
+    // Risk countries: force expanded height only (visual intensity follows hover/focus/active)
+    box.classList.toggle('nocollapse', isRisk);
+
+    if(isRisk){
+      const r = RISK[key];
+      elRank.innerHTML = '<span class="riskBadge">(Risk)</span>';
+      elDesc.textContent = 'Major Risk: ' + r.risks;
+      elDesc.classList.add('risk');
+      elMore.innerHTML = '<span class="meta">' + r.advice + '</span>';
+    } else {
+      const m = META[key];
+      elRank.textContent = 'Tourism Rank #' + m.rank;
+      elDesc.textContent = m.summary;
+      elDesc.classList.remove('risk');
+
+      let html = '<span class="num">Emergency number: <strong>'+ (m.numbers.emergency||'—') +'</strong></span>'+
+                 '<span class="num">Police number: <strong>'+ (m.numbers.police||'—') +'</strong></span>'+
+                 '<span class="meta">Currency exchange: <strong>'+ m.exchange +'</strong></span>'+
+                 '<span class="meta">Common crimes: '+ m.crime +'</span>'+
+                 '<span class="meta">English communication: <strong>'+ m.english +'</strong></span>';
+      if(m.orgs && m.orgs.length){ html += '<span class="meta">Support organizations: ' + m.orgs.join(', ') + '</span>'; }
+      if(m.tipQuery){ const q = encodeURIComponent(m.tipQuery); html += '<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">'+ m.tipQuery +'</a> — This tip helps you connect with locals.</span>'; }
+      elMore.innerHTML = html;
+    }
+
+    if(opts.user){ lockForUserInteraction(); saveState(key); setQueryCountry(key); }
+
+    queueRecalc();
+    updateSrStatus((isRisk? '(Risk) ' : '') + key + ' loaded');
   }
 
   // Interactions
-  btnRandom.addEventListener('click', ()=>{ render(randomCountry(), {user:true}); });
-  input.addEventListener('change', function(){ const c=this.value; if(c) render(c, {user:true}); });
-  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ const c=this.value; if(c) render(c, {user:true}); }});
-  let liveTimer=null; const LIVE_DELAY=300; input.addEventListener('input', function(){ clearTimeout(liveTimer); const val=this.value; this.style.color = RISK[normalizeCountry(val)] ? '#dc2626' : ''; liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY); });
+  btnRandom.addEventListener('click', function(){ render(randomCountry(), {user:true}); });
+  input.addEventListener('change', function(){ const c = this.value; if(c) render(c, {user:true}); });
+  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ const c = this.value; if(c) render(c, {user:true}); }});
+  let liveTimer=null; const LIVE_DELAY=300; // live preview while typing
+  input.addEventListener('input', function(){ clearTimeout(liveTimer); const val=this.value; this.style.color = RISK[normalizeCountry(val)] ? '#b01919' : ''; liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY); });
 
-  // Shortcuts
-  document.addEventListener('keydown', e=>{ if(e.key==='/' && document.activeElement!==input){ e.preventDefault(); input.focus(); } else if(e.key && e.key.toLowerCase()==='r' && document.activeElement!==input){ render(randomCountry()); }});
+  // Keyboard shortcut (scoped): press R to randomize when focus is not inside inputs
+  document.addEventListener('keydown', e=>{ const t=e.target; const inside = t && (t.id==='countryInput'); if(!inside && e.key && e.key.toLowerCase()==='r'){ render(randomCountry()); }});
 
-  // Pause rules
-  box.addEventListener('mouseleave', ()=>{ if(!userLockTimer) paused=false; });
-  document.addEventListener('visibilitychange', ()=>{ paused=document.hidden; });
+  // Self-check tests (basic + RO stability)
+  (function tests(){
+    const required=['rank','summary','numbers','exchange','english','crime']; let ok=true, msgs=[];
+    Object.entries(META).forEach(([k,v])=>{ required.forEach(f=>{ if(v[f]===undefined){ ok=false; msgs.push('Missing '+f+' for '+k); } }); });
+    if(!ok){ console.error('[Ticker tests]', msgs.join(' | ')); } else { console.log('[Ticker tests] META entries:', Object.keys(META).length, '| RISK entries:', Object.keys(RISK).length); }
+    // RO debouncing smoke test: spam renders; ensure queued only once per frame
+    const original = console.debug; let qCount=0; const _queueRecalc = queueRecalc; queueRecalc = function(){ qCount++; return _queueRecalc(); };
+    for(let i=0;i<10;i++){ render(names[i % names.length]); }
+    setTimeout(()=>{ console.log('[Ticker tests] RO queue calls (<=10 expected):', qCount); queueRecalc = _queueRecalc; }, 120);
+  })();
 
-  // Self-check
-  (function tests(){ const required=['rank','summary','numbers','exchange','english','crime']; let ok=true, msgs=[]; Object.entries(META).forEach(([k,v])=>{ required.forEach(f=>{ if(v[f]===undefined){ ok=false; msgs.push('Missing '+f+' for '+k); } }); }); if(!ok){ console.error('[Ticker tests]', msgs.join(' | ')); } else { console.log('[Ticker tests] META entries:', Object.keys(META).length, '| RISK entries:', Object.keys(RISK).length); } })();
-
-  // Init
-  (function init(){ const seeds=Object.keys(META).sort((a,b)=>META[a].rank-META[b].rank).slice(0,3); render(pick(seeds)); startAuto(); recalcBoxHeights(); })();
+  // Initial view: URL param > localStorage > top seed
+  (function init(){ const fromUrl=getQueryCountry(); const fromLS=loadState(); const seed = fromUrl || fromLS || (Object.keys(META).sort((a,b)=>META[a].rank-META[b].rank)[0]); render(seed); startAuto(); queueRecalc(); })();
 })();
 </script>
-
-
 
 
   
