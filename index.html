@@ -2080,40 +2080,40 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 
 
-  
- <!-- Paste inside <body>. Compact left sticky World Food Ticker. Single-language (English). No JSON, all inline. -->
+
+
+  <!-- Paste inside <body>. Compact left sticky World Info Ticker. Single-language (English). No JSON, all inline. -->
 
 <style>
   @media (min-width: 992px){
-    #foodRail{ position:fixed; left:14px; top:150px; width:160px; z-index:80; }
+    #infoRail{ position:fixed; left:14px; top:150px; width:160px; z-index:80; }
   }
   @media (max-width: 991.98px){
-    #foodRail{ position:fixed; left:10px; bottom:12px; width:min(75vw,280px); z-index:80; }
+    #infoRail{ position:fixed; left:10px; bottom:12px; width:min(75vw,280px); z-index:80; }
   }
-  #foodBox{ background:#fffbea; border:1px solid rgba(0,0,0,.12); border-radius:8px; box-shadow:0 6px 14px rgba(2,6,23,.08); overflow:hidden; font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221; opacity:.55; filter:saturate(.85) contrast(.95); transition:opacity .18s ease, filter .18s ease, box-shadow .18s ease, transform .18s ease }
-  #foodBox header{ padding:4px 6px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.82rem }
-  #foodBox .row{ padding:4px 6px }
+  #infoBox{ background:#fffbea; border:1px solid rgba(0,0,0,.12); border-radius:8px; box-shadow:0 6px 14px rgba(2,6,23,.08); overflow:hidden; font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221; opacity:.55; filter:saturate(.85) contrast(.95); transition:max-height .24s ease, opacity .18s ease, filter .18s ease, box-shadow .18s ease, transform .18s ease; max-height:var(--collapsed-h,160px) }
+  #infoBox header{ padding:4px 6px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.82rem }
+  #infoBox .row{ padding:4px 6px }
   #controls{ display:flex; gap:4px; align-items:center }
   #countryInput{ flex:1; padding:3px 5px; border:1px solid rgba(0,0,0,.16); border-radius:6px; outline:none; font-size:.75rem }
   #btnRandom{ padding:3px 5px; border-radius:6px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.72rem }
-  #country{ font-weight:800; color:#2563eb; }
-  #dish{ font-weight:800; color:#16a34a; }
+  #country{ font-weight:800; color:#2563eb }
+  #rank{ font-weight:800; color:#16a34a }
   #desc{ color:#0b0f19; font-weight:700; font-size:.78rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis }
   #more{ font-size:.72rem }
   #more a{ color:#2563eb; font-weight:800; text-decoration:underline; font-size:.72rem }
-  #more .emergency{ display:block; font-weight:800; color:#2563eb; text-decoration:underline; font-size:.75rem; white-space:normal; margin-top:4px }
   #more .num{ display:block; font-weight:800; color:#0b1221; margin-top:4px }
   #more .num strong{ font-weight:800 }
   #more .meta{ display:block; margin-top:4px }
   #more .soft{ opacity:0; transition:opacity .18s ease }
   #view:hover #more .soft{ opacity:1 }
-  #foodBox:hover{ opacity:1; filter:none; box-shadow:0 10px 22px rgba(2,6,23,.12); transform:translateY(-1px) }
-  #foodBox:hover #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
+  #infoBox:hover{ opacity:1; filter:none; box-shadow:0 10px 22px rgba(2,6,23,.12); transform:translateY(-1px); max-height:var(--expanded-h,1000px) }
+  #infoBox:hover #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
 </style>
 
-<aside id="foodRail" aria-label="Sticky world food ticker">
-  <div id="foodBox" role="group">
-    <header>World Food Ticker</header>
+<aside id="infoRail" aria-label="Sticky world info ticker">
+  <div id="infoBox" role="group">
+    <header>World Travel Ticker</header>
 
     <div class="row" id="controls">
       <input id="countryInput" list="countryList" placeholder="Country… (ex. Japan)" autocomplete="off" />
@@ -2123,7 +2123,7 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
     <div class="row" id="view" aria-live="polite">
       <div id="country">—</div>
-      <div id="dish">—</div>
+      <div id="rank">—</div>
       <div id="desc">Choose a country or press Rnd.</div>
       <div id="more"></div>
     </div>
@@ -2132,92 +2132,147 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 <script>
 (function(){
-  // Inline dataset (English only).
-  const DB = {
-    "Japan": [
-      { name:"Onigiri", desc:"Hand‑pressed rice ball often filled with salmon or pickled plum." },
-      { name:"Okonomiyaki", desc:"Savory pancake with cabbage and toppings cooked on a griddle." }
-    ],
-    "Costa Rica": [
-      { name:"Gallo Pinto", desc:"Breakfast staple of rice and beans sautéed with aromatics." },
-      { name:"Casado", desc:"Plate meal with rice, beans, salad and a choice of protein." }
-    ],
-    "United States": [
-      { name:"Clam Chowder", desc:"Creamy soup with clams and potatoes, popular in New England." },
-      { name:"Tex‑Mex Tacos", desc:"Crisp shells filled with spiced beef, lettuce and salsa." }
-    ],
-    "Korea, Republic of (South Korea)": [
-      { name:"Bibimbap", desc:"Warm rice topped with seasoned vegetables, meat and gochujang." },
-      { name:"Kimchi Jjigae", desc:"Tangy kimchi stew with pork or tuna, served bubbling hot." }
-    ],
-    "Korea, Democratic People's Republic of (North Korea)": [
-      { name:"Naengmyeon (Pyongyang)", desc:"Buckwheat noodles in chilled, delicate beef broth." }
-    ],
-    "India": [
-      { name:"Masala Dosa", desc:"Crisp rice‑lentil crêpe filled with spiced potatoes, from South India." }
-    ],
-    "Italy": [
-      { name:"Risotto alla Milanese", desc:"Creamy saffron rice from Milan, often served with ossobuco." }
-    ]
-  };
-
-  // Country emergency and meta data (English). Keep scope tiny and inline.
+  // Top 20 destinations (indicative 10‑year ranking). Practical info only.
   const META = {
-    "Japan": {
-      numbers:{ emergency:"119", police:"110" },
-      exchange: "Moderate",
-      crime: "Low levels of petty theft; rare violent crime. Be cautious.",
-      english: "Moderate",
-      orgs: ["Japanese Red Cross Society","Japan National Tourism Organization (JNTO)"],
-      tipQuery: "omiyage gift etiquette"
+    "France": {
+      rank:1,
+      summary:"Money: Easy. English: Moderate in hubs. Crime: pickpockets in Paris and transit. Be cautious.",
+      numbers:{ emergency:"112", police:"17" },
+      exchange:"Easy", english:"Moderate", crime:"Pickpockets in tourist zones and transit. Be cautious.",
+      orgs:["French Red Cross"], tipQuery:"first Sunday free museums Paris"
     },
-    "Costa Rica": {
-      numbers:{ emergency:"911", police:"911" },
-      exchange: "Moderate",
-      crime: "Petty theft in tourist areas; occasional robberies. Be cautious.",
-      english: "Moderate",
-      orgs: ["Costa Rican Red Cross","Tourism Police (Policia de Turismo)"],
-      tipQuery: "tuanis slang Costa Rica"
+    "Spain": {
+      rank:2,
+      summary:"Money: Easy. English: Moderate. Crime: bag snatching in Barcelona and coasts. Be cautious.",
+      numbers:{ emergency:"112", police:"091" },
+      exchange:"Easy", english:"Moderate", crime:"Bag snatch and pickpockets in hotspots. Be cautious.",
+      orgs:["Spanish Red Cross"], tipQuery:"menu del dia Spain"
     },
     "United States": {
+      rank:3,
+      summary:"Money: Easy. English: Easy. Crime varies by city; guard cars and cards. Be cautious.",
       numbers:{ emergency:"911", police:"911" },
-      exchange: "Easy",
-      crime: "Property crime and vehicle break-ins in some cities; violent crime varies by area. Be cautious.",
-      english: "Easy",
-      orgs: ["American Red Cross"],
-      tipQuery: "tipping etiquette USA"
+      exchange:"Easy", english:"Easy", crime:"Car break‑ins and card scams in tourist areas. Be cautious.",
+      orgs:["American Red Cross"], tipQuery:"national park pass USA"
     },
-    "Korea, Republic of (South Korea)": {
-      numbers:{ emergency:"119", police:"112" },
-      exchange: "Easy",
-      crime: "Petty theft in crowded areas; occasional scams targeting tourists. Be cautious.",
-      english: "Moderate",
-      orgs: ["Korean Red Cross","Korea Tourism Organization"],
-      tipQuery: "how to use T-money card"
-    },
-    "Korea, Democratic People's Republic of (North Korea)": {
-      numbers:{ emergency:"Not publicly listed", police:"Not publicly listed" },
-      exchange: "Difficult",
-      crime: "Restrictions and state security risks; criminal definitions differ. Be cautious.",
-      english: "Difficult",
-      orgs: [],
-      tipQuery: "Pyongyang etiquette"
-    },
-    "India": {
-      numbers:{ emergency:"112", police:"100" },
-      exchange: "Easy",
-      crime: "Petty theft and scams in crowded places; some areas pose risks for solo travelers. Be cautious.",
-      english: "Moderate",
-      orgs: ["Indian Red Cross Society"],
-      tipQuery: "how to use UPI India"
+    "China": {
+      rank:4,
+      summary:"Money: Moderate; mobile pay common. English: Difficult outside hubs. Beware taxi and tour scams. Be cautious.",
+      numbers:{ emergency:"120", police:"110" },
+      exchange:"Moderate", english:"Difficult", crime:"Counterfeit taxis, tour and tea scams. Be cautious.",
+      orgs:["Red Cross Society of China"], tipQuery:"Alipay Tour Pass China"
     },
     "Italy": {
+      rank:5,
+      summary:"Money: Easy. English: Moderate. Crime: pickpockets, distraction at stations. Be cautious.",
       numbers:{ emergency:"112", police:"112" },
-      exchange: "Moderate",
-      crime: "Pickpocketing in tourist areas; scams at train stations. Be cautious.",
-      english: "Moderate",
-      orgs: ["Italian Red Cross"],
-      tipQuery: "validate train ticket Trenitalia"
+      exchange:"Easy", english:"Moderate", crime:"Pickpockets at stations and buses. Be cautious.",
+      orgs:["Italian Red Cross"], tipQuery:"coperto vs servizio Italy"
+    },
+    "Turkey": {
+      rank:6,
+      summary:"Money: Easy. English: Moderate in tourist areas. Crime: taxi overcharge, bag snatch. Be cautious.",
+      numbers:{ emergency:"112", police:"155" },
+      exchange:"Easy", english:"Moderate", crime:"Taxi overcharge, counterfeit goods. Be cautious.",
+      orgs:["Turkish Red Crescent"], tipQuery:"Istanbul Museum Pass"
+    },
+    "Mexico": {
+      rank:7,
+      summary:"Money: Easy. English: Moderate in resorts. Crime: ATM skimmers, petty theft. Be cautious.",
+      numbers:{ emergency:"911", police:"911" },
+      exchange:"Easy", english:"Moderate", crime:"ATM skimmers and beach theft. Be cautious.",
+      orgs:["Mexican Red Cross"], tipQuery:"OXXO pay tips"
+    },
+    "Thailand": {
+      rank:8,
+      summary:"Money: Easy. English: Moderate. Crime: tuk‑tuk and gem scams. Be cautious.",
+      numbers:{ emergency:"1669", police:"191" },
+      exchange:"Easy", english:"Moderate", crime:"Transport and gem scams. Be cautious.",
+      orgs:["Tourist Police Thailand"], tipQuery:"Rabbit card vs MRT Bangkok"
+    },
+    "Germany": {
+      rank:9,
+      summary:"Money: Easy. English: Moderate to Easy in cities. Crime: pickpockets at festivals. Be cautious.",
+      numbers:{ emergency:"112", police:"110" },
+      exchange:"Easy", english:"Moderate", crime:"Festival and transit pickpockets. Be cautious.",
+      orgs:["German Red Cross"], tipQuery:"Deutschlandticket 49"
+    },
+    "United Kingdom": {
+      rank:10,
+      summary:"Money: Easy. English: Easy. Crime: phone snatch and fraud in big cities. Be cautious.",
+      numbers:{ emergency:"999", police:"999" },
+      exchange:"Easy", english:"Easy", crime:"Phone snatch, ticket fraud. Be cautious.",
+      orgs:["British Red Cross"], tipQuery:"contactless cap London"
+    },
+    "Japan": {
+      rank:11,
+      summary:"Money: Easy with cards and IC. English: Moderate. Crime low; avoid bar scams. Be cautious.",
+      numbers:{ emergency:"119", police:"110" },
+      exchange:"Easy", english:"Moderate", crime:"Very low; nightlife bar scams exist. Be cautious.",
+      orgs:["JNTO","Japanese Red Cross"], tipQuery:"coin locker Tokyo station"
+    },
+    "Austria": {
+      rank:12,
+      summary:"Money: Easy. English: Moderate to Easy. Crime: Vienna pickpockets. Be cautious.",
+      numbers:{ emergency:"112", police:"133" },
+      exchange:"Easy", english:"Moderate", crime:"Pickpockets on trams and sights. Be cautious.",
+      orgs:["Austrian Red Cross"], tipQuery:"Semmering scenic rail"
+    },
+    "Greece": {
+      rank:13,
+      summary:"Money: Moderate; cash useful. English: Easy in tourism. Crime: rental and taxi scams. Be cautious.",
+      numbers:{ emergency:"112", police:"100" },
+      exchange:"Moderate", english:"Easy", crime:"Taxi and rental deposit scams. Be cautious.",
+      orgs:["Hellenic Red Cross"], tipQuery:"ferry strike schedule Greece"
+    },
+    "Malaysia": {
+      rank:14,
+      summary:"Money: Easy. English: Easy. Crime: snatch theft on motorbikes. Be cautious.",
+      numbers:{ emergency:"999", police:"999" },
+      exchange:"Easy", english:"Easy", crime:"Snatch theft and ATM skimmers. Be cautious.",
+      orgs:["Malaysian Red Crescent"], tipQuery:"Grab promo code Malaysia"
+    },
+    "Korea, Republic of (South Korea)": {
+      rank:15,
+      summary:"Money: Easy; cards and T‑money. English: Moderate. Crime low; beware phone scams. Be cautious.",
+      numbers:{ emergency:"119", police:"112" },
+      exchange:"Easy", english:"Moderate", crime:"Phone scams; petty theft rare. Be cautious.",
+      orgs:["Korea Tourism Organization","Korean Red Cross"], tipQuery:"T-money refund Seoul"
+    },
+    "Hong Kong": {
+      rank:16,
+      summary:"Money: Easy. English: Easy. Crime: pickpockets in markets; phone scams. Be cautious.",
+      numbers:{ emergency:"999", police:"999" },
+      exchange:"Easy", english:"Easy", crime:"Market pickpockets; phone scams. Be cautious.",
+      orgs:["Hong Kong Tourism Board"], tipQuery:"Octopus card tips"
+    },
+    "Netherlands": {
+      rank:17,
+      summary:"Money: Easy. English: Easy. Crime: bike theft, tourist pickpockets. Be cautious.",
+      numbers:{ emergency:"112", police:"112" },
+      exchange:"Easy", english:"Easy", crime:"Bike theft; station pickpockets. Be cautious.",
+      orgs:["Netherlands Red Cross"], tipQuery:"OV-chipkaart refund"
+    },
+    "Portugal": {
+      rank:18,
+      summary:"Money: Easy. English: Moderate. Crime: car break‑ins and pickpockets. Be cautious.",
+      numbers:{ emergency:"112", police:"112" },
+      exchange:"Easy", english:"Moderate", crime:"Car break‑ins at viewpoints. Be cautious.",
+      orgs:["Portuguese Red Cross"], tipQuery:"pastel de nata best Lisbon"
+    },
+    "Saudi Arabia": {
+      rank:19,
+      summary:"Money: Easy. English: Moderate. Crime low; respect local laws and customs. Be cautious.",
+      numbers:{ emergency:"997", police:"999" },
+      exchange:"Easy", english:"Moderate", crime:"Low crime; legal restrictions strict. Be cautious.",
+      orgs:["Saudi Red Crescent Authority"], tipQuery:"Haram dress code guide"
+    },
+    "United Arab Emirates": {
+      rank:20,
+      summary:"Money: Easy. English: Easy. Crime very low; watch traffic fines. Be cautious.",
+      numbers:{ emergency:"998", police:"999" },
+      exchange:"Easy", english:"Easy", crime:"Very low; traffic and fine issues. Be cautious.",
+      orgs:["Dubai Tourism"], tipQuery:"Nol card Dubai metro"
     }
   };
 
@@ -2225,16 +2280,16 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   const list = document.getElementById('countryList');
   const btnRandom = document.getElementById('btnRandom');
   const elCountry = document.getElementById('country');
-  const elDish = document.getElementById('dish');
+  const elRank = document.getElementById('rank');
   const elDesc = document.getElementById('desc');
   const elMore = document.getElementById('more');
-  const box = document.getElementById('foodBox');
+  const box = document.getElementById('infoBox');
 
-  // Build datalist
-  Object.keys(DB).sort().forEach(name => { const o=document.createElement('option'); o.value=name; list.appendChild(o); });
+  // Build datalist from META
+  Object.keys(META).sort().forEach(name => { const o=document.createElement('option'); o.value=name; list.appendChild(o); });
 
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function randomCountry(){ const names = Object.keys(DB); return names[Math.floor(Math.random()*names.length)]; }
+  function randomCountry(){ const names = Object.keys(META); return names[Math.floor(Math.random()*names.length)]; }
 
   // Alias & light fuzzy normalization
   const ALIAS = {
@@ -2242,21 +2297,26 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
     "korea":"Korea, Republic of (South Korea)",
     "kr":"Korea, Republic of (South Korea)",
     "kor":"Korea, Republic of (South Korea)",
-    "north korea":"Korea, Democratic People's Republic of (North Korea)",
     "united states":"United States",
     "usa":"United States",
     "us":"United States",
     "u.s.":"United States",
-    "jp":"Japan",
-    "it":"Italy",
-    "in":"India",
-    "costa rica":"Costa Rica"
+    "uk":"United Kingdom",
+    "britain":"United Kingdom",
+    "england":"United Kingdom",
+    "uae":"United Arab Emirates",
+    "emirates":"United Arab Emirates",
+    "ksa":"Saudi Arabia",
+    "china":"China",
+    "hong kong":"Hong Kong",
+    "deutschland":"Germany",
+    "holland":"Netherlands"
   };
   function normalizeCountry(raw){
     if(!raw) return "";
     const s = raw.trim().toLowerCase();
     if(ALIAS[s]) return ALIAS[s];
-    const hit = Object.keys(DB).find(k => k.toLowerCase().startsWith(s));
+    const hit = Object.keys(META).find(k => k.toLowerCase().startsWith(s));
     return hit || raw.trim();
   }
 
@@ -2265,19 +2325,12 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   function startAuto(){ if(autoTimer) return; autoTimer=setInterval(()=>{ if(!paused) render(randomCountry()); }, autoMs); }
   function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
 
-  // User-lock control: when user types a country, lock display for 10s
+  // User-lock control: when user selects a country, lock 20s
   let userLockTimer = null;
-  const USER_LOCK_MS = 10000; // 10 seconds
   function lockForUserInteraction(){
-    paused = true; // Pause auto rotation
-    stopAuto();
+    paused = true; stopAuto();
     if(userLockTimer) clearTimeout(userLockTimer);
-    userLockTimer = setTimeout(()=>{
-      input.value = '';
-      paused = false;
-      userLockTimer = null;
-      startAuto();
-    }, USER_LOCK_MS);
+    userLockTimer = setTimeout(()=>{ input.value=''; paused=false; userLockTimer=null; startAuto(); }, 20000);
   }
 
   // Clear only the input field on hover/click so user can type a new country quickly
@@ -2286,85 +2339,67 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   input.addEventListener('focus', ()=>{ paused=true; });
   input.addEventListener('blur', ()=>{ if(!userLockTimer) paused=false; });
 
-  // Render function accepts user flag
-  function render(country, opts){
-    opts = opts || {};
-    const key = DB[country] ? country : normalizeCountry(country);
-    if(!key || !DB[key]){
-      elCountry.textContent='—';
-      elDish.textContent='—';
-      elDesc.textContent='Choose a country or press Rnd.';
-      elMore.innerHTML = '';
-      return;
-    }
-    const dish = pick(DB[key]);
-    elCountry.textContent = key;
-    elDish.textContent = dish.name;
-    elDesc.textContent = dish.desc;
-
-    const meta = META[key];
-    if(meta){
-      const e = meta.numbers.emergency, p = meta.numbers.police;
-      let html = '<span class="num">Emergency number: <strong>'+ e +'</strong></span>'+
-                 '<span class="num">Police number: <strong>'+ p +'</strong></span>';
-      html += '<span class="meta">Currency exchange: <strong>' + meta.exchange + '</strong></span>';
-      html += '<span class="meta">Common crimes: ' + meta.crime + '</span>';
-      html += '<span class="meta">English communication: <strong>' + meta.english + '</strong></span>';
-      if(meta.orgs && meta.orgs.length){ html += '<span class="meta">Support organizations: ' + meta.orgs.join(', ') + '</span>'; }
-      if(meta.tipQuery){
-        const q = encodeURIComponent(meta.tipQuery);
-        html += '<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">' + meta.tipQuery + '</a> — This tip helps you connect with locals.</span>';
-      }
-      elMore.innerHTML = html;
-    } else {
-      const q = encodeURIComponent(key + ' emergency number');
-      elMore.innerHTML = '<a class="emergency" href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">Emergency numbers</a>';
-    }
-
-    if(opts.user){ lockForUserInteraction(); }
+  // Measure and set collapsed/expanded heights based on content
+  function recalcBoxHeights(){
+    try{
+      const prev = box.style.maxHeight; box.style.maxHeight = 'none';
+      const full = box.scrollHeight; const collapsed = Math.max(120, Math.round(full * 0.6));
+      box.style.maxHeight = prev; box.style.setProperty('--expanded-h', full + 'px'); box.style.setProperty('--collapsed-h', collapsed + 'px');
+    }catch(_){ /* no-op */ }
   }
 
-  // Clipboard: double-click dish to copy "Country, Dish"
-  elDish.addEventListener('dblclick', async ()=>{
-    try{
-      const text = elCountry.textContent + ', ' + elDish.textContent;
-      await navigator.clipboard.writeText(text);
-      const prev = elMore.innerHTML;
-      elMore.innerHTML = prev + (prev? ' ' : '') + '<span class="soft">(Copied)</span>';
-      setTimeout(()=>{ elMore.innerHTML = prev; }, 900);
-    }catch(_){ /* no-op */ }
-  });
+  function render(country, opts){
+    opts = opts || {};
+    const key = META[country] ? country : normalizeCountry(country);
+    if(!key || !META[key]){
+      elCountry.textContent='—'; elRank.textContent='—'; elDesc.textContent='Choose a country or press Rnd.'; elMore.innerHTML=''; recalcBoxHeights(); return;
+    }
+    const m = META[key];
+    elCountry.textContent = key;
+    elRank.textContent = 'Rank #' + m.rank;
+    elDesc.textContent = m.summary; // under 200 chars each
+
+    let html = '<span class="num">Emergency number: <strong>'+ m.numbers.emergency +'</strong></span>'+
+               '<span class="num">Police number: <strong>'+ m.numbers.police +'</strong></span>'+
+               '<span class="meta">Currency exchange: <strong>'+ m.exchange +'</strong></span>'+
+               '<span class="meta">Common crimes: '+ m.crime +'</span>'+
+               '<span class="meta">English communication: <strong>'+ m.english +'</strong></span>';
+    if(m.orgs && m.orgs.length){ html += '<span class="meta">Support organizations: ' + m.orgs.join(', ') + '</span>'; }
+    if(m.tipQuery){ const q = encodeURIComponent(m.tipQuery); html += '<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">'+ m.tipQuery +'</a> — This tip helps you connect with locals.</span>'; }
+    elMore.innerHTML = html;
+
+    if(opts.user){ lockForUserInteraction(); }
+    recalcBoxHeights();
+  }
 
   // Interactions
   btnRandom.addEventListener('click', function(){ render(randomCountry(), {user:true}); });
   input.addEventListener('change', function(){ const c = this.value; if(c) render(c, {user:true}); });
   input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ const c = this.value; if(c) render(c, {user:true}); }});
-  // Live preview while typing (no lock)
-  let liveTimer=null; const LIVE_DELAY=300;
-  input.addEventListener('input', function(){
-    clearTimeout(liveTimer);
-    const val=this.value;
-    liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY);
-  });
+  let liveTimer=null; const LIVE_DELAY=300; // live preview while typing
+  input.addEventListener('input', function(){ clearTimeout(liveTimer); const val=this.value; liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY); });
 
-  // Keyboard shortcuts: '/' to focus, 'r' to random (when input not focused)
-  document.addEventListener('keydown', e=>{
-    if(e.key==='/' && document.activeElement!==input){ e.preventDefault(); input.focus(); }
-    else if(e.key && e.key.toLowerCase()==='r' && document.activeElement!==input){ render(randomCountry()); }
-  });
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e=>{ if(e.key==='/' && document.activeElement!==input){ e.preventDefault(); input.focus(); } else if(e.key && e.key.toLowerCase()==='r' && document.activeElement!==input){ render(randomCountry()); }});
 
   // Pause auto on mouseleave/tab hidden
   box.addEventListener('mouseleave', ()=>{ if(!userLockTimer) paused=false; });
   document.addEventListener('visibilitychange', ()=>{ paused=document.hidden; });
 
-  // Initial view: seed list.
-  (function init(){
-    const seeds = ['Japan','Costa Rica','United States'];
-    render(pick(seeds));
-    startAuto();
+  // Self-check tests (basic): ensure all entries have required fields
+  (function tests(){
+    const required=['rank','summary','numbers','exchange','english','crime'];
+    let ok=true, msgs=[]; Object.entries(META).forEach(([k,v])=>{ required.forEach(f=>{ if(v[f]===undefined) { ok=false; msgs.push('Missing '+f+' for '+k); } }); });
+    if(!ok){ console.error('[Ticker tests]', msgs.join(' | ')); } else { console.log('[Ticker tests] All META entries valid:', Object.keys(META).length); }
   })();
+
+  // Initial view
+  (function init(){ const seeds = Object.keys(META).sort((a,b)=>META[a].rank-META[b].rank).slice(0,3); render(pick(seeds)); startAuto(); recalcBoxHeights(); })();
 })();
 </script>
+
+
+
 
 
   
