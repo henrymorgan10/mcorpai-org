@@ -2074,6 +2074,224 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 </div>
 
 
+  <!-- Paste inside <body>. Compact left sticky World Food Ticker. Single-language (English). No JSON, all inline. -->
+
+<style>
+  @media (min-width: 992px){
+    #foodRail{ position:fixed; left:14px; top:150px; width:200px; z-index:80; }
+  }
+  @media (max-width: 991.98px){
+    #foodRail{ position:fixed; left:10px; bottom:12px; width:min(85vw,340px); z-index:80; }
+  }
+  #foodBox{ background:#fffbea; /* light yellow */ border:1px solid rgba(0,0,0,.12); border-radius:10px; box-shadow:0 8px 18px rgba(2,6,23,.08); overflow:hidden; font:.88rem/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221 }
+  #foodBox header{ padding:6px 8px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.9rem }
+  #foodBox .row{ padding:6px 8px }
+  #controls{ display:flex; gap:6px; align-items:center }
+  #countryInput{ flex:1; padding:4px 6px; border:1px solid rgba(0,0,0,.16); border-radius:8px; outline:none; font-size:.85rem }
+  #btnRandom{ padding:4px 6px; border-radius:8px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.8rem }
+  #country{ font-weight:800; color:#2563eb; /* blue */ }
+  #dish{ font-weight:800; color:#16a34a; /* green */ }
+  #desc{ color:#0b0f19; font-weight:700 }
+  #more a{ color:#2563eb; font-weight:800; text-decoration:underline }
+</style>
+
+<aside id="foodRail" aria-label="Sticky world food ticker">
+  <div id="foodBox" role="group">
+    <header>World Food Ticker</header>
+
+    <div class="row" id="controls">
+      <input id="countryInput" list="countryList" placeholder="Country… (ex. Japan)" autocomplete="off" />
+      <datalist id="countryList"></datalist>
+      <button id="btnRandom" type="button" title="Random pick">Rnd</button>
+    </div>
+
+    <div class="row" id="view">
+      <div id="country">—</div>
+      <div id="dish">—</div>
+      <div id="desc">Choose a country or press Rnd.</div>
+      <div id="more" style="font-size:.8rem"></div>
+    </div>
+  </div>
+</aside>
+
+<script>
+(function(){
+  // Inline dataset (English only). Add more countries or dishes freely.
+  const DB = {
+    "Japan": [
+      { name:"Onigiri", desc:"Hand‑pressed rice ball often filled with salmon or pickled plum." },
+      { name:"Okonomiyaki", desc:"Savory pancake with cabbage and toppings cooked on a griddle." }
+    ],
+    "Costa Rica": [
+      { name:"Gallo Pinto", desc:"Breakfast staple of rice and beans sautéed with aromatics." },
+      { name:"Casado", desc:"Plate meal with rice, beans, salad and a choice of protein." }
+    ],
+    "United States": [
+      { name:"Clam Chowder", desc:"Creamy soup with clams and potatoes, popular in New England." },
+      { name:"Tex‑Mex Tacos", desc:"Crisp shells filled with spiced beef, lettuce and salsa." }
+    ],
+    "Korea, Republic of (South Korea)": [
+      { name:"Bibimbap", desc:"Warm rice topped with seasoned vegetables, meat and gochujang." },
+      { name:"Kimchi Jjigae", desc:"Tangy kimchi stew with pork or tuna, served bubbling hot." }
+    ],
+    "Korea, Democratic People's Republic of (North Korea)": [
+      { name:"Naengmyeon (Pyongyang)", desc:"Buckwheat noodles in chilled, delicate beef broth." }
+    ],
+    "India": [
+      { name:"Masala Dosa", desc:"Crisp rice‑lentil crêpe filled with spiced potatoes, from South India." }
+    ],
+    "Italy": [
+      { name:"Risotto alla Milanese", desc:"Creamy saffron rice from Milan, often served with ossobuco." }
+    ]
+  };
+
+  const input = document.getElementById('countryInput');
+  const list = document.getElementById('countryList');
+  const btnRandom = document.getElementById('btnRandom');
+  const elCountry = document.getElementById('country');
+  const elDish = document.getElementById('dish');
+  const elDesc = document.getElementById('desc');
+  const elMore = document.getElementById('more');
+
+  // Build datalist
+  Object.keys(DB).sort().forEach(name => { const o=document.createElement('option'); o.value=name; list.appendChild(o); });
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randomCountry(){ const names = Object.keys(DB); return names[Math.floor(Math.random()*names.length)]; }
+
+  function render(country){
+    if(!country || !DB[country]){ elCountry.textContent='—'; elDish.textContent='—'; elDesc.textContent='Choose a country or press Rnd.'; elMore.innerHTML=''; return; }
+    const dish = pick(DB[country]);
+    elCountry.textContent = country;
+    elDish.textContent = dish.name;
+    elDesc.textContent = dish.desc;
+    const q = encodeURIComponent(country + ' ' + dish.name);
+    elMore.innerHTML = '<a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">More details here</a>';
+  }
+
+  // Interactions
+  btnRandom.addEventListener('click', function(){ render(randomCountry()); });
+  input.addEventListener('change', function(){ render(this.value.trim()); });
+  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ render(this.value.trim()); }});
+
+  // Initial view: show one of Japan, Costa Rica, or United States
+  (function init(){ const seeds = ['Japan','Costa Rica','United States']; render(pick(seeds)); })();
+})();
+</script>
+
+
+
+
+
+
+<!-- Paste inside <body>. Compact left sticky World Food Ticker. Single-language (English). No JSON, all inline. -->
+
+<style>
+  @media (min-width: 992px){
+    #foodRail{ position:fixed; left:14px; top:150px; width:200px; z-index:80; }
+  }
+  @media (max-width: 991.98px){
+    #foodRail{ position:fixed; left:10px; bottom:12px; width:min(85vw,340px); z-index:80; }
+  }
+  #foodBox{ background:#fffbea; /* light yellow */ border:1px solid rgba(0,0,0,.12); border-radius:10px; box-shadow:0 8px 18px rgba(2,6,23,.08); overflow:hidden; font:.88rem/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221 }
+  #foodBox header{ padding:6px 8px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.9rem }
+  #foodBox .row{ padding:6px 8px }
+  #controls{ display:flex; gap:6px; align-items:center }
+  #countryInput{ flex:1; padding:4px 6px; border:1px solid rgba(0,0,0,.16); border-radius:8px; outline:none; font-size:.85rem }
+  #btnRandom{ padding:4px 6px; border-radius:8px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.8rem }
+  #country{ font-weight:800; color:#2563eb; /* blue */ }
+  #dish{ font-weight:800; color:#16a34a; /* green */ }
+  #desc{ color:#0b0f19; font-weight:700 }
+  #more a{ color:#2563eb; font-weight:800; text-decoration:underline }
+</style>
+
+<aside id="foodRail" aria-label="Sticky world food ticker">
+  <div id="foodBox" role="group">
+    <header>World Food Ticker</header>
+
+    <div class="row" id="controls">
+      <input id="countryInput" list="countryList" placeholder="Country… (ex. Japan)" autocomplete="off" />
+      <datalist id="countryList"></datalist>
+      <button id="btnRandom" type="button" title="Random pick">Rnd</button>
+    </div>
+
+    <div class="row" id="view">
+      <div id="country">—</div>
+      <div id="dish">—</div>
+      <div id="desc">Choose a country or press Rnd.</div>
+      <div id="more" style="font-size:.8rem"></div>
+    </div>
+  </div>
+</aside>
+
+<script>
+(function(){
+  // Inline dataset (English only). Add more countries or dishes freely.
+  const DB = {
+    "Japan": [
+      { name:"Onigiri", desc:"Hand‑pressed rice ball often filled with salmon or pickled plum." },
+      { name:"Okonomiyaki", desc:"Savory pancake with cabbage and toppings cooked on a griddle." }
+    ],
+    "Costa Rica": [
+      { name:"Gallo Pinto", desc:"Breakfast staple of rice and beans sautéed with aromatics." },
+      { name:"Casado", desc:"Plate meal with rice, beans, salad and a choice of protein." }
+    ],
+    "United States": [
+      { name:"Clam Chowder", desc:"Creamy soup with clams and potatoes, popular in New England." },
+      { name:"Tex‑Mex Tacos", desc:"Crisp shells filled with spiced beef, lettuce and salsa." }
+    ],
+    "Korea, Republic of (South Korea)": [
+      { name:"Bibimbap", desc:"Warm rice topped with seasoned vegetables, meat and gochujang." },
+      { name:"Kimchi Jjigae", desc:"Tangy kimchi stew with pork or tuna, served bubbling hot." }
+    ],
+    "Korea, Democratic People's Republic of (North Korea)": [
+      { name:"Naengmyeon (Pyongyang)", desc:"Buckwheat noodles in chilled, delicate beef broth." }
+    ],
+    "India": [
+      { name:"Masala Dosa", desc:"Crisp rice‑lentil crêpe filled with spiced potatoes, from South India." }
+    ],
+    "Italy": [
+      { name:"Risotto alla Milanese", desc:"Creamy saffron rice from Milan, often served with ossobuco." }
+    ]
+  };
+
+  const input = document.getElementById('countryInput');
+  const list = document.getElementById('countryList');
+  const btnRandom = document.getElementById('btnRandom');
+  const elCountry = document.getElementById('country');
+  const elDish = document.getElementById('dish');
+  const elDesc = document.getElementById('desc');
+  const elMore = document.getElementById('more');
+
+  // Build datalist
+  Object.keys(DB).sort().forEach(name => { const o=document.createElement('option'); o.value=name; list.appendChild(o); });
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randomCountry(){ const names = Object.keys(DB); return names[Math.floor(Math.random()*names.length)]; }
+
+  function render(country){
+    if(!country || !DB[country]){ elCountry.textContent='—'; elDish.textContent='—'; elDesc.textContent='Choose a country or press Rnd.'; elMore.innerHTML=''; return; }
+    const dish = pick(DB[country]);
+    elCountry.textContent = country;
+    elDish.textContent = dish.name;
+    elDesc.textContent = dish.desc;
+    const q = encodeURIComponent(country + ' ' + dish.name);
+    elMore.innerHTML = '<a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">More details here</a>';
+  }
+
+  // Interactions
+  btnRandom.addEventListener('click', function(){ render(randomCountry()); });
+  input.addEventListener('change', function(){ render(this.value.trim()); });
+  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ render(this.value.trim()); }});
+
+  // Initial view: show one of Japan, Costa Rica, or United States
+  (function init(){ const seeds = ['Japan','Costa Rica','United States']; render(pick(seeds)); })();
+})();
+</script>
+
+
+  
+
 
   
 </html>
