@@ -2082,7 +2082,8 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 
 
-  <!-- Paste inside <body>. Compact left sticky World Info Ticker. Single-language (English). No JSON, all inline. -->
+  
+<!-- Paste inside <body>. No <html>/<head>/<body> wrappers. World Travel Ticker (hover opacity unified; risk always expanded height only). -->
 
 <style>
   @media (min-width: 992px){
@@ -2091,22 +2092,37 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   @media (max-width: 991.98px){
     #infoRail{ position:fixed; left:10px; bottom:12px; width:min(75vw,280px); z-index:80; }
   }
+
   #infoBox{ background:#fffbea; border:1px solid rgba(0,0,0,.12); border-radius:8px; box-shadow:0 6px 14px rgba(2,6,23,.08); overflow:hidden; font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#0b1221; opacity:.55; filter:saturate(.85) contrast(.95); transition:max-height .24s ease, opacity .18s ease, filter .18s ease, box-shadow .18s ease, transform .18s ease; max-height:var(--collapsed-h,160px) }
   #infoBox header{ padding:4px 6px; font-weight:800; background:linear-gradient(180deg,#fffbea,#fff7d6); border-bottom:1px solid rgba(0,0,0,.08); font-size:.82rem }
   #infoBox .row{ padding:4px 6px }
+
+  /* Risk countries: height expanded only; visual intensity follows hover same as tourism */
+  #infoBox.nocollapse{ max-height: var(--expanded-h) !important; }
+  #infoBox.nocollapse #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
+
   #controls{ display:flex; gap:4px; align-items:center }
   #countryInput{ flex:1; padding:3px 5px; border:1px solid rgba(0,0,0,.16); border-radius:6px; outline:none; font-size:.75rem }
   #btnRandom{ padding:3px 5px; border-radius:6px; border:1px solid #e8d27a; background:#fff1a6; color:#7a5d00; font-weight:800; cursor:pointer; font-size:.72rem }
-  #country{ font-weight:800; color:#2563eb }
+
+  #country{ font-weight:800; color:#0b1221 }
+  #country.risk{ color:#dc2626 }
+
   #rank{ font-weight:800; color:#16a34a }
+  #rank .riskBadge{ color:#b91c1c; font-weight:800 }
+
   #desc{ color:#0b0f19; font-weight:700; font-size:.78rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis }
-  #more{ font-size:.72rem }
+  #desc.risk{ color:#b91c1c }
+
+  #more{ font-size:.72rem; color:#0b1221 }
   #more a{ color:#2563eb; font-weight:800; text-decoration:underline; font-size:.72rem }
   #more .num{ display:block; font-weight:800; color:#0b1221; margin-top:4px }
   #more .num strong{ font-weight:800 }
   #more .meta{ display:block; margin-top:4px }
   #more .soft{ opacity:0; transition:opacity .18s ease }
   #view:hover #more .soft{ opacity:1 }
+
+  /* Hover reveal for all */
   #infoBox:hover{ opacity:1; filter:none; box-shadow:0 10px 22px rgba(2,6,23,.12); transform:translateY(-1px); max-height:var(--expanded-h,1000px) }
   #infoBox:hover #desc{ display:block; -webkit-line-clamp:unset; -webkit-box-orient:unset; overflow:visible }
 </style>
@@ -2132,148 +2148,68 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 <script>
 (function(){
-  // Top 20 destinations (indicative 10‑year ranking). Practical info only.
+  // ===== Tourism countries (ranked). Extended to 30 per request. =====
   const META = {
-    "France": {
-      rank:1,
-      summary:"Money: Easy. English: Moderate in hubs. Crime: pickpockets in Paris and transit. Be cautious.",
-      numbers:{ emergency:"112", police:"17" },
-      exchange:"Easy", english:"Moderate", crime:"Pickpockets in tourist zones and transit. Be cautious.",
-      orgs:["French Red Cross"], tipQuery:"first Sunday free museums Paris"
-    },
-    "Spain": {
-      rank:2,
-      summary:"Money: Easy. English: Moderate. Crime: bag snatching in Barcelona and coasts. Be cautious.",
-      numbers:{ emergency:"112", police:"091" },
-      exchange:"Easy", english:"Moderate", crime:"Bag snatch and pickpockets in hotspots. Be cautious.",
-      orgs:["Spanish Red Cross"], tipQuery:"menu del dia Spain"
-    },
-    "United States": {
-      rank:3,
-      summary:"Money: Easy. English: Easy. Crime varies by city; guard cars and cards. Be cautious.",
-      numbers:{ emergency:"911", police:"911" },
-      exchange:"Easy", english:"Easy", crime:"Car break‑ins and card scams in tourist areas. Be cautious.",
-      orgs:["American Red Cross"], tipQuery:"national park pass USA"
-    },
-    "China": {
-      rank:4,
-      summary:"Money: Moderate; mobile pay common. English: Difficult outside hubs. Beware taxi and tour scams. Be cautious.",
-      numbers:{ emergency:"120", police:"110" },
-      exchange:"Moderate", english:"Difficult", crime:"Counterfeit taxis, tour and tea scams. Be cautious.",
-      orgs:["Red Cross Society of China"], tipQuery:"Alipay Tour Pass China"
-    },
-    "Italy": {
-      rank:5,
-      summary:"Money: Easy. English: Moderate. Crime: pickpockets, distraction at stations. Be cautious.",
-      numbers:{ emergency:"112", police:"112" },
-      exchange:"Easy", english:"Moderate", crime:"Pickpockets at stations and buses. Be cautious.",
-      orgs:["Italian Red Cross"], tipQuery:"coperto vs servizio Italy"
-    },
-    "Turkey": {
-      rank:6,
-      summary:"Money: Easy. English: Moderate in tourist areas. Crime: taxi overcharge, bag snatch. Be cautious.",
-      numbers:{ emergency:"112", police:"155" },
-      exchange:"Easy", english:"Moderate", crime:"Taxi overcharge, counterfeit goods. Be cautious.",
-      orgs:["Turkish Red Crescent"], tipQuery:"Istanbul Museum Pass"
-    },
-    "Mexico": {
-      rank:7,
-      summary:"Money: Easy. English: Moderate in resorts. Crime: ATM skimmers, petty theft. Be cautious.",
-      numbers:{ emergency:"911", police:"911" },
-      exchange:"Easy", english:"Moderate", crime:"ATM skimmers and beach theft. Be cautious.",
-      orgs:["Mexican Red Cross"], tipQuery:"OXXO pay tips"
-    },
-    "Thailand": {
-      rank:8,
-      summary:"Money: Easy. English: Moderate. Crime: tuk‑tuk and gem scams. Be cautious.",
-      numbers:{ emergency:"1669", police:"191" },
-      exchange:"Easy", english:"Moderate", crime:"Transport and gem scams. Be cautious.",
-      orgs:["Tourist Police Thailand"], tipQuery:"Rabbit card vs MRT Bangkok"
-    },
-    "Germany": {
-      rank:9,
-      summary:"Money: Easy. English: Moderate to Easy in cities. Crime: pickpockets at festivals. Be cautious.",
-      numbers:{ emergency:"112", police:"110" },
-      exchange:"Easy", english:"Moderate", crime:"Festival and transit pickpockets. Be cautious.",
-      orgs:["German Red Cross"], tipQuery:"Deutschlandticket 49"
-    },
-    "United Kingdom": {
-      rank:10,
-      summary:"Money: Easy. English: Easy. Crime: phone snatch and fraud in big cities. Be cautious.",
-      numbers:{ emergency:"999", police:"999" },
-      exchange:"Easy", english:"Easy", crime:"Phone snatch, ticket fraud. Be cautious.",
-      orgs:["British Red Cross"], tipQuery:"contactless cap London"
-    },
-    "Japan": {
-      rank:11,
-      summary:"Money: Easy with cards and IC. English: Moderate. Crime low; avoid bar scams. Be cautious.",
-      numbers:{ emergency:"119", police:"110" },
-      exchange:"Easy", english:"Moderate", crime:"Very low; nightlife bar scams exist. Be cautious.",
-      orgs:["JNTO","Japanese Red Cross"], tipQuery:"coin locker Tokyo station"
-    },
-    "Austria": {
-      rank:12,
-      summary:"Money: Easy. English: Moderate to Easy. Crime: Vienna pickpockets. Be cautious.",
-      numbers:{ emergency:"112", police:"133" },
-      exchange:"Easy", english:"Moderate", crime:"Pickpockets on trams and sights. Be cautious.",
-      orgs:["Austrian Red Cross"], tipQuery:"Semmering scenic rail"
-    },
-    "Greece": {
-      rank:13,
-      summary:"Money: Moderate; cash useful. English: Easy in tourism. Crime: rental and taxi scams. Be cautious.",
-      numbers:{ emergency:"112", police:"100" },
-      exchange:"Moderate", english:"Easy", crime:"Taxi and rental deposit scams. Be cautious.",
-      orgs:["Hellenic Red Cross"], tipQuery:"ferry strike schedule Greece"
-    },
-    "Malaysia": {
-      rank:14,
-      summary:"Money: Easy. English: Easy. Crime: snatch theft on motorbikes. Be cautious.",
-      numbers:{ emergency:"999", police:"999" },
-      exchange:"Easy", english:"Easy", crime:"Snatch theft and ATM skimmers. Be cautious.",
-      orgs:["Malaysian Red Crescent"], tipQuery:"Grab promo code Malaysia"
-    },
-    "Korea, Republic of (South Korea)": {
-      rank:15,
-      summary:"Money: Easy; cards and T‑money. English: Moderate. Crime low; beware phone scams. Be cautious.",
-      numbers:{ emergency:"119", police:"112" },
-      exchange:"Easy", english:"Moderate", crime:"Phone scams; petty theft rare. Be cautious.",
-      orgs:["Korea Tourism Organization","Korean Red Cross"], tipQuery:"T-money refund Seoul"
-    },
-    "Hong Kong": {
-      rank:16,
-      summary:"Money: Easy. English: Easy. Crime: pickpockets in markets; phone scams. Be cautious.",
-      numbers:{ emergency:"999", police:"999" },
-      exchange:"Easy", english:"Easy", crime:"Market pickpockets; phone scams. Be cautious.",
-      orgs:["Hong Kong Tourism Board"], tipQuery:"Octopus card tips"
-    },
-    "Netherlands": {
-      rank:17,
-      summary:"Money: Easy. English: Easy. Crime: bike theft, tourist pickpockets. Be cautious.",
-      numbers:{ emergency:"112", police:"112" },
-      exchange:"Easy", english:"Easy", crime:"Bike theft; station pickpockets. Be cautious.",
-      orgs:["Netherlands Red Cross"], tipQuery:"OV-chipkaart refund"
-    },
-    "Portugal": {
-      rank:18,
-      summary:"Money: Easy. English: Moderate. Crime: car break‑ins and pickpockets. Be cautious.",
-      numbers:{ emergency:"112", police:"112" },
-      exchange:"Easy", english:"Moderate", crime:"Car break‑ins at viewpoints. Be cautious.",
-      orgs:["Portuguese Red Cross"], tipQuery:"pastel de nata best Lisbon"
-    },
-    "Saudi Arabia": {
-      rank:19,
-      summary:"Money: Easy. English: Moderate. Crime low; respect local laws and customs. Be cautious.",
-      numbers:{ emergency:"997", police:"999" },
-      exchange:"Easy", english:"Moderate", crime:"Low crime; legal restrictions strict. Be cautious.",
-      orgs:["Saudi Red Crescent Authority"], tipQuery:"Haram dress code guide"
-    },
-    "United Arab Emirates": {
-      rank:20,
-      summary:"Money: Easy. English: Easy. Crime very low; watch traffic fines. Be cautious.",
-      numbers:{ emergency:"998", police:"999" },
-      exchange:"Easy", english:"Easy", crime:"Very low; traffic and fine issues. Be cautious.",
-      orgs:["Dubai Tourism"], tipQuery:"Nol card Dubai metro"
-    }
+    "France": { rank:1, summary:"Money: Easy. English: Moderate in hubs. Crime: pickpockets in Paris and transit. Be cautious.", numbers:{ emergency:"112", police:"17" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets in tourist zones and transit. Be cautious.", orgs:["French Red Cross"], tipQuery:"first Sunday free museums Paris" },
+    "Spain": { rank:2, summary:"Money: Easy. English: Moderate. Crime: bag snatching in Barcelona and coasts. Be cautious.", numbers:{ emergency:"112", police:"091" }, exchange:"Easy", english:"Moderate", crime:"Bag snatch and pickpockets in hotspots. Be cautious.", orgs:["Spanish Red Cross"], tipQuery:"menu del dia Spain" },
+    "United States": { rank:3, summary:"Money: Easy. English: Easy. Crime varies by city; guard cars and cards. Be cautious.", numbers:{ emergency:"911", police:"911" }, exchange:"Easy", english:"Easy", crime:"Car break‑ins and card scams in tourist areas. Be cautious.", orgs:["American Red Cross"], tipQuery:"national park pass USA" },
+    "China": { rank:4, summary:"Money: Moderate; mobile pay common. English: Difficult outside hubs. Beware taxi and tour scams. Be cautious.", numbers:{ emergency:"120", police:"110" }, exchange:"Moderate", english:"Difficult", crime:"Counterfeit taxis, tour and tea scams. Be cautious.", orgs:["Red Cross Society of China"], tipQuery:"Alipay Tour Pass China" },
+    "Italy": { rank:5, summary:"Money: Easy. English: Moderate. Crime: pickpockets, distraction at stations. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets at stations and buses. Be cautious.", orgs:["Italian Red Cross"], tipQuery:"coperto vs servizio Italy" },
+    "Turkey": { rank:6, summary:"Money: Easy. English: Moderate in tourist areas. Crime: taxi overcharge, bag snatch. Be cautious.", numbers:{ emergency:"112", police:"155" }, exchange:"Easy", english:"Moderate", crime:"Taxi overcharge, counterfeit goods. Be cautious.", orgs:["Turkish Red Crescent"], tipQuery:"Istanbul Museum Pass" },
+    "Mexico": { rank:7, summary:"Money: Easy. English: Moderate in resorts. Crime: ATM skimmers, petty theft. Be cautious.", numbers:{ emergency:"911", police:"911" }, exchange:"Easy", english:"Moderate", crime:"ATM skimmers and beach theft. Be cautious.", orgs:["Mexican Red Cross"], tipQuery:"OXXO pay tips" },
+    "Thailand": { rank:8, summary:"Money: Easy. English: Moderate. Crime: tuk‑tuk and gem scams. Be cautious.", numbers:{ emergency:"1669", police:"191" }, exchange:"Easy", english:"Moderate", crime:"Transport and gem scams. Be cautious.", orgs:["Tourist Police Thailand"], tipQuery:"Rabbit card vs MRT Bangkok" },
+    "Germany": { rank:9, summary:"Money: Easy. English: Moderate to Easy in cities. Crime: pickpockets at festivals. Be cautious.", numbers:{ emergency:"112", police:"110" }, exchange:"Easy", english:"Moderate", crime:"Festival and transit pickpockets. Be cautious.", orgs:["German Red Cross"], tipQuery:"Deutschlandticket 49" },
+    "United Kingdom": { rank:10, summary:"Money: Easy. English: Easy. Crime: phone snatch and fraud in big cities. Be cautious.", numbers:{ emergency:"999", police:"999" }, exchange:"Easy", english:"Easy", crime:"Phone snatch, ticket fraud. Be cautious.", orgs:["British Red Cross"], tipQuery:"contactless cap London" },
+    "Japan": { rank:11, summary:"Money: Easy with cards and IC. English: Moderate. Crime low; avoid bar scams. Be cautious.", numbers:{ emergency:"119", police:"110" }, exchange:"Easy", english:"Moderate", crime:"Very low; nightlife bar scams exist. Be cautious.", orgs:["JNTO","Japanese Red Cross"], tipQuery:"coin locker Tokyo station" },
+    "Austria": { rank:12, summary:"Money: Easy. English: Moderate to Easy. Crime: Vienna pickpockets. Be cautious.", numbers:{ emergency:"112", police:"133" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets on trams and sights. Be cautious.", orgs:["Austrian Red Cross"], tipQuery:"Semmering scenic rail" },
+    "Greece": { rank:13, summary:"Money: Moderate; cash useful. English: Easy in tourism. Crime: rental and taxi scams. Be cautious.", numbers:{ emergency:"112", police:"100" }, exchange:"Moderate", english:"Easy", crime:"Taxi and rental deposit scams. Be cautious.", orgs:["Hellenic Red Cross"], tipQuery:"ferry strike schedule Greece" },
+    "Malaysia": { rank:14, summary:"Money: Easy. English: Easy. Crime: snatch theft on motorbikes. Be cautious.", numbers:{ emergency:"999", police:"999" }, exchange:"Easy", english:"Easy", crime:"Snatch theft and ATM skimmers. Be cautious.", orgs:["Malaysian Red Crescent"], tipQuery:"Grab promo code Malaysia" },
+    "Korea, Republic of (South Korea)": { rank:15, summary:"Money: Easy; cards and T‑money. English: Moderate. Crime low; beware phone scams. Be cautious.", numbers:{ emergency:"119", police:"112" }, exchange:"Easy", english:"Moderate", crime:"Phone scams; petty theft rare. Be cautious.", orgs:["Korea Tourism Organization","Korean Red Cross"], tipQuery:"T-money refund Seoul" },
+    "Hong Kong": { rank:16, summary:"Money: Easy. English: Easy. Crime: pickpockets in markets; phone scams. Be cautious.", numbers:{ emergency:"999", police:"999" }, exchange:"Easy", english:"Easy", crime:"Market pickpockets; phone scams. Be cautious.", orgs:["Hong Kong Tourism Board"], tipQuery:"Octopus card tips" },
+    "Netherlands": { rank:17, summary:"Money: Easy. English: Easy. Crime: bike theft, tourist pickpockets. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Bike theft; station pickpockets. Be cautious.", orgs:["Netherlands Red Cross"], tipQuery:"OV-chipkaart refund" },
+    "Portugal": { rank:18, summary:"Money: Easy. English: Moderate. Crime: car break‑ins and pickpockets. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Moderate", crime:"Car break‑ins at viewpoints. Be cautious.", orgs:["Portuguese Red Cross"], tipQuery:"pastel de nata best Lisbon" },
+    "Saudi Arabia": { rank:19, summary:"Money: Easy. English: Moderate. Crime low; respect local laws and customs. Be cautious.", numbers:{ emergency:"997", police:"999" }, exchange:"Easy", english:"Moderate", crime:"Low crime; legal restrictions strict. Be cautious.", orgs:["Saudi Red Crescent Authority"], tipQuery:"Haram dress code guide" },
+    "United Arab Emirates": { rank:20, summary:"Money: Easy. English: Easy. Crime very low; watch traffic fines. Be cautious.", numbers:{ emergency:"998", police:"999" }, exchange:"Easy", english:"Easy", crime:"Very low; traffic and fine issues. Be cautious.", orgs:["Dubai Tourism"], tipQuery:"Nol card Dubai metro" },
+    "Canada": { rank:21, summary:"Money: Easy. English: Easy. Crime varies by city; guard phones and vehicles. Be cautious.", numbers:{ emergency:"911", police:"911" }, exchange:"Easy", english:"Easy", crime:"Phone and car break‑ins in tourist zones. Be cautious.", orgs:["Canadian Red Cross"], tipQuery:"Parks Canada Discovery Pass" },
+    "Australia": { rank:22, summary:"Money: Easy. English: Easy. Crime low; sun and surf safety matter. Be cautious.", numbers:{ emergency:"000", police:"000" }, exchange:"Easy", english:"Easy", crime:"Low crime; petty theft in nightlife areas. Be cautious.", orgs:["Australian Red Cross"], tipQuery:"Opal vs Myki vs Go Card" },
+    "New Zealand": { rank:23, summary:"Money: Easy. English: Easy. Crime low; vehicle break‑ins at trailheads. Be cautious.", numbers:{ emergency:"111", police:"111" }, exchange:"Easy", english:"Easy", crime:"Trailhead car break‑ins. Be cautious.", orgs:["New Zealand Red Cross"], tipQuery:"DOC Great Walks bookings" },
+    "Singapore": { rank:24, summary:"Money: Easy. English: Easy. Crime very low; fines strict. Be cautious.", numbers:{ emergency:"995", police:"999" }, exchange:"Easy", english:"Easy", crime:"Very low; beware fines for prohibited acts. Be cautious.", orgs:["Singapore Tourism Board"], tipQuery:"EZ‑Link vs NETS FlashPay" },
+    "Switzerland": { rank:25, summary:"Money: Easy. English: Moderate. Crime low; train pickpockets in hubs. Be cautious.", numbers:{ emergency:"112", police:"117" }, exchange:"Easy", english:"Moderate", crime:"Pickpockets in major stations. Be cautious.", orgs:["Swiss Red Cross"], tipQuery:"Half‑Fare Card vs Swiss Pass" },
+    "Czechia": { rank:26, summary:"Money: Easy. English: Moderate. Crime: exchange scams and pickpockets. Be cautious.", numbers:{ emergency:"112", police:"158" }, exchange:"Easy", english:"Moderate", crime:"Unfair exchange kiosks and pickpockets. Be cautious.", orgs:["Czech Red Cross"], tipQuery:"Prague tram ticket tips" },
+    "Ireland": { rank:27, summary:"Money: Easy. English: Easy. Crime low; nightlife pickpockets. Be cautious.", numbers:{ emergency:"112", police:"999" }, exchange:"Easy", english:"Easy", crime:"Pickpockets in nightlife streets. Be cautious.", orgs:["Irish Red Cross"], tipQuery:"Leap Card visitor" },
+    "Belgium": { rank:28, summary:"Money: Easy. English: Easy in cities. Crime: station and festival pickpockets. Be cautious.", numbers:{ emergency:"112", police:"101" }, exchange:"Easy", english:"Easy", crime:"Pickpockets around stations and events. Be cautious.", orgs:["Belgian Red Cross"], tipQuery:"STIB/MIVB day pass" },
+    "Norway": { rank:29, summary:"Money: Easy. English: Easy. Crime very low; weather safety matters. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Very low; prepare for weather and terrain. Be cautious.", orgs:["Norwegian Red Cross"], tipQuery:"Vy app rail tickets" },
+    "Sweden": { rank:30, summary:"Money: Easy. English: Easy. Crime low; bike theft in cities. Be cautious.", numbers:{ emergency:"112", police:"112" }, exchange:"Easy", english:"Easy", crime:"Bike theft and pickpockets in hubs. Be cautious.", orgs:["Swedish Red Cross"], tipQuery:"SL card vs single tickets" }
+  };
+
+  // ===== Risk countries (unranked). Added 6 more per request. =====
+  const RISK = {
+    "Cambodia": { risks:"Scam compounds, kidnapping", advice:"Use licensed transport, avoid job offers and remote casinos, keep passport and phone hidden. If targeted, reach a busy shop or hotel, ask staff to call help, comply and exit. Based on five‑year data; status may change." },
+    "Philippines": { risks:"Express kidnapping, gun crime", advice:"Stick to well‑lit areas and official taxis, avoid cash‑heavy nightlife, split valuables. If followed, enter a staffed place and call police or hotel. Based on five‑year data; status may change." },
+    "Colombia": { risks:"Express kidnapping, armed robbery", advice:"Use ride‑hail at airports, avoid street ATMs, keep phone out of sight. If confronted, hand over property and move to police or hotel. Based on five‑year data; status may change." },
+    "Brazil": { risks:"Armed robbery, carjacking", advice:"Avoid empty beaches at dusk, keep windows up, use hotel safes, limit jewelry. If targeted, stay calm, surrender items, leave to a secure spot. Based on five‑year data; status may change." },
+    "Peru": { risks:"Street robbery, protest roadblocks", advice:"Join reputable tours, avoid isolated viewpoints, carry a copy of ID. If blocked, do not argue; backtrack to crowds and seek police help. Based on five‑year data; status may change." },
+    "Ecuador": { risks:"Kidnapping, extortion, robbery", advice:"Avoid border hotspots, use trusted taxis, keep movements discreet. If threatened, comply and move to a secure building to call authorities. Based on five‑year data; status may change." },
+    "Jamaica": { risks:"Robbery, sexual assault", advice:"Stay in known zones, avoid walking at night, keep drinks in sight. If targeted, reach hotel security or a busy venue and contact police. Based on five‑year data; status may change." },
+    "Trinidad and Tobago": { risks:"Shootings, robbery", advice:"Avoid high‑risk neighborhoods, use hotel taxis, limit night travel. If danger arises, get indoors to guarded places and call police. Based on five‑year data; status may change." },
+    "Guatemala": { risks:"Bus robberies, extortion", advice:"Use tourist shuttles, avoid night buses, keep small cash accessible. If harassed, disengage and report from a safe location. Based on five‑year data; status may change." },
+    "Honduras": { risks:"Gang violence, armed robbery", advice:"Avoid secluded beaches and ATMs, travel in groups, use vetted guides. If followed, enter a shop or hotel and request assistance. Based on five‑year data; status may change." },
+    "El Salvador": { risks:"Gang threats, extortion", advice:"Stick to main routes, avoid displaying phones, use official taxis. If approached, leave calmly to a public space and call for help. Based on five‑year data; status may change." },
+    "South Africa": { risks:"Carjacking, armed robbery", advice:"Keep doors locked, avoid stopping on dark shoulders, plan daylight travel. If attacked, do not resist; drive to a safe hub and report. Based on five‑year data; status may change." },
+    "Nigeria": { risks:"Kidnapping, fraud", advice:"Use secure transfers, avoid routine patterns, limit cash. If targeted, comply and seek embassy or company security support. Based on five‑year data; status may change." },
+    "Kenya": { risks:"Mugging, terrorism near borders", advice:"Avoid isolated parks after dark, use registered cabs, keep valuables hidden. If threatened, retreat to crowds and call police. Based on five‑year data; status may change." },
+    "Ethiopia": { risks:"Civil unrest, robbery", advice:"Check local alerts, avoid protests, keep movements conservative. If unrest flares, shelter in place or move to hotels with security. Based on five‑year data; status may change." },
+    "Egypt": { risks:"Harassment, scams; Sinai terrorism", advice:"Dress modestly, use licensed guides, avoid unofficial tours. If harassed, move to staff or security and demand assistance. Based on five‑year data; status may change." },
+    "Lebanon": { risks:"Civil unrest, kidnapping near borders", advice:"Avoid protest sites and border zones, arrange trusted drivers. If trouble starts, head to secure hotels or embassies. Based on five‑year data; status may change." },
+    "Pakistan": { risks:"Terror threats, kidnapping", advice:"Use escorts where advised, avoid large gatherings, vary routes. If targeted, comply and reach secure facilities quickly. Based on five‑year data; status may change." },
+    "India": { risks:"Scam hubs, harassment, theft", advice:"Book hotels with reviews, use prepaid taxis, keep copies of documents. If targeted, enter a staffed place and call police. Based on five‑year data; status may change." },
+    "Dominican Republic": { risks:"Resort robberies, drink spiking", advice:"Use room safes, avoid accepting drinks from strangers, arrange hotel taxis. If targeted, seek resort security immediately. Based on five‑year data; status may change." },
+    "Venezuela": { risks:"Armed robbery, fuel and roadblock scams", advice:"Avoid unofficial taxis, keep fuel and routes planned, move only in daylight and populated areas. If stopped, comply and proceed to secure locations." },
+    "Haiti": { risks:"Kidnapping, gang violence", advice:"Avoid travel through high‑risk corridors, use vetted drivers, keep movements discreet. If threatened, comply and contact embassy from a safe place." },
+    "Papua New Guinea": { risks:"Armed robbery, carjacking", advice:"Avoid isolated roads after dark, travel in groups or with guides, secure vehicles and valuables. Head to guarded compounds if concerned." },
+    "Democratic Republic of the Congo": { risks:"Armed groups, kidnapping in border regions", advice:"Use security‑advised routes only, register with embassy, avoid night travel and demonstrations. Seek protected facilities when uncertain." },
+    "Algeria": { risks:"Terror risk in remote areas, robbery", advice:"Stay in urban cores, avoid desert travel without permits and convoys, use registered guides. Report incidents to police promptly." },
+    "Tunisia": { risks:"Terrorism near borders, petty crime in resorts", advice:"Avoid border zones, stay in known resort areas, use hotel transfers, keep bags closed and phones concealed in crowds." }
   };
 
   const input = document.getElementById('countryInput');
@@ -2285,119 +2221,70 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   const elMore = document.getElementById('more');
   const box = document.getElementById('infoBox');
 
-  // Build datalist from META
-  Object.keys(META).sort().forEach(name => { const o=document.createElement('option'); o.value=name; list.appendChild(o); });
+  // Build datalist from META and RISK (no duplicates). Risk shows a "(Risk)" label.
+  const names = Array.from(new Set([...Object.keys(META), ...Object.keys(RISK)])).sort();
+  names.forEach(name => { const o=document.createElement('option'); o.value=name; if(RISK[name]) o.label=name+" (Risk)"; list.appendChild(o); });
 
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function randomCountry(){ const names = Object.keys(META); return names[Math.floor(Math.random()*names.length)]; }
+  function randomCountry(){ return pick(names); }
 
-  // Alias & light fuzzy normalization
-  const ALIAS = {
-    "south korea":"Korea, Republic of (South Korea)",
-    "korea":"Korea, Republic of (South Korea)",
-    "kr":"Korea, Republic of (South Korea)",
-    "kor":"Korea, Republic of (South Korea)",
-    "united states":"United States",
-    "usa":"United States",
-    "us":"United States",
-    "u.s.":"United States",
-    "uk":"United Kingdom",
-    "britain":"United Kingdom",
-    "england":"United Kingdom",
-    "uae":"United Arab Emirates",
-    "emirates":"United Arab Emirates",
-    "ksa":"Saudi Arabia",
-    "china":"China",
-    "hong kong":"Hong Kong",
-    "deutschland":"Germany",
-    "holland":"Netherlands"
-  };
-  function normalizeCountry(raw){
-    if(!raw) return "";
-    const s = raw.trim().toLowerCase();
-    if(ALIAS[s]) return ALIAS[s];
-    const hit = Object.keys(META).find(k => k.toLowerCase().startsWith(s));
-    return hit || raw.trim();
-  }
+  // Aliases
+  const ALIAS = { "south korea":"Korea, Republic of (South Korea)", "korea":"Korea, Republic of (South Korea)", "kr":"Korea, Republic of (South Korea)", "kor":"Korea, Republic of (South Korea)", "united states":"United States", "usa":"United States", "us":"United States", "u.s.":"United States", "uk":"United Kingdom", "britain":"United Kingdom", "england":"United Kingdom", "uae":"United Arab Emirates", "emirates":"United Arab Emirates", "ksa":"Saudi Arabia", "china":"China", "hong kong":"Hong Kong", "deutschland":"Germany", "holland":"Netherlands" };
+  function normalizeCountry(raw){ if(!raw) return ""; const s=raw.trim().toLowerCase(); if(ALIAS[s]) return ALIAS[s]; const hit=names.find(k=>k.toLowerCase().startsWith(s)); return hit || raw.trim(); }
 
-  // Auto-rotate control
+  // Auto-rotate
   let autoTimer=null, autoMs=8000, paused=false;
   function startAuto(){ if(autoTimer) return; autoTimer=setInterval(()=>{ if(!paused) render(randomCountry()); }, autoMs); }
   function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
 
-  // User-lock control: when user selects a country, lock 20s
-  let userLockTimer = null;
-  function lockForUserInteraction(){
-    paused = true; stopAuto();
-    if(userLockTimer) clearTimeout(userLockTimer);
-    userLockTimer = setTimeout(()=>{ input.value=''; paused=false; userLockTimer=null; startAuto(); }, 20000);
-  }
+  // Lock after user interaction (20s)
+  let userLockTimer=null;
+  function lockForUserInteraction(){ paused=true; stopAuto(); if(userLockTimer) clearTimeout(userLockTimer); userLockTimer=setTimeout(()=>{ input.value=''; input.style.color=''; paused=false; userLockTimer=null; startAuto(); }, 20000); }
 
-  // Clear only the input field on hover/click so user can type a new country quickly
+  // Input helpers
   input.addEventListener('mouseenter', ()=>{ input.value=''; });
   input.addEventListener('pointerdown', ()=>{ input.value=''; });
   input.addEventListener('focus', ()=>{ paused=true; });
   input.addEventListener('blur', ()=>{ if(!userLockTimer) paused=false; });
 
-  // Measure and set collapsed/expanded heights based on content
-  function recalcBoxHeights(){
-    try{
-      const prev = box.style.maxHeight; box.style.maxHeight = 'none';
-      const full = box.scrollHeight; const collapsed = Math.max(120, Math.round(full * 0.6));
-      box.style.maxHeight = prev; box.style.setProperty('--expanded-h', full + 'px'); box.style.setProperty('--collapsed-h', collapsed + 'px');
-    }catch(_){ /* no-op */ }
-  }
+  // Box height calc
+  function recalcBoxHeights(){ try{ const prev=box.style.maxHeight; box.style.maxHeight='none'; const full=box.scrollHeight; const collapsed=Math.max(120, Math.round(full*0.6)); box.style.maxHeight=prev; box.style.setProperty('--expanded-h', full+'px'); box.style.setProperty('--collapsed-h', collapsed+'px'); }catch(_){} }
 
+  // Render
   function render(country, opts){
-    opts = opts || {};
-    const key = META[country] ? country : normalizeCountry(country);
-    if(!key || !META[key]){
-      elCountry.textContent='—'; elRank.textContent='—'; elDesc.textContent='Choose a country or press Rnd.'; elMore.innerHTML=''; recalcBoxHeights(); return;
-    }
-    const m = META[key];
-    elCountry.textContent = key;
-    elRank.textContent = 'Rank #' + m.rank;
-    elDesc.textContent = m.summary; // under 200 chars each
+    opts=opts||{}; const key=normalizeCountry(country); const isRisk=!!RISK[key];
+    if(!key || (!META[key] && !isRisk)){ elCountry.textContent='—'; elCountry.classList.remove('risk'); elRank.textContent='—'; elRank.innerHTML='—'; elDesc.textContent='Choose a country or press Rnd.'; elDesc.classList.remove('risk'); elMore.innerHTML=''; box.classList.remove('nocollapse'); recalcBoxHeights(); return; }
 
-    let html = '<span class="num">Emergency number: <strong>'+ m.numbers.emergency +'</strong></span>'+
-               '<span class="num">Police number: <strong>'+ m.numbers.police +'</strong></span>'+
-               '<span class="meta">Currency exchange: <strong>'+ m.exchange +'</strong></span>'+
-               '<span class="meta">Common crimes: '+ m.crime +'</span>'+
-               '<span class="meta">English communication: <strong>'+ m.english +'</strong></span>';
-    if(m.orgs && m.orgs.length){ html += '<span class="meta">Support organizations: ' + m.orgs.join(', ') + '</span>'; }
-    if(m.tipQuery){ const q = encodeURIComponent(m.tipQuery); html += '<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">'+ m.tipQuery +'</a> — This tip helps you connect with locals.</span>'; }
-    elMore.innerHTML = html;
+    elCountry.textContent=key; elCountry.classList.toggle('risk', isRisk);
+    box.classList.toggle('nocollapse', isRisk); // risk: expanded height only
+
+    if(isRisk){ const r=RISK[key]; elRank.innerHTML='<span class="riskBadge">(Risk)</span>'; elDesc.textContent='Major Risk: '+r.risks; elDesc.classList.add('risk'); elMore.innerHTML='<span class="meta">'+r.advice+'</span>'; }
+    else { const m=META[key]; elRank.textContent='Tourism Rank #'+m.rank; elDesc.textContent=m.summary; elDesc.classList.remove('risk'); let html='<span class="num">Emergency number: <strong>'+m.numbers.emergency+'</strong></span>'+'<span class="num">Police number: <strong>'+m.numbers.police+'</strong></span>'+'<span class="meta">Currency exchange: <strong>'+m.exchange+'</strong></span>'+'<span class="meta">Common crimes: '+m.crime+'</span>'+'<span class="meta">English communication: <strong>'+m.english+'</strong></span>'; if(m.orgs&&m.orgs.length){ html+='<span class="meta">Support organizations: '+m.orgs.join(', ')+'</span>'; } if(m.tipQuery){ const q=encodeURIComponent(m.tipQuery); html+='<span class="meta"><strong>Special tip:</strong> <a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">'+m.tipQuery+'</a> — This tip helps you connect with locals.</span>'; } elMore.innerHTML=html; }
 
     if(opts.user){ lockForUserInteraction(); }
     recalcBoxHeights();
   }
 
   // Interactions
-  btnRandom.addEventListener('click', function(){ render(randomCountry(), {user:true}); });
-  input.addEventListener('change', function(){ const c = this.value; if(c) render(c, {user:true}); });
-  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ const c = this.value; if(c) render(c, {user:true}); }});
-  let liveTimer=null; const LIVE_DELAY=300; // live preview while typing
-  input.addEventListener('input', function(){ clearTimeout(liveTimer); const val=this.value; liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY); });
+  btnRandom.addEventListener('click', ()=>{ render(randomCountry(), {user:true}); });
+  input.addEventListener('change', function(){ const c=this.value; if(c) render(c, {user:true}); });
+  input.addEventListener('keyup', function(e){ if(e.key==='Enter'){ const c=this.value; if(c) render(c, {user:true}); }});
+  let liveTimer=null; const LIVE_DELAY=300; input.addEventListener('input', function(){ clearTimeout(liveTimer); const val=this.value; this.style.color = RISK[normalizeCountry(val)] ? '#dc2626' : ''; liveTimer=setTimeout(()=>{ if(val) render(val); }, LIVE_DELAY); });
 
-  // Keyboard shortcuts
+  // Shortcuts
   document.addEventListener('keydown', e=>{ if(e.key==='/' && document.activeElement!==input){ e.preventDefault(); input.focus(); } else if(e.key && e.key.toLowerCase()==='r' && document.activeElement!==input){ render(randomCountry()); }});
 
-  // Pause auto on mouseleave/tab hidden
+  // Pause rules
   box.addEventListener('mouseleave', ()=>{ if(!userLockTimer) paused=false; });
   document.addEventListener('visibilitychange', ()=>{ paused=document.hidden; });
 
-  // Self-check tests (basic): ensure all entries have required fields
-  (function tests(){
-    const required=['rank','summary','numbers','exchange','english','crime'];
-    let ok=true, msgs=[]; Object.entries(META).forEach(([k,v])=>{ required.forEach(f=>{ if(v[f]===undefined) { ok=false; msgs.push('Missing '+f+' for '+k); } }); });
-    if(!ok){ console.error('[Ticker tests]', msgs.join(' | ')); } else { console.log('[Ticker tests] All META entries valid:', Object.keys(META).length); }
-  })();
+  // Self-check
+  (function tests(){ const required=['rank','summary','numbers','exchange','english','crime']; let ok=true, msgs=[]; Object.entries(META).forEach(([k,v])=>{ required.forEach(f=>{ if(v[f]===undefined){ ok=false; msgs.push('Missing '+f+' for '+k); } }); }); if(!ok){ console.error('[Ticker tests]', msgs.join(' | ')); } else { console.log('[Ticker tests] META entries:', Object.keys(META).length, '| RISK entries:', Object.keys(RISK).length); } })();
 
-  // Initial view
-  (function init(){ const seeds = Object.keys(META).sort((a,b)=>META[a].rank-META[b].rank).slice(0,3); render(pick(seeds)); startAuto(); recalcBoxHeights(); })();
+  // Init
+  (function init(){ const seeds=Object.keys(META).sort((a,b)=>META[a].rank-META[b].rank).slice(0,3); render(pick(seeds)); startAuto(); recalcBoxHeights(); })();
 })();
 </script>
-
 
 
 
