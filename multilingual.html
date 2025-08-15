@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,13 +25,13 @@
 <body>
   <div class="wrap">
     <div class="controls" role="group" aria-label="Language selector">
-      <button class="chip" data-lang="en" aria-pressed="false">English</button>
-      <button class="chip" data-lang="ko" aria-pressed="true">한국어</button>
+      <button class="chip" data-lang="en" aria-pressed="true">English</button>
+      <button class="chip" data-lang="ko" aria-pressed="false">한국어</button>
       <button class="chip" data-lang="ja" aria-pressed="false">日本語</button>
       <button class="chip" data-lang="fr" aria-pressed="false">Français</button>
     </div>
 
-    <article id="letter" class="letter" lang="ko" aria-live="polite"></article>
+    <article id="letter" class="letter" lang="en" aria-live="polite"></article>
   </div>
 
   <script>
@@ -255,7 +255,7 @@
       document.documentElement.lang = lang;
     }
     $chips.forEach(b=>b.addEventListener('click', ()=>render(b.dataset.lang)));
-    render('ko');
+    render('en');
   </script>
 </body>
 </html>
