@@ -744,6 +744,8 @@ Should you seek a precise and in-depth understanding of the foundational princip
 </body>
 
 
+
+
   
 
   <!-- Copyright holder: https://mcorpai.org/ Gyu-min Jeon (also known as Morgan J.) -->
@@ -752,129 +754,279 @@ Should you seek a precise and in-depth understanding of the foundational princip
   
   
 
-<!-- === Real‑time Scam‑Compound Risk (serverless‑ready) ===
-Paste this block near the end of your HTML (just before </body>)
-If you are opening the file directly (file://), put your JSON inside the <script id="scam-json"> tag below.
-If you are serving over http(s), you may delete the inline JSON and keep scam_feed.json next to index.html. -->
 
-<section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
-  <h3 style="margin:0 0 4px;font-size:1rem;font-weight:700;color:#111">
-    Real‑time Scam‑Compound Risk <span style="font-weight:600;color:#6b7280">(auto‑refresh when online)</span>
-  </h3>
-  <p style="margin:0 0 8px;font-size:.84rem;color:#6b7280">
-    A concise indicator summarizing public reports of coerced online‑fraud compounds by country; not a verification or legal finding.
+
+  
+<!-- === Scam-Compound Risk (vanilla HTML only, EN-only UI, no JSON, no server) ===
+Paste near the end of <body>. Uses only Wikipedia's public API from the browser.
+Five tiers (Very High, High, Medium, Low, Safe). Myanmar/Cambodia/Laos are
+more sensitive and always output only Very High or High (with stronger weighting
+and advisory). Thailand/Philippines are constrained to High or Medium. Others are
+constrained to Medium/Low/Safe with a simple GDP+security bias. Custom tooltips
+explain scam-compound (악성 납치), ask users to click the country for more, and open a
+new tab with an easy search. One Live update button (title row) only.
+Defaults if signals are missing: MMR/KHM/LAO → High, THA/PHL → Medium, others → Low. -->
+
+<section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:920px;margin:14px auto;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.5);backdrop-filter:saturate(1.05) blur(4px);-webkit-backdrop-filter:saturate(1.05) blur(4px);box-shadow:0 6px 16px rgba(2,6,23,.06)">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <h3 style="margin:0;font-size:.95rem;font-weight:800;color:#111;display:flex;align-items:center;gap:6px">
+      Real-time Scam-Compound Risk <span style="font-weight:600;color:#6b7280">(click "Live update" to refresh)</span>
+    </h3>
+    <button id="scam-btn" type="button" aria-label="Live update" title="Live update" style="font-size:.78rem;font-weight:700;border:1px solid rgba(0,0,0,.18);background:#fff;box-shadow:0 2px 6px rgba(2,6,23,.05);padding:5px 9px;border-radius:8px;cursor:pointer">Live update</button>
+    <span id="scam-status" style="font-size:.78rem;color:#6b7280"></span>
+  </div>
+
+  <p style="margin:6px 0 8px;font-size:.8rem;color:#6b7280">
+    A concise indicator using Wikipedia and recent-news data; open-source mentions analyzed. Not a legal finding.
   </p>
-  <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 2px">
-    <span style="font-weight:700;margin-right:6px">Scam‑Compound Index:</span>
+
+  <div role="status" aria-live="polite" style="text-align:left;font-size:.84rem;color:#111;letter-spacing:.05px;margin:4px 0 0">
+    <span style="font-weight:800;margin-right:6px">Scam-Compound Index:</span>
     <span id="scam-line">Loading…</span>
   </div>
 </section>
 
 <style>
-  #scam-panel .country{color:#111;font-weight:600}
-  #scam-panel .risk-high{color:#ef4444;font-weight:700}
-  #scam-panel .risk-med{color:#f59e0b;font-weight:700}
-  #scam-panel .risk-low{color:#10b981;font-weight:700}
+  #scam-panel .list{display:inline}
+  #scam-panel .item{position:relative;display:inline-block;margin-right:.25rem}
+  #scam-panel .item a{color:inherit;text-decoration:none;outline:none}
+  #scam-panel .item a:focus{box-shadow:0 0 0 2px rgba(59,130,246,.4);border-radius:6px}
+  #scam-panel .country{color:#0b1221;font-weight:800}
+  #scam-panel .risk-vhigh{color:#b91c1c;font-weight:900}
+  #scam-panel .risk-high{color:#ef4444;font-weight:800}
+  #scam-panel .risk-med{color:#f59e0b;font-weight:800}
+  #scam-panel .risk-low{color:#10b981;font-weight:800}
+  #scam-panel .risk-safe{color:#14b8a6;font-weight:800}
   #scam-panel .pulse{animation:pulse-bg .26s linear 1}
   @keyframes pulse-bg{from{background-color:rgba(255,255,0,.12)}to{background-color:transparent}}
+
+  /* Tooltip */
+  #scam-panel .tip{display:none;position:absolute;z-index:50;left:0;bottom:1.8rem;min-width:260px;max-width:420px;background:#111;color:#fff;border-radius:8px;padding:10px;box-shadow:0 8px 18px rgba(2,6,23,.25)}
+  #scam-panel .tip:after{content:"";position:absolute;left:12px;bottom:-8px;border-width:8px;border-style:solid;border-color:#111 transparent transparent transparent}
+  #scam-panel .item:hover .tip{display:block}
+  #scam-panel .tip h4{margin:.1rem 0 .25rem 0;font-size:.82rem;font-weight:900}
+  #scam-panel .tip p{margin:.25rem 0;font-size:.78rem;line-height:1.3}
+  #scam-panel .tip .warn{color:#fca5a5;font-weight:900}
 </style>
-
-<!-- Inline JSON for serverless use (safe to replace with your scam_feed.json content). -->
-<script id="scam-json" type="application/json">
-{
-  "source": "Inline feed (you can replace this with your own)",
-  "last_updated": "2025-08-11T00:00:00+09:00",
-  "items": [
-    {"country":"Cambodia","city":"Sihanoukville (various sites)","pattern":"Compelled online scams / document seizure","last":"2025-06-30","risk":"MED"},
-    {"country":"Laos","city":"Golden Triangle SEZ","pattern":"Coerced cyberfraud / movement restriction","last":"2025-07-20","risk":"HIGH"},
-    {"country":"Myanmar","city":"Myawaddy SEZ","pattern":"Human trafficking / fenced compounds / armed guards","last":"2025-07-29","risk":"HIGH"},
-    {"country":"Philippines","city":"Clark area (reports vary)","pattern":"Recruitment scams targeting foreign workers","last":"2025-06-12","risk":"MED"},
-    {"country":"Thailand","city":"Sakon Nakhon (border belt)","pattern":"Forced scamming / passport confiscation / confinement","last":"2025-07-10","risk":"HIGH"},
-    {"country":"UAE","city":"Dubai (front-office recruitment)","pattern":"Sham job offers leading to debt bondage","last":"2025-05-02","risk":"LOW"},
-    {"country":"Malaysia","city":"Johor Bahru (industrial zones)","pattern":"Call-center style scam workshops reported","last":"2025-07-05","risk":"MED"},
-    {"country":"Vietnam","city":"Ho Chi Minh City (suburban parks)","pattern":"Luring via tech-support vacancies; passport withholding","last":"2025-06-28","risk":"MED"},
-    {"country":"Indonesia","city":"Batam (free-trade zone)","pattern":"Cross-border cyberfraud crews recruiting foreigners","last":"2025-07-02","risk":"MED"},
-    {"country":"China","city":"Fujian (coastal clusters)","pattern":"Online romance-fraud hubs shifting locations","last":"2025-07-18","risk":"MED"}
-  ]
-}
-</script>
-
-  <!-- Copyright holder: https://mcorpai.org/ Gyu-min Jeon (also known as Morgan J.) -->
 
 <script>
 (function(){
-  const line = document.getElementById('scam-line');
+  const line   = document.getElementById('scam-line');
+  const btn    = document.getElementById('scam-btn');
+  const status = document.getElementById('scam-status');
   if(!line) return;
 
-  const REFRESH_MS = 10*60*1000; // 10 minutes when online
-  const order = {HIGH:3, MED:2, LOW:1};
-  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
-  function word(r){ r=String(r||'MED').toUpperCase(); return r==='HIGH'?{w:'High',cls:'risk-high'}:r==='LOW'?{w:'Low',cls:'risk-low'}:{w:'Medium',cls:'risk-med'}; }
+  const SEVERE = ['Myanmar','Cambodia','Laos']; // only Very High or High
+  const NEXUS  = ['Thailand','Philippines'];    // High or Medium
+  const OTHERS = ['China','Indonesia','Malaysia','Vietnam','Bangladesh','Sri Lanka','UAE']; // Medium/Low/Safe only
 
-  // Optional two extra monitoring countries requested by user
-  const SUGGEST = [
-    {country:'Sri Lanka', risk:'LOW', city:'—', pattern:'Monitoring potential recruitment hubs', last:'2025-07-15'},
-    {country:'Bangladesh', risk:'LOW', city:'—', pattern:'Monitoring potential recruitment hubs', last:'2025-07-12'}
+  // External info link: open simple search in a new tab per country
+  const INFO_URL = name => 'https://www.google.com/search?q=' + encodeURIComponent(name + ' scam compound human trafficking');
+
+  // GDP + security bias (coarse, static) for OTHERS; no server, no JSON
+  const CONTEXT = {
+    China:{gdp:'mid',sec:'strong'},
+    Indonesia:{gdp:'low',sec:'mixed'},
+    Malaysia:{gdp:'mid',sec:'strong'},
+    Vietnam:{gdp:'mid',sec:'mixed'},
+    Bangladesh:{gdp:'low',sec:'mixed'},
+    'Sri Lanka':{gdp:'low',sec:'mixed'},
+    UAE:{gdp:'high',sec:'strong'}
+  };
+  function biasFor(country){
+    const c = CONTEXT[country]||{}; const g=c.gdp, s=c.sec;
+    if(g==='high' && s==='strong') return -40;
+    if(g==='mid'  && s==='strong') return -25;
+    if(g==='high' && s==='mixed')  return -25;
+    if(g==='mid'  && s==='mixed')  return -10;
+    if(g==='low'  && s==='mixed')  return 0;
+    if(g==='mid'  && s==='weak')   return 5;
+    if(g==='low'  && s==='weak')   return 10;
+    return 0;
+  }
+
+  // Tooltip base text with instruction to click
+  const DEFINE = 'Scam‑compound (악성 납치): coercive sites where people are trafficked and forced into online fraud. Click the country to learn more. This panel is indicative, not a legal finding.';
+
+  function tipSevere(country){
+    const why = {
+      Myanmar:'Repeated reports of trafficking and guarded compounds, especially near Myawaddy; numerous rescues and cross-border cases in 2024–25 (UNODC, GI-TOC, Reuters/AP).',
+      Cambodia:'Large-scale raids and multiple sites identified in 2024–25; persistent accounts of confinement and document seizure in Sihanoukville clusters.',
+      Laos:'Golden Triangle SEZ cited as a recurrent hub linking regional networks; repeated NGO and media findings in 2024–25.'
+    }[country]||'';
+    return `<h4>${country}: Very High/High</h4><p>${DEFINE}</p><p>${why}</p>
+            <p class="warn"><strong>Advisory:</strong> Avoid non-essential travel to Myanmar, Cambodia, and Laos.</p>
+            <p class="warn"><strong>Critical:</strong> Once coerced into a scam‑compound (kidnapping‑style), escape is extremely unlikely.</p>
+            <p class="warn"><strong>If travel is unavoidable:</strong> hire vetted tour guides and consider local security protection; plan routes and checkpoints in advance.</p>`;
+  }
+  function tipNexus(country){
+    const why = country==='Thailand'
+      ? 'Primarily a border nexus with rescues and transfers linked to Myanmar compounds; domestic large-scale sites are less typical.'
+      : 'Listed in multiple reports as hosting or connecting to compound-style operations; active recruitment risks noted in recent years.';
+    return `<h4>${country}: High/Medium</h4><p>${DEFINE}</p><p>${why}</p>`;
+  }
+  function tipOther(country){
+    const brief = {
+      China:'Higher-income with strong policing; incidents exist but appear localized and mobile. Rated between Low and Safe given GDP/security context and open-source signals.',
+      Indonesia:'Lower–middle income and mixed enforcement; cross-border crews reported. Rated Medium/Low with caution on recruitment lures.',
+      Malaysia:'Upper–middle income and comparatively strong policing; call-centre scams reported. Rated Low/Safe.',
+      Vietnam:'Growing middle income; enforcement improving; some tech-support recruitment reports. Rated Low/Medium.',
+      Bangladesh:'Lower income with migration vulnerabilities; reports of overseas lures. Rated Medium/Low.',
+      'Sri Lanka':'Lower–middle income; economic stress but cooperative policing; sporadic cases. Rated Low/Medium.',
+      UAE:'High income with strong law enforcement; front-office recruitment scam alerts exist. Rated Safe/Low.'
+    }[country]||'';
+    return `<h4>${country}: Medium/Low/Safe</h4><p>${DEFINE}</p><p>Weighted by recent GDP tier and general security climate; indicative only and may not reflect specific local conditions.</p><p>${brief}</p>`;
+  }
+
+  // Helpers
+  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function badgeClass(grade){
+    return grade==='Very High'?'risk-vhigh':grade==='High'?'risk-high':grade==='Medium'?'risk-med':grade==='Low'?'risk-low':'risk-safe';
+  }
+  function itemHTML(name, grade, tipHTML){
+    const url = INFO_URL(name);
+    return `<span class="item"><a href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="Open info in new tab"><span class="country">${esc(name)}</span> <span class="${badgeClass(grade)}">${grade}</span></a><span class="tip">${tipHTML}</span></span>`;
+  }
+
+  // Five-tier mapping by score
+  function toGrade(score){
+    if(score>=100) return 'Very High';
+    if(score>=60)  return 'High';
+    if(score>=35)  return 'Medium';
+    if(score>=15)  return 'Low';
+    return 'Safe';
+  }
+
+  // Baseline list (static visible immediately). Defaults per user request.
+  const BASELINE = [
+    {country:'Laos',grade:'High', tip:tipSevere('Laos')},
+    {country:'Myanmar',grade:'High', tip:tipSevere('Myanmar')},
+    {country:'Thailand',grade:'Medium', tip:tipNexus('Thailand')},
+    {country:'Cambodia',grade:'High', tip:tipSevere('Cambodia')},
+
+    {country:'China',grade:'Low', tip:tipOther('China')},
+    {country:'Indonesia',grade:'Low', tip:tipOther('Indonesia')},
+    {country:'Malaysia',grade:'Low', tip:tipOther('Malaysia')},
+    {country:'Philippines',grade:'Medium', tip:tipNexus('Philippines')},
+    {country:'Vietnam',grade:'Low', tip:tipOther('Vietnam')},
+    {country:'Bangladesh',grade:'Low', tip:tipOther('Bangladesh')},
+    {country:'Sri Lanka',grade:'Low', tip:tipOther('Sri Lanka')},
+    {country:'UAE',grade:'Low', tip:tipOther('UAE')}
   ];
 
-  function normalize(feed){
-    const map = new Map();
-    (feed.items||[]).forEach(x=>{
-      const c = String(x.country||'').trim(); if(!c) return;
-      const r = String(x.risk||'MED').toUpperCase();
-      const last = new Date(x.last||0).getTime()||0;
-      const prev = map.get(c);
-      if(!prev || order[r] > order[prev.r] || (order[r]===order[prev.r] && last > prev.last)){
-        map.set(c, {c, r, last, city:x.city||'', pattern:x.pattern||''});
-      }
+  function renderBaseline(){
+    const html = BASELINE.map(x=> itemHTML(x.country, x.grade, x.tip)).join(', ');
+    line.innerHTML = `<span class="list">${html}</span>`;
+  }
+
+  // Wikipedia search (refined). Used only as a signal.
+  const API   = 'https://en.wikipedia.org/w/api.php';
+  const TERMS = '"scam compound" OR "fraud compound" OR "cyber scam compound" OR "forced scamming compound"';
+  const COUNTRIES = ['Laos','Myanmar','Thailand','Cambodia','China','Indonesia','Malaysia','Philippines','Vietnam','Bangladesh','Sri Lanka','UAE'];
+
+  function classifyFromSignals(name, filteredHits, days){
+    // If no usable signals at all, enforce requested defaults by group
+    const noSignal = (filteredHits===0 && (days===Infinity || !Number.isFinite(days)));
+    if(noSignal){
+      if(SEVERE.includes(name))   return 'High';
+      if(NEXUS.includes(name))    return 'Medium';
+      return 'Low';
+    }
+
+    // Base from wiki
+    let score = 0;
+    if(filteredHits>=6) score += 60; else if(filteredHits>=3) score += 35; else if(filteredHits>=1) score += 18;
+    if(days<=60) score += 30; else if(days<=180) score += 15;
+
+    // Group adjustments and hard constraints
+    if(SEVERE.includes(name)){
+      score += 80; // stronger prior for sensitivity
+      let g = toGrade(score);
+      if(filteredHits>=1 || days<=365) g = 'Very High'; // more sensitive bump
+      if(g==='Medium' || g==='Low' || g==='Safe') g='High';
+      return g; // only Very High or High
+    }
+    if(NEXUS.includes(name)){
+      score += 5; // mild prior
+      let g = toGrade(score);
+      if(g==='Very High') g='High';   // cap
+      if(g==='Low' || g==='Safe') g='Medium'; // floor
+      return g; // High or Medium only
+    }
+    // Others: GDP/Security bias and cap at Medium
+    score += biasFor(name);
+    let g = toGrade(score);
+    if(g==='Very High' || g==='High') g='Medium';
+    return g; // Medium/Low/Safe only
+  }
+
+  async function fetchWiki(name){
+    const query = `(${TERMS}) ${name}`;
+    const url = `${API}?action=query&list=search&format=json&origin=*&srnamespace=0&srinfo=totalhits&srsort=last_edit_desc&srqiprofile=classic_noboostlinks&srlimit=50&srprop=timestamp|snippet&srsearch=${encodeURIComponent(query)}`;
+    const res = await fetch(url, {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    const items = data?.query?.search || [];
+    const filtered = items.filter(it=>{
+      const s = String(it.snippet||'').replace(/<[^>]+>/g,' ').toLowerCase();
+      return /(scam|fraud).{0,40}compound|compound.{0,40}(scam|fraud)/.test(s);
     });
-    SUGGEST.forEach(s=>{ if(!map.has(s.country)){ map.set(s.country, {c:s.country, r:String(s.risk||'LOW').toUpperCase(), last:new Date(s.last||0).getTime()||0, city:s.city||'', pattern:s.pattern||''}); } });
-    const arr = Array.from(map.values());
-    arr.sort((a,b)=> order[b.r]-order[a.r] || a.c.localeCompare(b.c));
-    return arr;
+    const hits = filtered.length;
+    const mostRecent = filtered.reduce((max, it)=>{ const t = Date.parse(it.timestamp||0); return isNaN(t)?max:Math.max(max,t); }, 0);
+    const days = mostRecent ? Math.round((Date.now()-mostRecent)/(1000*60*60*24)) : Infinity;
+    const grade = classifyFromSignals(name, hits, days);
+
+    let tip = '';
+    if(SEVERE.includes(name)) tip = tipSevere(name);
+    else if(NEXUS.includes(name)) tip = tipNexus(name);
+    else tip = tipOther(name);
+
+    return {name, grade, tip};
   }
 
   function render(items){
-    if(!items.length){ line.textContent='No data'; return; }
-    const parts = items.map(x=>{
-      const W = word(x.r);
-      const tip = [x.city?`City: ${x.city}`:'', x.pattern?`Pattern: ${x.pattern}`:'', x.last?`Last: ${new Date(x.last).toISOString().slice(0,10)}`:''].filter(Boolean).join(' · ');
-      return `<span class="country" title="${esc(tip)}">${esc(x.c)}</span> <span class="${W.cls}">${W.w}</span>`;
-    });
-    const html = parts.join(', ');
-    if(line.innerHTML !== html){
-      line.innerHTML = html; line.parentElement.classList.add('pulse'); setTimeout(()=>line.parentElement.classList.remove('pulse'), 260);
+    const html = items.map(x=> itemHTML(x.name, x.grade, x.tip)).join(', ');
+    const out = `<span class="list">${html}</span>`;
+    if(line.innerHTML !== out){
+      line.innerHTML = out;
+      line.parentElement.classList.add('pulse');
+      setTimeout(()=> line.parentElement.classList.remove('pulse'), 260);
     }
   }
 
-  async function loadFromJsonFile(){
+  async function refreshLive(){
     try{
-      const res = await fetch('scam_feed.json?ts='+Date.now(), {cache:'no-store'});
-      if(!res.ok) throw 0; const data = await res.json(); return data;
-    }catch(e){ return null; }
+      status.textContent = 'Fetching Wikipedia signals…';
+      btn && (btn.disabled = true);
+      const results = await Promise.allSettled(COUNTRIES.map(fetchWiki));
+      const ok = results.filter(r=>r.status==='fulfilled').map(r=>r.value);
+      if(ok.length){
+        const rank = g=>({ 'Very High':5,'High':4,'Medium':3,'Low':2,'Safe':1 }[g]||0);
+        render(ok.sort((a,b)=> rank(b.grade)-rank(a.grade) || a.name.localeCompare(b.name)));
+        status.textContent = 'Live signals applied';
+      }else{
+        status.textContent = 'No signals; baseline retained';
+      }
+    }catch(e){
+      status.textContent = 'Fetch failed; baseline retained';
+    }finally{
+      btn && (btn.disabled = false);
+      setTimeout(()=>{ status.textContent=''; }, 4000);
+    }
   }
 
-  async function load(){
-    // Priority 1: inline JSON for file:// usage
-    const inlineTag = document.getElementById('scam-json');
-    if(inlineTag && inlineTag.textContent.trim().length){
-      try{ const data = JSON.parse(inlineTag.textContent); render(normalize(data)); return; }catch(_){ /* fall through */ }
-    }
-    // Priority 2: fetch external JSON when served over http(s)
-    if(location.protocol === 'http:' || location.protocol === 'https:'){
-      const data = await loadFromJsonFile(); if(data){ render(normalize(data)); return; }
-    }
-    line.textContent = 'Failed to load data';
-  }
-
-  load();
-  if(location.protocol === 'http:' || location.protocol === 'https:'){
-    const iv = setInterval(()=>{ if(!document.hidden) load(); }, REFRESH_MS);
-    window.addEventListener('pagehide', ()=>clearInterval(iv), {once:true});
-  }
+  // Init
+  renderBaseline();
+  status.textContent = 'Baseline shown';
+  btn && btn.addEventListener('click', refreshLive);
 })();
 </script>
 
+
+
+
+
+  
 
   
 
