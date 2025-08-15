@@ -52,7 +52,7 @@
   const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
 
   // Static English labels
-  const LABELS={title:'World Travel Ticker AI', assessed:'Assessed', to:'to', moody:"Moody\'s 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state'};
+  const LABELS={title:'World Travel Ticker AI', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state'};
   elT.textContent=LABELS.title; q.setAttribute('placeholder',LABELS.placeholder); riskBtn.textContent=LABELS.risk;
 
   // Grade explanations (EN)
@@ -238,7 +238,7 @@
   const UN=UN_STR.split('|');
 
   // Ensure DB has an entry for every UN country; add info-limited placeholder if missing
-  UN.forEach(n=>{ const k=n.toLowerCase(); if(!DB[k]){ DB[k]={name:n,key:k,rank:null,grade:'C',cost:'Moderate',eng:'Moderate',fx:'Moderate',r1:'Theft',r2:'Scams',tip:'Use official taxis; keep phones concealed in crowds.',type:'country'} }});
+  UN.forEach(n=>{ const k=n.toLowerCase(); if(!DB[k]){ DB[k]={name:n,key:k,rank:null,grade:'NA',cost:'Unknown',eng:'Unknown',fx:'Unknown',r1:'—',r2:'—',tip:'Information limited; check official advisories.',type:'country'} }});
 
   // Collections
   const ITEMS2=Object.values(DB);
