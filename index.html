@@ -2134,14 +2134,6 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   
 /* Fix: lock ticker title size against global header .title rules */
 #box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91 }
-
-  <!--
-🔒 Free to use with proper attribution.  
-Unauthorized use is a violation of creator ethics.  
-Failure to credit the source may result in legal liability.
-
-📄 License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
--->
   
   
 #box .row{padding:4px 6px}
@@ -2427,14 +2419,6 @@ Failure to credit the source may result in legal liability.
     sr.textContent=o.name+' loaded.' }
   function render(input){ const txt=cleanInput(input); if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return } const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit) show(hit,true) }
 
-<!--
-🔒 Free to use with proper attribution.  
-Unauthorized use is a violation of creator ethics.  
-Failure to credit the source may result in legal liability.
-
-📄 License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
--->
-  
   // URL state
   function getQuery(){ try{ const u=new URL(location.href); return u.searchParams.get('country')||'' } catch(_){ return '' } }
   function setQuery(c){ try{ const u=new URL(location.href); if(c){ u.searchParams.set('country',c) } else { u.searchParams.delete('country') } history.replaceState(null,'',u) } catch(_){} }
