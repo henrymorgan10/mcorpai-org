@@ -1,35 +1,37 @@
+<!-- === Scam-Compound Risk (vanilla HTML only, EN-only UI, no JSON, no server) ===
+Paste near the end of <body>. Uses only Wikipedia's public API from the browser.
+This version fixes "everything turns High" by narrowing queries to exact phrases
+and tightening classification thresholds. Also adds a top button next to the title,
+keeps a second button in the controls row, and makes the box more compact. -->
 
+<section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:920px;margin:14px auto;padding:10px;border-radius:12px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.5);backdrop-filter:saturate(1.05) blur(4px);-webkit-backdrop-filter:saturate(1.05) blur(4px);box-shadow:0 6px 16px rgba(2,6,23,.06)">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <h3 style="margin:0;font-size:.95rem;font-weight:800;color:#111;display:flex;align-items:center;gap:6px">
+      Real-time Scam-Compound Risk <span style="font-weight:600;color:#6b7280">(click "Live update" to refresh)</span>
+    </h3>
+    <button id="scam-btn-top" type="button" aria-label="Live update" title="Live update" style="font-size:.78rem;font-weight:700;border:1px solid rgba(0,0,0,.18);background:#fff;box-shadow:0 2px 6px rgba(2,6,23,.05);padding:5px 9px;border-radius:8px;cursor:pointer">Live update</button>
+    <span id="scam-status" style="font-size:.78rem;color:#6b7280"></span>
+  </div>
 
-<!-- === Scam-Compound Risk (vanilla HTML only, no self-hosted JSON, no server) ===
-Paste near the end of <body>. Uses only Wikipedia’s public API from the browser.
--->
-
-<section id="scam-panel" aria-label="Real-time Scam-Compound Risk" style="max-width:980px;margin:18px auto;padding:14px;border-radius:14px;border:1px solid rgba(0,0,0,.08);background:rgba(232,255,241,.58);backdrop-filter:saturate(1.05) blur(6px);-webkit-backdrop-filter:saturate(1.05) blur(6px);box-shadow:0 10px 26px rgba(2,6,23,.06);">
-  <h3 style="margin:0 0 6px;font-size:1rem;font-weight:700;color:#111">
-    Real-time Scam-Compound Risk <span style="font-weight:600;color:#6b7280">(click “실시간 현황” to update)</span>
-  </h3>
-  <p style="margin:0 0 10px;font-size:.84rem;color:#6b7280">
+  <p style="margin:6px 0 8px;font-size:.8rem;color:#6b7280">
     A concise indicator based on open-source mentions in Wikipedia search. This is not a verification or legal finding.
   </p>
 
-  <div style="display:flex;gap:8px;align-items:center;justify-content:flex-start;margin:6px 0 8px">
-    <button id="scam-btn" type="button" style="font-size:.8rem;font-weight:700;border:1px solid rgba(0,0,0,.18);background:#fff;box-shadow:0 2px 6px rgba(2,6,23,.06);padding:6px 10px;border-radius:8px;cursor:pointer">
-      실시간 현황
-    </button>
-    <span id="scam-status" style="font-size:.8rem;color:#6b7280"></span>
+  <div style="display:flex;gap:8px;align-items:center;justify-content:flex-start;margin:4px 0 6px">
+    <button id="scam-btn" type="button" style="font-size:.78rem;font-weight:700;border:1px solid rgba(0,0,0,.18);background:#fff;box-shadow:0 2px 6px rgba(2,6,23,.05);padding:5px 9px;border-radius:8px;cursor:pointer">Live update</button>
   </div>
 
-  <div role="status" aria-live="polite" style="text-align:center;font-size:.86rem;color:#111;letter-spacing:.08px;margin:6px 0 2px">
-    <span style="font-weight:700;margin-right:6px">Scam-Compound Index:</span>
+  <div role="status" aria-live="polite" style="text-align:left;font-size:.84rem;color:#111;letter-spacing:.05px;margin:4px 0 0">
+    <span style="font-weight:800;margin-right:6px">Scam-Compound Index:</span>
     <span id="scam-line">Loading…</span>
   </div>
 </section>
 
 <style>
-  #scam-panel .country{color:#111;font-weight:600}
-  #scam-panel .risk-high{color:#ef4444;font-weight:700}
-  #scam-panel .risk-med{color:#f59e0b;font-weight:700}
-  #scam-panel .risk-low{color:#10b981;font-weight:700}
+  #scam-panel .country{color:#111;font-weight:700}
+  #scam-panel .risk-high{color:#ef4444;font-weight:800}
+  #scam-panel .risk-med{color:#f59e0b;font-weight:800}
+  #scam-panel .risk-low{color:#10b981;font-weight:800}
   #scam-panel .pulse{animation:pulse-bg .26s linear 1}
   @keyframes pulse-bg{from{background-color:rgba(255,255,0,.12)}to{background-color:transparent}}
 </style>
@@ -38,10 +40,10 @@ Paste near the end of <body>. Uses only Wikipedia’s public API from the browse
 (function(){
   const line   = document.getElementById('scam-line');
   const btn    = document.getElementById('scam-btn');
+  const btnTop = document.getElementById('scam-btn-top');
   const status = document.getElementById('scam-status');
   if(!line) return;
 
-  // 1. 표시 단어와 색상 클래스입니다.
   function word(r){
     r = String(r||'HIGH').toUpperCase();
     if(r==='HIGH') return {w:'High', cls:'risk-high'};
@@ -50,7 +52,7 @@ Paste near the end of <body>. Uses only Wikipedia’s public API from the browse
   }
   const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
 
-  // 2. 기본값입니다. 질문 요청대로 즉시 High/Medium/Low로 고정 표기합니다.
+  // Baseline shown immediately (as requested)
   const BASELINE = [
     {country:'Laos',        risk:'HIGH',  city:'Golden Triangle SEZ',  pattern:'Coerced cyberfraud / movement restriction', last:'2025-07-20'},
     {country:'Myanmar',     risk:'HIGH',  city:'Myawaddy SEZ',         pattern:'Human trafficking / fenced compounds',       last:'2025-07-29'},
@@ -68,9 +70,16 @@ Paste near the end of <body>. Uses only Wikipedia’s public API from the browse
     {country:'UAE',         risk:'LOW',   city:'Dubai',                pattern:'Sham job offers leading to debt bondage',    last:'2025-05-02'}
   ];
 
-  // 3. 위키백과 검색으로 점수를 계산합니다. 자체 JSON이나 서버는 사용하지 않습니다.
-  //    Wikipedia API 예시:
-  //    https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srenablerewrites=1&srwhat=text&srprop=timestamp&srinfo=totalhits&srlimit=20&srsearch=("<terms>") country
+  function renderBaseline(){
+    const parts = BASELINE.map(x=>{
+      const W = word(x.risk);
+      const tip = [x.city?`City: ${x.city}`:'', x.pattern?`Pattern: ${x.pattern}`:'', x.last?`Last: ${new Date(x.last).toISOString().slice(0,10)}`:''].filter(Boolean).join(' · ');
+      return `<span class="country" title="${esc(tip)}">${esc(x.country)}</span> <span class="${W.cls}">${W.w}</span>`;
+    });
+    line.innerHTML = parts.join(', ');
+  }
+
+  // Wikipedia search set-up (refined to avoid broad false positives)
   const COUNTRIES = [
     {name:'Laos',        alt:'Lao PDR'},
     {name:'Myanmar',     alt:'Burma'},
@@ -85,25 +94,25 @@ Paste near the end of <body>. Uses only Wikipedia’s public API from the browse
     {name:'Sri Lanka'},
     {name:'United Arab Emirates', alt:'UAE'}
   ];
-  const TERMS = `"scam compound" OR "cyber scam" OR "forced scamming" OR "fraud compound"`;
-  const API = 'https://en.wikipedia.org/w/api.php';
 
-  // 4. 점수화 규칙입니다. 최근성 + 언급 강도를 단순 결합합니다.
-  //    totalHits가 크거나, 최근 45~120일 내 결과가 있으면 등급을 올립니다.
+  // Narrowed terms: exact phrases only. Removed generic "cyber scam" which made every country look High.
+  const TERMS = '"scam compound" OR "fraud compound" OR "cyber scam compound" OR "forced scamming compound"';
+  const API   = 'https://en.wikipedia.org/w/api.php';
+
+  // Tighter classification
   function classify(totalHits, days){
-    const hits = Number(totalHits||0);
-    const d = isFinite(days)? days : 9999;
-    const recentBoost = d<=30 ? 60 : d<=60 ? 40 : d<=120 ? 25 : 0;
-    const score = Math.min(hits, 200) + recentBoost;
-    if(score >= 100) return 'HIGH';
-    if(score >= 30)  return 'MED';
+    const h = Number(totalHits||0);
+    const d = Number.isFinite(days)? days : 9999;
+    if(h===0) return 'LOW';
+    if((h>=12 && d<=120) || (h>=25)) return 'HIGH';
+    if(h>=3 && d<=365) return 'MED';
     return 'LOW';
   }
 
   async function fetchWiki(country){
     const qCountry = country.alt ? `(${country.name} OR "${country.alt}")` : country.name;
     const query = `(${TERMS}) ${qCountry}`;
-    const url = `${API}?action=query&list=search&format=json&origin=*&srenablerewrites=1&srwhat=text&srprop=timestamp&srinfo=totalhits&srlimit=20&srsearch=${encodeURIComponent(query)}`;
+    const url = `${API}?action=query&list=search&format=json&origin=*&srnamespace=0&srinfo=totalhits&srsort=last_edit_desc&srqiprofile=classic_noboostlinks&srlimit=20&srsearch=${encodeURIComponent(query)}`;
     const res = await fetch(url, {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
@@ -121,7 +130,7 @@ Paste near the end of <body>. Uses only Wikipedia’s public API from the browse
     if(!items.length){ line.textContent = 'No data'; return; }
     const parts = items.map(x=>{
       const W = word(x.risk);
-      const tip = `Signal: Wikipedia search · Hits: ${x.hits ?? '—'} · Most recent: ${isFinite(x.days)? x.days+'d ago' : 'n/a'}`;
+      const tip = `Signal: Wikipedia search · Hits: ${x.hits ?? '—'} · Most recent: ${Number.isFinite(x.days)? x.days+'d ago' : 'n/a'}`;
       return `<span class="country" title="${esc(tip)}">${esc(x.name)}</span> <span class="${W.cls}">${W.w}</span>`;
     });
     const html = parts.join(', ');
@@ -132,46 +141,44 @@ Paste near the end of <body>. Uses only Wikipedia’s public API from the browse
     }
   }
 
-  function renderBaseline(){
-    const parts = BASELINE.map(x=>{
-      const W = word(x.risk);
-      const tip = [x.city?`City: ${x.city}`:'', x.pattern?`Pattern: ${x.pattern}`:'', x.last?`Last: ${new Date(x.last).toISOString().slice(0,10)}`:''].filter(Boolean).join(' · ');
-      return `<span class="country" title="${esc(tip)}">${esc(x.country)}</span> <span class="${W.cls}">${W.w}</span>`;
-    });
-    line.innerHTML = parts.join(', ');
-  }
-
-  // 초기 표시는 질문에서 지정한 기본값입니다.
-  renderBaseline();
-  status.textContent = '기본값 표시 중';
-
-  // 버튼 클릭 시에만 위키백과 신호로 재산정합니다.
   async function refreshLive(){
     try{
-      status.textContent = '위키백과 신호 수집 중…';
-      btn.disabled = true;
+      status.textContent = 'Fetching Wikipedia signals…';
+      btn && (btn.disabled = true);
+      btnTop && (btnTop.disabled = true);
       const results = await Promise.allSettled(COUNTRIES.map(fetchWiki));
       const ok = results.filter(r=>r.status==='fulfilled').map(r=>r.value);
       if(ok.length){
-        render(ok.sort((a,b)=>{
-          const rank = {HIGH:3, MED:2, LOW:1};
-          return rank[b.risk]-rank[a.risk] || a.name.localeCompare(b.name);
-        }));
-        status.textContent = '실시간 반영됨';
+        const rank = {HIGH:3, MED:2, LOW:1};
+        render(ok.sort((a,b)=> rank[b.risk]-rank[a.risk] || a.name.localeCompare(b.name)));
+        status.textContent = 'Live signals applied';
       }else{
-        status.textContent = '데이터가 없어 기본값 유지';
+        status.textContent = 'No signals; baseline retained';
       }
     }catch(e){
-      status.textContent = '조회 실패로 기본값 유지';
+      status.textContent = 'Fetch failed; baseline retained';
     }finally{
-      btn.disabled = false;
+      btn && (btn.disabled = false);
+      btnTop && (btnTop.disabled = false);
       setTimeout(()=>{ status.textContent=''; }, 4000);
     }
   }
 
-  btn?.addEventListener('click', refreshLive);
+  // Init
+  renderBaseline();
+  status.textContent = 'Baseline shown';
+
+  btn    && btn.addEventListener('click', refreshLive);
+  btnTop && btnTop.addEventListener('click', refreshLive);
 })();
 </script>
+
+
+
+
+
+
+
 
 
 
