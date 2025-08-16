@@ -2926,6 +2926,41 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
   
 
+
+  <!-- Transparent info box (paste inside <body>) -->
+<div class="trans-note" role="note" aria-label="Serverless value statement">
+  <p class="title">A serverless website designed for social innovation with clear diplomatic value.</p>
+  <p>It runs entirely from a single HTML file with no servers, and remains usable in low-income settings, refugee camps, and regions with highly unstable internet.</p>
+</div>
+
+<style>
+  .trans-note{
+    margin:14px auto;
+    max-width:980px;
+    padding:14px 16px;
+    background:rgba(255,255,255,0.6); /* translucent/transparent box */
+    border:1px solid rgba(0,0,0,0.12);
+    border-radius:14px;
+    box-shadow:0 10px 26px rgba(2,6,23,.06);
+    backdrop-filter:saturate(1.05) blur(6px);
+    -webkit-backdrop-filter:saturate(1.05) blur(6px);
+    color:#111; /* black text */
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    line-height:1.6;
+    text-align:center; /* center align text */
+  }
+  .trans-note .title{
+    margin:0 0 6px;
+    font-weight:800;
+    font-size:0.9rem; /* title smaller */
+  }
+  .trans-note p{
+    margin:0;
+    font-weight:400; /* normal body text */
+    font-size:0.85rem; /* body smaller */
+  }
+</style>
+
   
 
 
