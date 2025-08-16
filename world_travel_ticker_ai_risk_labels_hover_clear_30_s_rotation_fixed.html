@@ -1,3 +1,4 @@
+
 <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
 <style>
 :root{color-scheme:light dark}
@@ -7,16 +8,16 @@
 #box header{padding:4px 6px;font-weight:800;background:linear-gradient(180deg,#fffbea,#fff7d6);border-bottom:1px solid rgba(0,0,0,.08);font-size:.82rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #box header > .title{color:#0b3d91;font-weight:900}
 
-  
 /* Fix: lock ticker title size against global header .title rules */
 #box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91 }
-  
-  
+
 #box .row{padding:4px 6px}
 #box:hover,#box:focus-within,#box.active{opacity:1;filter:none;box-shadow:0 10px 22px rgba(2,6,23,.12);transform:translateY(-1px);max-height:var(--expanded-h,1000px)}
 #controls{display:grid;grid-template-columns:1fr auto;gap:4px;align-items:center}
 #q{min-width:0;flex:1;padding:3px 5px;border:1px solid rgba(0,0,0,.16);border-radius:6px;outline:none;font-size:.72rem}
 #riskBtn{padding:3px 6px;border-radius:6px;border:1px solid #e8b7b7;background:#ffe1e1;color:#7a2a2a;font-weight:800;cursor:pointer;font-size:.72rem}
+/* NEW: AI toggle button */
+#aiBtn{padding:3px 6px;border-radius:6px;border:1px solid #9ad1f3;background:#e6f4ff;color:#084c61;font-weight:800;cursor:pointer;font-size:.72rem}
 #name{font-weight:800;color:#0b1221}
 .badge{font-weight:800}.green{color:#16a34a}.black{color:#0b1221}.red{color:#b01919}.brkt{font-weight:700}
 #desc{color:#0b0f19;font-weight:700;font-size:.78rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
@@ -25,6 +26,9 @@
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #infoRail:hover #desc,#infoRail:focus-within #desc{display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset;overflow:visible}
 #infoRail:hover #more,#infoRail:focus-within #more{overflow:visible}
+/* NEW: AI note style */
+.ai-note{margin-top:4px;opacity:.98}
+.ai-note small{display:block;font-size:.68rem;opacity:.9;margin-top:2px}
 </style>
 <aside id="infoRail" aria-label="Sticky world travel ticker">
   <div id="box" role="group">
@@ -35,6 +39,8 @@
     <div class="row" id="controls">
       <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
       <datalist id="countries"></datalist>
+      <!-- NEW: AI toggle button (k-NN mini-engine) -->
+      <button id="aiBtn" type="button" title="Toggle AI (k-NN)">AI: OFF</button>
       <button id="riskBtn" type="button" title="Show risky countries">Risk</button>
     </div>
     <div class="row" id="view" aria-live="polite">
@@ -54,11 +60,12 @@
   let rotDelay=ROT_DEFAULT;
 
   const box=document.getElementById('box'), q=document.getElementById('q'), dl=document.getElementById('countries'), riskBtn=document.getElementById('riskBtn');
+  const aiBtn=document.getElementById('aiBtn');
   const elT=document.getElementById('title'), elP=document.getElementById('period');
   const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
 
   // Static English labels
-  const LABELS={title:'World Travel Ticker AI', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state'};
+  const LABELS={title:'World Travel Ticker AI', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN) suggestion'};
   elT.textContent=LABELS.title; q.setAttribute('placeholder',LABELS.placeholder); riskBtn.textContent=LABELS.risk;
 
   // Grade explanations (EN)
@@ -70,7 +77,7 @@
   // Moody's 5-year average (subset; default to None). Keys by canonical country name.
   const MOODYS={'Luxembourg':'Aaa','Germany':'Aaa','Switzerland':'Aaa','Norway':'Aaa','Denmark':'Aaa','Sweden':'Aaa','Netherlands':'Aaa','Finland':'Aaa','Austria':'Aa1','United States':'Aaa','Canada':'Aaa','Australia':'Aaa','New Zealand':'Aaa','Singapore':'Aaa','United Kingdom':'Aa3','France':'Aa2','Japan':'A1','Italy':'Baa3','Spain':'Baa1','Ireland':'A1','Portugal':'Baa2','Mexico':'Baa2','Brazil':'Ba2','India':'Baa3','South Africa':'Ba2','Turkey':'B3','United Arab Emirates':'Aa2','Saudi Arabia':'A1','Qatar':'Aa2','Korea, Republic of (South Korea)':'Aa2','China':'A1'};
   function moodysColor(r){ if(!r||/^NR$/i.test(r)||/^None$/i.test(r)) return 'black'; if(/^WR$/i.test(r)) return 'red'; if(/^(Aaa|Aa|A|Baa)/.test(r)) return 'green'; if(/^(Ba|B[1-3]?$)/.test(r)) return 'black'; if(/^(Caa|Ca|C)$/i.test(r)) return 'red'; return 'black' }
-  function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; const skull=/^WR$/i.test(r)?' ☠️':''; return {text:r+skull, cls:moodysColor(r)} }
+  function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; const skull=/^WR$/i.test(r)?' ☠️':''; return {text:r+skull, cls:moodysColor(r), raw:r} }
   function gColor(g){if(/^A|^B/.test(g))return'green';if(/^C|NA$/.test(g))return'black';return'red'}
 
   // Food suggestions (3 items) — minimal set + fallback
@@ -285,11 +292,108 @@
   window.addEventListener('resize',qRec);
   document.addEventListener('visibilitychange',()=>{ document.hidden?stopAuto():startAuto(); qRec(); });
 
+  // =========================
+  // NEW: k-NN mini-engine (offline, no external APIs)
+  // =========================
+  let aiMode=false; // default OFF to keep original behavior 100% intact
+
+  const COST_MAP={cheap:0.2,moderate:0.5,expensive:0.8};
+  const ENG_MAP={difficult:0.2,moderate:0.5,easy:0.8};
+  const FX_MAP={easy:0.8,moderate:0.5,difficult:0.2};
+
+  const GRADE_SCORE={"A+":1.00,"A":0.97,"A-":0.94,"B+":0.86,"B":0.83,"B-":0.80,"C+":0.68,"C":0.62,"C-":0.56,"D+":0.43,"D":0.37,"D-":0.31,"E+":0.20,"E":0.16,"E-":0.12,"F":0.05};
+  const SCORE_TO_GRADE=[[0.94,'A-'],[0.965,'A'],[0.985,'A+'],[0.83,'B'],[0.86,'B+'],[0.8,'B-'],[0.68,'C+'],[0.62,'C'],[0.56,'C-'],[0.43,'D+'],[0.37,'D'],[0.31,'D-'],[0.20,'E+'],[0.16,'E'],[0.12,'E-'],[0,'F']];
+  function scoreToGrade(s){ for(const [t,g] of SCORE_TO_GRADE){ if(s>=t) return g } return 'F' }
+
+  // Moody's rating to 0..1 scale
+  function ratingToScore(r){ if(!r||r==='None') return 0.5; const t=r.toUpperCase();
+    if(t==='AAA'||t==='AAA ') return 1.0; // just in case
+    if(/^AAA$/.test(t)) return 1.0;
+    if(/^AAA|^AA|^A|^BAA|^BA|^B|^CAA|^CA|^C$/.test(t)){}
+    const map={Aaa:1.0,Aa1:0.95,Aa2:0.93,Aa3:0.90,A1:0.85,A2:0.82,A3:0.80,Baa1:0.75,Baa2:0.72,Baa3:0.70,Ba1:0.60,Ba2:0.57,Ba3:0.55,B1:0.50,B2:0.47,B3:0.45,Caa1:0.38,Caa2:0.35,Caa3:0.33,Ca:0.30,C:0.25};
+    return map[r] ?? 0.5;
+  }
+
+  // Canonical risk features (derived from r1/r2 strings)
+  const RISK_KEYS=['kidnapping','robbery','theft','carjacking','fraud','extortion','harassment','gangs','terror','unrest','roads','weather','spiking'];
+  function canonRisk(s){ s=(s||'').toLowerCase();
+    if(/kidnap/.test(s)) return 'kidnapping';
+    if(/carjack/.test(s)) return 'carjacking';
+    if(/robbery|mugging|armed/.test(s)) return 'robbery';
+    if(/pickpocket|snatch|theft|break\-ins|market theft|station theft|trailhead/.test(s)) return 'theft';
+    if(/scam|fraud|skimmer|counterfeit|ticket|currency/.test(s)) return 'fraud';
+    if(/extortion/.test(s)) return 'extortion';
+    if(/harass/.test(s)) return 'harassment';
+    if(/gang|shooting/.test(s)) return 'gangs';
+    if(/terror/.test(s)) return 'terror';
+    if(/unrest|protest|security checks/.test(s)) return 'unrest';
+    if(/road|night roads|rural driving|mountain roads|roadblocks/.test(s)) return 'roads';
+    if(/weather|heat|cold|ice|cyclone|typhoon|currents|desert/.test(s)) return 'weather';
+    if(/spiking/.test(s)) return 'spiking';
+    return '';
+  }
+
+  const VEC_CACHE=new Map();
+  function vecFor(o,{excludeGrade=false}={}){
+    const key=(o.name||'')+'|'+excludeGrade;
+    if(VEC_CACHE.has(key)) return VEC_CACHE.get(key).slice();
+
+    const c=String(o.cost||'Unknown').toLowerCase();
+    const e=String(o.eng||'Unknown').toLowerCase();
+    const f=String(o.fx||'Unknown').toLowerCase();
+
+    const cost=(COST_MAP[c]??0.5)*0.7;
+    const eng =(ENG_MAP[e] ??0.5)*0.7;
+    const fx  =(FX_MAP[f]  ??0.5)*0.7;
+
+    const rating=creditInfo(o.name).raw; const credit=ratingToScore(rating)*1.0;
+
+    const r1=canonRisk(o.r1), r2=canonRisk(o.r2);
+    const risks=RISK_KEYS.map(k=> ((r1===k||r2===k)?1:0)*1.2 );
+
+    const grade=excludeGrade?0:((GRADE_SCORE[o.grade]??0)*0.0); // leakage guard: keep 0 if excluding
+
+    const v=[cost,eng,fx,credit].concat(risks).concat([grade]);
+    VEC_CACHE.set(key,v.slice());
+    return v;
+  }
+
+  function dot(a,b){let s=0; for(let i=0;i<a.length;i++) s+=a[i]*b[i]; return s}
+  function norm(a){return Math.sqrt(dot(a,a))||1}
+  function cos(a,b){ return dot(a,b)/(norm(a)*norm(b)) }
+
+  const TRAIN=ITEMS2.filter(x=>!x.type && x.grade && x.grade!=='NA');
+
+  function predictGradeKNN(target,k=5){
+    const vT=vecFor(target,{excludeGrade:true});
+    const sims=[];
+    for(const cand of TRAIN){ if(cand.name===target.name) continue; const vC=vecFor(cand,{excludeGrade:true}); const s=cos(vT,vC); if(Number.isFinite(s)) sims.push([s,cand]) }
+    sims.sort((a,b)=>b[0]-a[0]);
+    const top=sims.slice(0,k);
+    let wsum=0, ysum=0; for(const [s,c] of top){ const y=GRADE_SCORE[c.grade]??0.5; const w=Math.max(0,s); ysum+=w*y; wsum+=w }
+    const score=wsum>0? (ysum/wsum) : 0.5;
+    const pred=scoreToGrade(score);
+    const neigh=top.slice(0,3).map(([s,c])=>`${c.name} (${c.grade}, ${s.toFixed(2)})`).join(', ');
+    return {pred,score:score.toFixed(2),neighbors:neigh};
+  }
+
+  function renderAiNote(o){
+    try{
+      const {pred,score,neighbors}=predictGradeKNN(o,5);
+      const html=`<div class="ai-note"><strong>${LABELS.ai}:</strong> <span class="badge ${gColor(pred)}">${pred}</span> <span class="brkt">【 score ${score}; top: ${neighbors} 】</span><small>AI-assisted similarity; not a legal advisory.</small></div>`;
+      return html;
+    }catch(_){ return '' }
+  }
+
+  // =========================
   // Renderers
+  // =========================
   let curr=null, cycId=null;
   function displayName(o){ if(o.type==='micro') return `${o.name} (MICRONATION)`; if(riskRe.test(o.grade||'')) return `${o.name} (RISK)`; if(o.rank!=null) return `${o.name} (SAFE #${o.rank})`; return `${o.name} (INFO-LIMITED)` }
   function updatePeriod(name){ const c=creditInfo(name); elP.innerHTML = `${LABELS.assessed} 2020-01-01 ${LABELS.to} 2024-10-01 <span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>` }
   function show(o,user){ if(!o||typeof o!=='object') return; curr=o; const risky=riskRe.test(o.grade||''); elN.textContent=displayName(o); elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)'); if(o.type==='micro'){ elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';  elD.textContent=core(o); elM.innerHTML='<div>'+full(o)+'</div>'; } else { const exp=GEXP[o.grade||'NA']||GEXP.NA; elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'; elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA')); elD.textContent=core(o); elM.innerHTML = (mode==='deep')?('<div>'+full(o)+'</div>') : ''; }
+    // NEW: AI suggestion block (does not alter original fields)
+    if(aiMode && !o.type){ elM.innerHTML += renderAiNote(o); }
     updatePeriod(o.name);
     qRec(); if(user){ save(o.name); lock(); setQuery(o.name); if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } } else if(risky){ phase='good' } }
     sr.textContent=o.name+' loaded.' }
@@ -303,6 +407,9 @@
   riskBtn.addEventListener('click',(()=>{ let i=0; return ()=>{ const o=RISK_SORTED[i % RISK_SORTED.length]; i++; show(o,true); } })());
   q.addEventListener('change',function(){ const v=cleanInput(this.value); const key=bestMatch(v)||v.toLowerCase(); if(DB[key]) show(DB[key],true) });
   let live=null; q.addEventListener('input',function(){ clearTimeout(live); const v=cleanInput(this.value); const k=bestMatch(v)||v.toLowerCase(); const g=(DB[k]||{}).grade||''; this.style.color=/^d|^e|^f/i.test(g)?'#b01919':''; live=setTimeout(()=>render(v),250) });
+
+  // NEW: AI toggle behavior
+  aiBtn.addEventListener('click',()=>{ aiMode=!aiMode; aiBtn.textContent=aiMode?'AI: ON':'AI: OFF'; aiBtn.style.background=aiMode?'#d9f2ff':'#e6f4ff'; aiBtn.style.borderColor=aiMode?'#5bb8ee':'#9ad1f3'; if(curr) show(curr,false); sr.textContent='AI mode '+(aiMode?'on':'off'); });
 
   // Tests (kept, EN only)
   (function tests(){ try{ console.group('[Ticker tests]'); const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193'); console.assert(!!DB['united states'],'United States present'); console.assert(MICROS.length>=10,'Micronations ≥10'); console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present'); console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F'); console.assert(bestMatch('usa')==='united states','alias usa→united states'); console.assert(bestMatch('jp')==='japan','alias jp→japan'); console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea'); recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline'); updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML)&&/Moody/.test(elP.innerHTML),'period shows bracket+Moody'); console.groupEnd(); }catch(err){ console.error('[Ticker tests] failed',err) } })();
