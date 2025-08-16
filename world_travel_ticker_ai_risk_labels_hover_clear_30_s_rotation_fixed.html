@@ -1,4 +1,3 @@
-
 <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
 <style>
 :root{color-scheme:light dark}
@@ -13,10 +12,10 @@
 
 #box .row{padding:4px 6px}
 #box:hover,#box:focus-within,#box.active{opacity:1;filter:none;box-shadow:0 10px 22px rgba(2,6,23,.12);transform:translateY(-1px);max-height:var(--expanded-h,1000px)}
-#controls{display:grid;grid-template-columns:1fr auto;gap:4px;align-items:center}
+#controls{display:grid;grid-template-columns:1fr auto auto;gap:4px;align-items:center}
 #q{min-width:0;flex:1;padding:3px 5px;border:1px solid rgba(0,0,0,.16);border-radius:6px;outline:none;font-size:.72rem}
 #riskBtn{padding:3px 6px;border-radius:6px;border:1px solid #e8b7b7;background:#ffe1e1;color:#7a2a2a;font-weight:800;cursor:pointer;font-size:.72rem}
-/* NEW: AI toggle button */
+/* AI toggle button */
 #aiBtn{padding:3px 6px;border-radius:6px;border:1px solid #9ad1f3;background:#e6f4ff;color:#084c61;font-weight:800;cursor:pointer;font-size:.72rem}
 #name{font-weight:800;color:#0b1221}
 .badge{font-weight:800}.green{color:#16a34a}.black{color:#0b1221}.red{color:#b01919}.brkt{font-weight:700}
@@ -26,7 +25,7 @@
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #infoRail:hover #desc,#infoRail:focus-within #desc{display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset;overflow:visible}
 #infoRail:hover #more,#infoRail:focus-within #more{overflow:visible}
-/* NEW: AI note style */
+/* AI note style */
 .ai-note{margin-top:4px;opacity:.98}
 .ai-note small{display:block;font-size:.68rem;opacity:.9;margin-top:2px}
 </style>
@@ -39,7 +38,6 @@
     <div class="row" id="controls">
       <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
       <datalist id="countries"></datalist>
-      <!-- NEW: AI toggle button (k-NN mini-engine) -->
       <button id="aiBtn" type="button" title="Toggle AI (k-NN)">AI: OFF</button>
       <button id="riskBtn" type="button" title="Show risky countries">Risk</button>
     </div>
@@ -107,7 +105,6 @@
     const s=norm(name); if(!s) return ''; if(DB[s]) return s; let best='',sc=0; for(const k of Object.keys(DB)){const v=jacc(s,k); if(v>sc){sc=v;best=k}} return sc>.18?best:'';
   }
 
-  function micro(){return 'Safety Grade A+ to F. Grades reflect public guidance on crime, night risk, transit safety, and access to help.'}
   function core(o){ if(o.type==='micro') return trim(o.pitch); const a=[];a.push('Money '+o.cost+'.');a.push(' English '+o.eng+'.');a.push(' Exchange '+o.fx+'.');a.push(' Risks '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.');a.push(' Tip '+o.tip+'.');return trim(a.join(''))}
   function full(o){ if(o.type==='micro') return trim(o.story); const s=[]; const exp=GEXP[o.grade||'NA']||GEXP.NA; s.push('<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'); s.push('Money '+(o.cost||'Unknown')+'.'); s.push(' English '+(o.eng||'Unknown')+'.'); s.push(' Exchange '+(o.fx||'Unknown')+'.'); s.push(' Issues: '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.'); s.push(' Tips: use official rides, keep phones pocketed curbside, and confirm prices before rides.'); s.push(' '+foodsLine(o.name)); return trim(s.join(' ')) }
   function mkObj(line){const p=(line||'').split('|');const name=p[0]||'';const rank=p[1]||'-';const grade=p[2]||'C';const cost=p[3]||'Moderate';const eng=p[4]||'Moderate';const fx=p[5]||'Moderate';const r1=p[6]||'Theft';const r2=p[7]||'Scams';const tip=p[8]||'Use official options';return {key:asString(name).toLowerCase(),name:asString(name),rank:rank==='-'?null:Number(rank),grade,cost,eng,fx,r1,r2,tip}};
@@ -264,7 +261,7 @@
   const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
   names.forEach(n=>{ const o=DB[n.toLowerCase()]; let label=o.name; if(o.type==='micro') label+=' (MICRONATION)'; else if(riskRe.test(o.grade||'')) label+=' (RISK)'; else if(o.rank!=null) label+=` (SAFE #${o.rank})`; else label+=' (INFO-LIMITED)'; const op=document.createElement('option'); op.value=label; dl.appendChild(op); });
 
-  // Interest / hover behaviour — instant deep view + slower rotation while hovered
+  // Interest / hover behaviour — instant deep view + 40s rotation; leave → core + 20s rotation
   let mode='core', rotId=null, visible=true, userLock=null, goodIdx=0, phase='good';
   function step(){ if(phase==='good'){ const o=GOOD[goodIdx % GOOD.length]; goodIdx++; show(o,false); phase='risk'; } else { const o=pick(RISK_ALL); show(o,false); phase='good'; } }
   function startAuto(){ if(rotId||!visible) return; rotId=setInterval(()=>{ if(!userLock&&visible){ step() } }, rotDelay) }
@@ -293,7 +290,7 @@
   document.addEventListener('visibilitychange',()=>{ document.hidden?stopAuto():startAuto(); qRec(); });
 
   // =========================
-  // NEW: k-NN mini-engine (offline, no external APIs)
+  // k-NN mini-engine (offline, no external APIs)
   // =========================
   let aiMode=false; // default OFF to keep original behavior 100% intact
 
@@ -302,17 +299,19 @@
   const FX_MAP={easy:0.8,moderate:0.5,difficult:0.2};
 
   const GRADE_SCORE={"A+":1.00,"A":0.97,"A-":0.94,"B+":0.86,"B":0.83,"B-":0.80,"C+":0.68,"C":0.62,"C-":0.56,"D+":0.43,"D":0.37,"D-":0.31,"E+":0.20,"E":0.16,"E-":0.12,"F":0.05};
-  const SCORE_TO_GRADE=[[0.94,'A-'],[0.965,'A'],[0.985,'A+'],[0.83,'B'],[0.86,'B+'],[0.8,'B-'],[0.68,'C+'],[0.62,'C'],[0.56,'C-'],[0.43,'D+'],[0.37,'D'],[0.31,'D-'],[0.20,'E+'],[0.16,'E'],[0.12,'E-'],[0,'F']];
+  // FIX: thresholds must be checked from highest to lowest to avoid under-grading
+  const SCORE_TO_GRADE=[
+    [0.985,'A+'],[0.965,'A'],[0.94,'A-'],
+    [0.86,'B+'],[0.83,'B'],[0.8,'B-'],
+    [0.68,'C+'],[0.62,'C'],[0.56,'C-'],
+    [0.43,'D+'],[0.37,'D'],[0.31,'D-'],
+    [0.20,'E+'],[0.16,'E'],[0.12,'E-'],
+    [0,'F']
+  ];
   function scoreToGrade(s){ for(const [t,g] of SCORE_TO_GRADE){ if(s>=t) return g } return 'F' }
 
   // Moody's rating to 0..1 scale
-  function ratingToScore(r){ if(!r||r==='None') return 0.5; const t=r.toUpperCase();
-    if(t==='AAA'||t==='AAA ') return 1.0; // just in case
-    if(/^AAA$/.test(t)) return 1.0;
-    if(/^AAA|^AA|^A|^BAA|^BA|^B|^CAA|^CA|^C$/.test(t)){}
-    const map={Aaa:1.0,Aa1:0.95,Aa2:0.93,Aa3:0.90,A1:0.85,A2:0.82,A3:0.80,Baa1:0.75,Baa2:0.72,Baa3:0.70,Ba1:0.60,Ba2:0.57,Ba3:0.55,B1:0.50,B2:0.47,B3:0.45,Caa1:0.38,Caa2:0.35,Caa3:0.33,Ca:0.30,C:0.25};
-    return map[r] ?? 0.5;
-  }
+  function ratingToScore(r){ if(!r||r==='None') return 0.5; const map={Aaa:1.0,Aa1:0.95,Aa2:0.93,Aa3:0.90,A1:0.85,A2:0.82,A3:0.80,Baa1:0.75,Baa2:0.72,Baa3:0.70,Ba1:0.60,Ba2:0.57,Ba3:0.55,B1:0.50,B2:0.47,B3:0.45,Caa1:0.38,Caa2:0.35,Caa3:0.33,Ca:0.30,C:0.25}; return map[r] ?? 0.5; }
 
   // Canonical risk features (derived from r1/r2 strings)
   const RISK_KEYS=['kidnapping','robbery','theft','carjacking','fraud','extortion','harassment','gangs','terror','unrest','roads','weather','spiking'];
@@ -351,7 +350,8 @@
     const r1=canonRisk(o.r1), r2=canonRisk(o.r2);
     const risks=RISK_KEYS.map(k=> ((r1===k||r2===k)?1:0)*1.2 );
 
-    const grade=excludeGrade?0:((GRADE_SCORE[o.grade]??0)*0.0); // leakage guard: keep 0 if excluding
+    // leakage guard — grade dimension kept at 0 when excluding
+    const grade=excludeGrade?0:0;
 
     const v=[cost,eng,fx,credit].concat(risks).concat([grade]);
     VEC_CACHE.set(key,v.slice());
@@ -388,11 +388,10 @@
   // =========================
   // Renderers
   // =========================
-  let curr=null, cycId=null;
+  let curr=null;
   function displayName(o){ if(o.type==='micro') return `${o.name} (MICRONATION)`; if(riskRe.test(o.grade||'')) return `${o.name} (RISK)`; if(o.rank!=null) return `${o.name} (SAFE #${o.rank})`; return `${o.name} (INFO-LIMITED)` }
   function updatePeriod(name){ const c=creditInfo(name); elP.innerHTML = `${LABELS.assessed} 2020-01-01 ${LABELS.to} 2024-10-01 <span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>` }
   function show(o,user){ if(!o||typeof o!=='object') return; curr=o; const risky=riskRe.test(o.grade||''); elN.textContent=displayName(o); elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)'); if(o.type==='micro'){ elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';  elD.textContent=core(o); elM.innerHTML='<div>'+full(o)+'</div>'; } else { const exp=GEXP[o.grade||'NA']||GEXP.NA; elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'; elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA')); elD.textContent=core(o); elM.innerHTML = (mode==='deep')?('<div>'+full(o)+'</div>') : ''; }
-    // NEW: AI suggestion block (does not alter original fields)
     if(aiMode && !o.type){ elM.innerHTML += renderAiNote(o); }
     updatePeriod(o.name);
     qRec(); if(user){ save(o.name); lock(); setQuery(o.name); if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } } else if(risky){ phase='good' } }
@@ -408,10 +407,10 @@
   q.addEventListener('change',function(){ const v=cleanInput(this.value); const key=bestMatch(v)||v.toLowerCase(); if(DB[key]) show(DB[key],true) });
   let live=null; q.addEventListener('input',function(){ clearTimeout(live); const v=cleanInput(this.value); const k=bestMatch(v)||v.toLowerCase(); const g=(DB[k]||{}).grade||''; this.style.color=/^d|^e|^f/i.test(g)?'#b01919':''; live=setTimeout(()=>render(v),250) });
 
-  // NEW: AI toggle behavior
+  // AI toggle behavior
   aiBtn.addEventListener('click',()=>{ aiMode=!aiMode; aiBtn.textContent=aiMode?'AI: ON':'AI: OFF'; aiBtn.style.background=aiMode?'#d9f2ff':'#e6f4ff'; aiBtn.style.borderColor=aiMode?'#5bb8ee':'#9ad1f3'; if(curr) show(curr,false); sr.textContent='AI mode '+(aiMode?'on':'off'); });
 
-  // Tests (kept, EN only)
+  // Tests (EN only)
   (function tests(){ try{ console.group('[Ticker tests]'); const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193'); console.assert(!!DB['united states'],'United States present'); console.assert(MICROS.length>=10,'Micronations ≥10'); console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present'); console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F'); console.assert(bestMatch('usa')==='united states','alias usa→united states'); console.assert(bestMatch('jp')==='japan','alias jp→japan'); console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea'); recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline'); updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML)&&/Moody/.test(elP.innerHTML),'period shows bracket+Moody'); console.groupEnd(); }catch(err){ console.error('[Ticker tests] failed',err) } })();
 
   // Init
@@ -419,7 +418,7 @@
 })();
 </script>
 
-<!-- === (2) ADVISORY PATCH: INFO-LIMITED 라벨만 재표기 (append-only) === -->
+<!-- ADVISORY PATCH: INFO-LIMITED 라벨 재표기 (append-only) -->
 <script>
 (function(){
   const dl=document.getElementById('countries');
@@ -427,12 +426,9 @@
   const nameEl=document.getElementById('name');
   const moreEl=document.getElementById('more');
 
-  // Countries to label as Travel Advisory (NA placeholders only)
   const ADVISORY=new Set([
     'Afghanistan','Syrian Arab Republic','Iraq','Iran','Yemen','Sudan','South Sudan','Somalia','Libya','Mali','Niger','Burkina Faso','Central African Republic','Chad','Haiti','Myanmar','Democratic Republic of the Congo','Eritrea','Ukraine','Russian Federation'
   ]);
-
-  // Countries to label as Travel Stable (estimated) (NA placeholders only)
   const STABLE=new Set([
     'Kuwait','Brunei','Liechtenstein','Uruguay','Costa Rica','Cabo Verde','Kiribati','Nauru','Tuvalu','Samoa','Tonga','Micronesia','Marshall Islands','Palau','Vanuatu'
   ]);
@@ -467,18 +463,13 @@
     }
   }
 
-  // Initial relabeling after original script populated the datalist
   relabelAllOptions();
-
-  // Keep datalist fresh while typing
   if(input){ input.addEventListener('focus', relabelAllOptions); input.addEventListener('input', relabelAllOptions); }
-
-  // Watch the headline and relabel whenever a new country is shown
   const mo=new MutationObserver(relabelHeadline);
   if(nameEl){ mo.observe(nameEl,{childList:true,subtree:true,characterData:true}); }
 })();
 </script>
-<!-- === ADVISORY PATCH END === -->
+<!-- ADVISORY PATCH END -->
 
 <!-- Fixed bottom ticker (static, centered text, linked to multilingual.html) -->
 <div id="bottom-ticker">
@@ -487,23 +478,7 @@
   </a>
 </div>
 
-
 <style>
-  #bottom-ticker {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    font-size: 0.8rem;
-    padding: 6px 12px;
-    white-space: nowrap;
-    text-align: center;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
-    z-index: 9999;
-  }
-  #bottom-ticker a:hover {
-    text-decoration: underline;
-  }
+  #bottom-ticker { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.8rem; padding: 6px 12px; white-space: nowrap; text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999; }
+  #bottom-ticker a:hover { text-decoration: underline; }
 </style>
