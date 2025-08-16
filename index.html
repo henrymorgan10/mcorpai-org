@@ -2481,6 +2481,7 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 
 
+
   
 
 <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
@@ -2796,6 +2797,99 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   (function init(){ const seedName=cleanInput(getQuery()||load()||'Japan'); const seed=DB[(seedName||'').toLowerCase()]||DB['japan']; show(seed,false); recalc(); startAuto(); })();
 })();
 </script>
+
+<!-- === (2) ADVISORY PATCH: INFO-LIMITED 라벨만 재표기 (append-only) === -->
+<script>
+(function(){
+  const dl=document.getElementById('countries');
+  const input=document.getElementById('q');
+  const nameEl=document.getElementById('name');
+  const moreEl=document.getElementById('more');
+
+  // Countries to label as Travel Advisory (NA placeholders only)
+  const ADVISORY=new Set([
+    'Afghanistan','Syrian Arab Republic','Iraq','Iran','Yemen','Sudan','South Sudan','Somalia','Libya','Mali','Niger','Burkina Faso','Central African Republic','Chad','Haiti','Myanmar','Democratic Republic of the Congo','Eritrea','Ukraine','Russian Federation'
+  ]);
+
+  // Countries to label as Travel Stable (estimated) (NA placeholders only)
+  const STABLE=new Set([
+    'Kuwait','Brunei','Liechtenstein','Uruguay','Costa Rica','Cabo Verde','Kiribati','Nauru','Tuvalu','Samoa','Tonga','Micronesia','Marshall Islands','Palau','Vanuatu'
+  ]);
+
+  function baseName(s){ return String(s||'').replace(/\s*\(.*?\)\s*$/,'').trim(); }
+  function classify(n){ if(ADVISORY.has(n)) return 'Travel Advisory'; if(STABLE.has(n)) return 'Travel Stable (estimated)'; return 'Travel Caution'; }
+
+  function relabelOption(op){
+    const b=baseName(op.value);
+    if(/\(INFO\-LIMITED\)/.test(op.value)){
+      op.value=b+' ('+classify(b)+')';
+    }
+  }
+  function relabelAllOptions(){ if(!dl) return; Array.from(dl.options).forEach(relabelOption); }
+
+  function ensureNaAdvice(){
+    if(!moreEl || moreEl.dataset.naAdviceAdded==='1') return;
+    const note=document.createElement('div');
+    note.style.marginTop='4px'; note.style.fontSize='.72rem'; note.style.color='#0b1221';
+    note.innerHTML='<strong>Note:</strong> Status is provisional. Please verify with an official travel advisory (e.g., U.S. State Dept, UK FCDO, Australia Smartraveller, Canada Travel Advice). Also keep valuables secure, avoid isolated areas at night, and use licensed transport.';
+    moreEl.appendChild(note);
+    moreEl.dataset.naAdviceAdded='1';
+  }
+
+  function relabelHeadline(){
+    const t=nameEl && nameEl.textContent || '';
+    if(!t) return;
+    if(/\(INFO\-LIMITED\)/.test(t)){
+      const b=baseName(t);
+      nameEl.textContent=b+' ('+classify(b)+')';
+      ensureNaAdvice();
+    }
+  }
+
+  // Initial relabeling after original script populated the datalist
+  relabelAllOptions();
+
+  // Keep datalist fresh while typing
+  if(input){ input.addEventListener('focus', relabelAllOptions); input.addEventListener('input', relabelAllOptions); }
+
+  // Watch the headline and relabel whenever a new country is shown
+  const mo=new MutationObserver(relabelHeadline);
+  if(nameEl){ mo.observe(nameEl,{childList:true,subtree:true,characterData:true}); }
+})();
+</script>
+<!-- === ADVISORY PATCH END === -->
+
+<!-- Fixed bottom ticker (static, centered text, linked to multilingual.html) -->
+<div id="bottom-ticker">
+  <a href="https://mcorpai.org/multilingual.html" style="color:inherit; text-decoration:none;">
+    Demonstrated the AI-powered necklace’s potential for children with disabilities by using AI as a collaborative tool and managing all stages directly.
+  </a>
+</div>
+
+<style>
+  #bottom-ticker {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    white-space: nowrap;
+    text-align: center;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+    z-index: 9999;
+  }
+  #bottom-ticker a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+
+
+
+  
 
 
 
