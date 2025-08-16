@@ -257,5 +257,47 @@
     $chips.forEach(b=>b.addEventListener('click', ()=>render(b.dataset.lang)));
     render('en');
   </script>
+
+
+
+
+
+
+  <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
+<style>
+:root{color-scheme:light dark}
+@media (min-width:992px){#infoRail{position:fixed;left:14px;top:150px;width:220px;z-index:80}}
+@media (max-width:991.98px){#infoRail{position:fixed;left:10px;bottom:12px;width:min(80vw,320px);z-index:80}}
+#box{background:#1e293b;color:#f1f5f9;border:1px solid rgba(0,0,0,.3);border-radius:10px;box-shadow:0 8px 18px rgba(2,6,23,.25);overflow-y:auto;font:.78rem/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;max-height:600px;position:relative}
+#box header{padding:6px 10px;font-weight:800;background:linear-gradient(180deg,#334155,#1e293b);border-bottom:1px solid rgba(0,0,0,.2);font-size:.8rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#f8fafc}
+#box header > .title{color:#93c5fd;font-weight:900}
+#box .row{padding:6px 10px}
+#desc{font-size:.76rem;font-weight:500;color:#f1f5f9;margin-top:6px}
+#photo{width:100%;max-width:150px;border-radius:8px;margin:10px auto;display:block}
+</style>
+<aside id="infoRail" aria-label="Sticky bio ticker">
+  <div id="box" role="group">
+    <header>
+      <div class="title" id="title">Personal Introduction</div>
+    </header>
+    <div class="row">
+      <img id="photo" src="https://mcorpai.org/jeon.PNG" alt="Portrait of Gyu-min Jeon" />
+    </div>
+    <div class="row" id="view" aria-live="polite">
+      <div id="desc">
+        I am affiliated with a national university in the Republic of Korea. In my twenties, I authored several books, an experience that enabled me to structure complex issues and draw unique insights. This foundation allows me to analyze diverse global challenges and formulate actionable solutions. In both professional and personal capacities, I value responsibility, integrity, and a commitment to meaningful contributions to society and the international community. My current focus lies in connecting ethical artificial intelligence with child rights, seeking to bridge technological potential with humanitarian values through practical approaches. I aim to be a reliable partner, recognized not by titles but by tangible results.
+      </div>
+    </div>
+  </div>
+</aside>
+
+
+
+
+
+
+
+
+  
 </body>
 </html>
