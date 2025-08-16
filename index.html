@@ -2491,12 +2491,12 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 :root{color-scheme:light dark}
 @media (min-width:992px){#infoRail{position:fixed;left:14px;top:150px;width:160px;z-index:80;transition:width .22s ease}#infoRail:hover,#infoRail:focus-within{width:min(345px,32vw)}}
 @media (max-width:991.98px){#infoRail{position:fixed;left:10px;bottom:12px;width:min(75vw,280px);z-index:80;transition:width .22s ease}#infoRail:hover,#infoRail:focus-within{width:min(100vw,530px)}}
-#box{background:#fffbea;border:1px solid rgba(0,0,0,.12);border-radius:8px;box-shadow:0 6px 14px rgba(2,6,23,.08);overflow:hidden;font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221;opacity:.42;filter:saturate(.9) contrast(.95);transition:max-height .24s ease,opacity .18s ease,filter .18s ease,box-shadow .18s ease,transform .18s ease;max-height:var(--collapsed-h,424px);position:relative}
+#box{background:#fffbea;border:1px solid rgba(0,0,0,.12);border-radius:8px;box-shadow:0 6px 14px rgba(2,6,23,.08);overflow:hidden;font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221;opacity:.48;filter:saturate(.9) contrast(.95);transition:max-height .24s ease,opacity .18s ease,filter .18s ease,box-shadow .18s ease,transform .18s ease;max-height:var(--collapsed-h,424px);position:relative}
 #box header{padding:4px 6px;font-weight:800;background:linear-gradient(180deg,#fffbea,#fff7d6);border-bottom:1px solid rgba(0,0,0,.08);font-size:.82rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #box header > .title{color:#0b3d91;font-weight:900}
 
 /* Fix: lock ticker title size against global header .title rules */
-#box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91 }
+#box #title{ font-size:1.0rem !important; line-height:1.22; font-weight:900; color:#0b3d91; text-align: center;  width: 100%; }
 
 #box .row{padding:4px 6px}
 #box:hover,#box:focus-within,#box.active{opacity:1;filter:none;box-shadow:0 10px 22px rgba(2,6,23,.12);transform:translateY(-1px);max-height:var(--expanded-h,1000px)}
@@ -3177,6 +3177,9 @@ No acreditar la fuente puede conllevar responsabilidad legal.
 
 
 <!--
+#box #title
+opacity:.48
+
 
 /* Fix: lock ticker title size against global header .title rules */
 #box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91 }
