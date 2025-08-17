@@ -248,6 +248,11 @@ Don’t steal what you’re freely allowed to honor.
     .btn.primary{background:var(--accent);color:#fff;border-color:#0b69bb}
     .btn.ghost{background:transparent}
     .btn + .btn{margin-left:8px}
+    /* ▼ 작은/아웃라인 버튼 (추가) */
+    .btn-sm{padding:6px 12px; font-size:.9rem; border-radius:12px}
+    .btn-outline{background:#fff; border-color:var(--accent); color:var(--accent) !important}
+    .btn-outline:hover{box-shadow:0 6px 14px rgba(2,103,255,.12)}
+
     .grid{display:grid;gap:12px}
     .cols-2{grid-template-columns:1.15fr 1fr}
     .cols-3{grid-template-columns:repeat(3,1fr)}
@@ -341,7 +346,6 @@ Failure to credit the source may result in legal liability.
   <nav class="site" aria-label="Primary">
     <div class="container bar card">
 
-
       
       
 <!-- 버전 1: 천천히 나타나는 감성 페이드인 -->
@@ -363,6 +367,12 @@ Failure to credit the source may result in legal liability.
 
       
 
+      <!-- 가운데: 새 작은 아웃라인 버튼 -->
+      <a class="btn btn-sm btn-outline" href="https://mcorpai.org/Two%20Page%20Brief.html" target="_self"
+         title="Open the One-Page Brief (EN)" aria-label="One-Page Brief for Diplomats (EN)">
+        One-Page Brief for Diplomats
+      </a>
+
       <div class="links">
         <a href="#summary"> Overview </a>
         <a href="#tech"> Tech Plan </a>
@@ -372,8 +382,6 @@ Failure to credit the source may result in legal liability.
       </div>
     </div>
   </nav>
-
-
 
   
 <header class="container hero">
@@ -387,7 +395,6 @@ Failure to credit the source may result in legal liability.
     <p class="meta">Prepared by: Gyu-min Jeon (Republic of Korea) · Initiated 2020 — Finalized 2025</p>
   </div>
 </header>
-
 
 
   
