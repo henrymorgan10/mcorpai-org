@@ -373,13 +373,20 @@ Failure to credit the source may result in legal liability.
     </div>
   </nav>
 
-  <header class="container hero">
-    <div class="card">
-      <h1 class="title">Not for Profit. Not for Data. Built for Dignity</h1>
-      <p class="subtitle">Rights‑based wearable AI for children with disabilities, manufactured and maintained by refugees to build self‑reliance within camps.</p>
-      <p class="meta">Prepared by: Gyu‑min Jeon (Republic of Korea) · Initiated 2020 — Finalized 2025</p>
-    </div>
-  </header>
+
+
+  
+<header class="container hero">
+  <div class="card">
+    <h1 class="title">
+      <a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">
+        Not for Profit. Not for Data. Built for Dignity
+      </a>
+    </h1>
+    <p class="subtitle">Rights-based wearable AI for children with disabilities, manufactured and maintained by refugees to build self-reliance within camps.</p>
+    <p class="meta">Prepared by: Gyu-min Jeon (Republic of Korea) · Initiated 2020 — Finalized 2025</p>
+  </div>
+</header>
 
 
 
@@ -2519,10 +2526,18 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 </style>
 <aside id="infoRail" aria-label="Sticky world travel ticker">
   <div id="box" role="group">
-    <header>
-      <div class="title" id="title"> 44KB Offline AI Click </div>
-      <div id="period">Assessed 2020-01-01 to 2024-10-01 【 Moody’s 5yr avg: — 】</div>
-    </header>
+
+    
+    
+<header>
+  <div class="title" id="title">
+    <a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">44KB Offline AI click</a>
+  </div>
+  <div id="period">Assessed 2020-01-01 to 2024-10-01 【 Moody’s 5yr avg: — 】</div>
+</header>
+
+
+    
     <div class="row" id="controls">
       <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
       <datalist id="countries"></datalist>
@@ -2550,9 +2565,24 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   const elT=document.getElementById('title'), elP=document.getElementById('period');
   const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
 
+
+  
   // Static English labels
-  const LABELS={title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN) suggestion'};
-  elT.textContent=LABELS.title; q.setAttribute('placeholder',LABELS.placeholder); riskBtn.textContent=LABELS.risk;
+// Static English labels
+const LABELS={
+  title:'44KB Offline AI click',
+  assessed:'Assessed', to:'to', moody:"Moody's 5yr avg",
+  placeholder:'Country… (ex. America or USA)', risk:'Risk',
+  choose:'Choose a country or press Risk.', sgrade:'Safety Grade',
+  rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state',
+  ai:'AI (k-NN) suggestion'
+};
+// 링크가 유지되도록 innerHTML로 덮어씁니다.
+elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
+q.setAttribute('placeholder',LABELS.placeholder);
+riskBtn.textContent=LABELS.risk;
+
+  
 
   // Grade explanations (EN)
   const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised. ☠️","E":"Very poor; escort advised, avoid travel. ☠️","E-":"Extremely poor; do not visit. ☠️","F":"Worst level; absolute no-go. ☠️☠️","NA":"Information limited between 2020–2024; consult official guidance."};
