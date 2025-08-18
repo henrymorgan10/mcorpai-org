@@ -3290,6 +3290,122 @@ riskBtn.textContent=LABELS.risk;
 </style>
 
 
+
+
+  <!-- ===================== Insert below your main content, before </body> ===================== -->
+
+<style>
+  /* Scoped styles for the extended sections */
+  .mx-container{max-width:1000px;margin:0 auto;padding:40px 20px;font:16px/1.75 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#10243a}
+  .mx-section{margin:40px 0}
+  .mx-section h2{font-size:1.65rem;line-height:1.25;margin:0 0 14px}
+  .mx-section h3{font-size:1.15rem;margin:22px 0 8px}
+  .mx-muted{color:#475569}
+  .mx-list{padding-left:1.2rem}
+  .mx-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 10px 24px rgba(16,36,58,.06);padding:22px}
+  /* Light yellow long-form SEO box */
+  .seo-longform{
+    background:#fffbe6;               /* pale yellow */
+    border:1px solid #f5e7a1;         /* soft yellow border */
+    border-radius:16px;
+    padding:28px;
+    box-shadow:0 8px 22px rgba(16,36,58,.06);
+  }
+  .seo-longform h2{margin-top:0}
+  .seo-longform p{margin:12px 0}
+  .seo-longform ul{margin:10px 0 0 1.2rem}
+  .mx-kbd{font:600 13px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;border:1px solid #e2e8f0;border-bottom-width:2px;padding:.15rem .4rem;border-radius:6px;background:#fff}
+  @media (max-width: 768px){.mx-container{padding:28px 16px}}
+</style>
+
+<div class="mx-container" id="extended-sections">
+  <!-- ================ SEO Longform (English) ================ -->
+  <section class="mx-section seo-longform" aria-labelledby="longform-heading">
+    <h2 id="longform-heading">Extended Background — Why a Serverless, Offline AI Matters</h2>
+    <p>
+      <strong>M‑Corp AI</strong> builds a rights‑based, privacy‑preserving AI that runs <em>entirely in the browser</em> and on low‑power devices. 
+      By removing servers, accounts, and tracking, the system remains usable in refugee camps, rural areas, and crisis zones while protecting vulnerable users.
+    </p>
+    <p>
+      This architecture is intentionally simple: a single HTML file, lightweight JavaScript, and models tailored for on‑device execution. 
+      The result is a tool that can be distributed like a document, executed without connectivity, and trusted by communities who cannot risk data exposure.
+    </p>
+    <h3>Humanitarian Context</h3>
+    <ul class="mx-list">
+      <li>Operates during outages, censorship, and bandwidth scarcity.</li>
+      <li>Designed for children with disabilities and refugee self‑reliance initiatives.</li>
+      <li>No cloud accounts, cookies, analytics, or IP‑based profiling.</li>
+      <li>Shareable via USB, local storage, or peer‑to‑peer without infrastructure.</li>
+    </ul>
+    <h3>Ethical Posture</h3>
+    <ul class="mx-list">
+      <li><strong>Data minimization by default</strong>: no uploads, no logs, no central database.</li>
+      <li><strong>Safety‑first interfaces</strong>: calm UI, clear off‑ramps, and non‑coercive patterns.</li>
+      <li><strong>Non‑commercial intent</strong>: designed for public‑interest use by NGOs and local actors.</li>
+    </ul>
+    <h3>What “Serverless” Unlocks</h3>
+    <ul class="mx-list">
+      <li><em>Resilience</em> — nothing to take down, throttle, or geofence.</li>
+      <li><em>Zero recurring cost</em> — no hosting, no API bills, no license gates.</li>
+      <li><em>Privacy</em> — insights stay on device; individuals retain agency over data.</li>
+      <li><em>Scale by simplicity</em> — one file can reach thousands with identical behavior.</li>
+    </ul>
+  </section>
+
+  <!-- ================ Technical Notes ================ -->
+  <section class="mx-section mx-card" id="technical-notes" aria-labelledby="tech-heading">
+    <h2 id="tech-heading">Technical Notes</h2>
+    <ul class="mx-list">
+      <li><strong>Runtime</strong>: Browser‑native (no build tools required). Works offline after first load.</li>
+      <li><strong>Footprint</strong>: Minimal JS; assets optimized for weak CPUs and limited storage.</li>
+      <li><strong>Power</strong>: Supports solar and battery‑constrained scenarios; graceful feature degradation.</li>
+      <li><strong>Security</strong>: No request payloads; avoids telemetry. Encourage air‑gapped distribution when needed.</li>
+      <li><strong>Accessibility</strong>: Large tap targets, screen‑reader labels, reduced motion options.</li>
+      <li><strong>Internationalization</strong>: Content strings decoupled for future locale packs.</li>
+    </ul>
+    <p class="mx-muted">Implementation tip: keep anything network‑bound behind an explicit user action and offer an offline fallback (<span class="mx-kbd">try/catch</span> + cached templates).</p>
+  </section>
+
+  <!-- ================ FAQ ================ -->
+  <section class="mx-section mx-card" id="faq" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">FAQ</h2>
+
+    <h3>Does it work without the internet?</h3>
+    <p>Yes. The core experience is offline‑first. You can load it once and run it entirely without connectivity.</p>
+
+    <h3>What makes it safer for vulnerable users?</h3>
+    <p>No servers, no accounts, no trackers. Since data never leaves the device, the risk of surveillance and leakage is dramatically reduced.</p>
+
+    <h3>Can NGOs adapt it for field missions?</h3>
+    <p>Absolutely. It is designed to be forked, localized, and deployed by non‑profits with minimal infrastructure and training.</p>
+
+    <h3>How does this differ from typical AI apps?</h3>
+    <p>Most AI apps depend on cloud inference and identity gating. M‑Corp AI is engineered for on‑device inference, humanitarian constraints, and zero‑trust environments.</p>
+
+    <h3>Is there a commercial roadmap?</h3>
+    <p>No. The project is public‑interest oriented; partnerships focus on rights, safety, and resilience rather than monetization.</p>
+  </section>
+
+  <!-- ================ Optional: FAQPage JSON‑LD (paste in <head> if desired) ================ -->
+  <!--
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Does it work without the internet?","acceptedAnswer":{"@type":"Answer","text":"Yes. The core experience is offline‑first. You can load it once and run it entirely without connectivity."}},
+      {"@type":"Question","name":"What makes it safer for vulnerable users?","acceptedAnswer":{"@type":"Answer","text":"No servers, no accounts, no trackers. Since data never leaves the device, the risk of surveillance and leakage is dramatically reduced."}},
+      {"@type":"Question","name":"Can NGOs adapt it for field missions?","acceptedAnswer":{"@type":"Answer","text":"Absolutely. It is designed to be forked, localized, and deployed by non‑profits with minimal infrastructure and training."}},
+      {"@type":"Question","name":"How does this differ from typical AI apps?","acceptedAnswer":{"@type":"Answer","text":"Most AI apps depend on cloud inference and identity gating. M‑Corp AI is engineered for on‑device inference, humanitarian constraints, and zero‑trust environments."}},
+      {"@type":"Question","name":"Is there a commercial roadmap?","acceptedAnswer":{"@type":"Answer","text":"No. The project is public‑interest oriented; partnerships focus on rights, safety, and resilience rather than monetization."}}
+    ]
+  }
+  </script>
+  -->
+</div>
+
+<!-- ===================== /End extended sections ===================== -->
+
   
 
 
