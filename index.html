@@ -2707,7 +2707,9 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
   <div class="title" id="title">
     <a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">44KB Offline AI click</a>
   </div>
-  <div id="period"> A world-class, ultra-lightweight on-device k-NN AI demo【 Moody’s 5yr avg: — 】</div>
+
+  <div id="period">A world-class, ultra-lightweight on-device k-NN AI demo (Assessed 2020-01-01 to 2024-10-01)</div>
+
 </header>
 
 
@@ -3082,7 +3084,14 @@ riskBtn.textContent=LABELS.risk;
   // =========================
   let curr=null;
   function displayName(o){ if(o.type==='micro') return `${o.name} (MICRONATION)`; if(riskRe.test(o.grade||'')) return `${o.name} (RISK)`; if(o.rank!=null) return `${o.name} (SAFE #${o.rank})`; return `${o.name} (INFO-LIMITED)` }
-  function updatePeriod(name){ const c=creditInfo(name); elP.innerHTML = `${LABELS.assessed} 2020-01-01 ${LABELS.to} 2024-10-01 <span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>` }
+
+  function updatePeriod(name){
+  const c = creditInfo(name);
+  elP.innerHTML =
+    `A world-class, ultra-lightweight on-device k-NN AI demo (Assessed 2020-01-01 to 2024-10-01) ` +
+    `<span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>`;
+}
+
   function show(o,user){ if(!o||typeof o!=='object') return; curr=o; const risky=riskRe.test(o.grade||''); elN.textContent=displayName(o); elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)'); if(o.type==='micro'){ elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';  elD.textContent=core(o); elM.innerHTML='<div>'+full(o)+'</div>'; } else { const exp=GEXP[o.grade||'NA']||GEXP.NA; elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'; elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA')); elD.textContent=core(o); elM.innerHTML = (mode==='deep')?('<div>'+full(o)+'</div>') : ''; }
     if(aiMode && !o.type){ elM.innerHTML += renderAiNote(o); }
     updatePeriod(o.name);
