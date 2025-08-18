@@ -3258,35 +3258,31 @@ riskBtn.textContent=LABELS.risk;
 </div>
 
 <style>
-  .trans-note{
-    margin:14px auto;
-    max-width:980px;
-    padding:14px 16px;
-    background:rgba(255,255,255,0.6); /* translucent/transparent box */
-    border:1px solid rgba(0,0,0,0.12);
-    border-radius:14px;
-    box-shadow:0 10px 26px rgba(2,6,23,.06);
-    backdrop-filter:saturate(1.05) blur(6px);
-    -webkit-backdrop-filter:saturate(1.05) blur(6px);
-    color:#111; /* black text */
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    line-height:1.6;
-    text-align:center; /* center align text */
-  }
-  .trans-note .title{
-    margin:0 0 6px;
-    font-weight:800;
-    font-size:0.85rem; /* title smaller */
-  }
-  .trans-note p{
-    margin:0;
-    font-weight:400; /* normal body text */
-    font-size:0.8rem; /* body smaller */
-  }
-  .trans-note .invisible{
-    color:transparent; /* invisible white/transparent text */
-    font-size:0.7rem;
-  }
+.trans-note{
+  background:#fff8c2;
+  border:1px solid #f2e38e;
+  border-radius:12px;
+  padding:12px 14px;
+  color:#111;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.6;
+  text-align:center;
+}
+.trans-note .title{
+  margin:0 0 6px;
+  font-weight:700;              /* 800 → 700 */
+  font-size:0.9rem;             /* 0.85rem → 0.9rem (가독성) */
+  letter-spacing:.01em;         /* 미세 가독 개선 */
+}
+.trans-note p{
+  margin:0;
+  font-weight:400;
+  font-size:0.85rem;            /* 0.8rem → 0.85rem */
+}
+.trans-note .invisible{
+  color:rgba(0,0,0,.02);        /* transparent → 아주 옅은 검정(크롤러/보조기기 혼란 방지) */
+  font-size:0.7rem;
+}
 </style>
 
 
@@ -3303,24 +3299,31 @@ riskBtn.textContent=LABELS.risk;
   .mx-muted{color:#475569}
   .mx-list{padding-left:1.2rem}
   .mx-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 10px 24px rgba(16,36,58,.06);padding:22px}
-  /* Light yellow long-form SEO box */
-  .seo-longform{
-    background:#fffbe6;               /* pale yellow */
-    border:1px solid #f5e7a1;         /* soft yellow border */
-    border-radius:16px;
-    padding:28px;
-    box-shadow:0 8px 22px rgba(16,36,58,.06);
-  }
-  .seo-longform h2{margin-top:0}
-  .seo-longform p{margin:12px 0}
-  .seo-longform ul{margin:10px 0 0 1.2rem}
+/* Light yellow long-form SEO box */
+.seo-longform{
+  background:#fffbe6;
+  border:1px solid #f5e7a1;
+  border-radius:16px;
+  padding:28px;
+  box-shadow:0 8px 22px rgba(16,36,58,.06);
+  max-height:60vh;        /* ⬅ 긴 텍스트 클램프 */
+  overflow:auto;          /* ⬅ 내부 스크롤 */
+}
+.seo-longform h2{margin-top:0}
+.seo-longform p{margin:12px 0}
+.seo-longform ul{
+  margin:12px 0 0 1.4rem; /* 1.2rem → 1.4rem (가독) */
+  line-height:1.7;        /* 목록 줄간격 증가 */
+}
+
   .mx-kbd{font:600 13px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;border:1px solid #e2e8f0;border-bottom-width:2px;padding:.15rem .4rem;border-radius:6px;background:#fff}
   @media (max-width: 768px){.mx-container{padding:28px 16px}}
 </style>
 
 <div class="mx-container" id="extended-sections">
   <!-- ================ SEO Longform (English) ================ -->
-  <section class="mx-section seo-longform" aria-labelledby="longform-heading">
+<section class="mx-section seo-longform" aria-labelledby="longform-heading" role="region">
+
     <h2 id="longform-heading">Extended Background — Why a Serverless, Offline AI Matters</h2>
     <p>
       <strong>M‑Corp AI</strong> builds a rights‑based, privacy‑preserving AI that runs <em>entirely in the browser</em> and on low‑power devices. 
@@ -3387,7 +3390,7 @@ riskBtn.textContent=LABELS.risk;
   </section>
 
   <!-- ================ Optional: FAQPage JSON‑LD (paste in <head> if desired) ================ -->
-  <!--
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -3401,7 +3404,8 @@ riskBtn.textContent=LABELS.risk;
     ]
   }
   </script>
-  -->
+
+  
 </div>
 
 <!-- ===================== /End extended sections ===================== -->
