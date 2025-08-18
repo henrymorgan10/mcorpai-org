@@ -252,8 +252,11 @@ Don’t steal what you’re freely allowed to honor.
   <meta property="og:type" content="website" />
 
 
+
   
-  <!-- JSON-LD 확장: @graph 하나로 WebSite / AboutPage / CreativeWork / Person를 포함합니다. 화면에 표시되지 않고 검색엔진만 읽습니다. -->
+  
+<!-- 이 블록은 <head> 안에 붙여 넣으면 됩니다. 화면에는 보이지 않고 검색엔진만 읽습니다. -->
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -262,7 +265,7 @@ Don’t steal what you’re freely allowed to honor.
       "@type": "WebSite",
       "name": "M-Corp AI",
       "url": "https://mcorpai.org/",
-      "inLanguage": ["en","ko","ja","fr"],
+      "inLanguage": ["en", "ko", "ja", "fr"],
       "description": "Rights-based, offline AI for children with disabilities and refugee self-reliance.",
       "publisher": {"@id": "#person"}
     },
@@ -309,7 +312,10 @@ Don’t steal what you’re freely allowed to honor.
         "IA enfants handicapés",
         "IA humanitaire hors ligne"
       ],
-      "audience": {"@type": "Audience", "audienceType": ["embassy missions","NGOs","aid agencies","international development"]}
+      "audience": {
+        "@type": "Audience",
+        "audienceType": ["embassy missions", "NGOs", "aid agencies", "international development"]
+      }
     },
     {
       "@type": "CreativeWork",
@@ -339,7 +345,7 @@ Don’t steal what you’re freely allowed to honor.
         "소버린 AI",
         "倫理的AI 難民",
         "障害のある子ども AI",
-        "オフライン 人道的AI",
+        "オフ라인 人道的AI",
         "IA éthique réfugiés",
         "IA enfants handicapés",
         "IA humanitaire hors ligne"
@@ -364,6 +370,8 @@ Don’t steal what you’re freely allowed to honor.
   ]
 }
 </script>
+
+  
 
 
   
