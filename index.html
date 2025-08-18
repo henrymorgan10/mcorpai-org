@@ -3115,7 +3115,15 @@ riskBtn.textContent=LABELS.risk;
     updatePeriod(o.name);
     qRec(); if(user){ save(o.name); lock(); setQuery(o.name); if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } } else if(risky){ phase='good' } }
     sr.textContent=o.name+' loaded.' }
-  function render(input){ const txt=cleanInput(input); if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return } const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit) show(hit,true) }
+  function render(input){
+  // 말미 괄호 표기는 모두 제거해 매칭 안정화
+  const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim());
+  if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return }
+  const key=bestMatch(txt)||txt.toLowerCase();
+  const hit=DB[key];
+  if(hit) show(hit,true)
+}
+
 
   // URL state
   function getQuery(){ try{ const u=new URL(location.href); return u.searchParams.get('country')||'' } catch(_){ return '' } }
@@ -3130,7 +3138,9 @@ riskBtn.textContent=LABELS.risk;
   aiBtn.addEventListener('click',()=>{ aiMode=!aiMode; aiBtn.textContent=aiMode?'AI: ON':'AI: OFF'; aiBtn.style.background=aiMode?'#d9f2ff':'#e6f4ff'; aiBtn.style.borderColor=aiMode?'#5bb8ee':'#9ad1f3'; if(curr) show(curr,false); sr.textContent='AI mode '+(aiMode?'on':'off'); });
 
   // Tests (EN only)
-  (function tests(){ try{ console.group('[Ticker tests]'); const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193'); console.assert(!!DB['united states'],'United States present'); console.assert(MICROS.length>=10,'Micronations ≥10'); console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present'); console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F'); console.assert(bestMatch('usa')==='united states','alias usa→united states'); console.assert(bestMatch('jp')==='japan','alias jp→japan'); console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea'); recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline'); updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML)&&/Moody/.test(elP.innerHTML),'period shows bracket+Moody'); console.groupEnd(); }catch(err){ console.error('[Ticker tests] failed',err) } })();
+  (function tests(){ try{ console.group('[Ticker tests]'); const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193'); console.assert(!!DB['united states'],'United States present'); console.assert(MICROS.length>=10,'Micronations ≥10'); console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present'); console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F'); console.assert(bestMatch('usa')==='united states','alias usa→united states'); console.assert(bestMatch('jp')==='japan','alias jp→japan'); console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea'); recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline'); updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML) && elP.innerHTML.includes(String(LABELS.moody||'')),
+  'period shows bracket + moody label');
+; console.groupEnd(); }catch(err){ console.error('[Ticker tests] failed',err) } })();
 
   // Init
   (function init(){ const seedName=cleanInput(getQuery()||load()||'Japan'); const seed=DB[(seedName||'').toLowerCase()]||DB['japan']; show(seed,false); recalc(); startAuto(); })();
@@ -3155,12 +3165,15 @@ riskBtn.textContent=LABELS.risk;
   function baseName(s){ return String(s||'').replace(/\s*\(.*?\)\s*$/,'').trim(); }
   function classify(n){ if(ADVISORY.has(n)) return 'Travel Advisory'; if(STABLE.has(n)) return 'Travel Stable (estimated)'; return 'Travel Caution'; }
 
-  function relabelOption(op){
-    const b=baseName(op.value);
-    if(/\(INFO\-LIMITED\)/.test(op.value)){
-      op.value=b+' ('+classify(b)+')';
-    }
+function relabelOption(op){
+  const b=baseName(op.value);
+  if(/\(INFO\-LIMITED\)/.test(op.value)){
+    // 값은 검색용으로 보존, 표시는 label로
+    op.label = b+' ('+classify(b)+')';
+    op.value = b+' (INFO-LIMITED)';
   }
+}
+
   function relabelAllOptions(){ if(!dl) return; Array.from(dl.options).forEach(relabelOption); }
 
   function ensureNaAdvice(){
@@ -3194,7 +3207,7 @@ riskBtn.textContent=LABELS.risk;
 
 
   
-<!-- Fixed bottom ticker (static, centered text, linked to multilingual.html) -->
+<!-- Fixed bottom ticker (single instance) -->
 <div id="bottom-ticker">
   <a href="https://mcorpai.org/multilingual.html" style="color:inherit; text-decoration:none;">
     💌 My focus is on linking ethical artificial intelligence with child rights, uniting technology with humanitarian values. I aim to be recognized not by titles, but by results.【 Personal Introduction 💌 】
@@ -3202,7 +3215,12 @@ riskBtn.textContent=LABELS.risk;
 </div>
 
 <style>
-  #bottom-ticker { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.8rem; padding: 6px 12px; white-space: nowrap; text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999; }
+  #bottom-ticker {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 0.8rem; padding: 6px 12px; white-space: nowrap;
+    text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999;
+  }
   #bottom-ticker a:hover { text-decoration: underline; }
 </style>
 
