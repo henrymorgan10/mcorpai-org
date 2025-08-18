@@ -253,118 +253,271 @@ Don’t steal what you’re freely allowed to honor.
 
 
 
+
   
   
 <!-- 이 블록은 <head> 안에 붙여 넣으면 됩니다. 화면에는 보이지 않고 검색엔진만 읽습니다. -->
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
+      "@id": "https://mcorpai.org/#website",
       "name": "M-Corp AI",
       "url": "https://mcorpai.org/",
       "inLanguage": ["en", "ko", "ja", "fr"],
       "description": "Rights-based, offline AI for children with disabilities and refugee self-reliance.",
-      "publisher": {"@id": "#person"}
+      "publisher": { "@id": "#person" }
     },
     {
       "@type": "AboutPage",
+      "@id": "https://mcorpai.org/#about",
       "url": "https://mcorpai.org/",
-      "name": "Ethical AI for Children with Disabilities & Refugee Self-Reliance",
-      "isPartOf": {"@id": "https://mcorpai.org/"},
+      "name": {
+        "en": "Ethical Offline AI for Children with Disabilities & Refugee Self-Reliance",
+        "ko": "장애 아동·난민 자립을 위한 윤리적 오프라인 AI",
+        "ja": "障害のある子ども・難民自立のための倫理的オフラインAI",
+        "fr": "IA éthique hors ligne pour les enfants handicapés et l’autonomie des réfugiés"
+      },
+      "isPartOf": { "@id": "https://mcorpai.org/#website" },
       "about": [
-        {"@type": "Thing", "name": "Ethical AI"},
-        {"@type": "Thing", "name": "Offline AI"},
-        {"@type": "Thing", "name": "Children with disabilities"},
-        {"@type": "Thing", "name": "Refugee self-reliance"},
-        {"@type": "Thing", "name": "Humanitarian technology"},
-        {"@type": "Thing", "name": "Privacy-preserving AI"}
-   ],
-"keywords": [
-  "lightweight AI",
-  "offline AI",
-  "low-cost AI",
-  "AI for refugees",
-  "AI for child protection",
-  "AI for disability inclusion",
-  "humanitarian technology",
-  "assistive AI",
-  "AI without cloud",
-  "no-internet AI",
-  "micro AI",
-  "browser-based AI",
-  "AI for remote areas",
-  "inclusive technology",
-  "data-free AI",
-  "solar-powered AI",
-  "AI for crisis zones",
-  "field-deployable AI",
-  "minimalist AI design",
-  "privacy-preserving AI",
-  "edge AI for development",
-  "AI for non-profits",
-  "accessible AI",
-  "ethical tech for children",
-  "AI for underserved communities",
-  "low-resource AI system",
-  "tiny AI prototype",
-  "offline child safety tool",
-  "mobile-first AI",
-  "real-time protection AI",
-  "ultra-efficient AI"
-],
-"audience": {
-  "@type": "Audience",
-  "audienceType": ["embassy missions", "NGOs", "aid agencies", "international development"]
-},  
-{
-  "@type": "CreativeWork",
-{
-"@type": "CreativeWork",
-"name": "AI Necklace for Child Safety",
-"url": "https://mcorpai.org/",
-"about": [
-  {"@type": "Thing", "name": "Child safety"},
-  {"@type": "Thing", "name": "Assistive technology"},
-  {"@type": "Thing", "name": "Inclusive design"}
-],
-"keywords": [
-  "child safety AI",
-  "assistive technology",
-  "inclusive design",
-  "human-centered AI",
-  "device-integrated AI",
-  "offline emergency tool",
-  "AI for humanitarian response",
-  "low-bandwidth AI",
-  "standalone AI system",
-  "solar-powered safety AI",
-  "AI for disaster settings",
-  "low-energy AI model",
-  "accessibility-first AI",
-  "AI for community safety",
-  "on-device intelligence",
-  "data-minimizing AI",
-  "lightweight protective tech",
-  "non-commercial AI tool",
-  "AI for field missions",
-  "AI in humanitarian fieldwork",
-  "digital tool for child rights",
-  "embedded safety AI",
-  "resilient AI design",
-  "open-source AI for aid"
-],
-
+        { "@type": "Thing", "name": { "en": "Ethical AI", "ko": "윤리적 AI", "ja": "倫理的AI", "fr": "IA éthique" } },
+        { "@type": "Thing", "name": { "en": "Offline AI", "ko": "오프라인 AI", "ja": "オフラインAI", "fr": "IA hors ligne" } },
+        { "@type": "Thing", "name": { "en": "Children with disabilities", "ko": "장애 아동", "ja": "障害のある子ども", "fr": "Enfants handicapés" } },
+        { "@type": "Thing", "name": { "en": "Refugee self-reliance", "ko": "난민 자립", "ja": "難民の自立", "fr": "Autonomie des réfugiés" } },
+        { "@type": "Thing", "name": { "en": "Humanitarian technology", "ko": "인도주의 기술", "ja": "人道技術", "fr": "Technologie humanitaire" } },
+        { "@type": "Thing", "name": { "en": "Privacy-preserving AI", "ko": "프라이버시 보호 AI", "ja": "プライバシー保護AI", "fr": "IA préservant la vie privée" } }
+      ],
+      "keywords": [
+        "lightweight AI",
+        "offline AI",
+        "low-cost AI",
+        "AI for refugees",
+        "AI for child protection",
+        "AI for disability inclusion",
+        "humanitarian technology",
+        "assistive AI",
+        "AI without cloud",
+        "no-internet AI",
+        "micro AI",
+        "browser-based AI",
+        "AI for remote areas",
+        "inclusive technology",
+        "data-free AI",
+        "solar-powered AI",
+        "AI for crisis zones",
+        "field-deployable AI",
+        "minimalist AI design",
+        "privacy-preserving AI",
+        "edge AI for development",
+        "AI for non-profits",
+        "accessible AI",
+        "ethical tech for children",
+        "AI for underserved communities",
+        "low-resource AI system",
+        "tiny AI prototype",
+        "offline child safety tool",
+        "mobile-first AI",
+        "real-time protection AI",
+        "ultra-efficient AI"
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": ["embassy missions", "NGOs", "aid agencies", "international development"]
+      },
+      "hasPart": [
+        { "@id": "#cat-child-protection" },
+        { "@id": "#cat-humanitarian" },
+        { "@id": "#cat-technical" }
+      ]
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://mcorpai.org/#necklace",
+      "name": "AI Necklace for Child Safety",
+      "url": "https://mcorpai.org/",
+      "about": [
+        { "@type": "Thing", "name": { "en": "Child safety", "ko": "아동 안전", "ja": "子どもの安全", "fr": "Sécurité de l’enfant" } },
+        { "@type": "Thing", "name": { "en": "Assistive technology", "ko": "보조공학", "ja": "支援技術", "fr": "Technologie d’assistance" } },
+        { "@type": "Thing", "name": { "en": "Inclusive design", "ko": "포용적 설계", "ja": "インクルーシブデザイン", "fr": "Conception inclusive" } }
+      ],
+      "keywords": [
+        "child safety AI",
+        "assistive technology",
+        "inclusive design",
+        "human-centered AI",
+        "device-integrated AI",
+        "offline emergency tool",
+        "AI for humanitarian response",
+        "low-bandwidth AI",
+        "standalone AI system",
+        "solar-powered safety AI",
+        "AI for disaster settings",
+        "low-energy AI model",
+        "accessibility-first AI",
+        "AI for community safety",
+        "on-device intelligence",
+        "data-minimizing AI",
+        "lightweight protective tech",
+        "non-commercial AI tool",
+        "AI for field missions",
+        "AI in humanitarian fieldwork",
+        "digital tool for child rights",
+        "embedded safety AI",
+        "resilient AI design",
+        "open-source AI for aid"
+      ],
       "spatialCoverage": [
-        {"@type": "Place", "name": "Africa"},
-        {"@type": "Place", "name": "Southeast Asia"}
+        { "@type": "Place", "name": "Africa" },
+        { "@type": "Place", "name": "Southeast Asia" }
       ],
       "learningResourceType": "executive summary",
-      "creator": {"@id": "#person"},
-      "publisher": {"@id": "#person"}
+      "creator": { "@id": "#person" },
+      "publisher": { "@id": "#person" }
     },
+
+    /* 카테고리 1: 아동 보호·장애 포용 */
+    {
+      "@type": "CreativeWork",
+      "@id": "#cat-child-protection",
+      "name": {
+        "en": "Category — Child protection & disability inclusion",
+        "ko": "카테고리 — 아동 보호·장애 포용",
+        "ja": "カテゴリ — 子どもの保護・障害包摂",
+        "fr": "Catégorie — Protection de l’enfant & inclusion du handicap"
+      },
+      "keywords": [
+        "AI for child protection",
+        "child safety AI",
+        "offline child safety tool",
+        "digital tool for child rights",
+        "AI for children with disabilities",
+        "AI for disability inclusion",
+        "ethical tech for children",
+        "assistive AI",
+        "assistive technology",
+        "inclusive design",
+        "accessibility-first AI",
+        "AI for community safety",
+        "embedded safety AI",
+        "아동 보호 AI",
+        "아동 안전 AI",
+        "오프라인 아동 보호 도구",
+        "아동 권리 디지털 도구",
+        "장애 아동 AI",
+        "장애 포용 AI",
+        "児童保護AI",
+        "子どもの安全AI",
+        "オフライン子ども保護ツール",
+        "子どもの権利デジタルツール",
+        "障害包摂AI",
+        "IA pour la protection de l’enfant",
+        "IA sécurité enfant",
+        "outil hors ligne pour la protection de l’enfant",
+        "outil numérique pour les droits de l’enfant",
+        "IA pour les enfants handicapés",
+        "conception inclusive"
+      ]
+    },
+
+    /* 카테고리 2: 인도주의·현장 배치 */
+    {
+      "@type": "CreativeWork",
+      "@id": "#cat-humanitarian",
+      "name": {
+        "en": "Category — Humanitarian & field deployment",
+        "ko": "카테고리 — 인도주의·현장 배치",
+        "ja": "カテゴリ — 人道・フィールド配備",
+        "fr": "Catégorie — Humanitaire & déploiement terrain"
+      },
+      "keywords": [
+        "AI for refugees",
+        "AI for humanitarian response",
+        "AI in humanitarian fieldwork",
+        "AI for field missions",
+        "AI for crisis zones",
+        "field-deployable AI",
+        "AI for remote areas",
+        "low-bandwidth AI",
+        "standalone AI system",
+        "no-internet AI",
+        "solar-powered AI",
+        "solar-powered safety AI",
+        "난민을 위한 AI",
+        "인도주의 대응 AI",
+        "현장 배치형 AI",
+        "위기 지역 AI",
+        "원격 지역 AI",
+        "저대역폭 AI",
+        "オフライン対応AI",
+        "人道支援向けAI",
+        "フィールドミッション向けAI",
+        "危機地域向けAI",
+        "低帯域AI",
+        "IA pour les réfugiés",
+        "IA pour la réponse humanitaire",
+        "IA déployable sur le terrain",
+        "IA pour zones de crise",
+        "IA faible bande passante",
+        "système autonome IA"
+      ]
+    },
+
+    /* 카테고리 3: 기술 아키텍처·효율 */
+    {
+      "@type": "CreativeWork",
+      "@id": "#cat-technical",
+      "name": {
+        "en": "Category — Technical architecture & efficiency",
+        "ko": "카테고리 — 기술 아키텍처·효율",
+        "ja": "カテゴリ — 技術アーキテクチャ・効率",
+        "fr": "Catégorie — Architecture technique & efficacité"
+      },
+      "keywords": [
+        "lightweight AI",
+        "ultra-efficient AI",
+        "low-cost AI",
+        "low-energy AI model",
+        "edge AI for development",
+        "on-device intelligence",
+        "browser-based AI",
+        "device-integrated AI",
+        "data-free AI",
+        "data-minimizing AI",
+        "micro AI",
+        "tiny AI prototype",
+        "minimalist AI design",
+        "mobile-first AI",
+        "AI without cloud",
+        "offline AI",
+        "privacy-preserving AI",
+        "accessible AI",
+        "low-resource AI system",
+        "경량 AI",
+        "초효율 AI",
+        "저비용 AI",
+        "저전력 AI 모델",
+        "온디바이스 지능",
+        "브라우저 기반 AI",
+        "데이터 프리 AI",
+        "데이터 최소화 AI",
+        "マイクロAI",
+        "超効率AI",
+        "低コストAI",
+        "低電力AIモデル",
+        "デバイス統合AI",
+        "クラウド不要AI",
+        "IA légère",
+        "IA ultra-efficiente",
+        "IA à faible coût",
+        "IA basse consommation",
+        "intelligence embarquée",
+        "IA sans cloud",
+        "conception minimaliste"
+      ]
+    },
+
     {
       "@type": "Person",
       "@id": "#person",
@@ -380,6 +533,7 @@ Don’t steal what you’re freely allowed to honor.
 
   
 
+  
 
   
   
@@ -552,7 +706,7 @@ Failure to credit the source may result in legal liability.
         Not for Profit. Not for Data. Built for Dignity
       </a>
     </h1>
-    <p class="subtitle"> A 44KB ultra-lightweight, rights-based AI—developed in collaboration with GPT-5 and designed to be assembled and maintained directly by refugees—offers a new model for protecting children with disabilities and advancing refugee self-reliance. With as little as USD 1,000, solar power and low-cost chipsets can establish an AI-enabled protection infrastructure within refugee camps. For future iterations, genuine collaboration with human expertise, not only GPT, will remain essential. </p>
+    <p class="subtitle"> A 44KB ultra-lightweight, rights-based AI—developed in collaboration with GPT-5 and designed to be assembled and maintained directly by refugees—offers a new model for protecting children with disabilities and advancing refugee self-reliance. With as little as USD 1,000, solar power and low-cost chipsets can establish an AI-enabled protection infrastructure within refugee camps. For future iterations, genuine collaboration with human expertise, not only GPT, will remain essential. It will be the most perfectly ethical AI, in full compliance with UNCRC, CRPD, and GDPR (with particular emphasis on complete adherence to GDPR).</p>
     <p class="subtitle"> Ultra-low-cost, lightweight AI provides practical tools to address urgent challenges in refugee camps. It can detect violence among refugees in real time, safeguard vulnerable groups such as women and children, identify medical emergencies at an early stage, and promote fairness in food distribution. By enabling rapid detection, timely alerts, and transparent record-keeping, such AI strengthens both human rights protection and community safety. If you're interested, I'd be happy to provide a clear and accessible explanation of the 44KB offline AI and how it works. Please feel free to reach out. </p>
     <p class="meta"> 44KB Offline AI · Gyu-min Jeon (Republic of Korea) · With the deepest respect, I would be honored by Your Excellency’s kind review. </p>
   </div>
