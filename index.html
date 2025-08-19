@@ -3431,7 +3431,24 @@ riskBtn.addEventListener('click',(()=>{let i=0;return()=>{
 * All new code runs entirely offline and reuses the transparent k‑NN + RLS pattern, with risk labels: **Low → Elevated → High → Critical**.
 * If you see any text overlap in the card, keep the existing `clearMore()` and forced resets inside `show()`; these already prevent duplicate rendering during AI toggles.
 
-  
+
+
+Title/Tagline changed to **48KB Camp-Safety AI
+
+Added **Mode: Country/Camp** toggle button in the control section
+
+Introduced **CAMP\_BASELINE data** (non-identifiable signals only)
+
+Implemented **camp-specific feature vectors, k-NN, and RLS blending module**
+
+Added **Risk Level labels and colors** (Low / Elevated / High / Critical)
+
+Enabled **auto-switching of data list, placeholders, and button labels** depending on the selected mode
+
+Created **showCamp() renderer** and integrated sequential alert rotation for Camp mode
+
+Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-network push hooks**, allowing immediate integration when required]
+
 
   
 -->
