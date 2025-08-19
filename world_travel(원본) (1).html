@@ -1,14 +1,17 @@
-<!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
+
+
+
+  <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
 <style>
 :root{color-scheme:light dark}
 @media (min-width:992px){#infoRail{position:fixed;left:14px;top:150px;width:160px;z-index:80;transition:width .22s ease}#infoRail:hover,#infoRail:focus-within{width:min(345px,32vw)}}
 @media (max-width:991.98px){#infoRail{position:fixed;left:10px;bottom:12px;width:min(75vw,280px);z-index:80;transition:width .22s ease}#infoRail:hover,#infoRail:focus-within{width:min(100vw,530px)}}
-#box{background:#fffbea;border:1px solid rgba(0,0,0,.12);border-radius:8px;box-shadow:0 6px 14px rgba(2,6,23,.08);overflow:hidden;font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221;opacity:.42;filter:saturate(.9) contrast(.95);transition:max-height .24s ease,opacity .18s ease,filter .18s ease,box-shadow .18s ease,transform .18s ease;max-height:var(--collapsed-h,424px);position:relative}
+#box{background:#fffbea;border:1px solid rgba(0,0,0,.12);border-radius:8px;box-shadow:0 6px 14px rgba(2,6,23,.08);overflow:hidden;font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221;opacity:.48;filter:saturate(.9) contrast(.95);transition:max-height .24s ease,opacity .18s ease,filter .18s ease,box-shadow .18s ease,transform .18s ease;max-height:var(--collapsed-h,424px);position:relative}
 #box header{padding:4px 6px;font-weight:800;background:linear-gradient(180deg,#fffbea,#fff7d6);border-bottom:1px solid rgba(0,0,0,.08);font-size:.82rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #box header > .title{color:#0b3d91;font-weight:900}
 
 /* Fix: lock ticker title size against global header .title rules */
-#box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91 }
+#box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91; text-align: center;  width: 100%; }
 
 #box .row{padding:4px 6px}
 #box:hover,#box:focus-within,#box.active{opacity:1;filter:none;box-shadow:0 10px 22px rgba(2,6,23,.12);transform:translateY(-1px);max-height:var(--expanded-h,1000px)}
@@ -31,10 +34,20 @@
 </style>
 <aside id="infoRail" aria-label="Sticky world travel ticker">
   <div id="box" role="group">
-    <header>
-      <div class="title" id="title">World Travel Ticker AI</div>
-      <div id="period">Assessed 2020-01-01 to 2024-10-01 【 Moody’s 5yr avg: — 】</div>
-    </header>
+
+    
+    
+<header>
+  <div class="title" id="title">
+    <a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">44KB Offline AI click</a>
+  </div>
+
+  <div id="period">A world-class, ultra-lightweight on-device k-NN AI demo </div>
+
+</header>
+
+
+    
     <div class="row" id="controls">
       <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
       <datalist id="countries"></datalist>
@@ -62,9 +75,24 @@
   const elT=document.getElementById('title'), elP=document.getElementById('period');
   const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
 
+
+  
   // Static English labels
-  const LABELS={title:'World Travel Ticker AI', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN) suggestion'};
-  elT.textContent=LABELS.title; q.setAttribute('placeholder',LABELS.placeholder); riskBtn.textContent=LABELS.risk;
+// Static English labels
+const LABELS={
+  title:'44KB Offline AI click',
+  assessed:'Assessed', to:'to', moody:"Moody's 5yr avg",
+  placeholder:'Country… (ex. America or USA)', risk:'Risk',
+  choose:'Choose a country or press Risk.', sgrade:'Safety Grade',
+  rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state',
+  ai:'AI (k-NN) suggestion'
+};
+// 링크가 유지되도록 innerHTML로 덮어씁니다.
+elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
+q.setAttribute('placeholder',LABELS.placeholder);
+riskBtn.textContent=LABELS.risk;
+
+  
 
   // Grade explanations (EN)
   const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised. ☠️","E":"Very poor; escort advised, avoid travel. ☠️","E-":"Extremely poor; do not visit. ☠️","F":"Worst level; absolute no-go. ☠️☠️","NA":"Information limited between 2020–2024; consult official guidance."};
@@ -390,13 +418,28 @@
   // =========================
   let curr=null;
   function displayName(o){ if(o.type==='micro') return `${o.name} (MICRONATION)`; if(riskRe.test(o.grade||'')) return `${o.name} (RISK)`; if(o.rank!=null) return `${o.name} (SAFE #${o.rank})`; return `${o.name} (INFO-LIMITED)` }
-  function updatePeriod(name){ const c=creditInfo(name); elP.innerHTML = `${LABELS.assessed} 2020-01-01 ${LABELS.to} 2024-10-01 <span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>` }
+
+  function updatePeriod(name){
+  const c = creditInfo(name);
+  elP.innerHTML =
+    `A world-class, ultra-lightweight on-device k-NN AI demo` +
+    `<span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>`;
+}
+
   function show(o,user){ if(!o||typeof o!=='object') return; curr=o; const risky=riskRe.test(o.grade||''); elN.textContent=displayName(o); elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)'); if(o.type==='micro'){ elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';  elD.textContent=core(o); elM.innerHTML='<div>'+full(o)+'</div>'; } else { const exp=GEXP[o.grade||'NA']||GEXP.NA; elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'; elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA')); elD.textContent=core(o); elM.innerHTML = (mode==='deep')?('<div>'+full(o)+'</div>') : ''; }
     if(aiMode && !o.type){ elM.innerHTML += renderAiNote(o); }
     updatePeriod(o.name);
     qRec(); if(user){ save(o.name); lock(); setQuery(o.name); if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } } else if(risky){ phase='good' } }
     sr.textContent=o.name+' loaded.' }
-  function render(input){ const txt=cleanInput(input); if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return } const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit) show(hit,true) }
+  function render(input){
+  // 말미 괄호 표기는 모두 제거해 매칭 안정화
+  const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim());
+  if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return }
+  const key=bestMatch(txt)||txt.toLowerCase();
+  const hit=DB[key];
+  if(hit) show(hit,true)
+}
+
 
   // URL state
   function getQuery(){ try{ const u=new URL(location.href); return u.searchParams.get('country')||'' } catch(_){ return '' } }
@@ -411,7 +454,9 @@
   aiBtn.addEventListener('click',()=>{ aiMode=!aiMode; aiBtn.textContent=aiMode?'AI: ON':'AI: OFF'; aiBtn.style.background=aiMode?'#d9f2ff':'#e6f4ff'; aiBtn.style.borderColor=aiMode?'#5bb8ee':'#9ad1f3'; if(curr) show(curr,false); sr.textContent='AI mode '+(aiMode?'on':'off'); });
 
   // Tests (EN only)
-  (function tests(){ try{ console.group('[Ticker tests]'); const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193'); console.assert(!!DB['united states'],'United States present'); console.assert(MICROS.length>=10,'Micronations ≥10'); console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present'); console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F'); console.assert(bestMatch('usa')==='united states','alias usa→united states'); console.assert(bestMatch('jp')==='japan','alias jp→japan'); console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea'); recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline'); updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML)&&/Moody/.test(elP.innerHTML),'period shows bracket+Moody'); console.groupEnd(); }catch(err){ console.error('[Ticker tests] failed',err) } })();
+  (function tests(){ try{ console.group('[Ticker tests]'); const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193'); console.assert(!!DB['united states'],'United States present'); console.assert(MICROS.length>=10,'Micronations ≥10'); console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present'); console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F'); console.assert(bestMatch('usa')==='united states','alias usa→united states'); console.assert(bestMatch('jp')==='japan','alias jp→japan'); console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea'); recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline'); updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML) && elP.innerHTML.includes(String(LABELS.moody||'')),
+  'period shows bracket + moody label');
+; console.groupEnd(); }catch(err){ console.error('[Ticker tests] failed',err) } })();
 
   // Init
   (function init(){ const seedName=cleanInput(getQuery()||load()||'Japan'); const seed=DB[(seedName||'').toLowerCase()]||DB['japan']; show(seed,false); recalc(); startAuto(); })();
@@ -436,12 +481,15 @@
   function baseName(s){ return String(s||'').replace(/\s*\(.*?\)\s*$/,'').trim(); }
   function classify(n){ if(ADVISORY.has(n)) return 'Travel Advisory'; if(STABLE.has(n)) return 'Travel Stable (estimated)'; return 'Travel Caution'; }
 
-  function relabelOption(op){
-    const b=baseName(op.value);
-    if(/\(INFO\-LIMITED\)/.test(op.value)){
-      op.value=b+' ('+classify(b)+')';
-    }
+function relabelOption(op){
+  const b=baseName(op.value);
+  if(/\(INFO\-LIMITED\)/.test(op.value)){
+    // 값은 검색용으로 보존, 표시는 label로
+    op.label = b+' ('+classify(b)+')';
+    op.value = b+' (INFO-LIMITED)';
   }
+}
+
   function relabelAllOptions(){ if(!dl) return; Array.from(dl.options).forEach(relabelOption); }
 
   function ensureNaAdvice(){
@@ -471,7 +519,11 @@
 </script>
 <!-- ADVISORY PATCH END -->
 
-<!-- Fixed bottom ticker (static, centered text, linked to multilingual.html) -->
+
+
+
+  
+<!-- Fixed bottom ticker (single instance) -->
 <div id="bottom-ticker">
   <a href="https://mcorpai.org/multilingual.html" style="color:inherit; text-decoration:none;">
     💌 My focus is on linking ethical artificial intelligence with child rights, uniting technology with humanitarian values. I aim to be recognized not by titles, but by results.【 Personal Introduction 💌 】
@@ -479,6 +531,11 @@
 </div>
 
 <style>
-  #bottom-ticker { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.8rem; padding: 6px 12px; white-space: nowrap; text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999; }
+  #bottom-ticker {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 0.8rem; padding: 6px 12px; white-space: nowrap;
+    text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999;
+  }
   #bottom-ticker a:hover { text-decoration: underline; }
 </style>
