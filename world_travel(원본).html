@@ -21,17 +21,7 @@
 /* AI toggle button */
 #aiBtn{padding:3px 6px;border-radius:6px;border:1px solid #9ad1f3;background:#e6f4ff;color:#084c61;font-weight:800;cursor:pointer;font-size:.72rem}
 #name{font-weight:800;color:#0b1221}
-.badge{font-weight:800}.green{color:#16a34a}.black{color:#0b1221}.red{color:#b01919}.brkt{font-weight:700}
-#desc{color:#0b0f19;font-weight:700;font-size:.78rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
-#more{font-size:.72rem;color:#0b1221}
-#period{font-size:.72rem;opacity:.95;margin-top:2px}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-#infoRail:hover #desc,#infoRail:focus-within #desc{display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset;overflow:visible}
-#infoRail:hover #more,#infoRail:focus-within #more{overflow:visible}
-/* AI note style */
-.ai-note{margin-top:4px;opacity:.98}
-.ai-note small{display:block;font-size:.68rem;opacity:.9;margin-top:2px}
-</style>
+
 <aside id="infoRail" aria-label="Sticky world travel ticker">
   <div id="box" role="group">
 
@@ -539,10 +529,6 @@ function foodsLine(name){ const arr=FOODS[name]||['local street food','the natio
 // Persist
 const LS_KEY='wtta.last';
 function save(c){try{localStorage.setItem(LS_KEY,c)}catch(e){}}
-<!-- === ADVISORY PATCH END === -->
-<!-- ADVISORY PATCH END -->
-
-
 
 
   
