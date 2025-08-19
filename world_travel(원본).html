@@ -60,9 +60,72 @@
 </aside>
 
 <script>
-  
 (function(){
-  // Rotation timings (hover toggles 20s → 40s)
+  // ======== Rotation & layout constants ========
+  const ROT_DEFAULT=20000, ROT_HOVER=40000, USER_LOCK_MS=40000, COLLAPSE_PCT=0.60, MIN_COLLAPSED=424;
+  let rotDelay=ROT_DEFAULT;
+
+  // ======== DOM refs ========
+  const box=document.getElementById('box'),
+        q=document.getElementById('q'),
+        dl=document.getElementById('countries'),
+        riskBtn=document.getElementById('riskBtn'),
+        aiBtn=document.getElementById('aiBtn'),
+        elT=document.getElementById('title'),
+        elP=document.getElementById('period'),
+        elN=document.getElementById('name'),
+        elR=document.getElementById('rank'),
+        elG=document.getElementById('grade'),
+        elD=document.getElementById('desc'),
+        elM=document.getElementById('more'),
+        sr=document.getElementById('sr'),
+        view=document.getElementById('view');
+
+  // ======== Labels & header ========
+  const LABELS={ title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg",
+    placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.',
+    sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN + RLS) suggestion' };
+  elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
+  q.setAttribute('placeholder',LABELS.placeholder);
+  riskBtn.textContent=LABELS.risk;
+
+  // ======== Explanations & helpers ========
+  const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised.","E":"Very poor; escort advised, avoid travel.","E-":"Extremely poor; do not visit.","F":"Worst level; absolute no-go.","NA":"Information limited between 2020–2024; consult official guidance."};
+  const riskRe=/^(D|E|F)/;
+  const gradeOrder={"F":0,"E-":1,"E":2,"E+":3,"D-":4,"D":5,"D+":6,"C-":7,"C":8,"C+":9,"B-":10,"B":11,"B+":12,"A-":13,"A":14,"A+":15,"NA":99};
+
+  // Moody's 5-year average (subset)
+  const MOODYS={'Luxembourg':'Aaa','Germany':'Aaa','Switzerland':'Aaa','Norway':'Aaa','Denmark':'Aaa','Sweden':'Aaa','Netherlands':'Aaa','Finland':'Aaa','Austria':'Aa1','United States':'Aaa','Canada':'Aaa','Australia':'Aaa','New Zealand':'Aaa','Singapore':'Aaa','United Kingdom':'Aa3','France':'Aa2','Japan':'A1','Italy':'Baa3','Spain':'Baa1','Ireland':'A1','Portugal':'Baa2','Mexico':'Baa2','Brazil':'Ba2','India':'Baa3','South Africa':'Ba2','Turkey':'B3','United Arab Emirates':'Aa2','Saudi Arabia':'A1','Qatar':'Aa2','Korea, Republic of (South Korea)':'Aa2','China':'A1'};
+  function moodysColor(r){ if(!r||/^NR$/i.test(r)||/^None$/i.test(r)) return 'black'; if(/^WR$/i.test(r)) return 'red'; if(/^(Aaa|Aa|A|Baa)/.test(r)) return 'green'; if(/^(Ba|B[1-3]?$)/.test(r)) return 'black'; if(/^(Caa|Ca|C)$/i.test(r)) return 'red'; return 'black' }
+  function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; return {text:r, cls:moodysColor(r), raw:r} }
+  function gColor(g){if(/^A|^B/.test(g))return'green';if(/^C|NA$/.test(g))return'black';return'red'}
+
+  // Food suggestions
+  const FOODS={'Japan':['sushi','ramen','okonomiyaki'],'United States':['burger','BBQ','clam chowder'],'France':['croissant','crêpe','coq au vin'],'Italy':['pizza','pasta','gelato'],'Spain':['paella','tapas','churros'],'Thailand':['pad thai','som tam','tom yum'],'Korea, Republic of (South Korea)':['bibimbap','bulgogi','kimchi stew'],'China':['dumplings','hot pot','Peking duck'],'Germany':['bratwurst','pretzel','schnitzel'],'United Kingdom':['fish and chips','pie and mash','full English'],'Mexico':['tacos','mole','pozole'],'Turkey':['kebap','baklava','lahmacun'],'Malaysia':['nasi lemak','satay','laksa'],'Singapore':['chicken rice','laksa','chilli crab'],'Portugal':['pastel de nata','bacalhau','francesinha'],'Canada':['poutine','butter tart','Nanaimo bar'],'Australia':['meat pie','lamington','barramundi'],'New Zealand':['lamb','hokey pokey','green-lipped mussels']};
+  function foodsLine(name){ const arr=FOODS[name]||['local street food','the national dish','a signature dessert']; return 'Recommended foods: '+arr[0]+', '+arr[1]+', '+arr[2]+'.' }
+
+  // Persist
+  const LS_KEY='wtta.last';
+  function save(c){try{localStorage.setItem(LS_KEY,c)}catch(e){}}
+  function load(){try{return localStorage.getItem(LS_KEY)||''}catch(e){return''}}
+
+  // Utils
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function asString(x){ if(typeof x==='string') return x; if(x&&typeof x.name==='string') return x.name; return '' }
+  function cleanInput(v){ return asString(v).replace(/\s*\((risk|safe\s*#\d+|micronation|info\-limited)\)\s*$/i,'').trim() }
+  function trim(s){return (typeof s==='string'?s:'').replace(/\s+/g,' ').trim()}
+  function grams(s){ s=asString(s).toLowerCase(); s=(' '+s+' ').replace(/[^a-z\s]/g,''); const g=new Set(); for(let i=0;i<s.length-2;i++) g.add(s.slice(i,i+3)); return g }
+  function jacc(a,b){const A=grams(a),B=grams(b);let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.max(1,A.size+B.size-inter)}
+  function bestMatch(name){
+    const ALIAS={'usa':'united states','us':'united states','u.s.':'united states','america':'united states','united states of america':'united states','uk':'united kingdom','britain':'united kingdom','england':'united kingdom','kr':'korea, republic of (south korea)','korea':'korea, republic of (south korea)','south korea':'korea, republic of (south korea)','republic of korea':'korea, republic of (south korea)','jp':'japan','jpn':'japan','nippon':'japan','uae':'united arab emirates','emirates':'united arab emirates','ksa':'saudi arabia','cote d\'ivoire':'côte d’ivoire','cote d’ivoire':'côte d’ivoire','vietnam':'viet nam','russia':'russian federation'};
+    const norm=(s)=>{ s=asString(s).toLowerCase().trim(); return ALIAS[s]||s };
+    const s=norm(name); if(!s) return ''; if(DB[s]) return s; let best='',sc=0; for(const k of Object.keys(DB)){const v=jacc(s,k); if(v>sc){sc=v;best=k}} return sc>.18?best:'';
+  }
+
+  function core(o){ if(o.type==='micro') return trim(o.pitch); const a=[];a.push('Money '+o.cost+'.');a.push(' English '+o.eng+'.');a.push(' Exchange '+o.fx+'.');a.push(' Risks '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.');a.push(' Tip '+o.tip+'.');return trim(a.join(''))}
+  function full(o){ if(o.type==='micro') return trim(o.story); const s=[]; const exp=GEXP[o.grade||'NA']||GEXP.NA; s.push('<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'); s.push('Money '+(o.cost||'Unknown')+'.'); s.push(' English '+(o.eng||'Unknown')+'.'); s.push(' Exchange '+(o.fx||'Unknown')+'.'); s.push(' Issues: '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.'); s.push(' Tips: use official rides, keep phones pocketed curbside, and confirm prices before rides.'); s.push(' '+foodsLine(o.name)); return trim(s.join(' ')) }
+  function mkObj(line){const p=(line||'').split('|');const name=p[0]||'';const rank=p[1]||'-';const grade=p[2]||'C';const cost=p[3]||'Moderate';const eng=p[4]||'Moderate';const fx=p[5]||'Moderate';const r1=p[6]||'Theft';const r2=p[7]||'Scams';const tip=p[8]||'Use official options';return {key:asString(name).toLowerCase(),name:asString(name),rank:rank==='-'?null:Number(rank),grade,cost,eng,fx,r1,r2,tip}};
+
   const TOK=[
     'France|1|A-|Expensive|Moderate|Easy|Pickpockets|Transit scams|Book top museums in advance to avoid lines',
     'Spain|2|B+|Moderate|Moderate|Easy|Bag snatch|Beach theft|Use lockers and keep bags zipped on metros',
@@ -194,64 +257,13 @@
     {name:'Akhzivland',type:'micro',pop:'<20',gdp:'Unknown',leader:'Eli Avivi (founder, late)',founded:'1971',pitch:'Tiny cultural enclave in Israel.',story:'Run as a private museum-village. Tourist curiosity; MICRONATION.'}
   ];
 
-   // ======== Frame settings ========
-  const LABELS={ title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody\'s 5yr avg",
-    placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.',
-    sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN + RLS) suggestion' };
-  elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
-  q.setAttribute('placeholder',LABELS.placeholder);
-  riskBtn.textContent=LABELS.risk;
-
-  // Grade explanations
-  const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised.","E":"Very poor; escort advised, avoid travel.","E-":"Extremely poor; do not visit.","F":"Worst level; absolute no-go.","NA":"Information limited between 2020–2024; consult official guidance."};
-
-  const riskRe=/^(D|E|F)/;
-  const gradeOrder={"F":0,"E-":1,"E":2,"E+":3,"D-":4,"D":5,"D+":6,"C-":7,"C":8,"C+":9,"B-":10,"B":11,"B+":12,"A-":13,"A":14,"A+":15,"NA":99};
-
-  // Moody's 5-year average (subset)
-  const MOODYS={'Luxembourg':'Aaa','Germany':'Aaa','Switzerland':'Aaa','Norway':'Aaa','Denmark':'Aaa','Sweden':'Aaa','Netherlands':'Aaa','Finland':'Aaa','Austria':'Aa1','United States':'Aaa','Canada':'Aaa','Australia':'Aaa','New Zealand':'Aaa','Singapore':'Aaa','United Kingdom':'Aa3','France':'Aa2','Japan':'A1','Italy':'Baa3','Spain':'Baa1','Ireland':'A1','Portugal':'Baa2','Mexico':'Baa2','Brazil':'Ba2','India':'Baa3','South Africa':'Ba2','Turkey':'B3','United Arab Emirates':'Aa2','Saudi Arabia':'A1','Qatar':'Aa2','Korea, Republic of (South Korea)':'Aa2','China':'A1'};
-  function moodysColor(r){ if(!r||/^NR$/i.test(r)||/^None$/i.test(r)) return 'black'; if(/^WR$/i.test(r)) return 'red'; if(/^(Aaa|Aa|A|Baa)/.test(r)) return 'green'; if(/^(Ba|B[1-3]?$)/.test(r)) return 'black'; if(/^(Caa|Ca|C)$/i.test(r)) return 'red'; return 'black' }
-  function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; return {text:r, cls:moodysColor(r), raw:r} }
-  function gColor(g){if(/^A|^B/.test(g))return'green';if(/^C|NA$/.test(g))return'black';return'red'}
-
-  // Food suggestions (kept lightweight)
-  const FOODS={'Japan':['sushi','ramen','okonomiyaki'],'United States':['burger','BBQ','clam chowder'],'France':['croissant','crêpe','coq au vin'],'Italy':['pizza','pasta','gelato'],'Spain':['paella','tapas','churros'],'Thailand':['pad thai','som tam','tom yum'],'Korea, Republic of (South Korea)':['bibimbap','bulgogi','kimchi stew'],'China':['dumplings','hot pot','Peking duck'],'Germany':['bratwurst','pretzel','schnitzel'],'United Kingdom':['fish and chips','pie and mash','full English'],'Mexico':['tacos','mole','pozole'],'Turkey':['kebap','baklava','lahmacun'],'Malaysia':['nasi lemak','satay','laksa'],'Singapore':['chicken rice','laksa','chilli crab'],'Portugal':['pastel de nata','bacalhau','francesinha'],'Canada':['poutine','butter tart','Nanaimo bar'],'Australia':['meat pie','lamington','barramundi'],'New Zealand':['lamb','hokey pokey','green-lipped mussels']};
-  function foodsLine(name){ const arr=FOODS[name]||['local street food','the national dish','a signature dessert']; return 'Recommended foods: '+arr[0]+', '+arr[1]+', '+arr[2]+'.' }
-
-  // Persist
-  const LS_KEY='wtta.last';
-  function save(c){try{localStorage.setItem(LS_KEY,c)}catch(e){}}
-  function load(){try{return localStorage.getItem(LS_KEY)||''}catch(e){return''}}
-
-  // Utils
-  function pick(a){return a[Math.floor(Math.random()*a.length)]}
-  function asString(x){ if(typeof x==='string') return x; if(x&&typeof x.name==='string') return x.name; return '' }
-  function cleanInput(v){ return asString(v).replace(/\s*\((risk|safe\s*#\d+|micronation|info\-limited)\)\s*$/i,'').trim() }
-  function trim(s){return (typeof s==='string'?s:'').replace(/\s+/g,' ').trim()}
-  function grams(s){ s=asString(s).toLowerCase(); s=(' '+s+' ').replace(/[^a-z\s]/g,''); const g=new Set(); for(let i=0;i<s.length-2;i++) g.add(s.slice(i,i+3)); return g }
-  function jacc(a,b){const A=grams(a),B=grams(b);let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.max(1,A.size+B.size-inter)}
-  function bestMatch(name){
-    const ALIAS={'usa':'united states','us':'united states','u.s.':'united states','america':'united states','united states of america':'united states','uk':'united kingdom','britain':'united kingdom','england':'united kingdom','kr':'korea, republic of (south korea)','korea':'korea, republic of (south korea)','south korea':'korea, republic of (south korea)','republic of korea':'korea, republic of (south korea)','jp':'japan','jpn':'japan','nippon':'japan','uae':'united arab emirates','emirates':'united arab emirates','ksa':'saudi arabia','cote d\'ivoire':'côte d’ivoire','cote d’ivoire':'côte d’ivoire','vietnam':'viet nam','russia':'russian federation'};
-    const norm=(s)=>{ s=asString(s).toLowerCase().trim(); return ALIAS[s]||s };
-    const s=norm(name); if(!s) return ''; if(DB[s]) return s; let best='',sc=0; for(const k of Object.keys(DB)){const v=jacc(s,k); if(v>sc){sc=v;best=k}} return sc>.18?best:'';
-  }
-
-  function core(o){ if(o.type==='micro') return trim(o.pitch); const a=[];a.push('Money '+o.cost+'.');a.push(' English '+o.eng+'.');a.push(' Exchange '+o.fx+'.');a.push(' Risks '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.');a.push(' Tip '+o.tip+'.');return trim(a.join(''))}
-  function full(o){ if(o.type==='micro') return trim(o.story); const s=[]; const exp=GEXP[o.grade||'NA']||GEXP.NA; s.push('<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'); s.push('Money '+(o.cost||'Unknown')+'.'); s.push(' English '+(o.eng||'Unknown')+'.'); s.push(' Exchange '+(o.fx||'Unknown')+'.'); s.push(' Issues: '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.'); s.push(' Tips: use official rides, keep phones pocketed curbside, and confirm prices before rides.'); s.push(' '+foodsLine(o.name)); return trim(s.join(' ')) }
-  function mkObj(line){const p=(line||'').split('|');const name=p[0]||'';const rank=p[1]||'-';const grade=p[2]||'C';const cost=p[3]||'Moderate';const eng=p[4]||'Moderate';const fx=p[5]||'Moderate';const r1=p[6]||'Theft';const r2=p[7]||'Scams';const tip=p[8]||'Use official options';return {key:asString(name).toLowerCase(),name:asString(name),rank:rank==='-'?null:Number(rank),grade,cost,eng,fx,r1,r2,tip}};
-
-  // ======== Data placeholders (paste your arrays) ========
-  const TOK=[/* 생략 */];
-  const MICROS=[/* 생략 */];
-  // ======================================================
-
+  // Build DB (placeholders are okay; UN list fills the rest)
   const DB={}, ITEMS=TOK.map(mkObj); for(const o of ITEMS){DB[asString(o.name).toLowerCase()]=o}
-  MICROS.forEach(m=>{ DB[m.name.toLowerCase()]=m });
+  MICROS.forEach(m=>{ if(m && m.name) DB[m.name.toLowerCase()]=m });
 
+  // UN coverage (ensures app works even when TOK is empty)
   const UN_STR='Afghanistan|Albania|Algeria|Andorra|Angola|Antigua and Barbuda|Argentina|Armenia|Australia|Austria|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belgium|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burundi|Cabo Verde|Cambodia|Cameroon|Canada|Central African Republic|Chad|Chile|China|Colombia|Comoros|Congo|Costa Rica|Côte d’Ivoire|Croatia|Cuba|Cyprus|Czechia|Democratic Republic of the Congo|Denmark|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Estonia|Eswatini|Ethiopia|Fiji|Finland|France|Gabon|Gambia|Georgia|Germany|Ghana|Greece|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|Iceland|India|Indonesia|Iran|Iraq|Ireland|Israel|Italy|Jamaica|Japan|Jordan|Kazakhstan|Kenya|Kiribati|Korea, Republic of (South Korea)|Kuwait|Kyrgyzstan|Lao PDR|Latvia|Lebanon|Lesotho|Liberia|Libya|Liechtenstein|Lithuania|Luxembourg|Madagascar|Malawi|Malaysia|Maldives|Mali|Malta|Marshall Islands|Mauritania|Mauritius|Mexico|Micronesia|Moldova|Monaco|Mongolia|Montenegro|Morocco|Mozambique|Myanmar|Namibia|Nauru|Nepal|Netherlands|New Zealand|Nicaragua|Niger|Nigeria|North Macedonia|Norway|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Portugal|Qatar|Romania|Russian Federation|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|San Marino|Sao Tome and Principe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Singapore|Slovakia|Slovenia|Solomon Islands|Somalia|South Africa|South Sudan|Spain|Sri Lanka|Sudan|Suriname|Sweden|Switzerland|Syrian Arab Republic|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|United Kingdom|United States|Uruguay|Uzbekistan|Vanuatu|Venezuela|Viet Nam|Yemen|Zambia|Zimbabwe';
   const UN=UN_STR.split('|');
-
-  // Ensure DB has placeholders for all UN countries
   UN.forEach(n=>{ const k=n.toLowerCase(); if(!DB[k]){ DB[k]={name:n,key:k,rank:null,grade:'NA',cost:'Unknown',eng:'Unknown',fx:'Unknown',r1:'—',r2:'—',tip:'Information limited; check official advisories.',type:'country'} }});
 
   // Collections
@@ -259,17 +271,21 @@
   const GOOD=ITEMS2.filter(o=>o.rank!=null && !o.type).sort((a,b)=>a.rank-b.rank);
   const RISK_ALL=ITEMS2.filter(o=>!o.type && riskRe.test(o.grade||''));
   const RISK_SORTED=RISK_ALL.slice().sort((a,b)=> (gradeOrder[a.grade]??99)-(gradeOrder[b.grade]??99) || a.name.localeCompare(b.name));
-  const MICRONAMES=MICROS.map(m=>m.name).sort();
+  const MICRONAMES=(MICROS||[]).map(m=>m.name).filter(Boolean).sort();
 
-  // Datalist (one-line)
+  // Datalist
   const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
   names.forEach(n=>{ const o=DB[n.toLowerCase()]; let label=o.name; if(o.type==='micro') label+=' (MICRONATION)'; else if(riskRe.test(o.grade||'')) label+=' (RISK)'; else if(o.rank!=null) label+=` (SAFE #${o.rank})`; else label+=' (INFO-LIMITED)'; const op=document.createElement('option'); op.value=label; dl.appendChild(op); });
 
-  // Interest / hover
+  // ======== Auto-rotation ========
   let mode='core', rotId=null, visible=true, userLock=null, goodIdx=0, phase='good';
-  function step(){ if(phase==='good' && GOOD.length){ const o=GOOD[goodIdx % GOOD.length]; goodIdx++; show(o,false); phase='risk'; } else if(RISK_ALL.length){ const o=pick(RISK_ALL); show(o,false); phase='good'; } else { show(pick(ITEMS2),false); } }
+  function step(){
+    if(phase==='good' && GOOD.length){ const o=GOOD[goodIdx % GOOD.length]; goodIdx++; show(o,false); phase='risk'; }
+    else if(RISK_ALL.length){ const o=pick(RISK_ALL); show(o,false); phase='good'; }
+    else { show(pick(ITEMS2),false); }
+  }
   function startAuto(){ if(rotId||!visible) return; rotId=setInterval(()=>{ if(!userLock&&visible){ step() } }, rotDelay) }
-  function stopAuto(){ clearInterval(rotId); rotId=null }
+  function stopAuto(){ if(rotId){ clearInterval(rotId); rotId=null } }
   function lock(){ if(userLock) clearTimeout(userLock); stopAuto(); userLock=setTimeout(()=>{ userLock=null; startAuto(); }, USER_LOCK_MS) }
 
   // Inputs
@@ -282,7 +298,7 @@
   box.addEventListener('pointerenter',()=>{ mode='deep'; rotDelay=ROT_HOVER; stopAuto(); startAuto(); if(curr) show(curr,false) });
   box.addEventListener('pointerleave',()=>{ mode='core'; rotDelay=ROT_DEFAULT; stopAuto(); startAuto(); if(curr) show(curr,false) });
 
-  // Visibility
+  // Visibility watcher
   const io=new IntersectionObserver(es=>{ es.forEach(e=>{ visible=e.isIntersecting; if(visible) startAuto(); else stopAuto(); }) }); io.observe(box);
 
   // Heights
@@ -357,31 +373,26 @@
   function clamp(x,a,b){ return Math.max(a, Math.min(b,x)) }
 
   const L2=(function(){
-    const d=phi(ITEMS2[0]).length; // feature size
+    const d=phi(ITEMS2[0]).length; // feature size (UN ensures >=1)
     let w=zeros(d); // weights
     let P=eye(d, 10); // large initial covariance
-    let seen=0;
     const ff_base=0.98; // forgetting factor
 
-    function predictScore(o){ const x=phi(o); const yhat=dot(w,x); const Px=mulMatVec(P,x); const denom = ff_base + dot(x,Px); const conf = clamp(1 - 1/(1+denom), 0.2, 0.98); return {yhat,conf,x,Px,denom} }
+    function predictScore(o){ const x=phi(o); const Px=mulMatVec(P,x); const denom = ff_base + dot(x,Px); const yhat=dot(w,x); const conf = clamp(1 - 1/(1+denom), 0.2, 0.98); return {yhat,conf,x,Px,denom} }
 
     function rlsUpdate(x,y){
-      // Standard RLS with forgetting factor λ=ff_base
       const Px=mulMatVec(P,x);
       const denom = ff_base + dot(x,Px);
       const kVec = Px.map(v=> v/denom); // K = P x /(λ + x^T P x)
       const yhat = dot(w,x);
-      const err = y - yhat; // a posteriori error
-      // w ← w + K * err
-      for(let i=0;i<w.length;i++) w[i] += kVec[i]*err;
-      // P ← (P - K x^T P) / λ
-      const KxTP = outer(kVec, Px); // Px = P x
+      const err = y - yhat;
+      for(let i=0;i<w.length;i++) w[i] += kVec[i]*err;      // w ← w + K * err
+      const KxTP = outer(kVec, Px);                          // P ← (P - K x^T P) / λ
       addInPlace(P, KxTP, -1);
       for(let i=0;i<P.length;i++) P[i] /= ff_base;
-      seen++;
     }
 
-    function topDrivers(x){ // top |w_i * x_i|
+    function topDrivers(x){
       const parts=x.map((xi,i)=>[Math.abs(w[i]*xi), i]).sort((a,b)=>b[0]-a[0]).slice(0,4);
       return parts.map(([_,i])=>`f${i+1}:${(w[i]*x[i]>=0?'+':'')}${(w[i]*x[i]).toFixed(2)}`).join(', ');
     }
@@ -389,7 +400,6 @@
     function blend(o){
       const k=predictGradeKNN(o,5); const kScore=parseFloat(k.score);
       const {yhat,conf,x}=predictScore(o);
-      // Dynamic weights: more weight to learner as it gains confidence
       const wL = clamp(conf*0.9, 0.10, 0.85);
       const wK = clamp(1 - wL + (k.avgSim-0.75)*0.4, 0.15, 0.9);
       const s = clamp( (wK*kScore + wL*yhat) / (wK + wL), 0, 1 );
@@ -407,23 +417,50 @@
     const k=b.knn; const predK=k.pred; const predL=scoreToGrade(parseFloat(b.parts.yhat));
     return `<div class="ai-note ai-grid">
       <div><strong>${LABELS.ai}:</strong> <span class="badge ${gColor(b.g)}">${b.g}</span> <span class="brkt">【 blend=${b.s.toFixed(2)}; wK=${b.parts.wK}; wL=${b.parts.wL} 】</span></div>
-      <div class="muted">k-NN: <span class="chip">${predK}</span> via <em>${k.neighbors}</em></div>
+      <div class="muted">k-NN: <span class="chip">${predK||'—'}</span> ${k.neighbors?`via <em>${k.neighbors}</em>`:''}</div>
       <div class="muted">RLS: <span class="chip">${predL}</span> <span class="brkt">【 y^=${b.parts.yhat}, conf ${b.parts.conf} 】</span></div>
       <div class="muted">Top drivers: ${d}</div>
       <small>On-device learning; no network calls. Predictions are heuristic and not legal travel advice.</small>
     </div>`
   }catch(_){ return '' } }
 
-  // Renderers
+  // ======== Renderers ========
   let curr=null;
   function displayName(o){ if(o.type==='micro') return `${o.name} (MICRONATION)`; if(riskRe.test(o.grade||'')) return `${o.name} (RISK)`; if(o.rank!=null) return `${o.name} (SAFE #${o.rank})`; return `${o.name} (INFO-LIMITED)` }
   function updatePeriod(name){ const c=creditInfo(name); elP.innerHTML = `A world-class, ultra-lightweight on-device k-NN AI demo<span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>` }
-  function show(o,user){ if(!o||typeof o!=='object') return; curr=o; const risky=riskRe.test(o.grade||''); elN.textContent=displayName(o); elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)'); if(o.type==='micro'){ elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';  elD.textContent=core(o); elM.innerHTML='<div>'+full(o)+'</div>'; } else { const exp=GEXP[o.grade||'NA']||GEXP.NA; elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'; elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA')); elD.textContent=core(o); elM.innerHTML=(mode==='deep')?('<div>'+full(o)+'</div>'):''; }
+  function show(o,user){
+    if(!o||typeof o!=='object') return;
+    curr=o;
+    const risky=riskRe.test(o.grade||'');
+    elN.textContent=displayName(o);
+    elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)');
+    if(o.type==='micro'){
+      elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';
+      elD.textContent=core(o);
+      elM.innerHTML='<div>'+full(o)+'</div>';
+    } else {
+      const exp=GEXP[o.grade||'NA']||GEXP.NA;
+      elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>';
+      elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA'));
+      elD.textContent=core(o);
+      elM.innerHTML=(mode==='deep')?('<div>'+full(o)+'</div>'):'';
+    }
     if(aiMode && !o.type){ elM.innerHTML += renderAiNote(o); }
     updatePeriod(o.name);
-    qRec(); if(user){ save(o.name); lock(); setQuery(o.name); if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } } else if(risky){ phase='good' } if(o.grade && o.grade!=='NA') { L2.observe(o) } }
-    sr.textContent=o.name+' loaded.' }
-  function render(input){ const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim()); if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return } const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit) show(hit,true) }
+    qRec();
+    if(user){
+      save(o.name); lock(); setQuery(o.name);
+      if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } }
+      else if(risky){ phase='good' }
+      if(o.grade && o.grade!=='NA') { L2.observe(o) }
+    }
+    sr.textContent=o.name+' loaded.';
+  }
+  function render(input){
+    const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim());
+    if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return }
+    const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit) show(hit,true)
+  }
 
   // URL state
   function getQuery(){ try{ const u=new URL(location.href); return u.searchParams.get('country')||'' } catch(_){ return '' } }
@@ -437,12 +474,11 @@
   // AI toggle
   aiBtn.addEventListener('click',()=>{ aiMode=!aiMode; aiBtn.textContent=aiMode?'AI: ON':'AI: OFF'; aiBtn.style.background=aiMode?'#d9f2ff':'#e6f4ff'; aiBtn.style.borderColor=aiMode?'#5bb8ee':'#9ad1f3'; if(curr) show(curr,false); sr.textContent='AI mode '+(aiMode?'on':'off'); });
 
-  // Tests (light, non-fatal)
+  // Tests (light)
   (function tests(){ try{
     console.group('[Ticker tests]');
     const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193');
     console.assert(!!DB['united states'],'United States present');
-    console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=0,'ranked sample (optional)');
     console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F');
     console.assert(bestMatch('usa')==='united states','alias usa→united states');
     console.assert(bestMatch('jp')==='japan','alias jp→japan');
@@ -527,7 +563,6 @@
   }
   #bottom-ticker a:hover { text-decoration: underline; }
 </style>
-
 
 
 
