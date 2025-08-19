@@ -82,7 +82,7 @@
         view=document.getElementById('view');
 
   // ======== Labels & header ========
-  const LABELS={ title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg",
+  const LABELS={ title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody\'s 5yr avg",
     placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.',
     sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN + RLS) suggestion' };
   elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
@@ -114,18 +114,31 @@
   function asString(x){ if(typeof x==='string') return x; if(x&&typeof x.name==='string') return x.name; return '' }
   function cleanInput(v){ return asString(v).replace(/\s*\((risk|safe\s*#\d+|micronation|info\-limited)\)\s*$/i,'').trim() }
   function trim(s){return (typeof s==='string'?s:'').replace(/\s+/g,' ').trim()}
-  function grams(s){ s=asString(s).toLowerCase(); s=(' '+s+' ').replace(/[^a-z\s]/g,''); const g=new Set(); for(let i=0;i<s.length-2;i++) g.add(s.slice(i,i+3)); return g }
+  function fold(s){ try{ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'') } catch(_) { return s } }
+  function grams(s){ s=fold(asString(s).toLowerCase()); s=(' '+s+' ').replace(/[^a-z\s]/g,''); const g=new Set(); for(let i=0;i<s.length-2;i++) g.add(s.slice(i,i+3)); return g }
   function jacc(a,b){const A=grams(a),B=grams(b);let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.max(1,A.size+B.size-inter)}
   function bestMatch(name){
     const ALIAS={'usa':'united states','us':'united states','u.s.':'united states','america':'united states','united states of america':'united states','uk':'united kingdom','britain':'united kingdom','england':'united kingdom','kr':'korea, republic of (south korea)','korea':'korea, republic of (south korea)','south korea':'korea, republic of (south korea)','republic of korea':'korea, republic of (south korea)','jp':'japan','jpn':'japan','nippon':'japan','uae':'united arab emirates','emirates':'united arab emirates','ksa':'saudi arabia','cote d\'ivoire':'côte d’ivoire','cote d’ivoire':'côte d’ivoire','vietnam':'viet nam','russia':'russian federation'};
-    const norm=(s)=>{ s=asString(s).toLowerCase().trim(); return ALIAS[s]||s };
+    const norm=(s)=>{ s=fold(asString(s).toLowerCase().trim()); return ALIAS[s]||s };
     const s=norm(name); if(!s) return ''; if(DB[s]) return s; let best='',sc=0; for(const k of Object.keys(DB)){const v=jacc(s,k); if(v>sc){sc=v;best=k}} return sc>.18?best:'';
   }
 
   function core(o){ if(o.type==='micro') return trim(o.pitch); const a=[];a.push('Money '+o.cost+'.');a.push(' English '+o.eng+'.');a.push(' Exchange '+o.fx+'.');a.push(' Risks '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.');a.push(' Tip '+o.tip+'.');return trim(a.join(''))}
   function full(o){ if(o.type==='micro') return trim(o.story); const s=[]; const exp=GEXP[o.grade||'NA']||GEXP.NA; s.push('<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'); s.push('Money '+(o.cost||'Unknown')+'.'); s.push(' English '+(o.eng||'Unknown')+'.'); s.push(' Exchange '+(o.fx||'Unknown')+'.'); s.push(' Issues: '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.'); s.push(' Tips: use official rides, keep phones pocketed curbside, and confirm prices before rides.'); s.push(' '+foodsLine(o.name)); return trim(s.join(' ')) }
-  function mkObj(line){const p=(line||'').split('|');const name=p[0]||'';const rank=p[1]||'-';const grade=p[2]||'C';const cost=p[3]||'Moderate';const eng=p[4]||'Moderate';const fx=p[5]||'Moderate';const r1=p[6]||'Theft';const r2=p[7]||'Scams';const tip=p[8]||'Use official options';return {key:asString(name).toLowerCase(),name:asString(name),rank:rank==='-'?null:Number(rank),grade,cost,eng,fx,r1,r2,tip}};
-
+  function mkObj(line){
+    const p=(line||'').split('|');
+    const name=p[0]||'';
+    const rRaw=p[1];
+    const rank=(rRaw && rRaw!=='-' && isFinite(+rRaw)) ? Number(rRaw) : null; // ← NaN/빈값/"-" 가드
+    const grade=p[2]||'C';
+    const cost=p[3]||'Moderate';
+    const eng=p[4]||'Moderate';
+    const fx=p[5]||'Moderate';
+    const r1=p[6]||'Theft';
+    const r2=p[7]||'Scams';
+    const tip=p[8]||'Use official options';
+    return {key:asString(name).toLowerCase(),name:asString(name),rank,grade,cost,eng,fx,r1,r2,tip};
+  };
   const TOK=[
     'France|1|A-|Expensive|Moderate|Easy|Pickpockets|Transit scams|Book top museums in advance to avoid lines',
     'Spain|2|B+|Moderate|Moderate|Easy|Bag snatch|Beach theft|Use lockers and keep bags zipped on metros',
@@ -238,28 +251,9 @@
     'South Africa|-|D|Moderate|Moderate|Moderate|Carjacking|Armed robbery|Doors locked; daylight routes'
   ];
 
-  // Micronations (type:"micro")
-  const MICROS=[
-    {name:'Principality of Sealand',type:'micro',pop:'~30–50',gdp:'Unknown',leader:'Prince Michael',founded:'1967',pitch:'Micronation on a WW2 sea fort off England. Not a UN state.',story:'Founded by pirate-radio pioneer Roy Bates to broadcast beyond UK law. Issues titles and passports; dramatic 1978 coup attempt repelled. Listed as MICRONATION for clarity.'},
-    {name:'Republic of Molossia',type:'micro',pop:'~35',gdp:'Unknown',leader:'President Kevin Baugh',founded:'1977',pitch:'Comedy-spirited desert micronation in Nevada, USA.',story:'Famous for whimsical customs, a space program, and a declared war on East Germany until 2018. Tours book out months ahead. MICRONATION only.'},
-    {name:'Liberland',type:'micro',pop:'~700k e-citizens',gdp:'Unknown',leader:'President Vít Jedlička',founded:'2015',pitch:'Claim on Danube river island between Croatia and Serbia.',story:'Founded on terra nullius concept; residents mainly online with libertarian ideals. Border access is limited. MICRONATION, not a UN state.'},
-    {name:'Kingdom of North Sudan',type:'micro',pop:'<10',gdp:'Unknown',leader:'Jeremiah Heaton',founded:'2014',pitch:'Bir Tawil claim between Egypt and Sudan.',story:'Started as a father’s promise to make his daughter a princess. Purely symbolic; no recognition. MICRONATION label applies.'},
-    {name:'Grand Duchy of Flandrensis',type:'micro',pop:'~8k citizens',gdp:'Unknown',leader:'Grand Duke Nikolaus',founded:'2008',pitch:'Claims in Antarctica for climate advocacy.',story:'No land occupation; promotes environmental protection and “no human presence in Antarctica”. Recognized as a MICRONATION only.'},
-    {name:'Duchy of Sealand New Malta',type:'micro',pop:'Unknown',gdp:'Unknown',leader:'Various',founded:'—',pitch:'Minor offshoot projects around sea-fort concept.',story:'Community experiments; not territorial states. MICRONATION.'},
-    {name:'Principality of Hutt River',type:'micro',pop:'Defunct (former)',gdp:'—',leader:'Prince Graeme (former)',founded:'1970',pitch:'Former Australian farm secession project.',story:'Closed in 2020; kept for cultural history. MICRONATION (historic).'},
-    {name:'Kingdom of Talossa',type:'micro',pop:'~2k',gdp:'Unknown',leader:'King John',founded:'1979',pitch:'Fantasy kingdom created by a teenager in Milwaukee.',story:'Rich culture with its own language. Online-first, MICRONATION only.'},
-    {name:'Ladonia',type:'micro',pop:'~22k online',gdp:'Unknown',leader:'Queen Carolyn',founded:'1996',pitch:'Art-state in a Swedish nature reserve.',story:'Born from legal battles over sculpture “Nimis”. Citizenship mostly virtual. MICRONATION.'},
-    {name:'Principality of Seborga',type:'micro',pop:'~300',gdp:'Unknown',leader:'Prince Marcello I',founded:'1990s revival',pitch:'Italian hill town with princely lore.',story:'Touristic pageantry claims medieval independence. Cultural MICRONATION.'},
-    {name:'Asgardia',type:'micro',pop:'~1M e-citizens',gdp:'Unknown',leader:'Igor Ashurbeyli',founded:'2016',pitch:'Space-themed online nation.',story:'Launched a micro-satellite; seeks space law debates. No territory; MICRONATION.'},
-    {name:'Westarctica',type:'micro',pop:'~3k citizens',gdp:'Unknown',leader:'Grand Duke Travis',founded:'2001',pitch:'Claims Marie Byrd Land, Antarctica.',story:'Focus on conservation and charity; symbolic claim. MICRONATION.'},
-    {name:'Wirtland',type:'micro',pop:'~3k',gdp:'Unknown',leader:'Chancellor (var.)',founded:'2008',pitch:'Internet-based transnational micronation.',story:'Issued “phaleras” and ID cards. Purely virtual; MICRONATION.'},
-    {name:'Christiania (Freetown)',type:'micro',pop:'~1k',gdp:'Unknown',leader:'Collective',founded:'1971',pitch:'Autonomous neighborhood in Copenhagen.',story:'Self-governed commune famous for art and green light district. Not a state; MICRONATION tag added.'},
-    {name:'Akhzivland',type:'micro',pop:'<20',gdp:'Unknown',leader:'Eli Avivi (founder, late)',founded:'1971',pitch:'Tiny cultural enclave in Israel.',story:'Run as a private museum-village. Tourist curiosity; MICRONATION.'}
-  ];
-
-  // Build DB (placeholders are okay; UN list fills the rest)
+   // Build DB (placeholders are okay; UN list fills the rest)
   const DB={}, ITEMS=TOK.map(mkObj); for(const o of ITEMS){DB[asString(o.name).toLowerCase()]=o}
-  MICROS.forEach(m=>{ if(m && m.name) DB[m.name.toLowerCase()]=m });
+  (MICROS||[]).forEach(m=>{ if(m && m.name) DB[m.name.toLowerCase()]=m });
 
   // UN coverage (ensures app works even when TOK is empty)
   const UN_STR='Afghanistan|Albania|Algeria|Andorra|Angola|Antigua and Barbuda|Argentina|Armenia|Australia|Austria|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belgium|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burundi|Cabo Verde|Cambodia|Cameroon|Canada|Central African Republic|Chad|Chile|China|Colombia|Comoros|Congo|Costa Rica|Côte d’Ivoire|Croatia|Cuba|Cyprus|Czechia|Democratic Republic of the Congo|Denmark|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Estonia|Eswatini|Ethiopia|Fiji|Finland|France|Gabon|Gambia|Georgia|Germany|Ghana|Greece|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|Iceland|India|Indonesia|Iran|Iraq|Ireland|Israel|Italy|Jamaica|Japan|Jordan|Kazakhstan|Kenya|Kiribati|Korea, Republic of (South Korea)|Kuwait|Kyrgyzstan|Lao PDR|Latvia|Lebanon|Lesotho|Liberia|Libya|Liechtenstein|Lithuania|Luxembourg|Madagascar|Malawi|Malaysia|Maldives|Mali|Malta|Marshall Islands|Mauritania|Mauritius|Mexico|Micronesia|Moldova|Monaco|Mongolia|Montenegro|Morocco|Mozambique|Myanmar|Namibia|Nauru|Nepal|Netherlands|New Zealand|Nicaragua|Niger|Nigeria|North Macedonia|Norway|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Portugal|Qatar|Romania|Russian Federation|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|San Marino|Sao Tome and Principe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Singapore|Slovakia|Slovenia|Solomon Islands|Somalia|South Africa|South Sudan|Spain|Sri Lanka|Sudan|Suriname|Sweden|Switzerland|Syrian Arab Republic|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|United Kingdom|United States|Uruguay|Uzbekistan|Vanuatu|Venezuela|Viet Nam|Yemen|Zambia|Zimbabwe';
@@ -298,12 +292,21 @@
   box.addEventListener('pointerenter',()=>{ mode='deep'; rotDelay=ROT_HOVER; stopAuto(); startAuto(); if(curr) show(curr,false) });
   box.addEventListener('pointerleave',()=>{ mode='core'; rotDelay=ROT_DEFAULT; stopAuto(); startAuto(); if(curr) show(curr,false) });
 
-  // Visibility watcher
-  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ visible=e.isIntersecting; if(visible) startAuto(); else stopAuto(); }) }); io.observe(box);
+  // Visibility watcher (with fallback)
+  (function(){
+    try{
+      if('IntersectionObserver' in window && box){
+        const io=new IntersectionObserver(es=>{ es.forEach(e=>{ visible=e.isIntersecting; if(visible) startAuto(); else stopAuto(); }) });
+        io.observe(box);
+      } else {
+        visible=true; startAuto();
+      }
+    }catch(_){ visible=true; startAuto(); }
+  })();
 
   // Heights
   let roPending=false,lastFull=0,lastCol=0;
-  function recalc(){ try{ const prev=box.style.maxHeight; box.style.maxHeight='none'; const full=box.scrollHeight; const collapsed=Math.max(MIN_COLLAPSED, Math.round(full*COLLAPSE_PCT)); box.style.maxHeight=prev; if(full===lastFull&&collapsed===lastCol) return; lastFull=full; lastCol=collapsed; box.style.setProperty('--expanded-h', full+'px'); box.style.setProperty('--collapsed-h', collapsed+'px'); }catch(_){} }
+  function recalc(){ try{ const prev=box.style.maxHeight; box.style.maxHeight='none'; const full=box.scrollHeight; const collapsed=Math.max(MIN_COLLAPSED, Math.round(full*COLLAPSE_PCT)); box.style.maxHeight=prev; if(full===lastFull&&collapsed===lastCol) return; lastFull=full; lastCol=collapsed; box.style.setProperty('--expanded-h', full+'px'); box.style.setProperty('--collapsed-h', collapsed+'px'); }catch(_){}} 
   function qRec(){ if(roPending) return; roPending=true; requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ roPending=false; recalc(); }) }) }
   if('ResizeObserver' in window){ const ro=new ResizeObserver(()=>qRec()); ro.observe(view) }
   window.addEventListener('resize',qRec);
@@ -336,7 +339,7 @@
     return '';
   }
   const VEC_CACHE=new Map();
-  function vecFor(o,{excludeGrade=false}={}){ const key=(o.name||'')+'|'+excludeGrade;
+  function vecFor(o,{excludeGrade=false}={}){ const key=((o&& (o.key||asString(o.name).toLowerCase()))||'')+'|'+excludeGrade;
     if(VEC_CACHE.has(key)) return VEC_CACHE.get(key).slice();
     const c=String(o.cost||'Unknown').toLowerCase();
     const e=String(o.eng||'Unknown').toLowerCase();
@@ -532,6 +535,8 @@
       const b=baseName(t);
       nameEl.textContent=b+' ('+classify(b)+')';
       ensureNaAdvice();
+    } else {
+      if(moreEl){ delete moreEl.dataset.naAdviceAdded; } // ← 노트 플래그 리셋 (다음 INFO-LIMITED 때 재부착)
     }
   }
 
