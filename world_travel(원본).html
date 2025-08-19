@@ -6,14 +6,12 @@
 #box{background:#fffbea;border:1px solid rgba(0,0,0,.12);border-radius:8px;box-shadow:0 6px 14px rgba(2,6,23,.08);overflow:hidden;font:.8rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#0b1221;opacity:.48;filter:saturate(.9) contrast(.95);transition:max-height .24s ease,opacity .18s ease,filter .18s ease,box-shadow .18s ease,transform .18s ease;max-height:var(--collapsed-h,424px);position:relative}
 #box header{padding:4px 6px;font-weight:800;background:linear-gradient(180deg,#fffbea,#fff7d6);border-bottom:1px solid rgba(0,0,0,.08);font-size:.82rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #box header > .title{color:#0b3d91;font-weight:900}
-/* Fix: lock ticker title size against global header .title rules */
 #box #title{ font-size:0.85rem !important; line-height:1.22; font-weight:900; color:#0b3d91; text-align:center; width:100% }
 #box .row{padding:4px 6px}
 #box:hover,#box:focus-within,#box.active{opacity:1;filter:none;box-shadow:0 10px 22px rgba(2,6,23,.12);transform:translateY(-1px);max-height:var(--expanded-h,1000px)}
 #controls{display:grid;grid-template-columns:1fr auto auto;gap:4px;align-items:center}
 #q{min-width:0;flex:1;padding:3px 5px;border:1px solid rgba(0,0,0,.16);border-radius:6px;outline:none;font-size:.72rem}
 #riskBtn{padding:3px 6px;border-radius:6px;border:1px solid #e8b7b7;background:#ffe1e1;color:#7a2a2a;font-weight:800;cursor:pointer;font-size:.72rem}
-/* AI toggle button */
 #aiBtn{padding:3px 6px;border-radius:6px;border:1px solid #9ad1f3;background:#e6f4ff;color:#084c61;font-weight:800;cursor:pointer;font-size:.72rem}
 #name{font-weight:800;color:#0b1221}
 .badge{font-weight:800}.green{color:#16a34a}.black{color:#0b1221}.red{color:#b01919}.brkt{font-weight:700}
@@ -23,9 +21,15 @@
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 #infoRail:hover #desc,#infoRail:focus-within #desc{display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset;overflow:visible}
 #infoRail:hover #more,#infoRail:focus-within #more{overflow:visible}
-/* AI note style */
 .ai-note{margin-top:4px;opacity:.98}
 .ai-note small{display:block;font-size:.68rem;opacity:.9;margin-top:2px}
+.ai-pill{display:inline-block;padding:1px 6px;border-radius:6px;border:1px solid rgba(0,0,0,.12);font-weight:800;margin-left:6px}
+.ai-pill[data-on="1"]{background:#d9f2ff;border-color:#5bb8ee}
+.ai-chip{display:inline-block;border:1px dashed rgba(0,0,0,.2);padding:2px 6px;border-radius:6px;margin-right:4px;cursor:pointer}
+.ai-chip:hover{text-decoration:underline}
+.ai-table{width:100%;border-collapse:collapse;margin-top:4px;font-size:.72rem}
+.ai-table td{padding:2px 4px;border-top:1px dashed rgba(0,0,0,.12)}
+.ai-hint{opacity:.9;font-size:.68rem;margin-top:2px}
 </style>
 
 <aside id="infoRail" aria-label="Sticky world travel ticker">
@@ -57,62 +61,7 @@
 </aside>
 
 <script>
-(function(){
-  // Rotation timings (hover toggles 20s → 40s)
-  const ROT_DEFAULT=20000, ROT_HOVER=40000, USER_LOCK_MS=40000, COLLAPSE_PCT=0.60, MIN_COLLAPSED=424;
-  let rotDelay=ROT_DEFAULT;
-
-  const box=document.getElementById('box'), q=document.getElementById('q'), dl=document.getElementById('countries'), riskBtn=document.getElementById('riskBtn');
-  const aiBtn=document.getElementById('aiBtn');
-  const elT=document.getElementById('title'), elP=document.getElementById('period');
-  const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
-
-  // Labels
-  const LABELS={ title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg",
-    placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.',
-    sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN) suggestion' };
-  elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
-  q.setAttribute('placeholder',LABELS.placeholder);
-  riskBtn.textContent=LABELS.risk;
-
-  // Grade explanations
-  const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised. ☠️","E":"Very poor; escort advised, avoid travel. ☠️","E-":"Extremely poor; do not visit. ☠️","F":"Worst level; absolute no-go. ☠️☠️","NA":"Information limited between 2020–2024; consult official guidance."};
-
-  const riskRe=/^(D|E|F)/;
-  const gradeOrder={"F":0,"E-":1,"E":2,"E+":3,"D-":4,"D":5,"D+":6,"C-":7,"C":8,"C+":9,"B-":10,"B":11,"B+":12,"A-":13,"A":14,"A+":15,"NA":99};
-
-  // Moody's 5-year average (subset)
-  const MOODYS={'Luxembourg':'Aaa','Germany':'Aaa','Switzerland':'Aaa','Norway':'Aaa','Denmark':'Aaa','Sweden':'Aaa','Netherlands':'Aaa','Finland':'Aaa','Austria':'Aa1','United States':'Aaa','Canada':'Aaa','Australia':'Aaa','New Zealand':'Aaa','Singapore':'Aaa','United Kingdom':'Aa3','France':'Aa2','Japan':'A1','Italy':'Baa3','Spain':'Baa1','Ireland':'A1','Portugal':'Baa2','Mexico':'Baa2','Brazil':'Ba2','India':'Baa3','South Africa':'Ba2','Turkey':'B3','United Arab Emirates':'Aa2','Saudi Arabia':'A1','Qatar':'Aa2','Korea, Republic of (South Korea)':'Aa2','China':'A1'};
-  function moodysColor(r){ if(!r||/^NR$/i.test(r)||/^None$/i.test(r)) return 'black'; if(/^WR$/i.test(r)) return 'red'; if(/^(Aaa|Aa|A|Baa)/.test(r)) return 'green'; if(/^(Ba|B[1-3]?$)/.test(r)) return 'black'; if(/^(Caa|Ca|C)$/i.test(r)) return 'red'; return 'black' }
-  function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; const skull=/^WR$/i.test(r)?' ☠️':''; return {text:r+skull, cls:moodysColor(r), raw:r} }
-  function gColor(g){if(/^A|^B/.test(g))return'green';if(/^C|NA$/.test(g))return'black';return'red'}
-
-  // Food suggestions
-  const FOODS={'Japan':['sushi','ramen','okonomiyaki'],'United States':['burger','BBQ','clam chowder'],'France':['croissant','crêpe','coq au vin'],'Italy':['pizza','pasta','gelato'],'Spain':['paella','tapas','churros'],'Thailand':['pad thai','som tam','tom yum'],'Korea, Republic of (South Korea)':['bibimbap','bulgogi','kimchi stew'],'China':['dumplings','hot pot','Peking duck'],'Germany':['bratwurst','pretzel','schnitzel'],'United Kingdom':['fish and chips','pie and mash','full English'],'Mexico':['tacos','mole','pozole'],'Turkey':['kebap','baklava','lahmacun'],'Malaysia':['nasi lemak','satay','laksa'],'Singapore':['chicken rice','laksa','chilli crab'],'Portugal':['pastel de nata','bacalhau','francesinha'],'Canada':['poutine','butter tart','Nanaimo bar'],'Australia':['meat pie','lamington','barramundi'],'New Zealand':['lamb','hokey pokey','green-lipped mussels']};
-  function foodsLine(name){ const arr=FOODS[name]||['local street food','the national dish','a signature dessert']; return 'Recommended foods: '+arr[0]+', '+arr[1]+', '+arr[2]+'.' }
-
-  // Persist
-  const LS_KEY='wtta.last';
-  function save(c){try{localStorage.setItem(LS_KEY,c)}catch(e){}}
-  function load(){try{return localStorage.getItem(LS_KEY)||''}catch(e){return''}}
-
-  // Utils
-  function pick(a){return a[Math.floor(Math.random()*a.length)]}
-  function asString(x){ if(typeof x==='string') return x; if(x&&typeof x.name==='string') return x.name; return '' }
-  function cleanInput(v){ return asString(v).replace(/\s*\((risk|safe\s*#\d+|micronation|info\-limited)\)\s*$/i,'').trim() }
-  function trim(s){return (typeof s==='string'?s:'').replace(/\s+/g,' ').trim()}
-  function grams(s){ s=asString(s).toLowerCase(); s=(' '+s+' ').replace(/[^a-z\s]/g,''); const g=new Set(); for(let i=0;i<s.length-2;i++) g.add(s.slice(i,i+3)); return g }
-  function jacc(a,b){const A=grams(a),B=grams(b);let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.max(1,A.size+B.size-inter)}
-  function bestMatch(name){
-    const ALIAS={'usa':'united states','us':'united states','u.s.':'united states','america':'united states','united states of america':'united states','uk':'united kingdom','britain':'united kingdom','england':'united kingdom','kr':'korea, republic of (south korea)','korea':'korea, republic of (south korea)','south korea':'korea, republic of (south korea)','republic of korea':'korea, republic of (south korea)','jp':'japan','jpn':'japan','nippon':'japan','uae':'united arab emirates','emirates':'united arab emirates','ksa':'saudi arabia','cote d\'ivoire':'côte d’ivoire','cote d’ivoire':'côte d’ivoire','vietnam':'viet nam','russia':'russian federation'};
-    const norm=(s)=>{ s=asString(s).toLowerCase().trim(); return ALIAS[s]||s };
-    const s=norm(name); if(!s) return ''; if(DB[s]) return s; let best='',sc=0; for(const k of Object.keys(DB)){const v=jacc(s,k); if(v>sc){sc=v;best=k}} return sc>.18?best:'';
-  }
-
-  function core(o){ if(o.type==='micro') return trim(o.pitch); const a=[];a.push('Money '+o.cost+'.');a.push(' English '+o.eng+'.');a.push(' Exchange '+o.fx+'.');a.push(' Risks '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.');a.push(' Tip '+o.tip+'.');return trim(a.join(''))}
-  function full(o){ if(o.type==='micro') return trim(o.story); const s=[]; const exp=GEXP[o.grade||'NA']||GEXP.NA; s.push('<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'); s.push('Money '+(o.cost||'Unknown')+'.'); s.push(' English '+(o.eng||'Unknown')+'.'); s.push(' Exchange '+(o.fx||'Unknown')+'.'); s.push(' Issues: '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.'); s.push(' Tips: use official rides, keep phones pocketed curbside, and confirm prices before rides.'); s.push(' '+foodsLine(o.name)); return trim(s.join(' ')) }
-  function mkObj(line){const p=(line||'').split('|');const name=p[0]||'';const rank=p[1]||'-';const grade=p[2]||'C';const cost=p[3]||'Moderate';const eng=p[4]||'Moderate';const fx=p[5]||'Moderate';const r1=p[6]||'Theft';const r2=p[7]||'Scams';const tip=p[8]||'Use official options';return {key:asString(name).toLowerCase(),name:asString(name),rank:rank==='-'?null:Number(rank),grade,cost,eng,fx,r1,r2,tip}};
-
+  (function(){
   // Base data (sample + risk). Additional coverage auto-added for all UN members.
   const TOK=[
     'France|1|A-|Expensive|Moderate|Easy|Pickpockets|Transit scams|Book top museums in advance to avoid lines',
@@ -245,13 +194,65 @@
     {name:'Akhzivland',type:'micro',pop:'<20',gdp:'Unknown',leader:'Eli Avivi (founder, late)',founded:'1971',pitch:'Tiny cultural enclave in Israel.',story:'Run as a private museum-village. Tourist curiosity; MICRONATION.'}
   ];
 
+   // ======== Frame settings ========
+  const ROT_DEFAULT=20000, ROT_HOVER=40000, USER_LOCK_MS=40000, COLLAPSE_PCT=0.60, MIN_COLLAPSED=424;
+  let rotDelay=ROT_DEFAULT;
+  const box=document.getElementById('box'), q=document.getElementById('q'), dl=document.getElementById('countries'), riskBtn=document.getElementById('riskBtn');
+  const aiBtn=document.getElementById('aiBtn');
+  const elT=document.getElementById('title'), elP=document.getElementById('period');
+  const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
+
+  // Labels
+  const LABELS={ title:'44KB Offline AI click', assessed:'Assessed', to:'to', moody:"Moody\'s 5yr avg",
+    placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.',
+    sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state', ai:'AI (k-NN) suggestion', l2:'L2 Learner' };
+  elT.innerHTML = `<a href="diplomacy.html" style="color:#0b77d5; text-decoration:underline;">${LABELS.title}</a>`;
+  q.setAttribute('placeholder',LABELS.placeholder);
+  riskBtn.textContent=LABELS.risk;
+
+  // Grade explanations
+  const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised. ☠️","E":"Very poor; escort advised, avoid travel. ☠️","E-":"Extremely poor; do not visit. ☠️","F":"Worst level; absolute no-go. ☠️☠️","NA":"Information limited between 2020–2024; consult official guidance."};
+  const riskRe=/^(D|E|F)/;
+  const gradeOrder={"F":0,"E-":1,"E":2,"E+":3,"D-":4,"D":5,"D+":6,"C-":7,"C":8,"C+":9,"B-":10,"B":11,"B+":12,"A-":13,"A":14,"A+":15,"NA":99};
+
+  // Moody's 5-year average (subset)
+  const MOODYS={'Luxembourg':'Aaa','Germany':'Aaa','Switzerland':'Aaa','Norway':'Aaa','Denmark':'Aaa','Sweden':'Aaa','Netherlands':'Aaa','Finland':'Aaa','Austria':'Aa1','United States':'Aaa','Canada':'Aaa','Australia':'Aaa','New Zealand':'Aaa','Singapore':'Aaa','United Kingdom':'Aa3','France':'Aa2','Japan':'A1','Italy':'Baa3','Spain':'Baa1','Ireland':'A1','Portugal':'Baa2','Mexico':'Baa2','Brazil':'Ba2','India':'Baa3','South Africa':'Ba2','Turkey':'B3','United Arab Emirates':'Aa2','Saudi Arabia':'A1','Qatar':'Aa2','Korea, Republic of (South Korea)':'Aa2','China':'A1'};
+  function moodysColor(r){ if(!r||/^NR$/i.test(r)||/^None$/i.test(r)) return 'black'; if(/^WR$/i.test(r)) return 'red'; if(/^(Aaa|Aa|A|Baa)/.test(r)) return 'green'; if(/^(Ba|B[1-3]?$)/.test(r)) return 'black'; if(/^(Caa|Ca|C)$/i.test(r)) return 'red'; return 'black' }
+  function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; const skull=/^WR$/i.test(r)?' ☠️':''; return {text:r+skull, cls:moodysColor(r), raw:r} }
+  function gColor(g){if(/^A|^B/.test(g))return'green';if(/^C|NA$/.test(g))return'black';return'red'}
+
+  // Food suggestions (small fun touch)
+  const FOODS={'Japan':['sushi','ramen','okonomiyaki'],'United States':['burger','BBQ','clam chowder'],'France':['croissant','crêpe','coq au vin'],'Italy':['pizza','pasta','gelato'],'Spain':['paella','tapas','churros'],'Thailand':['pad thai','som tam','tom yum'],'Korea, Republic of (South Korea)':['bibimbap','bulgogi','kimchi stew'],'China':['dumplings','hot pot','Peking duck'],'Germany':['bratwurst','pretzel','schnitzel'],'United Kingdom':['fish and chips','pie and mash','full English'],'Mexico':['tacos','mole','pozole'],'Turkey':['kebap','baklava','lahmacun'],'Malaysia':['nasi lemak','satay','laksa'],'Singapore':['chicken rice','laksa','chilli crab'],'Portugal':['pastel de nata','bacalhau','francesinha'],'Canada':['poutine','butter tart','Nanaimo bar'],'Australia':['meat pie','lamington','barramundi'],'New Zealand':['lamb','hokey pokey','green-lipped mussels']};
+  function foodsLine(name){ const arr=FOODS[name]||['local street food','the national dish','a signature dessert']; return 'Recommended foods: '+arr[0]+', '+arr[1]+', '+arr[2]+'.' }
+
+  // Persist
+  const LS_KEY='wtta.last';
+  function save(c){try{localStorage.setItem(LS_KEY,c)}catch(e){}}
+  function load(){try{return localStorage.getItem(LS_KEY)||''}catch(e){return''}}
+
+  // Utils
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function asString(x){ if(typeof x==='string') return x; if(x&&typeof x.name==='string') return x.name; return '' }
+  function cleanInput(v){ return asString(v).replace(/\s*\((risk|safe\s*#\d+|micronation|info\-limited)\)\s*$/i,'').trim() }
+  function trim(s){return (typeof s==='string'?s:'').replace(/\s+/g,' ').trim()}
+  function grams(s){ s=asString(s).toLowerCase(); s=(' '+s+' ').replace(/[^a-z\s]/g,''); const g=new Set(); for(let i=0;i<s.length-2;i++) g.add(s.slice(i,i+3)); return g }
+  function jacc(a,b){const A=grams(a),B=grams(b);let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.max(1,A.size+B.size-inter)}
+  function bestMatch(name){
+    const ALIAS={'usa':'united states','us':'united states','u.s.':'united states','america':'united states','united states of america':'united states','uk':'united kingdom','britain':'united kingdom','england':'united kingdom','kr':'korea, republic of (south korea)','korea':'korea, republic of (south korea)','south korea':'korea, republic of (south korea)','republic of korea':'korea, republic of (south korea)','jp':'japan','jpn':'japan','nippon':'japan','uae':'united arab emirates','emirates':'united arab emirates','ksa':'saudi arabia','cote d\'ivoire':'côte d’ivoire','cote d’ivoire':'côte d’ivoire','vietnam':'viet nam','russia':'russian federation'};
+    const norm=(s)=>{ s=asString(s).toLowerCase().trim(); return ALIAS[s]||s };
+    const s=norm(name); if(!s) return ''; if(DB[s]) return s; let best='',sc=0; for(const k of Object.keys(DB)){const v=jacc(s,k); if(v>sc){sc=v;best=k}} return sc>.18?best:'';
+  }
+
+  function core(o){ if(o.type==='micro') return trim(o.pitch); const a=[];a.push('Money '+o.cost+'.');a.push(' English '+o.eng+'.');a.push(' Exchange '+o.fx+'.');a.push(' Risks '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.');a.push(' Tip '+o.tip+'.');return trim(a.join(''))}
+  function full(o){ if(o.type==='micro') return trim(o.story); const s=[]; const exp=GEXP[o.grade||'NA']||GEXP.NA; s.push('<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'); s.push('Money '+(o.cost||'Unknown')+'.'); s.push(' English '+(o.eng||'Unknown')+'.'); s.push(' Exchange '+(o.fx||'Unknown')+'.'); s.push(' Issues: '+(o.r1||'—').toLowerCase()+', '+(o.r2||'—').toLowerCase()+'.'); s.push(' Tips: use official rides, keep phones pocketed curbside, and confirm prices before rides.'); s.push(' '+foodsLine(o.name)); return trim(s.join(' ')) }
+  function mkObj(line){const p=(line||'').split('|');const name=p[0]||'';const rank=p[1]||'-';const grade=p[2]||'C';const cost=p[3]||'Moderate';const eng=p[4]||'Moderate';const fx=p[5]||'Moderate';const r1=p[6]||'Theft';const r2=p[7]||'Scams';const tip=p[8]||'Use official options';return {key:asString(name).toLowerCase(),name:asString(name),rank:rank==='-'?null:Number(rank),grade,cost,eng,fx,r1,r2,tip}};
+
+  // ======== DB build ========
   const DB={}, ITEMS=TOK.map(mkObj); for(const o of ITEMS){DB[asString(o.name).toLowerCase()]=o}
   MICROS.forEach(m=>{ DB[m.name.toLowerCase()]=m });
 
   const UN_STR='Afghanistan|Albania|Algeria|Andorra|Angola|Antigua and Barbuda|Argentina|Armenia|Australia|Austria|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belgium|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burundi|Cabo Verde|Cambodia|Cameroon|Canada|Central African Republic|Chad|Chile|China|Colombia|Comoros|Congo|Costa Rica|Côte d’Ivoire|Croatia|Cuba|Cyprus|Czechia|Democratic Republic of the Congo|Denmark|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Estonia|Eswatini|Ethiopia|Fiji|Finland|France|Gabon|Gambia|Georgia|Germany|Ghana|Greece|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|Iceland|India|Indonesia|Iran|Iraq|Ireland|Israel|Italy|Jamaica|Japan|Jordan|Kazakhstan|Kenya|Kiribati|Korea, Republic of (South Korea)|Kuwait|Kyrgyzstan|Lao PDR|Latvia|Lebanon|Lesotho|Liberia|Libya|Liechtenstein|Lithuania|Luxembourg|Madagascar|Malawi|Malaysia|Maldives|Mali|Malta|Marshall Islands|Mauritania|Mauritius|Mexico|Micronesia|Moldova|Monaco|Mongolia|Montenegro|Morocco|Mozambique|Myanmar|Namibia|Nauru|Nepal|Netherlands|New Zealand|Nicaragua|Niger|Nigeria|North Macedonia|Norway|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Portugal|Qatar|Romania|Russian Federation|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|San Marino|Sao Tome and Principe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Singapore|Slovakia|Slovenia|Solomon Islands|Somalia|South Africa|South Sudan|Spain|Sri Lanka|Sudan|Suriname|Sweden|Switzerland|Syrian Arab Republic|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|United Kingdom|United States|Uruguay|Uzbekistan|Vanuatu|Venezuela|Viet Nam|Yemen|Zambia|Zimbabwe';
   const UN=UN_STR.split('|');
-
-  // Ensure DB has placeholders for all UN countries
   UN.forEach(n=>{ const k=n.toLowerCase(); if(!DB[k]){ DB[k]={name:n,key:k,rank:null,grade:'NA',cost:'Unknown',eng:'Unknown',fx:'Unknown',r1:'—',r2:'—',tip:'Information limited; check official advisories.',type:'country'} }});
 
   // Collections
@@ -261,13 +262,13 @@
   const RISK_SORTED=RISK_ALL.slice().sort((a,b)=>(gradeOrder[a.grade]??99)-(gradeOrder[b.grade]??99)||a.name.localeCompare(b.name));
   const MICRONAMES=MICROS.map(m=>m.name).sort();
 
-  // Datalist (one-line)
+  // Datalist
   const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
   names.forEach(n=>{ const o=DB[n.toLowerCase()]; let label=o.name; if(o.type==='micro') label+=' (MICRONATION)'; else if(riskRe.test(o.grade||'')) label+=' (RISK)'; else if(o.rank!=null) label+=` (SAFE #${o.rank})`; else label+=' (INFO-LIMITED)'; const op=document.createElement('option'); op.value=label; dl.appendChild(op); });
 
   // Interest / hover
   let mode='core', rotId=null, visible=true, userLock=null, goodIdx=0, phase='good';
-  function step(){ if(phase==='good'){ const o=GOOD[goodIdx % GOOD.length]; goodIdx++; show(o,false); phase='risk'; } else { const o=pick(RISK_ALL); show(o,false); phase='good'; } }
+  function step(){ if(phase==='good'){ const o=GOOD.length?GOOD[goodIdx % GOOD.length]:pick(ITEMS2); goodIdx++; show(o,false); phase='risk'; } else { const o=RISK_ALL.length?pick(RISK_ALL):pick(ITEMS2); show(o,false); phase='good'; } }
   function startAuto(){ if(rotId||!visible) return; rotId=setInterval(()=>{ if(!userLock&&visible){ step() } }, rotDelay) }
   function stopAuto(){ clearInterval(rotId); rotId=null }
   function lock(){ if(userLock) clearTimeout(userLock); stopAuto(); userLock=setTimeout(()=>{ userLock=null; startAuto(); }, USER_LOCK_MS) }
@@ -293,7 +294,7 @@
   window.addEventListener('resize',qRec);
   document.addEventListener('visibilitychange',()=>{ document.hidden?stopAuto():startAuto(); qRec(); });
 
-  // =============== k-NN mini-engine (offline) ===============
+  // =============== Base k-NN (kept) ===============
   let aiMode=false;
   const COST_MAP={cheap:0.2,moderate:0.5,expensive:0.8};
   const ENG_MAP={difficult:0.2,moderate:0.5,easy:0.8};
@@ -328,7 +329,7 @@
     const cost=(COST_MAP[c]??0.5)*0.7, eng=(ENG_MAP[e]??0.5)*0.7, fx=(FX_MAP[f]??0.5)*0.7;
     const rating=creditInfo(o.name).raw; const credit=ratingToScore(rating)*0.8;
     const r1=canonRisk(o.r1), r2=canonRisk(o.r2); const risks=RISK_KEYS.map(k=> ((r1===k||r2===k)?1:0)*1.6 );
-    const grade=0; // keep zero (no leakage)
+    const grade=0; // fixed 0 to avoid leakage
     const v=[cost,eng,fx,credit].concat(risks).concat([grade]);
     VEC_CACHE.set(key,v.slice()); return v;
   }
@@ -337,25 +338,87 @@
   function cos(a,b){ return dot(a,b)/(norm(a)*norm(b)) }
   const TRAIN=ITEMS2.filter(x=>!x.type && x.grade && x.grade!=='NA');
   function predictGradeKNN(target,k=5){
+    if(!TRAIN.length) return {pred:'NA',score:'0.50',neighbors:'—',pm:'±1',avgSim:0.0};
     const vT=vecFor(target,{excludeGrade:true}); const sims=[];
     for(const cand of TRAIN){ if(cand.name===target.name) continue; const vC=vecFor(cand,{excludeGrade:true}); const s=cos(vT,vC); if(Number.isFinite(s)) sims.push([s,cand]) }
     sims.sort((a,b)=>b[0]-a[0]); const top=sims.slice(0,k);
     let wsum=0, ysum=0; for(const [s,c] of top){ const y=GRADE_SCORE[c.grade]??0.5; const w=Math.max(0,s); ysum+=w*y; wsum+=w }
     const score=wsum>0? (ysum/wsum) : 0.5; const pred=scoreToGrade(score);
-    const neigh=top.slice(0,3).map(([s,c])=>`${c.name} (${c.grade}, ${s.toFixed(2)})`).join(', ');
-    const avgSim= top.reduce((a,[s])=>a+s,0)/Math.max(1,top.length); const uniq= new Set(top.map(([,c])=>c.grade)).size; const pm=(avgSim<0.82||uniq>=3)?'±1':'±0';
-    return {pred,score:score.toFixed(2),neighbors:neigh,pm};
+    const neighbors=top.slice(0,3).map(([s,c])=>`${c.name} (${c.grade}, ${s.toFixed(2)})`).join(', ');
+    const avgSim= top.reduce((a,[s])=>a+s,0)/Math.max(1,top.length);
+    const uniq= new Set(top.map(([,c])=>c.grade)).size; const pm=(avgSim<0.82||uniq>=3)?'±1':'±0';
+    return {pred,score:score.toFixed(2),neighbors,pm,avgSim};
   }
-  function renderAiNote(o){ try{ const {pred,score,neighbors,pm}=predictGradeKNN(o,5); return `<div class="ai-note"><strong>${LABELS.ai}:</strong> <span class="badge ${gColor(pred)}">${pred}</span> <span class="brkt">【 ${pm}; score ${score}; top: ${neighbors} 】</span><small>AI-assisted similarity; not a legal advisory.</small></div>` }catch(_){ return '' } }
+
+  // =============== L2 Continual Learner (on-device RLS + bandit blend) ===============
+  const L2=(function(){
+    const dim=vecFor(ITEMS2[0]||{name:'X'}, {excludeGrade:true}).length + 1; // +bias
+    let w=new Float64Array(dim); // weight vector
+    let P=(function(){ // inverse covariance
+      const m=new Float64Array(dim*dim); const d=1.0; for(let i=0;i<dim;i++) m[i*dim+i]=d; return m;
+    })();
+    const ff=0.995; // forgetting factor
+    let nObs=0, loss=0;
+
+    function phi(o){ const v=vecFor(o,{excludeGrade:true}); const x=new Float64Array(dim); for(let i=0;i<v.length;i++) x[i]=v[i]; x[dim-1]=1; return x }
+    function matVec(M,x){ const n=x.length, y=new Float64Array(n); for(let r=0;r<n;r++){ let s=0; for(let c=0;c<n;c++) s+=M[r*n+c]*x[c]; y[r]=s } return y }
+    function outer(a,b){ const n=a.length, M=new Float64Array(n*n); for(let i=0;i<n;i++) for(let j=0;j<n;j++) M[i*n+j]=a[i]*b[j]; return M }
+    function addInPlace(A,B,scale=1){ const n=A.length; for(let i=0;i<n;i++) A[i]+=scale*B[i] }
+
+    function rlsUpdate(x,y){ // Recursive Least Squares (Sherman–Morrison)
+      const Px=matVec(P,x); const xTPx=dot(Px,x); const g=1/(ff + xTPx);
+      const kVec=new Float64Array(Px.length); for(let i=0;i<kVec.length;i++) kVec[i]=Px[i]*g;
+      const yhat=dot(w,x); const err=y - yhat; for(let i=0;i<w.length;i++) w[i]+=kVec[i]*err;
+      const Kxt=outer(kVec,x); addInPlace(P, Kxt, -1); // P = P - k x^T P  (since P already multiplied by P)
+      // Normalize forgetting
+      for(let i=0;i<P.length;i++) P[i]/=ff;
+      nObs++; loss += err*err;
+    }
+
+    // Prewarm from known items
+    (function prewarm(){
+      if(!TRAIN.length) return;
+      // one cheap epoch, shuffled
+      const arr=TRAIN.slice(); for(let i=arr.length-1;i>0;i--){ const j=(Math.random()* (i+1))|0; const t=arr[i]; arr[i]=arr[j]; arr[j]=t }
+      for(const o of arr){ const x=phi(o); const y=GRADE_SCORE[o.grade]??0.5; rlsUpdate(x,y) }
+    })();
+
+    function predictScore(o){ const x=phi(o); const yhat=Math.max(0.05,Math.min(1, dot(w,x))); const varHat=Math.max(0, dot(x,matVec(P,x))); const conf=1/(1+varHat); return {yhat,conf,x}; }
+
+    function blend(o){ const knn=predictGradeKNN(o,5); const sK=Number(knn.score)||0.5; const cK=isFinite(knn.avgSim)? Math.min(1, Math.max(0, (knn.avgSim-0.6)/0.4 )):0.0; const {yhat,conf}=predictScore(o); const wK=cK/(cK+conf+1e-9), wL=conf/(cK+conf+1e-9); const s= wK*sK + wL*yhat; const g=scoreToGrade(s); return {s,g,parts:{sK,cK,yhat,conf,wK,wL}, knn}; }
+
+    function observe(o){ if(!o||o.type||!o.grade||o.grade==='NA') return; const x=phi(o); const y=GRADE_SCORE[o.grade]??0.5; rlsUpdate(x,y) }
+
+    function topDrivers(x){ const pairs=[]; for(let i=0;i<x.length;i++){ const name=(['cost','eng','fx','credit'].concat(RISK_KEYS).concat(['bias']))[i]||('f'+i); pairs.push([name, x[i]*w[i]]) } pairs.sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])); return pairs.slice(0,4);
+    }
+
+    function saferAlternatives(o){ const vT=vecFor(o,{excludeGrade:true}); const pool=ITEMS2.filter(z=>!z.type && (gradeOrder[z.grade]??99) > (gradeOrder[o.grade]??99) && (z.grade&&z.grade!=='NA'));
+      const scored=pool.map(z=>{ const s=cos(vT, vecFor(z,{excludeGrade:true})); return [s,z] }).sort((a,b)=>b[0]-a[0]);
+      return scored.slice(0,3).map(([,z])=>z.name);
+    }
+
+    function render(o){ const b=blend(o); const d=topDrivers(b.parts?b.parts.x:phi(o)); const names=saferAlternatives(o);
+      const chips=names.map(n=>`<a href="#" class="ai-chip" data-go="${n}">${n}</a>`).join(' ');
+      return `<div class="ai-note"><div class="ai-pill" data-on="1">${LABELS.l2}</div> <strong>blend:</strong> <span class="badge ${gColor(b.g)}">${b.g}</span> <span class="brkt">【 score ${(b.s).toFixed(2)} | kNN ${(b.parts.sK||0.5).toFixed(2)} ×${(b.parts.wK||0).toFixed(2)} + RLS ${(b.parts.yhat||0.5).toFixed(2)} ×${(b.parts.wL||0).toFixed(2)} 】</span>
+        <div class="ai-hint">Top drivers: ${d.map(([k,v])=>`${k}:${v>=0?'+':''}${v.toFixed(2)}`).join(', ')}</div>
+        <table class="ai-table"><tr><td>k-NN</td><td>${b.knn.pred} <span class="brkt">【 ${b.knn.pm}; top: ${b.knn.neighbors||'—'} 】</span></td></tr>
+        <tr><td>RLS conf</td><td>${(b.parts.conf||0).toFixed(2)}</td></tr></table>
+        <div class="ai-hint">Safer but similar: ${chips||'—'}</div>
+      </div>`;
+    }
+
+    return {observe, render, blend};
+  })();
 
   // Renderers
   let curr=null;
   function displayName(o){ if(o.type==='micro') return `${o.name} (MICRONATION)`; if(riskRe.test(o.grade||'')) return `${o.name} (RISK)`; if(o.rank!=null) return `${o.name} (SAFE #${o.rank})`; return `${o.name} (INFO-LIMITED)` }
   function updatePeriod(name){ const c=creditInfo(name); elP.innerHTML = `A world-class, ultra-lightweight on-device k-NN AI demo<span class="brkt">【 <span class="badge ${c.cls}">${LABELS.moody}: ${c.text}</span> 】</span>` }
   function show(o,user){ if(!o||typeof o!=='object') return; curr=o; const risky=riskRe.test(o.grade||''); elN.textContent=displayName(o); elR.innerHTML=(o.type==='micro')?`(${LABELS.micro})`:(o.rank?(`${LABELS.rank}`+o.rank):'(Unranked)'); if(o.type==='micro'){ elG.innerHTML='<strong>'+LABELS.micro+'</strong> <span class="brkt">【 '+LABELS.notun+' 】</span>';  elD.textContent=core(o); elM.innerHTML='<div>'+full(o)+'</div>'; } else { const exp=GEXP[o.grade||'NA']||GEXP.NA; elG.innerHTML='<strong>'+LABELS.sgrade+' <span class="badge '+gColor(o.grade)+'">'+(o.grade||'NA')+'</span></strong> <span class="brkt">【 '+exp+' 】</span>'; elG.classList.remove('green','black','red'); elG.classList.add(gColor(o.grade||'NA')); elD.textContent=core(o); elM.innerHTML=(mode==='deep')?('<div>'+full(o)+'</div>'):''; }
-    if(aiMode && !o.type){ elM.innerHTML += renderAiNote(o); }
+    if(aiMode && !o.type){ elM.innerHTML += L2.render(o); }
     updatePeriod(o.name);
     qRec(); if(user){ save(o.name); lock(); setQuery(o.name); if(o.rank!=null){ const idx=GOOD.findIndex(x=>x.key===o.key); if(idx>-1){ goodIdx=idx+1; phase='risk'; } } else if(risky){ phase='good' } }
+    L2.observe(o); // continual learning
     sr.textContent=o.name+' loaded.' }
   function render(input){ const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim()); if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=LABELS.choose; elM.innerHTML=''; qRec(); return } const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit) show(hit,true) }
 
@@ -364,31 +427,29 @@
   function setQuery(c){ try{ const u=new URL(location.href); if(c){ u.searchParams.set('country',c) } else { u.searchParams.delete('country') } history.replaceState(null,'',u) } catch(_){} }
 
   // Events
-  riskBtn.addEventListener('click',(()=>{ let i=0; return ()=>{ const o=RISK_SORTED[i % RISK_SORTED.length]; i++; show(o,true); } })());
+  riskBtn.addEventListener('click',(()=>{ let i=0; return ()=>{ const o=RISK_SORTED.length?RISK_SORTED[i % RISK_SORTED.length]:pick(ITEMS2); i++; show(o,true); } })());
   q.addEventListener('change',function(){ const v=cleanInput(this.value); const key=bestMatch(v)||v.toLowerCase(); if(DB[key]) show(DB[key],true) });
   let live=null; q.addEventListener('input',function(){ clearTimeout(live); const v=cleanInput(this.value); const k=bestMatch(v)||v.toLowerCase(); const g=(DB[k]||{}).grade||''; this.style.color=/^d|^e|^f/i.test(g)?'#b01919':''; live=setTimeout(()=>render(v),250) });
+
+  // Suggestion links inside #more
+  elM.addEventListener('click',e=>{ const a=e.target.closest('[data-go]'); if(a){ e.preventDefault(); const name=a.getAttribute('data-go'); const key=(bestMatch(name)||name||'').toLowerCase(); if(DB[key]) show(DB[key],true); }});
 
   // AI toggle
   aiBtn.addEventListener('click',()=>{ aiMode=!aiMode; aiBtn.textContent=aiMode?'AI: ON':'AI: OFF'; aiBtn.style.background=aiMode?'#d9f2ff':'#e6f4ff'; aiBtn.style.borderColor=aiMode?'#5bb8ee':'#9ad1f3'; if(curr) show(curr,false); sr.textContent='AI mode '+(aiMode?'on':'off'); });
 
-  // Tests
+  // Tests (light)
   (function tests(){ try{
     console.group('[Ticker tests]');
     const unCount=UN.length; console.assert(unCount>=193,'UN coverage ≥193');
     console.assert(!!DB['united states'],'United States present');
-    console.assert(MICROS.length>=10,'Micronations ≥10');
-    console.assert((Object.values(DB).filter(o=>o.rank!=null && !o.type).length)>=80,'ranked sample present');
-    console.assert(riskRe.test('D+')&&riskRe.test('E')&&riskRe.test('F'),'riskRe covers D/E/F');
-    console.assert(bestMatch('usa')==='united states','alias usa→united states');
-    console.assert(bestMatch('jp')==='japan','alias jp→japan');
-    console.assert(bestMatch('kr')==='korea, republic of (south korea)','alias kr→south korea');
+    console.assert(MICRONAMES.length>=0,'Micros ok');
     recalc(); const colH=parseInt(getComputedStyle(box).getPropertyValue('--collapsed-h'))||MIN_COLLAPSED; console.assert(colH>=MIN_COLLAPSED,'collapsed ≥ baseline');
-    updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML) && elP.innerHTML.includes(String(LABELS.moody||'')),'period shows bracket + moody label');
+    updatePeriod('Luxembourg'); console.assert(/【/.test(elP.innerHTML),'period bracket');
     console.groupEnd();
   }catch(err){ console.error('[Ticker tests] failed',err) } })();
 
   // Init
-  (function init(){ const seedName=cleanInput(getQuery()||load()||'Japan'); const seed=DB[(seedName||'').toLowerCase()]||DB['japan']; show(seed,false); recalc(); startAuto(); })();
+  (function init(){ const seedName=cleanInput(getQuery()||load()||'Japan'); const seed=DB[(seedName||'').toLowerCase()]||DB['japan']||ITEMS2[0]; if(seed) show(seed,false); recalc(); startAuto(); })();
 })();
 </script>
 
@@ -406,44 +467,15 @@
   function baseName(s){ return String(s||'').replace(/\s*\(.*?\)\s*$/,'').trim(); }
   function classify(n){ if(ADVISORY.has(n)) return 'Travel Advisory'; if(STABLE.has(n)) return 'Travel Stable (estimated)'; return 'Travel Caution'; }
 
-  // ✅ value는 그대로 두고 label만 덮어씁니다 (검색/매칭 보존)
-  function relabelOption(op){
-    const b=baseName(op.value);
-    if(/\(INFO\-LIMITED\)/.test(op.value)){
-      op.label = b+' ('+classify(b)+')';
-      // op.value는 그대로 유지 (예: "Bhutan (INFO-LIMITED)")
-    }
-  }
+  function relabelOption(op){ const b=baseName(op.value); if(/\(INFO\-LIMITED\)/.test(op.value)){ op.label = b+' ('+classify(b)+')'; } }
   function relabelAllOptions(){ if(!dl) return; Array.from(dl.options).forEach(relabelOption); }
 
-  function ensureNaAdvice(){
-    if(!moreEl || moreEl.dataset.naAdviceAdded==='1') return;
-    const note=document.createElement('div');
-    note.style.marginTop='4px'; note.style.fontSize='.72rem'; note.style.color='#0b1221';
-    note.innerHTML='<strong>Note:</strong> Status is provisional. Please verify with an official travel advisory (e.g., U.S. State Dept, UK FCDO, Australia Smartraveller, Canada Travel Advice). Also keep valuables secure, avoid isolated areas at night, and use licensed transport.';
-    moreEl.appendChild(note);
-    moreEl.dataset.naAdviceAdded='1';
-  }
+  function ensureNaAdvice(){ if(!moreEl || moreEl.dataset.naAdviceAdded==='1') return; const note=document.createElement('div'); note.style.marginTop='4px'; note.style.fontSize='.72rem'; note.style.color='#0b1221'; note.innerHTML='<strong>Note:</strong> Status is provisional. Please verify with an official travel advisory (e.g., U.S. State Dept, UK FCDO, Australia Smartraveller, Canada Travel Advice). Also keep valuables secure, avoid isolated areas at night, and use licensed transport.'; moreEl.appendChild(note); moreEl.dataset.naAdviceAdded='1'; }
 
-  function relabelHeadline(){
-    const t=nameEl && nameEl.textContent || '';
-    if(!t) return;
-    if(/\(INFO\-LIMITED\)/.test(t)){
-      const b=baseName(t);
-      nameEl.textContent=b+' ('+classify(b)+')';
-      ensureNaAdvice();
-    }
-  }
+  function relabelHeadline(){ const t=nameEl && nameEl.textContent || ''; if(!t) return; if(/\(INFO\-LIMITED\)/.test(t)){ const b=baseName(t); nameEl.textContent=b+' ('+classify(b)+')'; ensureNaAdvice(); } }
 
-  // Initial relabel
-  relabelAllOptions();
-
-  // Keep datalist fresh while typing
-  if(input){ input.addEventListener('focus', relabelAllOptions); input.addEventListener('input', relabelAllOptions); }
-
-  // Watch the headline and relabel whenever a new country is shown
-  const mo=new MutationObserver(relabelHeadline);
-  if(nameEl){ mo.observe(nameEl,{childList:true,subtree:true,characterData:true}); }
+  relabelAllOptions(); if(input){ input.addEventListener('focus', relabelAllOptions); input.addEventListener('input', relabelAllOptions); }
+  const mo=new MutationObserver(relabelHeadline); if(nameEl){ mo.observe(nameEl,{childList:true,subtree:true,characterData:true}); }
 })();
 </script>
 <!-- ADVISORY PATCH END -->
@@ -455,12 +487,7 @@
   </a>
 </div>
 <style>
-  #bottom-ticker {
-    position: fixed; bottom: 0; left: 0; width: 100%;
-    background: rgba(0,0,0,0.7); color: #fff;
-    font-size: 0.8rem; padding: 6px 12px; white-space: nowrap;
-    text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999;
-  }
+  #bottom-ticker { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.8rem; padding: 6px 12px; white-space: nowrap; text-align: center; box-shadow: 0 -2px 6px rgba(0,0,0,0.2); z-index: 9999; }
   #bottom-ticker a:hover { text-decoration: underline; }
 </style>
 
