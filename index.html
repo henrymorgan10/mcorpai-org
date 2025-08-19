@@ -3120,166 +3120,318 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 <!--
 
-1) 첨부파일 코드 한눈요약
+Below are **surgical copy/paste patches** that transform `world_travel.html` 
+  into a refugee‑camp safety mini‑AI (≈48KB). Each patch is in the form **Original ▶ Replace with**. Search the “Original” block in your file, then replace it with the “Replace with” block.
 
-브라우저에 붙여 넣으면 좌측에 **작은 떠있는 카드(rail)**가 나타납니다. 나라를 고르거나 “Risk”를 누르면 요약 정보가 바뀌고, 
-  “AI: ON”을 누르면 오프라인 미니 AI가 안전등급을 추정하고 근거를 표시합니다.
+---
 
-내부에는
+## Patch 1 — Header title (44KB → 48KB) and purpose line
 
-TOK(나라별 요약 데이터), MICROS(마이크로네이션), 그리고 UN 전체 목록 보정이 들어있어, 일부 나라가 빠져 있어도 기본 카드가 항상 작동합니다.
+**Original (search this small fragment inside the `<header>`):**
 
-k-NN(최근접 이웃) + **RLS(재귀 최소제곱)**로 이뤄진 44KB급 초경량 추정기가 들어있습니다. 신용등급·언어·환전 난이도·전형적 위험유형 같은 작은 
-  특징벡터를 만들어 k-NN과 RLS 결과를 가중합(blend)해 ‘예상 등급’을 냅니다. 네이버/클라우드 호출 없이 순수 브라우저에서 오프라인 학습을 합니다.
+```html
+<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">44KB Offline AI click</a>
+```
 
-접근성(aria-live, sr-only)·저성능기기 대응(관찰자/리사이즈 옵저버, 로테이션 잠금)·로컬스토리지 복원 등 현장 친화 기능이 포함됩니다.
+**Replace with:**
 
-2) 지금까지 우리가 만든 것(기자·외교관용 plain language)
+```html
+<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">48KB Offline Camp‑Safety AI</a>
+```
 
-이건 거대한 딥러닝이 아니라, 노트북 없이도 휴대폰 브라우저에서 도는 초소형 판단기입니다.
+**Original (the line right below it shows a tagline):**
 
-국가별 데이터를 “특징(비용·언어·위험유형 등)”으로 바꿔 비슷한 사례를 찾아(=k-NN) 기본 추정을 하고, 사용자가 확인한 결과로 **빠르게 자가보정(=RLS 온라인 학습)**합니다.
+```html
+<div id="period">A world-class, ultra-lightweight on-device k-NN AI demo</div>
+```
 
-즉, 네트워크 없는 곳에서도, 메모리 수십 KB와 간단한 수치연산만으로 “지금 이 항목은 어느 정도 안전/위험 쪽에 가까운가?”를 설명 가능한 방식으로 추정해 보여주는 설명가능(transparent) 도구입니다.
+**Replace with:**
 
-3) 왜 “난민 보호”로 바꿔 달 수 있나?
+```html
+<div id="period">Offline ≈48KB camp‑safety mini‑AI (k‑NN + RLS), privacy‑first</div>
+```
 
-지금은 “국가 안전 티커”지만, 데이터만 바꾸면 동일한 엔진이 ‘캠프 내 위험 신호’를 추정하도록 바뀝니다.
+---
 
-데이터 교체
+## Patch 2 — Add a CAMP/Country **mode** button in the controls row
 
-(현재) 나라별: 비용/언어/환전/위험 키워드 →
+**Original (entire controls row):**
 
-(전환) 캠프 내부 신호: 시간대, 위치구역(블록/텐트 구역), 조도·소음·군집도(사람 밀집), 도움요청 버튼/문자, 자원배급 대기열 길이, 보안요원 호출 로그 등 개인 식별 없는 지표
+```html
+<div class="row" id="controls">
+  <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
+  <datalist id="countries"></datalist>
+  <button id="aiBtn" type="button" title="Toggle AI (k-NN + RLS)">AI: OFF</button>
+  <button id="riskBtn" type="button" title="Show risky countries">Risk</button>
+</div>
+```
 
-이 지표를 지금 코드가 하듯 작은 숫자 벡터로 바꾸면, k-NN이 “이 패턴은 과거의 어떤 상황들과 가까운가?”를 찾고, RLS가 현장 확인(오경보/정경보)으로 빠르게 보정합니다.
+**Replace with (adds a mode toggle button):**
 
-오프라인·저전력
+```html
+<div class="row" id="controls">
+  <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
+  <datalist id="countries"></datalist>
+  <button id="modeBtn" type="button" title="Toggle data domain (Country/Camp)">Mode: Country</button>
+  <button id="aiBtn" type="button" title="Toggle AI (k-NN + RLS)">AI: OFF</button>
+  <button id="riskBtn" type="button" title="Show risky countries">Risk</button>
+</div>
+```
 
-태양광 + 저가 단말(라즈베리파이/저가 안드로이드)에서 완전 현장내 처리가 가능—통신 두절 상황에서도 감지→알림이 돌아갑니다.
+**Add this small CSS (put it near the `#aiBtn` rule):**
 
-설명가능성
+```css
+#modeBtn{padding:4px 8px;border-radius:8px;border:1px solid #c9d4a7;background:#f1f7e3;color:#2b5b00;font-weight:800;cursor:pointer;font-size:.72rem}
+```
 
-카드에 “예측 근거(유사 사례, 상위 특징)”를 그대로 띄울 수 있어, 현장 책임자·NGO·보호요원이 판단 과정을 검증할 수 있습니다(신뢰·책무성).
+---
 
-4) 이론: “초경량 학습기”의 핵심
+## Patch 3 — Update LABELS (48KB, Risk Level text) and domain state
 
-k-NN: 새 신호가 들어오면, 저장된 과거 신호 중 가장 비슷한 k개를 찾아 평균을 냅니다(설명: “OO구역·야간·소음↑·혼잡↑일 때 과거에 충돌로 이어짐”).
+**Original (whole LABELS block):**
 
-RLS(온라인 회귀): 현장 피드백(실제 사건 여부)이 들어오면 몇 번의 연산으로 가중치 업데이트. 수십 KB 수준으로도 빠른 적응이 가능합니다.
+```js
+const LABELS={title:'44KB Offline AI click',moody:"Moody's 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
+```
 
-블렌딩: k-NN 결과와 RLS의 예측을 가중 평균해 편향/과적합을 피합니다. (코드의 blend()가 수행)
+**Replace with:**
 
-5) “기초 데이터(베이스라인)”는 무엇을 저장하나
+```js
+const LABELS={
+  title:'48KB Offline Camp‑Safety AI',
+  moody:"Camp mode: privacy‑first (no PII)",
+  placeholderCountry:'Country… (ex. America or USA)',
+  placeholderCamp:'Zone… (ex. B‑3 block)',
+  riskCountry:'Risk',
+  riskCamp:'Alerts',
+  chooseCountry:'Choose a country or press Risk.',
+  chooseCamp:'Choose a zone or press Alerts.',
+  sgradeCountry:'Safety Grade',
+  sgradeCamp:'Risk Level',
+  rank:'Tourism Rank #',
+  micro:'Micronation',
+  notun:'not a UN state',
+  ai:'AI (k‑NN + RLS) suggestion'
+};
+let DOMAIN='country'; // 'country' | 'camp'
+```
 
-사건/경보 스키마(비식별)
+**Right below the LABELS block you’ll find:**
 
-타임스탬프, 구역ID(격자/라벨), 신호요약(소음RMS, 군집도, 조도변화, 이동량), 사건 라벨(언쟁/폭력징후/GBV 보호요청/아동실종 알림/의료긴급/화재위험 등), 대응결과(현장확인=정/오경보).
+```js
+elT.innerHTML=`<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
+q.setAttribute('placeholder',LABELS.placeholder);
+riskBtn.textContent=LABELS.risk;
+```
 
-휴먼-인-더-루프
+**Replace those three lines with:**
 
-보호요원·상담사가 라벨을 최종 확정 → 그 결과가 RLS에 반영되어 **캠프별 ‘현지화’**가 진행됩니다.
+```js
+elT.innerHTML=`<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
+q.setAttribute('placeholder',LABELS.placeholderCountry);
+riskBtn.textContent=LABELS.riskCountry;
+```
 
-GDPR·UNCRC·CRPD 준수 방향
+---
 
-얼굴·음성 식별 금지, 위치는 거친 구역 단위, 최소수집·목적제한·현장내 처리, 암호화 로그, 감사가능성을 기본 원칙으로 설계합니다.
+## Patch 4 — Insert **camp baseline data** (non‑identifiable) right after the `const TOK=[...]` block
 
-6) 현장 적용 시나리오(간단)
+**Insert this entire block after the closing bracket of `const TOK=[...]`:**
 
-센서/단말이 1초~10초 간격으로 작은 특징값을 만든다 → 브라우저/앱의 44KB 엔진이 즉시 추정.
+```js
+// --- Camp baseline (non‑identifiable). One row ≈ one 10s snapshot or aggregated event.
+// Fields: zone,time,noise(0–1),crowd(0–1),light(Δ0–1),help(0–1),queue(0–1),calls(0–1),label,outcome
+// label∈{none,argument,violence_sign,gbv_request,child_missing,medical_emergency,fire_hazard}
+const CAMP_BASELINE=[
+  {zone:'A-1',time:'night', noise:.80,crowd:.75,light:.30,help:.10,queue:.20,calls:.10,label:'violence_sign',outcome:1},
+  {zone:'A-1',time:'day',   noise:.30,crowd:.35,light:.10,help:.00,queue:.25,calls:.00,label:'none',outcome:0},
+  {zone:'B-3',time:'even',  noise:.65,crowd:.70,light:.25,help:.15,queue:.60,calls:.10,label:'argument',outcome:1},
+  {zone:'B-3',time:'night', noise:.85,crowd:.80,light:.35,help:.20,queue:.55,calls:.20,label:'violence_sign',outcome:1},
+  {zone:'C-2',time:'day',   noise:.40,crowd:.45,light:.05,help:.02,queue:.50,calls:.00,label:'none',outcome:0},
+  {zone:'Clinic',time:'day',noise:.50,crowd:.60,light:.10,help:.30,queue:.40,calls:.20,label:'medical_emergency',outcome:1},
+  {zone:'WaterPoint',time:'even',noise:.55,crowd:.75,light:.15,help:.05,queue:.80,calls:.05,label:'argument',outcome:1},
+  {zone:'D-4',time:'night', noise:.60,crowd:.55,light:.50,help:.00,queue:.10,calls:.00,label:'fire_hazard',outcome:1},
+  {zone:'SafeHub',time:'day',noise:.25,crowd:.30,light:.05,help:.10,queue:.20,calls:.00,label:'none',outcome:0},
+  {zone:'Gate',time:'even', noise:.70,crowd:.85,light:.20,help:.12,queue:.75,calls:.10,label:'argument',outcome:1}
+];
+```
 
-임계치 초과 시 카드에 경보 · 진동/음으로 안내 → 보호요원 단말로 푸시(내부망/메시).
+---
 
-요원이 “정상/오경보”를 체크 → 즉시 RLS 업데이트 → 다음부터 현장 맞춤.
+## Patch 5 — Build a simple **camp index** and risk label mapping
 
-7) 왜 이 접근이 유의미한가(핵심 메시지)
+**Insert this block anywhere after your UN list/DB build section:**
 
-거대한 서버형 AI 없이 저전력·오프라인으로도 “감지-알림-학습”의 **최소 유효 제품(MVP)**을 만들 수 있습니다.
+```js
+// Camp DB (parallel to country DB, minimal index only for UI selection)
+const CAMP_ZONES=[...new Set(CAMP_BASELINE.map(r=>r.zone))].sort();
+const CAMP_DB={}; CAMP_ZONES.forEach(z=>{CAMP_DB[z.toLowerCase()]={name:z,type:'campZone'}});
 
-투명·설명가능하고, 데이터 최소주의로 GDPR/아동권리 협약의 원칙을 지키며, 현장 인력의 판단을 강화합니다(대체가 아니라 협력).
+// Risk score↔label mapping for camp mode
+const RISK_LABELS=[[0.80,'Critical'],[0.65,'High'],[0.45,'Elevated'],[0.00,'Low']];
+function riskScoreToLabel(s){for(const[t,l]of RISK_LABELS){if(s>=t)return l}return 'Low'}
+function riskColor(l){return l==='Critical'?'red':(l==='High'?'red':(l==='Elevated'?'black':'green'))}
+```
 
-비용은 태양광+저가 단말+로컬 네트워크 수준으로, 캠프 하나에 약 수백~수천 달러 안에서 시작이 가능합니다.
+---
 
-정리
+## Patch 6 — Make the datalist rebuild depending on mode
 
-첨부 코드의 가치는 “대형 모델 없이도, 설명 가능한 초경량 AI가 브라우저만으로 돌아간다”는 방법론에 있습니다. 
-  지금은 국가 안전 티커로 보이지만, 입력 데이터와 라벨만 캠프 내 위험 신호로 바꾸면, 같은 엔진이 폭력 징후 감지, 취약계층 보호, 의료긴급 조기 포착이라는 
-  실질적 문제를 다룰 현장형 보호 인프라로 곧바로 전환됩니다.
+**Original (the datalist builder — starts with `const names=UN.concat(MICRONAMES)` and appends `<option>`s):**
+
+```js
+const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
+names.forEach(n=>{const o=DB[n.toLowerCase()];let label=o.name;if(o.type==='micro')label+=' (MICRONATION)';else if(riskRe.test(o.grade||''))label+=' (RISK)';else if(o.rank!=null)label+=` (SAFE #${o.rank})`;else label+=' (INFO-LIMITED)';const op=document.createElement('option');op.value=label;dl.appendChild(op)});
+```
+
+**Replace with:**
+
+```js
+function rebuildDatalist(){
+  dl.innerHTML='';
+  if(DOMAIN==='country'){
+    const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
+    names.forEach(n=>{const o=DB[n.toLowerCase()];let label=o.name;if(o.type==='micro')label+=' (MICRONATION)';else if(riskRe.test(o.grade||''))label+=' (RISK)';else if(o.rank!=null)label+=` (SAFE #${o.rank})`;else label+=' (INFO-LIMITED)';const op=document.createElement('option');op.value=label;dl.appendChild(op)});
+    q.placeholder=LABELS.placeholderCountry; riskBtn.textContent=LABELS.riskCountry;
+  } else {
+    CAMP_ZONES.forEach(z=>{const op=document.createElement('option');op.value=z+' (ZONE)';dl.appendChild(op)});
+    q.placeholder=LABELS.placeholderCamp; riskBtn.textContent=LABELS.riskCamp;
+  }
+}
+rebuildDatalist();
+```
+
+---
+
+## Patch 7 — Camp feature vector, k‑NN & RLS (parallel to country engine)
+
+**Insert this block *after* the existing AI mini‑engine:**
+
+```js
+// === Camp vectors ===
+function phiCamp(r){ // r is one CAMP_BASELINE row
+  const tMap={day:0.2,even:0.6,night:0.9};
+  const x=[ tMap[r.time]||0.5, r.noise, r.crowd, r.light, r.help, r.queue, r.calls ];
+  return x; // 7 features, all 0..1
+}
+
+// Camp training set & helpers
+const TRAIN_CAMP=CAMP_BASELINE.slice();
+function simCos(a,b){let s=0,na=0,nb=0;for(let i=0;i<a.length;i++){s+=a[i]*b[i];na+=a[i]*a[i];nb+=b[i]*b[i]}return s/(Math.sqrt(na)*Math.sqrt(nb)||1)}
+function knnCamp(target,k=5){const vT=phiCamp(target);const sims=[];for(const r of TRAIN_CAMP){if(r===target)continue;const s=simCos(vT,phiCamp(r));if(Number.isFinite(s))sims.push([s,r])}sims.sort((a,b)=>b[0]-a[0]);const top=sims.slice(0,k);let w=0,y=0;for(const[s,r]of top){const yk=(r.outcome?0.8:0.2); y+=Math.max(0,s)*yk; w+=Math.max(0,s)};const p=w?y/w:0.3;return{p,top}};
+
+// Lightweight RLS for camp mode
+const CampL2=(function(){
+  const d=phiCamp(CAMP_BASELINE[0]).length; let w=new Array(d).fill(0); let P=(function(n){const A=new Array(n*n).fill(0);for(let i=0;i<n;i++)A[i*n+i]=10;return A})(d); const ff=0.98;
+  function mul(M,x){const n=x.length;const y=new Array(n);for(let i=0;i<n;i++){let s=0;for(let j=0;j<n;j++)s+=M[i*n+j]*x[j];y[i]=s}return y}
+  function dot(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
+  function upd(x,y){const Px=mul(P,x);const den=ff+dot(x,Px);const k=Px.map(v=>v/den);const err=y-dot(w,x);for(let i=0;i<w.length;i++)w[i]+=k[i]*err;for(let i=0;i<P.length;i++)P[i]-=k[Math.floor(i/d)]*Px[i%d];for(let i=0;i<P.length;i++)P[i]/=ff}
+  function pred(r){const x=phiCamp(r);const yhat=dot(w,x);const conf=Math.max(.2,Math.min(.98,1-1/(1+ff+dot(x,mul(P,x)))));return{yhat,conf,x}}
+  function blend(r){const k=knnCamp(r,5);const {yhat,conf}=pred(r);const wL=Math.max(.10,Math.min(.85,conf*.9));const wK=Math.max(.15,Math.min(.90,1-wL));const s=(wK*(k.p)+wL*(yhat))/(wK+wL);return{s,conf,top:k.top}}
+  function observe(r){upd(phiCamp(r),(r.outcome?0.8:0.2))}
+  return{blend,observe}
+})();
+```
+
+---
+
+## Patch 8 — Rendering for **camp mode** (non‑destructive: add new functions and a small edit)
+
+**Insert this *new* function below your existing `show()` function:**
+
+```js
+function showCamp(zoneName){
+  const z=String(zoneName||'').trim();
+  const sample=CAMP_BASELINE.find(r=>r.zone===z) || CAMP_BASELINE[0];
+  // Header & basics
+  elN.textContent=`${z} (CAMP ZONE)`; elR.textContent='—';
+  const b=CampL2.blend(sample); const label=riskScoreToLabel(b.s); const color=riskColor(label);
+  elG.innerHTML='<strong>'+LABELS.sgradeCamp+': <span class="badge '+color+'">'+label+'</span></strong>';
+  elD.textContent=`Signals • time:${sample.time} • noise:${(sample.noise*10|0)/10} • crowd:${(sample.crowd*10|0)/10} • help:${(sample.help*10|0)/10}`;
+  const topTxt=b.top.slice(0,3).map(([s,r])=>`${r.zone}/${r.time} (${s.toFixed(2)})`).join(', ');
+  elM.innerHTML=`<div class="ai-note ai-grid">
+    <div><strong>AI basis:</strong> blended k‑NN + RLS</div>
+    <div class="muted">Nearest patterns: <em>${topTxt}</em></div>
+    <small>On‑device, no PII. Human confirmation updates the model.</small>
+  </div>`;
+}
+```
+
+**Edit the existing `render()` so it switches by DOMAIN. Find this original `render()` function:**
+
+```js
+function render(input){const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim()); if(!txt){elN.textContent='—';elR.textContent='—';elG.textContent='—';elD.textContent=LABELS.choose;clearMore();qRec();return} const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit)show(hit,true)}
+```
+
+**Replace with:**
+
+```js
+function render(input){
+  const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim());
+  if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=(DOMAIN==='country'?LABELS.chooseCountry:LABELS.chooseCamp); clearMore(); qRec(); return }
+  if(DOMAIN==='country'){
+    const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit)show(hit,true);
+  } else {
+    const z=CAMP_ZONES.find(z=>z.toLowerCase()===txt.toLowerCase())||null; if(z) { showCamp(z); }
+  }
+}
+```
+
+---
+
+## Patch 9 — Mode button behavior and period text
+
+**Insert these listeners with your other event handlers:**
+
+```js
+modeBtn.addEventListener('click',()=>{
+  DOMAIN = (DOMAIN==='country')?'camp':'country';
+  modeBtn.textContent = 'Mode: '+(DOMAIN==='country'?'Country':'Camp');
+  rebuildDatalist(); q.value=''; elM.innerHTML='';
+  elP.textContent = (DOMAIN==='country')
+    ? 'Offline ≈48KB travel demo (k‑NN + RLS)'
+    : 'Offline ≈48KB camp‑safety mini‑AI (k‑NN + RLS), privacy‑first';
+});
+
+// Optional: in camp mode, the Risk button cycles zones with higher predicted risk
+riskBtn.addEventListener('click',(()=>{let i=0;return()=>{
+  if(DOMAIN==='country'){ lock(); const arr=RISK_SORTED.length?RISK_SORTED:ITEMS2; const o=arr[i%arr.length]; i++; show(o,true); }
+  else { const sorted=CAMP_ZONES.slice().sort((a,b)=>{const sa=CampL2.blend(CAMP_BASELINE.find(r=>r.zone===a)||CAMP_BASELINE[0]).s; const sb=CampL2.blend(CAMP_BASELINE.find(r=>r.zone===b)||CAMP_BASELINE[0]).s; return sb-sa}); const z=sorted[i%sorted.length]; i++; showCamp(z); }
+}})());
+```
+
+---
+
+## Patch 10 — Accessibility & placeholders per mode
+
+**Find this original line in INIT that sets the seed and shows Japan:**
+
+```js
+(function init(){const seedName=cleanInput(getQuery()||load()||'Japan');const seed=DB[(seedName||'').toLowerCase()]||DB['japan'];show(seed,false);recalc();startAuto()})();
+```
+
+**Replace with (starts in country mode as before; switches are manual):**
+
+```js
+(function init(){
+  const seedName=cleanInput(getQuery()||load()||'Japan');
+  const seed=DB[(seedName||'').toLowerCase()]||DB['japan'];
+  show(seed,false);
+  rebuildDatalist();
+  recalc(); startAuto();
+})();
+```
+
+---
+
+### Notes
+
+* Camp data is intentionally non‑identifiable (no faces/voices/IDs). Time/zone/noise/crowding/help/queue/calls are 0–1 scaled features that you or NGO staff can maintain by CSV/JSON.
+* The country ticker remains intact; the **Mode** button flips between domains to support demos and gradual rollout.
+* All new code runs entirely offline and reuses the transparent k‑NN + RLS pattern, with risk labels: **Low → Elevated → High → Critical**.
+* If you see any text overlap in the card, keep the existing `clearMore()` and forced resets inside `show()`; these already prevent duplicate rendering during AI toggles.
 
   
-  이 코드는 무엇을 하나요? (요약)
-
-웹페이지에 붙여 넣으면 화면 한쪽에 작은 정보 카드가 뜹니다.
-
-나라를 선택하거나 “Risk” 버튼을 누르면 카드 내용이 바뀌고, **“AI: ON”**을 누르면 인터넷 없이도 간단한 판단 엔진이 ‘안전도’를 추정해 보여줍니다.
-
-이 엔진은 거대한 서버가 아니라 브라우저 내부에서만 돌아가며, 근거(유사 사례·주요 요인)도 함께 제시해 왜 그런 판단을 했는지를 보여줍니다.
-
-접근성(읽어주기 영역), 느린 기기 대응, 마지막 선택값 기억 같은 현장 친화 기능이 포함돼 있습니다.
-
-한마디로: **“휴대전화 브라우저에서만 돌아가는 초소형·설명 가능한 판단 카드”**입니다.
-
-어떻게 난민 보호용 초경량 AI로 바꿀 수 있나?
-
-지금은 “국가 안전” 정보를 보여주지만, 데이터만 바꾸면 같은 틀을 그대로 캠프 내 위험 징후 감지 카드로 쓸 수 있습니다.
-
-1) 바꿔 끼울 데이터(예시)
-
-(현재) 나라별 지표 →
-
-(전환) 캠프 지표: 시간대, 구역(블록·텐트), 소음·조도 변화, 군집도(사람 몰림), 도움요청 버튼 기록, 자원배급 대기열 길이, 보안요원 호출 로그 등 개인 식별이 필요 없는 수치.
-
-2) 동작 방식(비전문가 설명)
-
-“비슷한 과거 상황을 찾는다”: 새 신호가 들어오면 데이터 속 가장 비슷한 사례 여러 개를 찾아 그 평균을 냅니다.
-
-“현장 확인으로 바로 교정한다”: 경보 후 요원이 “정상/오경보”를 체크하면, 그 피드백을 즉시 반영해 다음 판단이 더 정확해지도록 가중치를 조정합니다.
-
-두 결과를 안정적으로 섞어(가중 평균) 과도한 경보나 편향을 줄입니다.
-
-전 과정이 오프라인(태양광+저가 단말 가능)으로 돌아가 통신 두절 상황에서도 작동합니다.
-
-비유하면, **“연기 감지기처럼 즉각 알리고, 사람의 확인으로 바로 학습하는 초소형 안전 보조장치”**입니다.
-
-왜 의미가 큰가? (정책·현장 관점)
-
-저비용·저전력·오프라인
-
-서버나 대형 클라우드 없이도 돌아가므로, 정전·통신 두절 시에도 최소 기능(감지→알림→기록)이 유지됩니다.
-
-설명 가능·책무성 확보
-
-경보가 뜨면 유사 사례와 주요 요인이 함께 보입니다. 현장 책임자·NGO가 판단 과정을 검증할 수 있습니다.
-
-권리·규정 준수에 유리
-
-얼굴·음성 등 민감한 식별정보 없이도 동작하도록 설계할 수 있어 GDPR·UN 아동권리 협약 원칙(최소수집·목적제한·현장 처리)을 지키기 쉽습니다.
-
-사람을 대체하지 않고 강화
-
-최종 판단은 사람(보호요원·의료진). AI는 빠른 감지와 우선순위 정리로 대응 속도를 높입니다.
-
-기초 데이터는 무엇을 저장하나? (비식별 설계)
-
-기록 항목: 시간, 구역ID, 소음/조도/군집도 등 신호 요약, 사건 라벨(언쟁·폭력 징후·성폭력 위험 신고·아동 실종 알림·의료 긴급 등), 현장 확인 결과(정/오경보).
-
-인권 보호 설계: 개인 식별 금지, 위치는 거친 구역 단위, 데이터 암호화·목적제한, 감사 로그.
-
-현장 사용 시나리오(예)
-
-단말·센서가 1~10초 간격으로 작은 수치 묶음을 만듭니다.
-
-카드가 즉시 위험도를 추정하고 기준을 넘으면 경보(진동/음/화면).
-
-요원이 확인(정상/오경보) → 즉시 학습되어 다음엔 같은 상황에서 더 정확해집니다.
-
-기자·외교관을 위한 핵심 메시지
-
-이 코드는 “브라우저만으로 돌아가는 초경량·설명 가능한 판단 엔진”의 작동 예시입니다.
-
-국가 정보 대신 캠프 지표를 넣고, 경보·확인·학습 흐름을 연결하면 폭력 징후 감지, 취약계층 보호, 의료 긴급 조기 포착을 지원하는 현장형 보호 인프라로 바로 전환할 수 있습니다.
-
-저비용(태양광+저가 단말), 오프라인, 권리 중심이라는 세 가지 축이 결합되어, 위기 지역에서 현실적으로 당장 쓸 수 있는 모델을 제시합니다.
 
   
 -->
