@@ -464,59 +464,82 @@ riskBtn.textContent=LABELS.risk;
 </script>
 
 <!-- ADVISORY PATCH: INFO-LIMITED 라벨 재표기 (append-only) -->
+<!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
+.badge{font-weight:800}.green{color:#16a34a}.black{color:#0b1221}.red{color:#b01919}.brkt{font-weight:700}
+#desc{color:#0b0f19;font-weight:700;font-size:.78rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
+#more{font-size:.72rem;color:#0b1221}
+#period{font-size:.72rem;opacity:.95;margin-top:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#infoRail:hover #desc,#infoRail:focus-within #desc{display:block;-webkit-line-clamp:unset;-webkit-box-orient:unset;overflow:visible}
+#infoRail:hover #more,#infoRail:focus-within #more{overflow:visible}
+</style>
+<aside id="infoRail" aria-label="Sticky world travel ticker">
+<div id="box" role="group">
+<header>
+<div class="title" id="title">World Travel Ticker AI</div>
+<div id="period">Assessed 2020-01-01 to 2024-10-01 【 Moody’s 5yr avg: — 】</div>
+</header>
+<div class="row" id="controls">
+<input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
+<datalist id="countries"></datalist>
+<button id="riskBtn" type="button" title="Show risky countries">Risk</button>
+</div>
+<div class="row" id="view" aria-live="polite">
+<div id="name">—</div>
+<div id="rank">—</div>
+<div id="grade">—</div>
+<div id="desc">Choose a country or press Risk.</div>
+<div id="more"></div>
+</div>
+<div id="sr" class="sr-only" aria-live="polite"></div>
+</div>
+</aside>
 <script>
 (function(){
-  const dl=document.getElementById('countries');
-  const input=document.getElementById('q');
-  const nameEl=document.getElementById('name');
-  const moreEl=document.getElementById('more');
+// Rotation timings (hover toggles 20s → 40s)
+const ROT_DEFAULT=20000, ROT_HOVER=40000, USER_LOCK_MS=40000, COLLAPSE_PCT=0.60, MIN_COLLAPSED=424;
+let rotDelay=ROT_DEFAULT;
 
-  const ADVISORY=new Set([
-    'Afghanistan','Syrian Arab Republic','Iraq','Iran','Yemen','Sudan','South Sudan','Somalia','Libya','Mali','Niger','Burkina Faso','Central African Republic','Chad','Haiti','Myanmar','Democratic Republic of the Congo','Eritrea','Ukraine','Russian Federation'
-  ]);
-  const STABLE=new Set([
-    'Kuwait','Brunei','Liechtenstein','Uruguay','Costa Rica','Cabo Verde','Kiribati','Nauru','Tuvalu','Samoa','Tonga','Micronesia','Marshall Islands','Palau','Vanuatu'
-  ]);
 
-  function baseName(s){ return String(s||'').replace(/\s*\(.*?\)\s*$/,'').trim(); }
-  function classify(n){ if(ADVISORY.has(n)) return 'Travel Advisory'; if(STABLE.has(n)) return 'Travel Stable (estimated)'; return 'Travel Caution'; }
+const box=document.getElementById('box'), q=document.getElementById('q'), dl=document.getElementById('countries'), riskBtn=document.getElementById('riskBtn');
+const elT=document.getElementById('title'), elP=document.getElementById('period');
+const elN=document.getElementById('name'), elR=document.getElementById('rank'), elG=document.getElementById('grade'), elD=document.getElementById('desc'), elM=document.getElementById('more'), sr=document.getElementById('sr'), view=document.getElementById('view');
 
-function relabelOption(op){
-  const b=baseName(op.value);
-  if(/\(INFO\-LIMITED\)/.test(op.value)){
-    // 값은 검색용으로 보존, 표시는 label로
-    op.label = b+' ('+classify(b)+')';
-    op.value = b+' (INFO-LIMITED)';
-  }
-}
 
-  function relabelAllOptions(){ if(!dl) return; Array.from(dl.options).forEach(relabelOption); }
+// Static English labels
+const LABELS={title:'World Travel Ticker AI', assessed:'Assessed', to:'to', moody:"Moody's 5yr avg", placeholder:'Country… (ex. America or USA)', risk:'Risk', choose:'Choose a country or press Risk.', sgrade:'Safety Grade', rank:'Tourism Rank #', micro:'Micronation', notun:'not a UN state'};
+elT.textContent=LABELS.title; q.setAttribute('placeholder',LABELS.placeholder); riskBtn.textContent=LABELS.risk;
 
-  function ensureNaAdvice(){
-    if(!moreEl || moreEl.dataset.naAdviceAdded==='1') return;
-    const note=document.createElement('div');
-    note.style.marginTop='4px'; note.style.fontSize='.72rem'; note.style.color='#0b1221';
-    note.innerHTML='<strong>Note:</strong> Status is provisional. Please verify with an official travel advisory (e.g., U.S. State Dept, UK FCDO, Australia Smartraveller, Canada Travel Advice). Also keep valuables secure, avoid isolated areas at night, and use licensed transport.';
-    moreEl.appendChild(note);
-    moreEl.dataset.naAdviceAdded='1';
-  }
 
-  function relabelHeadline(){
-    const t=nameEl && nameEl.textContent || '';
-    if(!t) return;
-    if(/\(INFO\-LIMITED\)/.test(t)){
-      const b=baseName(t);
-      nameEl.textContent=b+' ('+classify(b)+')';
-      ensureNaAdvice();
-    }
-  }
+// Grade explanations (EN)
+const GEXP={"A+":"Exceptional safety across regions.","A":"Very safe, though not absolute best.","A-":"Safe overall with minor caveats.","B+":"Generally safe for visitors.","B":"Safe, some instability to watch.","B-":"Mostly safe, borderline in parts.","C+":"Acceptable but uneven safety.","C":"Fine by day, caution at night.","C-":"Daytime ok, avoid roaming at night.","D+":"Poor safety in notable areas.","D":"Poor; metro zones only feel stable.","D-":"Poor; even metro areas feel risky.","E+":"Very poor; avoid travel, escort advised. ☠️","E":"Very poor; escort advised, avoid travel. ☠️","E-":"Extremely poor; do not visit. ☠️","F":"Worst level; absolute no-go. ☠️☠️","NA":"Information limited between 2020–2024; consult official guidance."};
 
-  relabelAllOptions();
-  if(input){ input.addEventListener('focus', relabelAllOptions); input.addEventListener('input', relabelAllOptions); }
-  const mo=new MutationObserver(relabelHeadline);
-  if(nameEl){ mo.observe(nameEl,{childList:true,subtree:true,characterData:true}); }
-})();
-</script>
+
+const riskRe=/^(D|E|F)/;
+const gradeOrder={"F":0,"E-":1,"E":2,"E+":3,"D-":4,"D":5,"D+":6,"C-":7,"C":8,"C+":9,"B-":10,"B":11,"B+":12,"A-":13,"A":14,"A+":15,"NA":99};
+
+
+// Moody's 5-year average (subset; default to None). Keys by canonical country name.
+const MOODYS={'Luxembourg':'Aaa','Germany':'Aaa','Switzerland':'Aaa','Norway':'Aaa','Denmark':'Aaa','Sweden':'Aaa','Netherlands':'Aaa','Finland':'Aaa','Austria':'Aa1','United States':'Aaa','Canada':'Aaa','Australia':'Aaa','New Zealand':'Aaa','Singapore':'Aaa','United Kingdom':'Aa3','France':'Aa2','Japan':'A1','Italy':'Baa3','Spain':'Baa1','Ireland':'A1','Portugal':'Baa2','Mexico':'Baa2','Brazil':'Ba2','India':'Baa3','South Africa':'Ba2','Turkey':'B3','United Arab Emirates':'Aa2','Saudi Arabia':'A1','Qatar':'Aa2','Korea, Republic of (South Korea)':'Aa2','China':'A1'};
+function moodysColor(r){ if(!r||/^NR$/i.test(r)||/^None$/i.test(r)) return 'black'; if(/^WR$/i.test(r)) return 'red'; if(/^(Aaa|Aa|A|Baa)/.test(r)) return 'green'; if(/^(Ba|B[1-3]?$)/.test(r)) return 'black'; if(/^(Caa|Ca|C)$/i.test(r)) return 'red'; return 'black' }
+function creditInfo(name){ const r=MOODYS[name]||MOODYS[(name||'').toLowerCase()]||'None'; const skull=/^WR$/i.test(r)?' ☠️':''; return {text:r+skull, cls:moodysColor(r)} }
+function gColor(g){if(/^A|^B/.test(g))return'green';if(/^C|NA$/.test(g))return'black';return'red'}
+
+
+// Food suggestions (3 items) — minimal set + fallback
+const FOODS={
+'Japan':['sushi','ramen','okonomiyaki'],'United States':['burger','BBQ','clam chowder'],'France':['croissant','crêpe','coq au vin'],'Italy':['pizza','pasta','gelato'],'Spain':['paella','tapas','churros'],'Thailand':['pad thai','som tam','tom yum'],
+'Korea, Republic of (South Korea)':['bibimbap','bulgogi','kimchi stew'],'China':['dumplings','hot pot','Peking duck'],'Germany':['bratwurst','pretzel','schnitzel'],'United Kingdom':['fish and chips','pie and mash','full English'],
+'Mexico':['tacos','mole','pozole'],'Turkey':['kebap','baklava','lahmacun'],'Malaysia':['nasi lemak','satay','laksa'],'Singapore':['chicken rice','laksa','chilli crab'],'Portugal':['pastel de nata','bacalhau','francesinha'],
+'Canada':['poutine','butter tart','Nanaimo bar'],'Australia':['meat pie','lamington','barramundi'],'New Zealand':['lamb','hokey pokey','green-lipped mussels']
+};
+function foodsLine(name){ const arr=FOODS[name]||['local street food','the national dish','a signature dessert']; return 'Recommended foods: '+arr[0]+', '+arr[1]+', '+arr[2]+'.' }
+
+
+// Persist
+const LS_KEY='wtta.last';
+function save(c){try{localStorage.setItem(LS_KEY,c)}catch(e){}}
+<!-- === ADVISORY PATCH END === -->
 <!-- ADVISORY PATCH END -->
 
 
