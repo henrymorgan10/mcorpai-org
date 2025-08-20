@@ -572,8 +572,21 @@ Vanilla HTML Offline AI is a single-file, self-contained AI demo built entirely 
   const elN=document.getElementById('name'),elR=document.getElementById('rank'),elG=document.getElementById('grade'),elD=document.getElementById('desc'),elM=document.getElementById('more'),sr=document.getElementById('sr'),view=document.getElementById('view');
 
   
-  const LABELS={title:'48kb Offline AI click',moody:"Moody\'s 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
-  elT.innerHTML=`<a href="diplomacy(1).html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
+const LABELS = {
+  title: '48kb Offline AI',
+  moody: "Moody's 5yr avg",
+  placeholder: 'Country… (ex. America or USA)',
+  risk: 'Risk',
+  choose: 'Choose a country or press Risk.',
+  sgrade: 'Safety Grade',
+  rank: 'Tourism Rank #',
+  micro: 'Micronation',
+  notun: 'not a UN state',
+  ai: 'AI (k-NN + RLS) suggestion'
+};
+
+elT.innerHTML = `<span style="color:#0b77d5">${LABELS.title}</span>`;
+
   q.setAttribute('placeholder',LABELS.placeholder);
   riskBtn.textContent=LABELS.risk;
 
