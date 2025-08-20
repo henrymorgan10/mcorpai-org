@@ -7,7 +7,7 @@
   <style>
 
     
- :root{color-scheme:light dark}
+:root{color-scheme:light dark}
 body{
   margin:0;
   background:#f6f8fb;
@@ -16,18 +16,19 @@ body{
 }
 .container{
   max-width:960px;
-  margin:12px auto;
-  padding:8px
+  margin:6px auto;   /* 위쪽 여백을 더 줄임 (12px → 6px) */
+  padding:6px        /* 전체 패딩을 더 줄임 (8px → 6px) */
 }
 .paper{
   background:#fff;
   border:1px solid rgba(0,0,0,.12);
   border-radius:16px;
-  box-shadow:0 9px 21px rgba(2,6,23,.12);
-  padding:11px
+  box-shadow:0 6px 14px rgba(2,6,23,.12); /* 그림자도 비율 맞게 살짝 줄임 */
+  padding:8px 11px 11px 11px  /* 위쪽 패딩만 더 줄임 (11px → 8px) */
 }
 .preserve{white-space:pre-wrap}
 .page-break{height:0;break-after:page}
+
 
     
     /* ===== Print setup ===== */
