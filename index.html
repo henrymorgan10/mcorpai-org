@@ -2690,9 +2690,86 @@ In conclusion, M‑Corp is a civilian‑driven, ethically coherent, and operatio
 
 
 
+  <!-- 
+Vanilla HTML Offline AI DEMO — Version 0.1
+Human–GPT-5 Collaboration
+Founder: Gyumin Jeon (English name: Morgan J) — https://mcorpai.org/
+
+Vanilla HTML Offline AI is a single-file, self-contained AI demo built entirely with plain HTML, CSS, and JavaScript, requiring no servers, no libraries, and no internet connection.
+
+This file is a fully self-contained offline demo, built as a single HTML document that includes both style and script, without relying on any external libraries or network calls. 
+  An information card is displayed at the bottom-left or in a fixed left rail, while the header provides internal document links and guidance notes.
+When a user types a country name into the input field, the system provides datalist auto-completion and fuzzy matching to locate the country. 
+  Alongside the input are buttons for cycling through high-risk countries and toggling a simple AI mode. The rendering area displays, in order, the country name, 
+  ranking, safety grade, summary description, and additional details. A dedicated screen-reader region is also included for accessibility.
+
+The data model is organized into three parts. First, pipe-delimited text is parsed into an array containing each country’s name, rank, safety level, cost tier, English proficiency, 
+  currency-exchange difficulty, representative risks, and travel tips. A parser converts these entries into objects to build the internal database. Second, a separate array holds micronations,
+  keeping them distinct from recognized countries. Third, additional constants store a food recommendation dictionary, a credit rating map, and explanations for safety grades. 
+  The database registers all UN member states as strings; if a country lacks data, a default “restricted information” object is automatically generated, ensuring consistent search coverage.
+
+Search and matching are handled through accent stripping, lowercase normalization, and trigram Jaccard similarity. Common aliases such as “UK,” “Britain,” and “United Kingdom,” 
+  as well as “Korea” and “South Korea,” are pre-mapped. If the similarity score falls below a threshold, the match is withheld to reduce false positives. 
+  Display text and colors are updated dynamically based on safety and credit levels, and badge colors are computed through simple rules.
+
+The layout measures each card’s height to calculate collapsed and expanded states. 
+  Long content remains collapsed until hovered, at which point it expands. A ResizeObserver tracks dimension changes, while an IntersectionObserver tracks viewport entry to start or stop auto-rotation.
+  The auto-rotation alternates between safe countries and high-risk countries, and pauses temporarily when the user interacts with the input. 
+  The most recently selected country is stored in localStorage as a single string, restored after refresh, and also reflected in the URL query for bookmarking.
+
+A lightweight on-device AI component is included. It constructs a feature vector by combining cost level, English proficiency, exchange difficulty, credit score, and one-hot encoded risk categories.
+  Predictions are made via cosine similarity neighbor search. An online learner updates low-dimensional regression coefficients using a recursive least-squares scheme with a forgetting factor. 
+  The outputs are blended into a weighted score, and the system displays the estimated grade, rationale summary, neighbor info, and confidence in an AI note panel.
+  This function runs entirely in browser memory, requires no network access, and can be toggled on or off with a button.
+
+Model coefficients are updated only when the user queries items with existing ratings, and reset when the session ends. A supplemental patch script enhances labeling for restricted-information countries. 
+  Those in a flagged list receive auxiliary labels such as “travel warning,” “stability estimate,” or “caution advised,” which update the title and option labels accordingly. 
+  If information is limited, a single advisory note is inserted into the “read more” area directing users to official travel advisories. 
+  At the bottom, a persistent ticker provides a simple external link to the project’s introduction page.
+
+This file does not include microphone access, location services, Bluetooth, Service Workers, IndexedDB, or mesh networking. 
+  It collects no sensor input, transmits no data externally, and performs no network calls whatsoever.
+
+○ If large datasets or long-running computations are required, extensions such as worker separation, persistent storage, or file import would need to be designed separately.
+  These features are not implemented in this build.
+
+● The AI engine is modular. The k-NN classifier, lightweight RLS update logic, and vectorization utilities are organized as independent functions and constant sets,
+  making it easy to replace or extend specific parts. For example, adding new risk categories or changing the scoring transformation can be done by modifying a single module.
+
+The user interface and the core logic are clearly separated. The control panel with the search box and buttons, the view area that renders results, 
+  and the AI note renderer all exist independently. This separation makes it possible to add new features or redesign the interface without rewriting the entire codebase.
+
+● The update process is simple. Since there is no server, updating is as easy as replacing or editing the HTML Offline AI file. Distribution can be done via email attachment or USB copy.
+
+● User-driven data editing is supported at the file level. Because the data is stored in simple arrays and dictionaries, even non-experts can open the file and add or modify entries.
+
+○ The current build does not include runtime CSV import or an editing UI, but such features could be added later as separate modules.
+
+Versioning Roadmap
+
+First, Version 0.1.
+This is a proof of concept (PoC) or demo stage. As with the current version, it is a single-file build containing only minimal functionality, 
+  with the purpose of demonstrating that “it actually runs.” As long as the core logic executes, the data structures exist, and the basic UI is present,
+  that is sufficient. Instability and bugs are acceptable at this stage. The goal is demonstration and feasibility validation.
+
+Second, Versions 0.2 to 0.5.
+This is the experimental feature expansion stage. The dataset is expanded, UI interactions are enriched, and the basic AI engine (k-NN, RLS, etc.) is stabilized.
+  Features such as CSV import, additional risk categories, or simple visualizations may be introduced. User feedback is the main driver in this stage.
+
+Third, Versions 0.6 to 0.9.
+This is the beta (pre-release) stage. All core features should be implemented, and the system should be structurally stable. Work in this stage focuses on refactoring, 
+  performance optimization, removing redundancy, and standardizing data structures. Documentation begins here, and external testers provide feedback. 
+  Version 0.9 usually indicates “nearly release-ready, but under final review.”
+
+Fourth, Version 1.0.
+This is the stable release. Functionality, stability, and documentation meet the minimum threshold for general use. 
+  A typical user should be able to download the file and run it without issues. The overall structure of the UI, data model, and AI logic should be fixed, 
+  with subsequent improvements delivered incrementally (e.g., 1.1, 1.2, etc.).
+
+-->
+
+
   
-
-
 
 <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
 <style>
