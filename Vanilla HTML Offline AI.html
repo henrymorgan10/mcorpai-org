@@ -1,3 +1,88 @@
+
+
+  <!-- 
+Vanilla HTML Offline AI DEMO — Version 0.3
+Human–GPT-5 Collaboration
+Founder: Gyumin Jeon (English name: Morgan J) — https://mcorpai.org/
+
+Vanilla HTML Offline AI is a single-file, self-contained AI demo built entirely with plain HTML, CSS, and JavaScript, requiring no servers, no libraries, and no internet connection.
+
+This file is a fully self-contained offline demo, built as a single HTML document that includes both style and script, without relying on any external libraries or network calls. 
+  An information card is displayed at the bottom-left or in a fixed left rail, while the header provides internal document links and guidance notes.
+When a user types a country name into the input field, the system provides datalist auto-completion and fuzzy matching to locate the country. 
+  Alongside the input are buttons for cycling through high-risk countries and toggling a simple AI mode. The rendering area displays, in order, the country name, 
+  ranking, safety grade, summary description, and additional details. A dedicated screen-reader region is also included for accessibility.
+
+The data model is organized into three parts. First, pipe-delimited text is parsed into an array containing each country’s name, rank, safety level, cost tier, English proficiency, 
+  currency-exchange difficulty, representative risks, and travel tips. A parser converts these entries into objects to build the internal database. Second, a separate array holds micronations,
+  keeping them distinct from recognized countries. Third, additional constants store a food recommendation dictionary, a credit rating map, and explanations for safety grades. 
+  The database registers all UN member states as strings; if a country lacks data, a default “restricted information” object is automatically generated, ensuring consistent search coverage.
+
+Search and matching are handled through accent stripping, lowercase normalization, and trigram Jaccard similarity. Common aliases such as “UK,” “Britain,” and “United Kingdom,” 
+  as well as “Korea” and “South Korea,” are pre-mapped. If the similarity score falls below a threshold, the match is withheld to reduce false positives. 
+  Display text and colors are updated dynamically based on safety and credit levels, and badge colors are computed through simple rules.
+
+The layout measures each card’s height to calculate collapsed and expanded states. 
+  Long content remains collapsed until hovered, at which point it expands. A ResizeObserver tracks dimension changes, while an IntersectionObserver tracks viewport entry to start or stop auto-rotation.
+  The auto-rotation alternates between safe countries and high-risk countries, and pauses temporarily when the user interacts with the input. 
+  The most recently selected country is stored in localStorage as a single string, restored after refresh, and also reflected in the URL query for bookmarking.
+
+A lightweight on-device AI component is included. It constructs a feature vector by combining cost level, English proficiency, exchange difficulty, credit score, and one-hot encoded risk categories.
+  Predictions are made via cosine similarity neighbor search. An online learner updates low-dimensional regression coefficients using a recursive least-squares scheme with a forgetting factor. 
+  The outputs are blended into a weighted score, and the system displays the estimated grade, rationale summary, neighbor info, and confidence in an AI note panel.
+  This function runs entirely in browser memory, requires no network access, and can be toggled on or off with a button.
+
+Model coefficients are updated only when the user queries items with existing ratings, and reset when the session ends. A supplemental patch script enhances labeling for restricted-information countries. 
+  Those in a flagged list receive auxiliary labels such as “travel warning,” “stability estimate,” or “caution advised,” which update the title and option labels accordingly. 
+  If information is limited, a single advisory note is inserted into the “read more” area directing users to official travel advisories. 
+  At the bottom, a persistent ticker provides a simple external link to the project’s introduction page.
+
+This file does not include microphone access, location services, Bluetooth, Service Workers, IndexedDB, or mesh networking. 
+  It collects no sensor input, transmits no data externally, and performs no network calls whatsoever.
+
+○ If large datasets or long-running computations are required, extensions such as worker separation, persistent storage, or file import would need to be designed separately.
+  These features are not implemented in this build.
+
+● The AI engine is modular. The k-NN classifier, lightweight RLS update logic, and vectorization utilities are organized as independent functions and constant sets,
+  making it easy to replace or extend specific parts. For example, adding new risk categories or changing the scoring transformation can be done by modifying a single module.
+
+The user interface and the core logic are clearly separated. The control panel with the search box and buttons, the view area that renders results, 
+  and the AI note renderer all exist independently. This separation makes it possible to add new features or redesign the interface without rewriting the entire codebase.
+
+● The update process is simple. Since there is no server, updating is as easy as replacing or editing the HTML Offline AI file. Distribution can be done via email attachment or USB copy.
+
+● User-driven data editing is supported at the file level. Because the data is stored in simple arrays and dictionaries, even non-experts can open the file and add or modify entries.
+
+○ The current build does not include runtime CSV import or an editing UI, but such features could be added later as separate modules.
+
+Versioning Roadmap
+
+First, Version 0.1.
+This is a proof of concept (PoC) or demo stage. As with the current version, it is a single-file build containing only minimal functionality, 
+  with the purpose of demonstrating that “it actually runs.” As long as the core logic executes, the data structures exist, and the basic UI is present,
+  that is sufficient. Instability and bugs are acceptable at this stage. The goal is demonstration and feasibility validation.
+
+Second, Versions 0.2 to 0.5.
+This is the experimental feature expansion stage. The dataset is expanded, UI interactions are enriched, and the basic AI engine (k-NN, RLS, etc.) is stabilized.
+  Features such as CSV import, additional risk categories, or simple visualizations may be introduced. User feedback is the main driver in this stage.
+
+Third, Versions 0.6 to 0.9.
+This is the beta (pre-release) stage. All core features should be implemented, and the system should be structurally stable. Work in this stage focuses on refactoring, 
+  performance optimization, removing redundancy, and standardizing data structures. Documentation begins here, and external testers provide feedback. 
+  Version 0.9 usually indicates “nearly release-ready, but under final review.”
+
+Fourth, Version 1.0.
+This is the stable release. Functionality, stability, and documentation meet the minimum threshold for general use. 
+  A typical user should be able to download the file and run it without issues. The overall structure of the UI, data model, and AI logic should be fixed, 
+  with subsequent improvements delivered incrementally (e.g., 1.1, 1.2, etc.).
+
+  Vanilla HTML Offline AI DEMO — Current Version 0.3
+
+-->
+
+
+  
+
 <!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
 <style>
 :root{color-scheme:light dark}
@@ -37,7 +122,7 @@
   <div id="box" role="group">
     <header>
       <div class="title" id="title">
-        <a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">44KB Offline AI click</a>
+        <a href="diplomacy(1).html" style="color:#0b77d5;text-decoration:underline">48kb Offline AI click</a>
       </div>
       <div id="period">A world-class, ultra-lightweight on-device k-NN AI demo</div>
     </header>
@@ -205,8 +290,8 @@
   const elN=document.getElementById('name'),elR=document.getElementById('rank'),elG=document.getElementById('grade'),elD=document.getElementById('desc'),elM=document.getElementById('more'),sr=document.getElementById('sr'),view=document.getElementById('view');
 
   // ==================== LABELS ====================
-  const LABELS={title:'44KB Offline AI click',moody:"Moody\'s 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
-  elT.innerHTML=`<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
+  const LABELS={title:'48kb Offline AI click',moody:"Moody\'s 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
+  elT.innerHTML=`<a href="diplomacy(1).html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
   q.setAttribute('placeholder',LABELS.placeholder);
   riskBtn.textContent=LABELS.risk;
 
@@ -421,3 +506,338 @@
 
 
 
+
+<!--
+
+Below are **surgical copy/paste patches** that transform `world_travel.html` 
+  into a refugee‑camp safety mini‑AI (≈48KB). Each patch is in the form **Original ▶ Replace with**. Search the “Original” block in your file, then replace it with the “Replace with” block.
+
+---
+
+## Patch 1 — Header title (44KB → 48KB) and purpose line
+
+**Original (search this small fragment inside the `<header>`):**
+
+```html
+<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">44KB Offline AI click</a>
+```
+
+**Replace with:**
+
+```html
+<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">48KB Offline Camp‑Safety AI</a>
+```
+
+**Original (the line right below it shows a tagline):**
+
+```html
+<div id="period">A world-class, ultra-lightweight on-device k-NN AI demo</div>
+```
+
+**Replace with:**
+
+```html
+<div id="period">Offline ≈48KB camp‑safety mini‑AI (k‑NN + RLS), privacy‑first</div>
+```
+
+---
+
+## Patch 2 — Add a CAMP/Country **mode** button in the controls row
+
+**Original (entire controls row):**
+
+```html
+<div class="row" id="controls">
+  <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
+  <datalist id="countries"></datalist>
+  <button id="aiBtn" type="button" title="Toggle AI (k-NN + RLS)">AI: OFF</button>
+  <button id="riskBtn" type="button" title="Show risky countries">Risk</button>
+</div>
+```
+
+**Replace with (adds a mode toggle button):**
+
+```html
+<div class="row" id="controls">
+  <input id="q" list="countries" placeholder="Country… (ex. America or USA)" autocomplete="off"/>
+  <datalist id="countries"></datalist>
+  <button id="modeBtn" type="button" title="Toggle data domain (Country/Camp)">Mode: Country</button>
+  <button id="aiBtn" type="button" title="Toggle AI (k-NN + RLS)">AI: OFF</button>
+  <button id="riskBtn" type="button" title="Show risky countries">Risk</button>
+</div>
+```
+
+**Add this small CSS (put it near the `#aiBtn` rule):**
+
+```css
+#modeBtn{padding:4px 8px;border-radius:8px;border:1px solid #c9d4a7;background:#f1f7e3;color:#2b5b00;font-weight:800;cursor:pointer;font-size:.72rem}
+```
+
+---
+
+## Patch 3 — Update LABELS (48KB, Risk Level text) and domain state
+
+**Original (whole LABELS block):**
+
+```js
+const LABELS={title:'44KB Offline AI click',moody:"Moody's 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
+```
+
+**Replace with:**
+
+```js
+const LABELS={
+  title:'48KB Offline Camp‑Safety AI',
+  moody:"Camp mode: privacy‑first (no PII)",
+  placeholderCountry:'Country… (ex. America or USA)',
+  placeholderCamp:'Zone… (ex. B‑3 block)',
+  riskCountry:'Risk',
+  riskCamp:'Alerts',
+  chooseCountry:'Choose a country or press Risk.',
+  chooseCamp:'Choose a zone or press Alerts.',
+  sgradeCountry:'Safety Grade',
+  sgradeCamp:'Risk Level',
+  rank:'Tourism Rank #',
+  micro:'Micronation',
+  notun:'not a UN state',
+  ai:'AI (k‑NN + RLS) suggestion'
+};
+let DOMAIN='country'; // 'country' | 'camp'
+```
+
+**Right below the LABELS block you’ll find:**
+
+```js
+elT.innerHTML=`<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
+q.setAttribute('placeholder',LABELS.placeholder);
+riskBtn.textContent=LABELS.risk;
+```
+
+**Replace those three lines with:**
+
+```js
+elT.innerHTML=`<a href="diplomacy.html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
+q.setAttribute('placeholder',LABELS.placeholderCountry);
+riskBtn.textContent=LABELS.riskCountry;
+```
+
+---
+
+## Patch 4 — Insert **camp baseline data** (non‑identifiable) right after the `const TOK=[...]` block
+
+**Insert this entire block after the closing bracket of `const TOK=[...]`:**
+
+```js
+// --- Camp baseline (non‑identifiable). One row ≈ one 10s snapshot or aggregated event.
+// Fields: zone,time,noise(0–1),crowd(0–1),light(Δ0–1),help(0–1),queue(0–1),calls(0–1),label,outcome
+// label∈{none,argument,violence_sign,gbv_request,child_missing,medical_emergency,fire_hazard}
+const CAMP_BASELINE=[
+  {zone:'A-1',time:'night', noise:.80,crowd:.75,light:.30,help:.10,queue:.20,calls:.10,label:'violence_sign',outcome:1},
+  {zone:'A-1',time:'day',   noise:.30,crowd:.35,light:.10,help:.00,queue:.25,calls:.00,label:'none',outcome:0},
+  {zone:'B-3',time:'even',  noise:.65,crowd:.70,light:.25,help:.15,queue:.60,calls:.10,label:'argument',outcome:1},
+  {zone:'B-3',time:'night', noise:.85,crowd:.80,light:.35,help:.20,queue:.55,calls:.20,label:'violence_sign',outcome:1},
+  {zone:'C-2',time:'day',   noise:.40,crowd:.45,light:.05,help:.02,queue:.50,calls:.00,label:'none',outcome:0},
+  {zone:'Clinic',time:'day',noise:.50,crowd:.60,light:.10,help:.30,queue:.40,calls:.20,label:'medical_emergency',outcome:1},
+  {zone:'WaterPoint',time:'even',noise:.55,crowd:.75,light:.15,help:.05,queue:.80,calls:.05,label:'argument',outcome:1},
+  {zone:'D-4',time:'night', noise:.60,crowd:.55,light:.50,help:.00,queue:.10,calls:.00,label:'fire_hazard',outcome:1},
+  {zone:'SafeHub',time:'day',noise:.25,crowd:.30,light:.05,help:.10,queue:.20,calls:.00,label:'none',outcome:0},
+  {zone:'Gate',time:'even', noise:.70,crowd:.85,light:.20,help:.12,queue:.75,calls:.10,label:'argument',outcome:1}
+];
+```
+
+---
+
+## Patch 5 — Build a simple **camp index** and risk label mapping
+
+**Insert this block anywhere after your UN list/DB build section:**
+
+```js
+// Camp DB (parallel to country DB, minimal index only for UI selection)
+const CAMP_ZONES=[...new Set(CAMP_BASELINE.map(r=>r.zone))].sort();
+const CAMP_DB={}; CAMP_ZONES.forEach(z=>{CAMP_DB[z.toLowerCase()]={name:z,type:'campZone'}});
+
+// Risk score↔label mapping for camp mode
+const RISK_LABELS=[[0.80,'Critical'],[0.65,'High'],[0.45,'Elevated'],[0.00,'Low']];
+function riskScoreToLabel(s){for(const[t,l]of RISK_LABELS){if(s>=t)return l}return 'Low'}
+function riskColor(l){return l==='Critical'?'red':(l==='High'?'red':(l==='Elevated'?'black':'green'))}
+```
+
+---
+
+## Patch 6 — Make the datalist rebuild depending on mode
+
+**Original (the datalist builder — starts with `const names=UN.concat(MICRONAMES)` and appends `<option>`s):**
+
+```js
+const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
+names.forEach(n=>{const o=DB[n.toLowerCase()];let label=o.name;if(o.type==='micro')label+=' (MICRONATION)';else if(riskRe.test(o.grade||''))label+=' (RISK)';else if(o.rank!=null)label+=` (SAFE #${o.rank})`;else label+=' (INFO-LIMITED)';const op=document.createElement('option');op.value=label;dl.appendChild(op)});
+```
+
+**Replace with:**
+
+```js
+function rebuildDatalist(){
+  dl.innerHTML='';
+  if(DOMAIN==='country'){
+    const names=UN.concat(MICRONAMES).sort((a,b)=>a.localeCompare(b));
+    names.forEach(n=>{const o=DB[n.toLowerCase()];let label=o.name;if(o.type==='micro')label+=' (MICRONATION)';else if(riskRe.test(o.grade||''))label+=' (RISK)';else if(o.rank!=null)label+=` (SAFE #${o.rank})`;else label+=' (INFO-LIMITED)';const op=document.createElement('option');op.value=label;dl.appendChild(op)});
+    q.placeholder=LABELS.placeholderCountry; riskBtn.textContent=LABELS.riskCountry;
+  } else {
+    CAMP_ZONES.forEach(z=>{const op=document.createElement('option');op.value=z+' (ZONE)';dl.appendChild(op)});
+    q.placeholder=LABELS.placeholderCamp; riskBtn.textContent=LABELS.riskCamp;
+  }
+}
+rebuildDatalist();
+```
+
+---
+
+## Patch 7 — Camp feature vector, k‑NN & RLS (parallel to country engine)
+
+**Insert this block *after* the existing AI mini‑engine:**
+
+```js
+// === Camp vectors ===
+function phiCamp(r){ // r is one CAMP_BASELINE row
+  const tMap={day:0.2,even:0.6,night:0.9};
+  const x=[ tMap[r.time]||0.5, r.noise, r.crowd, r.light, r.help, r.queue, r.calls ];
+  return x; // 7 features, all 0..1
+}
+
+// Camp training set & helpers
+const TRAIN_CAMP=CAMP_BASELINE.slice();
+function simCos(a,b){let s=0,na=0,nb=0;for(let i=0;i<a.length;i++){s+=a[i]*b[i];na+=a[i]*a[i];nb+=b[i]*b[i]}return s/(Math.sqrt(na)*Math.sqrt(nb)||1)}
+function knnCamp(target,k=5){const vT=phiCamp(target);const sims=[];for(const r of TRAIN_CAMP){if(r===target)continue;const s=simCos(vT,phiCamp(r));if(Number.isFinite(s))sims.push([s,r])}sims.sort((a,b)=>b[0]-a[0]);const top=sims.slice(0,k);let w=0,y=0;for(const[s,r]of top){const yk=(r.outcome?0.8:0.2); y+=Math.max(0,s)*yk; w+=Math.max(0,s)};const p=w?y/w:0.3;return{p,top}};
+
+// Lightweight RLS for camp mode
+const CampL2=(function(){
+  const d=phiCamp(CAMP_BASELINE[0]).length; let w=new Array(d).fill(0); let P=(function(n){const A=new Array(n*n).fill(0);for(let i=0;i<n;i++)A[i*n+i]=10;return A})(d); const ff=0.98;
+  function mul(M,x){const n=x.length;const y=new Array(n);for(let i=0;i<n;i++){let s=0;for(let j=0;j<n;j++)s+=M[i*n+j]*x[j];y[i]=s}return y}
+  function dot(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
+  function upd(x,y){const Px=mul(P,x);const den=ff+dot(x,Px);const k=Px.map(v=>v/den);const err=y-dot(w,x);for(let i=0;i<w.length;i++)w[i]+=k[i]*err;for(let i=0;i<P.length;i++)P[i]-=k[Math.floor(i/d)]*Px[i%d];for(let i=0;i<P.length;i++)P[i]/=ff}
+  function pred(r){const x=phiCamp(r);const yhat=dot(w,x);const conf=Math.max(.2,Math.min(.98,1-1/(1+ff+dot(x,mul(P,x)))));return{yhat,conf,x}}
+  function blend(r){const k=knnCamp(r,5);const {yhat,conf}=pred(r);const wL=Math.max(.10,Math.min(.85,conf*.9));const wK=Math.max(.15,Math.min(.90,1-wL));const s=(wK*(k.p)+wL*(yhat))/(wK+wL);return{s,conf,top:k.top}}
+  function observe(r){upd(phiCamp(r),(r.outcome?0.8:0.2))}
+  return{blend,observe}
+})();
+```
+
+---
+
+## Patch 8 — Rendering for **camp mode** (non‑destructive: add new functions and a small edit)
+
+**Insert this *new* function below your existing `show()` function:**
+
+```js
+function showCamp(zoneName){
+  const z=String(zoneName||'').trim();
+  const sample=CAMP_BASELINE.find(r=>r.zone===z) || CAMP_BASELINE[0];
+  // Header & basics
+  elN.textContent=`${z} (CAMP ZONE)`; elR.textContent='—';
+  const b=CampL2.blend(sample); const label=riskScoreToLabel(b.s); const color=riskColor(label);
+  elG.innerHTML='<strong>'+LABELS.sgradeCamp+': <span class="badge '+color+'">'+label+'</span></strong>';
+  elD.textContent=`Signals • time:${sample.time} • noise:${(sample.noise*10|0)/10} • crowd:${(sample.crowd*10|0)/10} • help:${(sample.help*10|0)/10}`;
+  const topTxt=b.top.slice(0,3).map(([s,r])=>`${r.zone}/${r.time} (${s.toFixed(2)})`).join(', ');
+  elM.innerHTML=`<div class="ai-note ai-grid">
+    <div><strong>AI basis:</strong> blended k‑NN + RLS</div>
+    <div class="muted">Nearest patterns: <em>${topTxt}</em></div>
+    <small>On‑device, no PII. Human confirmation updates the model.</small>
+  </div>`;
+}
+```
+
+**Edit the existing `render()` so it switches by DOMAIN. Find this original `render()` function:**
+
+```js
+function render(input){const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim()); if(!txt){elN.textContent='—';elR.textContent='—';elG.textContent='—';elD.textContent=LABELS.choose;clearMore();qRec();return} const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit)show(hit,true)}
+```
+
+**Replace with:**
+
+```js
+function render(input){
+  const txt=cleanInput(String(input||'').replace(/\s*\([^)]*\)\s*$/,'').trim());
+  if(!txt){ elN.textContent='—'; elR.textContent='—'; elG.textContent='—'; elD.textContent=(DOMAIN==='country'?LABELS.chooseCountry:LABELS.chooseCamp); clearMore(); qRec(); return }
+  if(DOMAIN==='country'){
+    const key=bestMatch(txt)||txt.toLowerCase(); const hit=DB[key]; if(hit)show(hit,true);
+  } else {
+    const z=CAMP_ZONES.find(z=>z.toLowerCase()===txt.toLowerCase())||null; if(z) { showCamp(z); }
+  }
+}
+```
+
+---
+
+## Patch 9 — Mode button behavior and period text
+
+**Insert these listeners with your other event handlers:**
+
+```js
+modeBtn.addEventListener('click',()=>{
+  DOMAIN = (DOMAIN==='country')?'camp':'country';
+  modeBtn.textContent = 'Mode: '+(DOMAIN==='country'?'Country':'Camp');
+  rebuildDatalist(); q.value=''; elM.innerHTML='';
+  elP.textContent = (DOMAIN==='country')
+    ? 'Offline ≈48KB travel demo (k‑NN + RLS)'
+    : 'Offline ≈48KB camp‑safety mini‑AI (k‑NN + RLS), privacy‑first';
+});
+
+// Optional: in camp mode, the Risk button cycles zones with higher predicted risk
+riskBtn.addEventListener('click',(()=>{let i=0;return()=>{
+  if(DOMAIN==='country'){ lock(); const arr=RISK_SORTED.length?RISK_SORTED:ITEMS2; const o=arr[i%arr.length]; i++; show(o,true); }
+  else { const sorted=CAMP_ZONES.slice().sort((a,b)=>{const sa=CampL2.blend(CAMP_BASELINE.find(r=>r.zone===a)||CAMP_BASELINE[0]).s; const sb=CampL2.blend(CAMP_BASELINE.find(r=>r.zone===b)||CAMP_BASELINE[0]).s; return sb-sa}); const z=sorted[i%sorted.length]; i++; showCamp(z); }
+}})());
+```
+
+---
+
+## Patch 10 — Accessibility & placeholders per mode
+
+**Find this original line in INIT that sets the seed and shows Japan:**
+
+```js
+(function init(){const seedName=cleanInput(getQuery()||load()||'Japan');const seed=DB[(seedName||'').toLowerCase()]||DB['japan'];show(seed,false);recalc();startAuto()})();
+```
+
+**Replace with (starts in country mode as before; switches are manual):**
+
+```js
+(function init(){
+  const seedName=cleanInput(getQuery()||load()||'Japan');
+  const seed=DB[(seedName||'').toLowerCase()]||DB['japan'];
+  show(seed,false);
+  rebuildDatalist();
+  recalc(); startAuto();
+})();
+```
+
+---
+
+### Notes
+
+* Camp data is intentionally non‑identifiable (no faces/voices/IDs). Time/zone/noise/crowding/help/queue/calls are 0–1 scaled features that you or NGO staff can maintain by CSV/JSON.
+* The country ticker remains intact; the **Mode** button flips between domains to support demos and gradual rollout.
+* All new code runs entirely offline and reuses the transparent k‑NN + RLS pattern, with risk labels: **Low → Elevated → High → Critical**.
+* If you see any text overlap in the card, keep the existing `clearMore()` and forced resets inside `show()`; these already prevent duplicate rendering during AI toggles.
+
+
+
+Title/Tagline changed to **48KB Camp-Safety AI
+
+Added **Mode: Country/Camp** toggle button in the control section
+
+Introduced **CAMP\_BASELINE data** (non-identifiable signals only)
+
+Implemented **camp-specific feature vectors, k-NN, and RLS blending module**
+
+Added **Risk Level labels and colors** (Low / Elevated / High / Critical)
+
+Enabled **auto-switching of data list, placeholders, and button labels** depending on the selected mode
+
+Created **showCamp() renderer** and integrated sequential alert rotation for Camp mode
+
+Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-network push hooks**, allowing immediate integration when required]
+
+
+  
+-->
