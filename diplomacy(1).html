@@ -11,9 +11,55 @@
     .paper{background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:16px;box-shadow:0 18px 42px rgba(2,6,23,.12);padding:22px}
     .preserve{white-space:pre-wrap}
     .page-break{height:0;break-after:page}
+        .page-break{height:0;break-after:page}
+    
+    /* ===== Print setup ===== */
+    @page {
+      size: A4;
+      margin: 18mm;
+    }
+
+    @media print {
+      html, body {
+        background: #fff;
+        color: #000;
+      }
+      .container {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+      .paper {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        page-break-inside: avoid;
+      }
+      .page-break {
+        display: block;
+        page-break-after: always;
+        break-after: page;
+        height: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+
   </style>
 </head>
 <body>
+    
+  <div class="no-print" style="text-align:right; margin:12px;">
+    <button onclick="window.print()" style="padding:8px 12px; border:1px solid #c8ccd5; border-radius:8px; background:#fff; cursor:pointer;">
+      Print
+    </button>
+  </div>
+  <div class="container">
+
+    
   <div class="container">
     <!-- Page 1: Essential Reading (exact text, unmodified) -->
     <article class="paper" aria-label="Page 1">
