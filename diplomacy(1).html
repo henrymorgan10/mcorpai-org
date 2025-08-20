@@ -32,6 +32,25 @@
     #box::before{content:none!important}
     .controls::before{content:none!important}
     .letter .meta::before{content:none!important}
+
+    /* === Added: Diplomatic CTA banner (blue box) === */
+    .cta-banner{background:#0b77d5;color:#ffffff;border-radius:14px;padding:14px 16px;font-weight:800;box-shadow:0 10px 26px rgba(2,6,23,.12);cursor:pointer;user-select:none;transition:transform .15s ease, box-shadow .15s ease;outline-offset:4px}
+    .cta-banner:hover{transform:translateY(-1px);box-shadow:0 14px 34px rgba(2,6,23,.18)}
+    .cta-banner:active{transform:translateY(0)}
+    .cta-banner .cta-sub{display:block;font-weight:600;font-size:.92rem;opacity:.95;margin-top:4px}
+
+    /* === Added: Minimal modal for the draft space (kept empty by design) === */
+    .dmodal{position:fixed;inset:0;display:none}
+    .dmodal[aria-hidden="false"]{display:block}
+    .dmodal-backdrop{position:absolute;inset:0;background:rgba(2,6,23,.52);backdrop-filter:saturate(110%) blur(2px)}
+    .dmodal-card{position:relative;max-width:min(880px,92vw);max-height:min(82vh,780px);margin:6vh auto;background:#ffffff;border-radius:16px;box-shadow:0 22px 60px rgba(2,6,23,.35);display:flex;flex-direction:column}
+    .dmodal-card h2{margin:0;padding:16px 18px;border-bottom:1px solid rgba(0,0,0,.08);font-size:1.05rem}
+    .dmodal-body{padding:18px;overflow:auto}
+    .dmodal-close{position:absolute;top:10px;right:10px;border:0;background:transparent;font-size:22px;line-height:1;cursor:pointer}
+    @media (prefers-color-scheme:dark){
+      .dmodal-card{background:#0b1221;color:#e5e7eb}
+      .dmodal-card h2{border-bottom-color:rgba(255,255,255,.1)}
+    }
   </style>
 </head>
 <body>
@@ -58,7 +77,24 @@
       <span class="chip" aria-pressed="true">English</span>
     </div>
 
+    <!-- === Added: Blue CTA banner (click to open empty modal) === -->
+    <div id="diplomaticCTA" class="cta-banner" role="button" tabindex="0" aria-controls="diplomaticModal" aria-expanded="false" aria-label="Open diplomatic draft space">
+      For the Attention of Your Excellency — Principles of the 48KB Offline AI. Your most gracious review is respectfully requested.
+      <span class="cta-sub">Kindly click to open the diplomatic draft space. No content is prefilled.</span>
+    </div>
+
+    <!-- Original article container (kept) -->
     <article id="letter" class="letter" lang="en" aria-live="polite"></article>
+  </div>
+
+  <!-- === Added: Diplomatic modal (intentionally empty body) === -->
+  <div id="diplomaticModal" class="dmodal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dmodal-title">
+    <div class="dmodal-backdrop" data-close></div>
+    <div class="dmodal-card" role="document">
+      <button class="dmodal-close" title="Close" aria-label="Close" data-close>×</button>
+      <h2 id="dmodal-title">Diplomatic Brief — Draft Space</h2>
+      <div id="dmodal-body" class="dmodal-body"><!-- Intentionally left empty. Paste the final HTML essay here later. --></div>
+    </div>
   </div>
 
   <script>
@@ -108,6 +144,77 @@ It remains operational even during blackouts, war, or information control, offer
     const $letter = document.getElementById('letter');
     $letter.innerHTML = EN_BODY;
     document.documentElement.lang = 'en';
+
+    // === Added: Modal controller (open empty, close on overlay/ESC/close button) ===
+    const cta = document.getElementById('diplomaticCTA');
+    const modal = document.getElementById('diplomaticModal');
+    const body = document.getElementById('dmodal-body');
+    const togglers = document.querySelectorAll('[data-close]');
+
+    function openModal(){
+      modal.setAttribute('aria-hidden','false');
+      cta.setAttribute('aria-expanded','true');
+      // Ensure body remains empty by design
+      body.innerHTML = '';
+      setTimeout(()=>document.querySelector('.dmodal-close')?.focus(), 10);
+    }
+    function closeModal(){
+      modal.setAttribute('aria-hidden','true');
+      cta.setAttribute('aria-expanded','false');
+    }
+
+    cta.addEventListener('click', openModal);
+    cta.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openModal(); }});
+    togglers.forEach(el=> el.addEventListener('click', closeModal));
+    modal.addEventListener('click', (e)=>{ if(e.target && e.target.hasAttribute('data-close')) closeModal(); });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false'){ closeModal(); }});
   </script>
+
+  <!-- =============================================================
+       [ Diplomatic English content plan (≈5,000 chars) — OUTLINE ONLY ]
+       This section is a planning draft for the text that will later be
+       typeset into HTML and pasted inside <div id="dmodal-body">.
+       As per request, the modal remains EMPTY until the user instructs
+       "HTML 글을 쓰겠습니다" and provides the go‑ahead to typeset.
+  ================================================================ -->
+  <!-- [
+  Address and salutation. A respectful address to "Your Excellency" that establishes purpose with clarity and restraint. A brief acknowledgment of the recipient’s mandate to safeguard civilians and maintain humanitarian standards in constrained settings.
+
+  Context and necessity. A concise narrative explaining that modern AI has grown large, centralized, and network‑dependent, while field reality is often bandwidth‑poor, power‑constrained, and subject to disruption. An explicit statement that an offline, privacy‑respecting, explainable micro‑AI can serve as a practical instrument for early detection and rapid signaling under these constraints.
+
+  Definition in plain terms. A straightforward description that Vanilla HTML Offline AI is a single‑file, self‑contained program running entirely in the browser without servers or libraries, occupying approximately forty‑eight kilobytes, yet capable of estimation, explanation, and rapid adaptation from human feedback.
+
+  Method overview. An accessible explanation of how feature vectors summarize local signals; how k‑nearest neighbors provides a first estimate by comparison with similar past cases; how recursive least squares updates weights in a few operations to reflect new confirmations; and how the blend yields steady behavior at small scale.
+
+  Data stewardship and compliance. A firm assurance that no personal data is ingested. Signals are zone‑level, numeric, and minimal; decisions are auditable; logs are encrypted; retention is limited; operations align with GDPR, UNCRC, and CRPD. Clarify the role of human validators and the prohibition against biometric identification.
+
+  Field scenarios. Vivid, concrete illustrations: night‑time dispute near communal taps; crowding surges at ration points; medical distress indicators; escalating noise near a checkpoint. Show how alerts are raised, confirmed, and learned from. Mention that the same engine can sit on repurposed smartphones with solar power and local mesh.
+
+  Governance and accountability. Outline who configures thresholds; how weekly reviews are conducted; how role‑based keys and audit trails prevent misuse; how emergency rules (e.g., radio silence) are respected by strict on‑device operation.
+
+  Benefits to mission. Emphasize three values: faster recognition of true risk, fewer missed events in low‑connectivity environments, and transparent reasoning that strengthens professional judgment rather than replacing it. Quantify with suggested indicators such as alert‑to‑response time and hotspot reduction over weeks.
+
+  Limitations and safeguards. State candidly that false alarms may occur, that cultural specificity matters, and that the tool must not be used as evidence of wrongdoing without human investigation. Reaffirm the auxiliary role of the estimator.
+
+  Invitation to collaborate. Extend a courteous request for a pilot assessment in a limited sector, offer to adapt the tool to the mission’s operational doctrine, and propose a short after‑action review cycle to tune thresholds and wording.
+
+  Closing. A formally warm close that thanks the recipient for their attention and reiterates the objective: a modest, reliable instrument that helps protect the vulnerable when networks and power fail.
+  ] -->
+
+  <!-- =============================================================
+       [ Operator prompt to trigger typesetting ]
+       When you are ready for me to generate the full HTML essay for the
+       modal, send the exact command below as a single line.
+       명령 프롬프트: HTML 글을 쓰겠습니다
+  ================================================================ -->
+
+  <!-- =============================================================
+       [ Where to paste the final HTML essay ]
+       After I produce the HTML, insert it between the tags below:
+       <div id="dmodal-body" class="dmodal-body">
+         <!-- PASTE THE FINAL HTML ESSAY HERE -->
+       </div>
+       No other edits are required. Keep the rest of the code unchanged.
+  ================================================================ -->
 </body>
 </html>
