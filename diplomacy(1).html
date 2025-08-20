@@ -483,7 +483,7 @@ This is the stable release. Functionality, stability, and documentation meet the
   <div id="box" role="group">
     <header>
       <div class="title" id="title">
-        <a href="diplomacy(1).html" style="color:#0b77d5;text-decoration:underline">48kb Offline AI V0.3</a>
+        <a href="diplomacy(1).html" style="color:#0b77d5;text-decoration:underline">44kb Offline AI V0.3</a>
       </div>
       <div id="period">A world-class, ultra-lightweight on-device k-NN AI demo</div>
     </header>
@@ -651,7 +651,7 @@ This is the stable release. Functionality, stability, and documentation meet the
   const elN=document.getElementById('name'),elR=document.getElementById('rank'),elG=document.getElementById('grade'),elD=document.getElementById('desc'),elM=document.getElementById('more'),sr=document.getElementById('sr'),view=document.getElementById('view');
 
   // ==================== LABELS ====================
-  const LABELS={title:'48kb Offline AI V0.3',moody:"Moody\'s 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
+  const LABELS={title:'44kb Offline AI V0.3',moody:"Moody\'s 5yr avg",placeholder:'Country… (ex. America or USA)',risk:'Risk',choose:'Choose a country or press Risk.',sgrade:'Safety Grade',rank:'Tourism Rank #',micro:'Micronation',notun:'not a UN state',ai:'AI (k-NN + RLS) suggestion'};
   elT.innerHTML=`<a href="diplomacy(1).html" style="color:#0b77d5;text-decoration:underline">${LABELS.title}</a>`;
   q.setAttribute('placeholder',LABELS.placeholder);
   riskBtn.textContent=LABELS.risk;
@@ -871,7 +871,7 @@ This is the stable release. Functionality, stability, and documentation meet the
 <!--
 
 Below are **surgical copy/paste patches** that transform `world_travel.html` 
-  into a refugee‑camp safety mini‑AI (≈48KB). Each patch is in the form **Original ▶ Replace with**. Search the “Original” block in your file, then replace it with the “Replace with” block.
+  into a refugee‑camp safety mini‑AI (≈44kb). Each patch is in the form **Original ▶ Replace with**. Search the “Original” block in your file, then replace it with the “Replace with” block.
 
 ---
 
@@ -898,7 +898,7 @@ Below are **surgical copy/paste patches** that transform `world_travel.html`
 **Replace with:**
 
 ```html
-<div id="period">Offline ≈48KB camp‑safety mini‑AI (k‑NN + RLS), privacy‑first</div>
+<div id="period">Offline ≈44kb camp‑safety mini‑AI (k‑NN + RLS), privacy‑first</div>
 ```
 
 ---
@@ -936,7 +936,7 @@ Below are **surgical copy/paste patches** that transform `world_travel.html`
 
 ---
 
-## Patch 3 — Update LABELS (48KB, Risk Level text) and domain state
+## Patch 3 — Update LABELS (44kb, Risk Level text) and domain state
 
 **Original (whole LABELS block):**
 
@@ -948,7 +948,7 @@ const LABELS={title:'44KB Offline AI click',moody:"Moody's 5yr avg",placeholder:
 
 ```js
 const LABELS={
-  title:'48KB Offline Camp‑Safety AI',
+  title:'44kb Offline Camp‑Safety AI',
   moody:"Camp mode: privacy‑first (no PII)",
   placeholderCountry:'Country… (ex. America or USA)',
   placeholderCamp:'Zone… (ex. B‑3 block)',
@@ -1139,8 +1139,8 @@ modeBtn.addEventListener('click',()=>{
   modeBtn.textContent = 'Mode: '+(DOMAIN==='country'?'Country':'Camp');
   rebuildDatalist(); q.value=''; elM.innerHTML='';
   elP.textContent = (DOMAIN==='country')
-    ? 'Offline ≈48KB travel demo (k‑NN + RLS)'
-    : 'Offline ≈48KB camp‑safety mini‑AI (k‑NN + RLS), privacy‑first';
+    ? 'Offline ≈44kb travel demo (k‑NN + RLS)'
+    : 'Offline ≈44kb camp‑safety mini‑AI (k‑NN + RLS), privacy‑first';
 });
 
 // Optional: in camp mode, the Risk button cycles zones with higher predicted risk
@@ -1183,7 +1183,7 @@ riskBtn.addEventListener('click',(()=>{let i=0;return()=>{
 
 
 
-Title/Tagline changed to **48KB Camp-Safety AI
+Title/Tagline changed to **44kb Camp-Safety AI
 
 Added **Mode: Country/Camp** toggle button in the control section
 
