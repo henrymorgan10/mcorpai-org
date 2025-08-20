@@ -3,295 +3,172 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Diplomatic Brief — Self‑Reliant, Ultra‑Lightweight 48KB(1 photo), Ultra‑Low‑Cost AI for Refugee Children & Women</title>
+  <title>Two‑Page Diplomatic Brief (Front/Back)</title>
   <style>
     :root{color-scheme:light dark}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:#f6f8fb;color:#0b1221}
-    .wrap{max-width:980px;margin:24px auto;padding:16px 16px 16px 260px;position:relative}
-    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;position:relative}
-    .chip{border:1px solid rgba(0,0,0,.14);background:#fff;border-radius:999px;padding:8px 12px;font-size:.9rem;user-select:none}
-    .chip[aria-pressed="true"]{outline:2px solid #1e3a8a;background:#eef2ff}
-    .letter{background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:14px;box-shadow:0 10px 26px rgba(2,6,23,.08);padding:24px}
-    .meta{display:grid;grid-template-columns:120px 1fr;gap:6px;font-size:.95rem;color:#374151;margin:0 0 14px;position:relative}
-    h1{font-size:1.2rem;margin:8px 0 12px;font-weight:800;text-align:left}
-    .ribbon{background:#0b3d91;color:#fff;letter-spacing:.02em;padding:8px 14px;font-weight:800;font-size:.86rem;border-radius:999px;display:inline-block}
-    p{line-height:1.74;margin:10px 0}
-    .footer{margin-top:18px;font-size:.95rem;color:#374151}
-    .hr{height:1px;background:linear-gradient(90deg,rgba(0,0,0,.1),rgba(0,0,0,.04));margin:16px 0;border-radius:1px}
-    /* Personal intro rail (kept as-is) */
-    @media (min-width:992px){#infoRail{position:fixed;left:14px;top:85px;width:220px;z-index:80}}
-    @media (max-width:991.98px){#infoRail{position:fixed;left:10px;bottom:12px;width:min(80vw,320px);z-index:80}.wrap{padding:16px}}
-    #box{background:#1e293b;color:#f1f5f9;border:1px solid rgba(0,0,0,.3);border-radius:10px;box-shadow:0 8px 18px rgba(2,6,23,.25);overflow-y:auto;font:.82rem/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;max-height:600px}
-    #box header{padding:6px 10px;font-weight:800;background:linear-gradient(180deg,#334155,#1e293b);border-bottom:1px solid rgba(0,0,0,.2);font-size:.85rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#f8fafc}
-    #box header>.title{color:#93c5fd;font-weight:900}
-    #box .row{padding:6px 10px}
-    #desc{font-size:.82rem;font-weight:500;color:#f1f5f9;margin-top:6px}
-    #photo{width:100%;max-width:150px;border-radius:8px;margin:10px auto;display:block}
-    /* Number markers removed */
-    #box{position:relative}
-    #box::before{content:none!important}
-    .controls::before{content:none!important}
-    .letter .meta::before{content:none!important}
-
-    /* === Added: Diplomatic CTA banner (blue box) === */
-    .cta-banner{background:#0b77d5;color:#ffffff;border-radius:14px;padding:14px 16px;font-weight:800;box-shadow:0 10px 26px rgba(2,6,23,.12);cursor:pointer;user-select:none;transition:transform .15s ease, box-shadow .15s ease;outline-offset:4px}
-    .cta-banner:hover{transform:translateY(-1px);box-shadow:0 14px 34px rgba(2,6,23,.18)}
-    .cta-banner:active{transform:translateY(0)}
-    .cta-banner .cta-sub{display:block;font-weight:600;font-size:.92rem;opacity:.95;margin-top:4px}
-
-    /* === Added: Minimal modal for the draft space (kept empty by design) === */
-    .dmodal{position:fixed;inset:0;display:none}
-    .dmodal[aria-hidden="false"]{display:block}
-    .dmodal-backdrop{position:absolute;inset:0;background:rgba(2,6,23,.52);backdrop-filter:saturate(110%) blur(2px)}
-    .dmodal-card{position:relative;max-width:min(880px,92vw);max-height:min(82vh,780px);margin:6vh auto;background:#ffffff;border-radius:16px;box-shadow:0 22px 60px rgba(2,6,23,.35);display:flex;flex-direction:column}
-    .dmodal-card h2{margin:0;padding:16px 18px;border-bottom:1px solid rgba(0,0,0,.08);font-size:1.05rem}
-    .dmodal-body{padding:18px;overflow:auto}
-    .dmodal-close{position:absolute;top:10px;right:10px;border:0;background:transparent;font-size:22px;line-height:1;cursor:pointer}
-    @media (prefers-color-scheme:dark){
-      .dmodal-card{background:#0b1221;color:#e5e7eb}
-      .dmodal-card h2{border-bottom-color:rgba(255,255,255,.1)}
-    }
+    body{margin:0;background:#f6f8fb;color:#0b1221;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+    .container{max-width:960px;margin:24px auto;padding:16px}
+    .paper{background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:16px;box-shadow:0 18px 42px rgba(2,6,23,.12);padding:22px}
+    .preserve{white-space:pre-wrap}
+    .page-break{height:0;break-after:page}
   </style>
 </head>
 <body>
-  <!-- Personal Introduction rail stays unchanged -->
-  <aside id="infoRail" aria-label="Sticky bio ticker">
-    <div id="box" role="group">
-      <header>
-        <div class="title" id="title">Personal Introduction</div>
-      </header>
-      <div class="row">
-        <img id="photo" src="https://mcorpai.org/jeon.PNG" alt="Portrait of Gyu-min Jeon" />
-      </div>
-      <div class="row" id="view" aria-live="polite">
-        <div id="desc">
-          I am affiliated with a national university in the Republic of Korea. In my twenties, I authored several books, gaining the ability to clarify complex issues and draw insights. This background helps me address global challenges with practical solutions. I value responsibility, integrity, and meaningful contributions to the international community. My focus is on linking ethical artificial intelligence with child rights, uniting technology with humanitarian values. I aim to be recognized not by titles, but by results.
-        </div>
-      </div>
-    </div>
-  </aside>
+  <div class="container">
+    <!-- Page 1: Essential Reading (exact text, unmodified) -->
+    <article class="paper" aria-label="Page 1">
+      <div class="preserve">Essential Reading for Diplomats: The 48KB Offline AI, A Completely New Paradigm
+Your Excellency, this document contains exactly 5,000 characters. It will take no more than five minutes to read. Within those 5,000 characters lies a key to saving countless lives. I respectfully ask you to spare just five minutes.
 
-  <div class="wrap">
-    <!-- English only indicator (non-interactive) -->
-    <div class="controls" role="group" aria-label="Language selector">
-      <span class="chip" aria-pressed="true">English</span>
-    </div>
+At this very moment, lives are at risk in places where the internet does not reach—amid the war in Ukraine, civil conflicts in Africa, climate disasters, and the collapse of communication infrastructure. In such emergencies, conventional artificial intelligence systems fail, as they depend on cloud connections, vast datasets, and high-performance servers.
 
-<div id="diplomaticCTA" class="cta-banner" role="button" tabindex="0" aria-controls="diplomaticModal" aria-expanded="false" aria-label="Open diplomatic draft space">
-  Your Excellency, this 48KB Offline AI represents an unprecedented model for field deployment — designed not for data, but for human dignity. We would be deeply honored to receive your esteemed diplomatic insight.
-  <span class="cta-sub">Kindly click this button to read the material. Your thoughtful attention would be most gratefully received.</span>
-</div>
+But what if AI could function without the internet, without servers, and without massive models—contained entirely in a single HTML file? And what if, with equipment costing no more than around one thousand dollars, communities could establish a self-sufficient alert system directly on the ground? This is the starting point of Vanilla HTML Offline AI.
 
+I sincerely hope you will consider reading this and allow for follow-up discussions on how it may connect with your country’s international forums, development cooperation networks, or embassy field projects.
 
-    <!-- Original article container (kept) -->
-    <article id="letter" class="letter" lang="en" aria-live="polite"></article>
+1. Definition and Principle: Single File, Fully Offline, Entirely Free
+
+Vanilla HTML Offline AI is designed as a single HTML file that embeds the user interface, decision algorithms, data handling, and lightweight learning logic. It runs directly in a browser. No servers, external libraries, or internet connections are required. With only a browser, AI becomes operational.
+
+One 48KB file is enough. It can be distributed by email, USB, or Bluetooth. Its power consumption is so minimal that a single solar panel can run it. Its size is smaller than a single photo.
+
+2. Technical Core: A Tool of Wisdom, Not Just Another AI
+
+Whereas most AI systems are data-driven, Vanilla HTML Offline AI is people-driven and participation-driven. It does not rely on vast training datasets but instead encodes human-defined rules and knowledge into code for direct decision-making in the field. Lightweight algorithms such as k-NN and RLS analyze vectorized signals and adjust internal weights accordingly.
+
+The system can integrate with Bluetooth or low-cost wireless chipsets to perform risk detection, alert judgment, and message transmission—all locally. Short, automatic alerts such as “Gunfire detected 300 meters east” can be generated and relayed to nearby devices.
+
+3. Practical Scenarios: Abandoned Smartphones Become Alert Nodes
+
+Conflict zones are filled with discarded smartphones. These devices already contain essential sensors such as Bluetooth, microphones, GPS, and vibration detectors. Once equipped with Vanilla HTML Offline AI, each smartphone becomes an alert node.
+
+They can detect sudden noise surges, distinct sound patterns, or increased crowd density, generating alerts and sending messages via Bluetooth to nearby devices. When multiple smartphones connect in a mesh network, a single alert can spread across several kilometers. All of this happens without using a single line of internet connection.
+
+4. Extending Vanilla HTML Offline AI into an Alert Node Network
+
+Low-income countries, climate-vulnerable regions, and low-lying coastal states often lack early warning infrastructure. Satellite links, data-center-based AI, or real-time ocean sensor systems require high costs, advanced infrastructure, and trained personnel. In many cases, tsunami or cyclone warnings arrive late—or not at all.
+
+Because it is a single HTML file, Vanilla HTML Offline AI can be deployed on smartphones, Raspberry Pi boards, low-cost tablets, or ESP32 chips. Its low power use allows solar operation.
+
+Warning signs of tsunamis—such as seismic activity, abnormal sea-level shifts, or tremors—can already be detected using accelerometers, gyroscopes, GPS, and microphones embedded in smartphones.
+
+Vanilla HTML Offline AI converts such signals into vectors, detects anomalies through lightweight algorithms, and broadcasts warning messages once thresholds are crossed. Using BLE-based relay structures, even villages or fishing communities without networks can form effective alert grids.
+
+Not Just Technical Imagination, But High Practical Feasibility
+
+Because it is an HTML file, Vanilla HTML Offline AI can be distributed without the internet—via USB, Bluetooth, or memory cards. The strategy of turning “discarded smartphones” into alert nodes is a recycling-based system that can be implemented with virtually no budget, making it highly attractive to international organizations and public development agencies. In particular, its structure allows local communities to maintain and operate it autonomously, providing a model that embodies true technological self-reliance.
+
+Many discarded smartphones are waterproof. By embedding them into long poles along coastlines, they can function as improvised coastal early-warning devices. In fact, most marine sensor equipment—such as booster beacons and tide poles—already uses pole-type structures. A discarded smartphone fixed inside a pole can connect via Bluetooth to other smartphones, enabling site-to-site alert transmission without any physical network.
+
+For example, if one smartphone detects water-surface vibration or abnormal GPS readings, it can broadcast the signal locally, relay it to an inland base node, and connect to village loudspeakers.
+
+A discarded smartphone is, in fact, an underestimated “complete multi-sensor device.” Most come with waterproofing by default (IP67 or IP68 level). Equipped with microphones, accelerometers, gyroscopes, GPS, temperature sensors, and barometers, they can detect a wide range of physical phenomena with a single device. By protecting the charging port with waterproof packs, silicone capsules, or PVC pipes, these devices can be installed outdoors for long-term use.
+
+Implementation is straightforward. A smartphone can be set to “standby charging mode” using solar power, with Vanilla HTML Offline AI fixed in execution mode. Sealed in a PVC tube and mounted vertically, it becomes a mini observation station along the coast.
+
+As long as BLE communication ranges are secured, alert grids can be formed at intervals of tens to hundreds of meters, which is highly practical for regions such as Indonesia, the Philippines, and the small island developing states of the South Pacific.
+
+Conventional early-warning systems—such as marine buoys or satellite-linked sensor grids—cost thousands to tens of thousands of dollars per unit and require ongoing maintenance. In contrast, this model operates with zero-cost recycled smartphones, poles costing less than a dollar, and small solar panels. Maintenance and upkeep can be handled directly by local communities.
+
+Indeed, in climate-vulnerable regions, this decentralized approach may prove even more suitable than centralized systems. Institutions such as UNDRR, the Green Climate Fund, IFRC, and SIDS networks could find Vanilla HTML Offline AI especially useful. It represents exactly the kind of “adaptation-based, community-driven low-tech solution” that agencies like UNDRR, UNEP, and the GCF are searching for.
+
+5. Summary of Operational Steps
+
+First, collect discarded smartphones and secure power.
+
+Second, transfer the single Vanilla HTML Offline AI file and store it in the browser.
+
+Third, configure the smartphone sensors for AI use.
+
+Fourth, the alert algorithms assess risks and generate messages.
+
+Fifth, Bluetooth transmits warnings to nearby devices.
+
+Sixth, the devices relay to form a distributed alert network.
+
+Seventh, attach solar chargers for long-term sustainability.
+
+Through this process, discarded devices transform from e-waste into self-sustaining alert nodes that protect lives.
+
+6. Key Differences from Conventional Web AI
+
+First, it is a fully independent structure. There are no external frameworks such as TensorFlow.js—only pure JavaScript.
+
+Second, it is not just simple output but includes actual decision-making and learning processes. Lightweight algorithms analyze inputs and continuously update internal states.
+
+Third, it prioritizes privacy, not data collection. It works immediately in disconnected environments, with all data staying local and never transmitted externally.
+
+7. Communication and Distribution Strategy
+
+The 48KB file can be shared easily via USB, Bluetooth, or email. Emergency alert messages—just a few hundred bytes—can be reliably transmitted in BLE environments. The full file can be distributed through Bluetooth Classic or physical duplication. In practice, a mixed strategy is most effective.
+
+8. Why It Is Needed Now
+
+First, global skepticism is growing toward surveillance, censorship, and centralized server dependence.
+
+Second, disasters, civil conflicts, and climate crises are increasing the frequency of unstable network environments.
+
+Third, ultra-lightweight design itself has become a new strategic value. What was once dismissed as “small-scale technology” is now a practical alternative in crisis contexts.
+
+9. Why Academia and Industry Have Ignored This Direction
+
+Mainstream AI has grown around “data collection” and “server scalability.” Vanilla HTML Offline AI embodies the opposite philosophy. It does not fit into corporate revenue models and therefore has not attracted large-scale investment. But the crises humanity now faces demand different criteria—accessibility, local autonomy, and structures that maximize effect with minimal resources.
+
+10. Conclusion: Not Just Technology, But a Civilizational Strategy
+
+Vanilla HTML Offline AI is less a new technology than a shift in how we conceive AI itself. It is driven not by data but by human wisdom, not by the cloud but by local interaction, not by ownership but by shared responsibility.
+
+This is not merely a miniature AI—it is an alternative civilizational tool to safeguard dignity and life in extreme conditions. In war, disaster, censorship, and infrastructure collapse, even a single HTML file can create a lifeline of protection. This is the future envisioned by the 48KB Offline AI.</div>
+    </article>
+
+    <div class="page-break"></div>
+
+    <!-- Page 2: Diplomatic Brief (exact text, unmodified) -->
+    <article class="paper" aria-label="Page 2">
+      <div class="preserve">Diplomatic Brief
+Self‑Reliant, Ultra‑Lightweight (≈48KB), Ultra‑Low‑Cost AI for Refugee Children and Women
+To
+Field Operations / Concerned Officials
+From
+Gyu‑min Jeon [ This document is a personal proposal and carries no legal obligations. ]
+Subject
+【Fully Open, Fully Free, Fully Simple — the 3F AI】 Rationale and Request for a Self‑Reliant, Ultra‑Lightweight (≈48KB), Ultra‑Low‑Cost AI for Refugee Children & Women
+Date
+2025‑08‑19 (KST)
+Your Excellency,
+
+This system follows a philosophy of being free, open, and decentralized—an autonomous AI that collects no personal data whatsoever. It runs entirely offline in a browser, with no need for servers or internet, and can be distributed via USB. Learning occurs solely through user feedback, with a privacy-respecting design that avoids surveillance or censorship risks. It remains operational even during blackouts, war, or information control, offering a trust-based alternative to conventional AI. Fully compliant with GDPR and UNCRC.
+
+1) One‑Glance Summary of the Ultra‑Lightweight AI. We begin by preparing baseline data—past incidents of camp violence, signs of psychological tension, child/women’s rights violations, and food distribution issues. No personal data is stored: only non‑identifiable numeric indicators such as time, location zone, noise level, crowd density, and help‑request button activity.
+
+When a new signal arrives, the AI compares it with past data to ask, “Which previous cases are most similar?” (this is k‑NN). When field staff confirm or dismiss an alert, the AI immediately adjusts its internal weights (this is RLS, online learning). In short, it evolves through a cycle of baseline → field feedback → tailored detector. With preloaded risk data it starts useful on day one, and then adapts in real time.
+
+Crucially, refugees or NGOs can directly modify the data: this is an open, self‑sustaining AI that can be locally maintained. The same ≈48KB engine that powers our demo card runs entirely offline in a browser—no server or cloud calls—and shows the rationale for its estimates.
+
+2) What We Have Built So Far (plain language). This is not a massive deep‑learning model, but a tiny decision engine that runs in a phone browser. It turns country/camp data into small feature vectors, finds similar past cases (k‑NN) to make an initial estimate, and then self‑corrects quickly with field feedback (RLS). Even with only a few dozen KB of memory, it transparently answers: “How close is this case to safe or unsafe?”
+
+3) Why this reframes naturally to refugee protection. The current demo is a “country safety ticker,” but swapping the data turns the same engine into a camp risk signal estimator. Replace country metrics with camp‑level signals—time of day; block/tent zone; light/noise/crowding; help‑request texts; food queue length; security call logs—then encode them as small numeric vectors. k‑NN finds similar history; RLS rapidly adapts using true/false‑alarm feedback.
+
+Offline & low‑power: runs entirely on site with solar + low‑cost devices (Raspberry Pi / budget Android), continuing detect→alert even if communications fail. Explainability: the card shows similar cases and top features so leaders, NGOs, and protection officers can audit the reasoning.
+
+4) Theory in brief. k‑NN: compare with the k most similar past signals and average their outcomes (e.g., “At night in Zone X with high noise and crowding, conflicts followed”). RLS: when staff feedback arrives, update weights in a few calculations—fast adaptation at KB scale. Blending: combine k‑NN and RLS to avoid bias/overfitting (the code’s blend()).
+
+5) What the baseline data stores (non‑identifiable). Timestamp; zone ID (grid/label); signal summary (noise RMS, crowding, light change, movement); event label (argument, violence sign, GBV request, child‑missing alert, medical emergency, fire hazard, etc.); and outcome (field confirmation = true/false alarm). Human‑in‑the-loop: protection staff finalize labels; their decisions update RLS so each camp localizes over time. Compliance: no face/voice ID; coarse zone‑level location only; strict minimization & purpose limitation; on‑site processing; encrypted, auditable logs.
+
+6) Field scenario. Sensors/devices produce small feature sets every 1–10 seconds → the browser/app engine estimates risk instantly. If thresholds are exceeded, the card shows an alert (vibration/sound) and pushes to staff devices on the local network. Staff confirm true/false alarms → immediate RLS update → better, site‑tailored performance next time. Feedback loops help the model adapt to cultural/contextual nuances; alerts can be prioritized (e.g., medical emergencies first); aggregated history reveals structural issues like repeated stress in a particular block.
+
+6‑B) Why now — urgency & context. Field reports from multiple regions (2024–2025) point to recurrent patterns: crowding at ration points, night‑time disputes around shared facilities, and delayed recognition of medical distress. Connectivity is often unreliable, power is scarce, and server‑based tools remain impractical. An on‑device estimator that works under these constraints is therefore not optional but necessary.
+
+6‑C) Deployment & governance (practical plan). Pilot units: 3–5 devices per camp sector (solar + local mesh). Operating model: protection officers validate alerts during routine patrols; weekly review calibrates thresholds. Data stewardship: a designated NGO focal point holds cryptographic keys; rotation and audit logs ensure continuity. Interoperability: CSV/JSON import‑export allows local teams to edit baselines and share lessons across sites without personal data.
+
+7) Why this matters (key message). Without server‑scale AI, low‑power offline systems can still deliver the essential cycle of detect → alert → learn. Transparent and data‑minimal, it strengthens—rather than replaces—human judgment and aligns with GDPR, UNCRC, and CRPD. Costs are limited to solar + budget devices + local networking, allowing coverage of a camp for a few hundred to a few thousand dollars. By embedding human confirmation into the learning loop, the system avoids blind automation and becomes a collaborative tool that grows more accurate with every check.
+
+8) Collaboration request & evaluation. I would be honored to explore joint pilots with humanitarian teams and adapt this tool per your operational feedback. A live browser demo (≈48KB) and full offline code are available for field testing upon request. Suggested success metrics: median alert‑to‑response time; precision/recall by alert type; reduction in repeated high‑stress hotspots; and staff satisfaction with explainability.
+
+9) Limitations & risk management. The estimator is not a replacement for professional judgment. It may produce false alarms when context changes abruptly; this is why human confirmation is integral. All configurations should be reviewed with protection, legal, and safeguarding leads before deployment. Where radio silence is mandated, the system runs strictly on‑device with logs exported only under authorization.
+
+Summary: The method proves that a fully explainable, ultra‑lightweight AI can run only in the browser. Swap country data for camp signals and connect alert → confirmation → learning, and the same engine becomes practical, field‑ready protection infrastructure for detecting violence, safeguarding vulnerable groups, and spotting medical emergencies early. Baseline data starts the process; real‑time feedback fine‑tunes it; the system evolves into a localized, adaptive safety detector.</div>
+    </article>
   </div>
-
-  <!-- === Added: Diplomatic modal (intentionally empty body) === -->
-  <div id="diplomaticModal" class="dmodal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dmodal-title">
-    <div class="dmodal-backdrop" data-close></div>
-    <div class="dmodal-card" role="document">
-      <button class="dmodal-close" title="Close" aria-label="Close" data-close>×</button>
-      <h2 id="dmodal-title">Diplomatic Brief </h2>
-      <div id="dmodal-body" class="dmodal-body"><!-- Intentionally left empty. Paste the final HTML essay here later. --></div>
-    </div>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Essential Reading for Diplomats: The 48KB Offline AI, A Completely New Paradigm</title>
-  <style>
-    :root{color-scheme:light dark}
-    html,body{height:100%}
-    body{margin:0;background:#f6f8fb;color:#0b1221;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans",sans-serif;line-height:1.85}
-    .wrap{min-height:100%;display:flex;flex-direction:column}
-    .page{max-width:960px;margin:0 auto;padding:28px 16px 64px;flex:1}
-    .paper{background:#ffffff;border:1px solid rgba(0,0,0,.1);border-radius:16px;box-shadow:0 18px 42px rgba(2,6,23,.12);padding:22px}
-    h1{margin:0 0 14px;font-size:1.35rem;font-weight:900;letter-spacing:.01em;line-height:1.35;text-align:left}
-    p{margin:12px 0;font-size:1rem}
-    .lead{font-weight:700}
-    .hr{height:1px;background:linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.06));margin:18px 0;border-radius:1px}
-    @media (min-width:1000px){.page{padding:34px 20px 80px}.paper{padding:26px}}
-  </style>
-</head>
-<body>
-  <!-- Paste this entire file as a new page, or copy only <main id="scrollDoc">…</main>
-       and place it under your existing code block. The text inside remains
-       character-for-character identical to the source request. -->
-  <div class="wrap">
-    <main id="scrollDoc" class="page">
-      <article class="paper" aria-label="Diplomatic text">
-        <h1><strong>Essential Reading for Diplomats: The 48KB Offline AI, A Completely New Paradigm</strong></h1>
-        <p>Your Excellency, this document contains exactly 5,000 characters. It will take no more than five minutes to read. Within those 5,000 characters lies a key to saving countless lives. I respectfully ask you to spare just five minutes.</p>
-        <p>At this very moment, lives are at risk in places where the internet does not reach—amid the war in Ukraine, civil conflicts in Africa, climate disasters, and the collapse of communication infrastructure. In such emergencies, conventional artificial intelligence systems fail, as they depend on cloud connections, vast datasets, and high-performance servers.</p>
-        <p>But what if AI could function without the internet, without servers, and without massive models—contained entirely in a single HTML file? And what if, with equipment costing no more than around one thousand dollars, communities could establish a self-sufficient alert system directly on the ground? This is the starting point of Vanilla HTML Offline AI.</p>
-        <p>I sincerely hope you will consider reading this and allow for follow-up discussions on how it may connect with your country’s international forums, development cooperation networks, or embassy field projects.</p>
-        <p>1. Definition and Principle: Single File, Fully Offline, Entirely Free</p>
-        <p>Vanilla HTML Offline AI is designed as a single HTML file that embeds the user interface, decision algorithms, data handling, and lightweight learning logic. It runs directly in a browser. No servers, external libraries, or internet connections are required. With only a browser, AI becomes operational.</p>
-        <p>One 48KB file is enough. It can be distributed by email, USB, or Bluetooth. Its power consumption is so minimal that a single solar panel can run it. Its size is smaller than a single photo.</p>
-        <p>2. Technical Core: A Tool of Wisdom, Not Just Another AI</p>
-        <p>Whereas most AI systems are data-driven, Vanilla HTML Offline AI is people-driven and participation-driven. It does not rely on vast training datasets but instead encodes human-defined rules and knowledge into code for direct decision-making in the field. Lightweight algorithms such as k-NN and RLS analyze vectorized signals and adjust internal weights accordingly.</p>
-        <p>The system can integrate with Bluetooth or low-cost wireless chipsets to perform risk detection, alert judgment, and message transmission—all locally. Short, automatic alerts such as “Gunfire detected 300 meters east” can be generated and relayed to nearby devices.</p>
-        <p>3. Practical Scenarios: Abandoned Smartphones Become Alert Nodes</p>
-        <p>Conflict zones are filled with discarded smartphones. These devices already contain essential sensors such as Bluetooth, microphones, GPS, and vibration detectors. Once equipped with Vanilla HTML Offline AI, each smartphone becomes an alert node.</p>
-        <p>They can detect sudden noise surges, distinct sound patterns, or increased crowd density, generating alerts and sending messages via Bluetooth to nearby devices. When multiple smartphones connect in a mesh network, a single alert can spread across several kilometers. All of this happens without using a single line of internet connection.</p>
-        <p>4. Extending Vanilla HTML Offline AI into an Alert Node Network</p>
-        <p>Low-income countries, climate-vulnerable regions, and low-lying coastal states often lack early warning infrastructure. Satellite links, data-center-based AI, or real-time ocean sensor systems require high costs, advanced infrastructure, and trained personnel. In many cases, tsunami or cyclone warnings arrive late—or not at all.</p>
-        <p>Because it is a single HTML file, Vanilla HTML Offline AI can be deployed on smartphones, Raspberry Pi boards, low-cost tablets, or ESP32 chips. Its low power use allows solar operation.</p>
-        <p>Warning signs of tsunamis—such as seismic activity, abnormal sea-level shifts, or tremors—can already be detected using accelerometers, gyroscopes, GPS, and microphones embedded in smartphones.</p>
-        <p>Vanilla HTML Offline AI converts such signals into vectors, detects anomalies through lightweight algorithms, and broadcasts warning messages once thresholds are crossed. Using BLE-based relay structures, even villages or fishing communities without networks can form effective alert grids.</p>
-        <p>Not Just Technical Imagination, But High Practical Feasibility</p>
-        <p>Because it is an HTML file, Vanilla HTML Offline AI can be distributed without the internet—via USB, Bluetooth, or memory cards. The strategy of turning “discarded smartphones” into alert nodes is a recycling-based system that can be implemented with virtually no budget, making it highly attractive to international organizations and public development agencies. In particular, its structure allows local communities to maintain and operate it autonomously, providing a model that embodies true technological self-reliance.</p>
-        <p>Many discarded smartphones are waterproof. By embedding them into long poles along coastlines, they can function as improvised coastal early-warning devices. In fact, most marine sensor equipment—such as booster beacons and tide poles—already uses pole-type structures. A discarded smartphone fixed inside a pole can connect via Bluetooth to other smartphones, enabling site-to-site alert transmission without any physical network.</p>
-        <p>For example, if one smartphone detects water-surface vibration or abnormal GPS readings, it can broadcast the signal locally, relay it to an inland base node, and connect to village loudspeakers.</p>
-        <p>A discarded smartphone is, in fact, an underestimated “complete multi-sensor device.” Most come with waterproofing by default (IP67 or IP68 level). Equipped with microphones, accelerometers, gyroscopes, GPS, temperature sensors, and barometers, they can detect a wide range of physical phenomena with a single device. By protecting the charging port with waterproof packs, silicone capsules, or PVC pipes, these devices can be installed outdoors for long-term use.</p>
-        <p>Implementation is straightforward. A smartphone can be set to “standby charging mode” using solar power, with Vanilla HTML Offline AI fixed in execution mode. Sealed in a PVC tube and mounted vertically, it becomes a mini observation station along the coast.</p>
-        <p>As long as BLE communication ranges are secured, alert grids can be formed at intervals of tens to hundreds of meters, which is highly practical for regions such as Indonesia, the Philippines, and the small island developing states of the South Pacific.</p>
-        <p>Conventional early-warning systems—such as marine buoys or satellite-linked sensor grids—cost thousands to tens of thousands of dollars per unit and require ongoing maintenance. In contrast, this model operates with zero-cost recycled smartphones, poles costing less than a dollar, and small solar panels. Maintenance and upkeep can be handled directly by local communities.</p>
-        <p>Indeed, in climate-vulnerable regions, this decentralized approach may prove even more suitable than centralized systems. Institutions such as UNDRR, the Green Climate Fund, IFRC, and SIDS networks could find Vanilla HTML Offline AI especially useful. It represents exactly the kind of “adaptation-based, community-driven low-tech solution” that agencies like UNDRR, UNEP, and the GCF are searching for.</p>
-        <p>5. Summary of Operational Steps</p>
-        <p>First, collect discarded smartphones and secure power.</p>
-        <p>Second, transfer the single Vanilla HTML Offline AI file and store it in the browser.</p>
-        <p>Third, configure the smartphone sensors for AI use.</p>
-        <p>Fourth, the alert algorithms assess risks and generate messages.</p>
-        <p>Fifth, Bluetooth transmits warnings to nearby devices.</p>
-        <p>Sixth, the devices relay to form a distributed alert network.</p>
-        <p>Seventh, attach solar chargers for long-term sustainability.</p>
-        <p>Through this process, discarded devices transform from e-waste into self-sustaining alert nodes that protect lives.</p>
-        <p>6. Key Differences from Conventional Web AI</p>
-        <p>First, it is a fully independent structure. There are no external frameworks such as TensorFlow.js—only pure JavaScript.</p>
-        <p>Second, it is not just simple output but includes actual decision-making and learning processes. Lightweight algorithms analyze inputs and continuously update internal states.</p>
-        <p>Third, it prioritizes privacy, not data collection. It works immediately in disconnected environments, with all data staying local and never transmitted externally.</p>
-        <p>7. Communication and Distribution Strategy</p>
-        <p>The 48KB file can be shared easily via USB, Bluetooth, or email. Emergency alert messages—just a few hundred bytes—can be reliably transmitted in BLE environments. The full file can be distributed through Bluetooth Classic or physical duplication. In practice, a mixed strategy is most effective.</p>
-        <p>8. Why It Is Needed Now</p>
-        <p>First, global skepticism is growing toward surveillance, censorship, and centralized server dependence.</p>
-        <p>Second, disasters, civil conflicts, and climate crises are increasing the frequency of unstable network environments.</p>
-        <p>Third, ultra-lightweight design itself has become a new strategic value. What was once dismissed as “small-scale technology” is now a practical alternative in crisis contexts.</p>
-        <p>9. Why Academia and Industry Have Ignored This Direction</p>
-        <p>Mainstream AI has grown around “data collection” and “server scalability.” Vanilla HTML Offline AI embodies the opposite philosophy. It does not fit into corporate revenue models and therefore has not attracted large-scale investment. But the crises humanity now faces demand different criteria—accessibility, local autonomy, and structures that maximize effect with minimal resources.</p>
-        <p>10. Conclusion: Not Just Technology, But a Civilizational Strategy</p>
-        <p>Vanilla HTML Offline AI is less a new technology than a shift in how we conceive AI itself. It is driven not by data but by human wisdom, not by the cloud but by local interaction, not by ownership but by shared responsibility.</p>
-        <p>This is not merely a miniature AI—it is an alternative civilizational tool to safeguard dignity and life in extreme conditions. In war, disaster, censorship, and infrastructure collapse, even a single HTML file can create a lifeline of protection. This is the future envisioned by the 48KB Offline AI.</p>
-      </article>
-  </div>
-
-  <script>
-    const EN_BODY = `
-<span class="ribbon">Diplomatic Brief</span>
-<h1>Self‑Reliant, Ultra‑Lightweight (≈48KB), Ultra‑Low‑Cost AI for Refugee Children and Women</h1>
-<header class="meta"><div>To</div><div>Field Operations / Concerned Officials</div><div>From</div><div>Gyu‑min Jeon [ This document is a personal proposal and carries no legal obligations. ] </div><div>Subject</div><div> 【Fully Open, Fully Free, Fully Simple — the 3F AI】 Rationale and Request for a Self‑Reliant, Ultra‑Lightweight (≈48KB), Ultra‑Low‑Cost AI for Refugee Children & Women</div><div>Date</div><div>2025‑08‑19 (KST)</div></header>
-<p>Your Excellency,</p>
-
-<p>
-This system follows a philosophy of being free, open, and decentralized—an autonomous AI that collects no personal data whatsoever.
-It runs entirely offline in a browser, with no need for servers or internet, and can be distributed via USB.
-Learning occurs solely through user feedback, with a privacy-respecting design that avoids surveillance or censorship risks.
-It remains operational even during blackouts, war, or information control, offering a trust-based alternative to conventional AI. Fully compliant with GDPR and UNCRC.
-</p>
-
-<p><strong>1) One‑Glance Summary of the Ultra‑Lightweight AI.</strong> We begin by preparing <em>baseline data</em>—past incidents of camp violence, signs of psychological tension, child/women’s rights violations, and food distribution issues. No personal data is stored: only non‑identifiable numeric indicators such as time, location zone, noise level, crowd density, and help‑request button activity.</p>
-<p>When a new signal arrives, the AI compares it with past data to ask, “Which previous cases are most similar?” (this is <strong>k‑NN</strong>). When field staff confirm or dismiss an alert, the AI <strong>immediately adjusts</strong> its internal weights (this is <strong>RLS</strong>, online learning). In short, it evolves through a cycle of <em>baseline → field feedback → tailored detector</em>. With preloaded risk data it starts useful on day one, and then adapts in real time.</p>
-<p>Crucially, refugees or NGOs can directly modify the data: this is an <em>open, self‑sustaining</em> AI that can be locally maintained. The same <strong>≈48KB</strong> engine that powers our demo card runs entirely offline in a browser—no server or cloud calls—and shows the rationale for its estimates.</p>
-
-<p><strong>2) What We Have Built So Far (plain language).</strong> This is not a massive deep‑learning model, but a tiny decision engine that runs in a phone browser. It turns country/camp data into small feature vectors, finds similar past cases (k‑NN) to make an initial estimate, and then <em>self‑corrects quickly</em> with field feedback (RLS). Even with only a few dozen KB of memory, it transparently answers: “How close is this case to safe or unsafe?”</p>
-
-<p><strong>3) Why this reframes naturally to refugee protection.</strong> The current demo is a “country safety ticker,” but swapping the data turns the same engine into a <em>camp risk signal estimator</em>. Replace country metrics with camp‑level signals—time of day; block/tent zone; light/noise/crowding; help‑request texts; food queue length; security call logs—then encode them as small numeric vectors. k‑NN finds similar history; RLS rapidly adapts using true/false‑alarm feedback.</p>
-<p><em>Offline & low‑power:</em> runs entirely on site with solar + low‑cost devices (Raspberry Pi / budget Android), continuing detect→alert even if communications fail. <em>Explainability:</em> the card shows similar cases and top features so leaders, NGOs, and protection officers can audit the reasoning.</p>
-
-<p><strong>4) Theory in brief.</strong> <em>k‑NN</em>: compare with the <em>k</em> most similar past signals and average their outcomes (e.g., “At night in Zone X with high noise and crowding, conflicts followed”). <em>RLS</em>: when staff feedback arrives, update weights in a few calculations—fast adaptation at KB scale. <em>Blending</em>: combine k‑NN and RLS to avoid bias/overfitting (the code’s <code>blend()</code>).</p>
-
-<p><strong>5) What the baseline data stores (non‑identifiable).</strong> Timestamp; zone ID (grid/label); signal summary (noise RMS, crowding, light change, movement); event label (argument, violence sign, GBV request, child‑missing alert, medical emergency, fire hazard, etc.); and outcome (field confirmation = true/false alarm). <em>Human‑in‑the‑loop:</em> protection staff finalize labels; their decisions update RLS so each camp localizes over time. <em>Compliance:</em> no face/voice ID; coarse zone‑level location only; strict minimization & purpose limitation; on‑site processing; encrypted, auditable logs.</p>
-
-<p><strong>6) Field scenario.</strong> Sensors/devices produce small feature sets every 1–10 seconds → the browser/app engine estimates risk instantly. If thresholds are exceeded, the card shows an alert (vibration/sound) and pushes to staff devices on the local network. Staff confirm true/false alarms → immediate RLS update → better, site‑tailored performance next time. Feedback loops help the model adapt to cultural/contextual nuances; alerts can be prioritized (e.g., medical emergencies first); aggregated history reveals structural issues like repeated stress in a particular block.</p>
-
-<p><strong>6‑B) Why now — urgency & context.</strong> Field reports from multiple regions (2024–2025) point to recurrent patterns: crowding at ration points, night‑time disputes around shared facilities, and delayed recognition of medical distress. Connectivity is often unreliable, power is scarce, and server‑based tools remain impractical. An on‑device estimator that works under these constraints is therefore not optional but necessary.</p>
-
-<p><strong>6‑C) Deployment & governance (practical plan).</strong> <em>Pilot units:</em> 3–5 devices per camp sector (solar + local mesh). <em>Operating model:</em> protection officers validate alerts during routine patrols; weekly review calibrates thresholds. <em>Data stewardship:</em> a designated NGO focal point holds cryptographic keys; rotation and audit logs ensure continuity. <em>Interoperability:</em> CSV/JSON import‑export allows local teams to edit baselines and share lessons across sites without personal data.</p>
-
-<p><strong>7) Why this matters (key message).</strong> Without server‑scale AI, low‑power offline systems can still deliver the essential cycle of <strong>detect → alert → learn</strong>. Transparent and data‑minimal, it strengthens—rather than replaces—human judgment and aligns with GDPR, UNCRC, and CRPD. Costs are limited to solar + budget devices + local networking, allowing coverage of a camp for a few hundred to a few thousand dollars. By embedding human confirmation into the learning loop, the system avoids blind automation and becomes a <em>collaborative tool</em> that grows more accurate with every check.</p>
-
-<p><strong>8) Collaboration request & evaluation.</strong> I would be honored to explore joint pilots with humanitarian teams and adapt this tool per your operational feedback. A live browser demo (≈48KB) and full offline code are available for field testing upon request. Suggested success metrics: median alert‑to‑response time; precision/recall by alert type; reduction in repeated high‑stress hotspots; and staff satisfaction with explainability.</p>
-
-<p><strong>9) Limitations & risk management.</strong> The estimator is not a replacement for professional judgment. It may produce false alarms when context changes abruptly; this is why human confirmation is integral. All configurations should be reviewed with protection, legal, and safeguarding leads before deployment. Where radio silence is mandated, the system runs strictly on‑device with logs exported only under authorization.</p>
-
-<div class="hr"></div>
-<p class="footer"><strong>Summary:</strong> The method proves that a fully explainable, ultra‑lightweight AI can run only in the browser. Swap country data for camp signals and connect alert → confirmation → learning, and the same engine becomes practical, field‑ready protection infrastructure for detecting violence, safeguarding vulnerable groups, and spotting medical emergencies early. <em>Baseline data starts the process; real‑time feedback fine‑tunes it; the system evolves into a localized, adaptive safety detector.</em></p>
-`;
-
-    // Render English content only
-    const $letter = document.getElementById('letter');
-    $letter.innerHTML = EN_BODY;
-    document.documentElement.lang = 'en';
-
-    // === Added: Modal controller (open empty, close on overlay/ESC/close button) ===
-    const cta = document.getElementById('diplomaticCTA');
-    const modal = document.getElementById('diplomaticModal');
-    const body = document.getElementById('dmodal-body');
-    const togglers = document.querySelectorAll('[data-close]');
-
-    function openModal(){
-      modal.setAttribute('aria-hidden','false');
-      cta.setAttribute('aria-expanded','true');
-      // Ensure body remains empty by design
-      body.innerHTML = '';
-      setTimeout(()=>document.querySelector('.dmodal-close')?.focus(), 10);
-    }
-    function closeModal(){
-      modal.setAttribute('aria-hidden','true');
-      cta.setAttribute('aria-expanded','false');
-    }
-
-    cta.addEventListener('click', openModal);
-    cta.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openModal(); }});
-    togglers.forEach(el=> el.addEventListener('click', closeModal));
-    modal.addEventListener('click', (e)=>{ if(e.target && e.target.hasAttribute('data-close')) closeModal(); });
-    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false'){ closeModal(); }});
-  </script>
-
-  <!-- =============================================================
-       [ Diplomatic English content plan (≈5,000 chars) — OUTLINE ONLY ]
-       This section is a planning draft for the text that will later be
-       typeset into HTML and pasted inside <div id="dmodal-body">.
-       As per request, the modal remains EMPTY until the user instructs
-       "HTML 글을 쓰겠습니다" and provides the go‑ahead to typeset.
-  ================================================================ -->
-  <!-- [
-  Address and salutation. A respectful address to "Your Excellency" that establishes purpose with clarity and restraint. A brief acknowledgment of the recipient’s mandate to safeguard civilians and maintain humanitarian standards in constrained settings.
-
-  Context and necessity. A concise narrative explaining that modern AI has grown large, centralized, and network‑dependent, while field reality is often bandwidth‑poor, power‑constrained, and subject to disruption. An explicit statement that an offline, privacy‑respecting, explainable micro‑AI can serve as a practical instrument for early detection and rapid signaling under these constraints.
-
-  Definition in plain terms. A straightforward description that Vanilla HTML Offline AI is a single‑file, self‑contained program running entirely in the browser without servers or libraries, occupying approximately forty‑eight kilobytes, yet capable of estimation, explanation, and rapid adaptation from human feedback.
-
-  Method overview. An accessible explanation of how feature vectors summarize local signals; how k‑nearest neighbors provides a first estimate by comparison with similar past cases; how recursive least squares updates weights in a few operations to reflect new confirmations; and how the blend yields steady behavior at small scale.
-
-  Data stewardship and compliance. A firm assurance that no personal data is ingested. Signals are zone‑level, numeric, and minimal; decisions are auditable; logs are encrypted; retention is limited; operations align with GDPR, UNCRC, and CRPD. Clarify the role of human validators and the prohibition against biometric identification.
-
-  Field scenarios. Vivid, concrete illustrations: night‑time dispute near communal taps; crowding surges at ration points; medical distress indicators; escalating noise near a checkpoint. Show how alerts are raised, confirmed, and learned from. Mention that the same engine can sit on repurposed smartphones with solar power and local mesh.
-
-  Governance and accountability. Outline who configures thresholds; how weekly reviews are conducted; how role‑based keys and audit trails prevent misuse; how emergency rules (e.g., radio silence) are respected by strict on‑device operation.
-
-  Benefits to mission. Emphasize three values: faster recognition of true risk, fewer missed events in low‑connectivity environments, and transparent reasoning that strengthens professional judgment rather than replacing it. Quantify with suggested indicators such as alert‑to‑response time and hotspot reduction over weeks.
-
-  Limitations and safeguards. State candidly that false alarms may occur, that cultural specificity matters, and that the tool must not be used as evidence of wrongdoing without human investigation. Reaffirm the auxiliary role of the estimator.
-
-  Invitation to collaborate. Extend a courteous request for a pilot assessment in a limited sector, offer to adapt the tool to the mission’s operational doctrine, and propose a short after‑action review cycle to tune thresholds and wording.
-
-  Closing. A formally warm close that thanks the recipient for their attention and reiterates the objective: a modest, reliable instrument that helps protect the vulnerable when networks and power fail.
-  ] -->
-
-  <!-- =============================================================
-       [ Operator prompt to trigger typesetting ]
-       When you are ready for me to generate the full HTML essay for the
-       modal, send the exact command below as a single line.
-       명령 프롬프트: HTML 글을 쓰겠습니다
-  ================================================================ -->
-
-  <!-- =============================================================
-       [ Where to paste the final HTML essay ]
-       After I produce the HTML, insert it between the tags below:
-       <div id="dmodal-body" class="dmodal-body">
-         <!-- PASTE THE FINAL HTML ESSAY HERE -->
-       </div>
-       No other edits are required. Keep the rest of the code unchanged.
-  ================================================================ -->
 </body>
 </html>
