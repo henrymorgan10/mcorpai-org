@@ -171,6 +171,9 @@
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
+
+
+    
 // 착지 시각 기록용
 let __landedAt = 0;
 let __wasOnGround = true;
@@ -187,33 +190,33 @@ const CHARS = [{
 
     let emoji = '🙂';
 
-    // 1) 산타 축복 중엔 항상 🎅
+    // 0) 콤보 최우선(산타 다음). x5이면 어디서든 🤩
+    if (typeof comboMult === 'function' && comboMult() >= 5) {
+      emoji = '🤩';
+    }
+
+    // 1) 산타 축복 중엔 항상 🎅 (콤보보다 우선)
     if (santaBlessTimer > 0) {
       emoji = '🎅';
     }
-    // 2) 공중일 때 표정(점프/하강)
+    // 2) 공중 표정(점프/하강)
     else if (!player.onGround) {
-      if (player.vy < 0) {          // ⬅️ 하강 조건을 '< 0'으로 수정
-        emoji = '😢';               // 하강 중
+      if (player.vy < 0) {          // 하강
+        emoji = '😢';
       } else if (jumpsUsed === 1) {
         emoji = '😲';               // 1단 점프
       } else if (jumpsUsed >= 2) {
         emoji = '😆';               // 2~3단 점프
       }
+      // (공중에서도 콤보 x5면 위의 우선순위 때문에 🤩가 유지됨)
     }
-    // 3) 지면: 착지 후 2초 동안만 다른 표정 허용, 그 뒤엔 무조건 🙂
+    // 3) 지면: 착지 후 2초 동안은 무조건 🙂로 복구(속도/콤보 무시)
     else {
       const sinceLand = performance.now() - __landedAt;
       if (sinceLand < 2000) {
-        if (speed > 480) {
-          emoji = '😅';             // 과속 땀
-        } else if (typeof comboMult === 'function' && comboMult() >= 5) {
-          emoji = '🤩';             // 콤보 높을 때
-        } else {
-          emoji = '🙂';
-        }
+        emoji = '🙂';               // ← 여기서 강제 복구
       } else {
-        emoji = '🙂';
+        emoji = '🙂';               // 2초 이후도 기본 표정 유지
       }
     }
 
@@ -227,6 +230,11 @@ function drawEmoji(x, y, size, emoji) {
   ctx.textBaseline = 'alphabetic';
   ctx.fillText(emoji, x, y);
 }
+
+
+
+
+    
 
 
     const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩', WHEEL='🎡';
