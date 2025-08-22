@@ -36,7 +36,7 @@
   </style>
 
   <div class="wrap" role="group" aria-roledescription="game container">
-    <h3 id="ccg-title"> 👨 Love Children with Disabilities 🟩 No data is collected, Playable entirely offline 💎Game size: 48KB </h3>
+    <h3 id="ccg-title"> 👨 Folk Love: Disabled Children 🟩 No data is collected, Playable entirely offline 💎Game size: 48kb(1 emoji) </h3>
     <div class="hud" aria-live="polite">
       <div>Distance <b id="ccg-dist">0.0</b> m</div>
       <div>Care <b id="ccg-care">0</b></div>
@@ -172,28 +172,34 @@
     hudBest.textContent = best;
 
 // Character (emoji)
+// Character (emoji) — 확장 표시 규칙
+// 사용 변수: santaBlessTimer, combo, player.onGround, jumpsUsed, player.vy, speed
+// ※ 새 변수는 추가하지 않습니다.
 const CHARS = [{
   w: 26, h: 30,
   draw: (x, y, duck) => {
     let emoji = '🙂';
 
+    // 1) 산타 축복 중
     if (santaBlessTimer > 0) {
       emoji = '🎅';
-    } else if (isHit) {
-      emoji = '😵';
-    } else if (gotItem) {
-      emoji = '😍';
-    } else if (comboCount >= 5) {
+
+    // 2) 콤보 5 이상
+    } else if (typeof combo === 'number' && combo >= 5) {
       emoji = '🤩';
+
+    // 3) 공중 상태
     } else if (!player.onGround) {
-      if (player.jumpCount === 1) {
-        emoji = '😲';
-      } else if (player.jumpCount === 2) {
-        emoji = '😆';
-      }
-      if (player.vy > 0) {
+      // 이 물리 구현에선 vy < 0 이 하강(fall)입니다.
+      if (player.vy < 0) {
         emoji = '😢';
+      } else if (jumpsUsed === 1) {
+        emoji = '😲'; // 1단 점프(상승)
+      } else if (jumpsUsed >= 2) {
+        emoji = '😆'; // 2~3단 점프(상승)
       }
+
+    // 4) 지상에서 아주 빠를 때
     } else if (speed > 480) {
       emoji = '😅';
     }
@@ -201,10 +207,7 @@ const CHARS = [{
     drawEmoji(x, y, duck ? 22 : 26, emoji);
   }
 }];
-
-    drawEmoji(x, y, duck ? 22 : 26, face);
-  }
-}];
+    
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
     const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩', WHEEL='🎡';
