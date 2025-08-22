@@ -174,9 +174,19 @@
 // Character (emoji)
 const CHARS=[{
   w:26, h:30,
-  draw:(x,y,duck)=>{
-    const isJumping = !player.onGround;
-    const face = santaBlessTimer > 0 ? '🎅' : (isJumping ? '😲' : '🙂');
+  draw:(x, y, duck) => {
+    let face = '🙂';
+
+    if (santaBlessTimer > 0) {
+      face = '🎅';
+    } else if (!player.onGround) {
+      if (player.jumpCount === 1) {
+        face = '😲';  // 1단 점프
+      } else if (player.jumpCount === 2) {
+        face = '😆';  // 2단 점프
+      }
+    }
+
     drawEmoji(x, y, duck ? 22 : 26, face);
   }
 }];
