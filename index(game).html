@@ -171,42 +171,57 @@
     let best=0; try{ best=parseInt(localStorage.getItem(BEST_KEY)||'0',10)||0; }catch(e){ best=0; }
     hudBest.textContent = best;
 
-// Character (emoji)
-// Character (emoji) — 확장 표시 규칙
-// 사용 변수: santaBlessTimer, combo, player.onGround, jumpsUsed, player.vy, speed
-// ※ 새 변수는 추가하지 않습니다.
+let __landedAt = 0; // 마지막으로 지면에 닿은 시각(ms)
+let __wasOnGround = true; // 이전 프레임의 지면 상태
+
+
 const CHARS = [{
-  w: 26, h: 30,
-  draw: (x, y, duck) => {
-    let emoji = '🙂';
+w: 26, h: 30,
+draw: (x, y, duck) => {
+// 1) 공중→지면으로 전환되는 순간을 잡아 2초 타이머 시작
+if (player.onGround && !__wasOnGround) {
+__landedAt = performance.now();
+}
+__wasOnGround = player.onGround;
 
-    // 1) 산타 축복 중
-    if (santaBlessTimer > 0) {
-      emoji = '🎅';
 
-    // 2) 콤보 5 이상
-    } else if (typeof combo === 'number' && combo >= 5) {
-      emoji = '🤩';
+let emoji = '🙂';
 
-    // 3) 공중 상태
-    } else if (!player.onGround) {
-      // 이 물리 구현에선 vy < 0 이 하강(fall)입니다.
-      if (player.vy < 0) {
-        emoji = '😢';
-      } else if (jumpsUsed === 1) {
-        emoji = '😲'; // 1단 점프(상승)
-      } else if (jumpsUsed >= 2) {
-        emoji = '😆'; // 2~3단 점프(상승)
-      }
 
-    // 4) 지상에서 아주 빠를 때
-    } else if (speed > 480) {
-      emoji = '😅';
-    }
+// 2) 최우선: 산타 버프 중엔 항상 🎅
+if (santaBlessTimer > 0) {
+emoji = '🎅';
+}
+// 3) 공중일 때 표정(점프/하강)
+else if (!player.onGround) {
+// 하강 중이면 😢 (원 코드와 동일하게 vy>0 조건을 유지)
+if (player.vy > 0) {
+emoji = '😢';
+} else if (jumpsUsed === 1) {
+emoji = '😲'; // 1단 점프
+} else if (jumpsUsed >= 2) {
+emoji = '😆'; // 2~3단 점프
+}
+}
+// 4) 지면 위일 때: 착지 후 2초 동안만 과속/콤보 표정 허용, 그 뒤엔 무조건 🙂
+else {
+const sinceLand = performance.now() - __landedAt;
+if (sinceLand < 2000) {
+if (speed > 480) {
+emoji = '😅'; // 과속 땀
+} else if (typeof comboMult === 'function' && comboMult() >= 5) {
+emoji = '🤩'; // 콤보 최고치일 때 반짝
+} else {
+emoji = '🙂';
+}
+} else {
+// 2초가 지나면 언제나 기본 🙂 로 복귀
+emoji = '🙂';
+}
+}
 
-    drawEmoji(x, y, duck ? 22 : 26, emoji);
-  }
-}];
+
+drawEmoji(x, y, duck ? 22 : 26, emoji);
     
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
