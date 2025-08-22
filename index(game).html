@@ -172,7 +172,14 @@
     hudBest.textContent = best;
 
 // Character (emoji)
-const CHARS=[{w:26,h:30,draw:(x,y,duck)=>{ drawEmoji(x,y,duck?22:26, santaBlessTimer>0 ? '🎅' : '🙂'); }}];
+const CHARS=[{
+  w:26, h:30,
+  draw:(x,y,duck)=>{
+    const isJumping = !player.onGround;
+    const face = santaBlessTimer > 0 ? '🎅' : (isJumping ? '😲' : '🙂');
+    drawEmoji(x, y, duck ? 22 : 26, face);
+  }
+}];
     function drawEmoji(x,y,size,emoji){ ctx.font=`${size}px serif`; ctx.textBaseline='alphabetic'; ctx.fillText(emoji, x, y); }
 
     const RUPEE='💎', HEART='❤', SNAIL='🐌', STAR='⭐', HEALTH='🟩', WHEEL='🎡';
