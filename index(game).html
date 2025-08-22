@@ -172,20 +172,35 @@
     hudBest.textContent = best;
 
 // Character (emoji)
-const CHARS=[{
-  w:26, h:30,
-  draw:(x, y, duck) => {
-    let face = '🙂';
+const CHARS = [{
+  w: 26, h: 30,
+  draw: (x, y, duck) => {
+    let emoji = '🙂';
 
     if (santaBlessTimer > 0) {
-      face = '🎅';
+      emoji = '🎅';
+    } else if (isHit) {
+      emoji = '😵';
+    } else if (gotItem) {
+      emoji = '😍';
+    } else if (comboCount >= 5) {
+      emoji = '🤩';
     } else if (!player.onGround) {
       if (player.jumpCount === 1) {
-        face = '😲';  // 1단 점프
+        emoji = '😲';
       } else if (player.jumpCount === 2) {
-        face = '😆';  // 2단 점프
+        emoji = '😆';
       }
+      if (player.vy > 0) {
+        emoji = '😢';
+      }
+    } else if (speed > 480) {
+      emoji = '😅';
     }
+
+    drawEmoji(x, y, duck ? 22 : 26, emoji);
+  }
+}];
 
     drawEmoji(x, y, duck ? 22 : 26, face);
   }
