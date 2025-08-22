@@ -193,12 +193,12 @@ const CHARS = [{
     }
     // 2) 공중일 때 표정(점프/하강)
     else if (!player.onGround) {
-      if (player.vy > 0) {
-        emoji = '😢';       // 하강 중
+      if (player.vy < 0) {          // ⬅️ 하강 조건을 '< 0'으로 수정
+        emoji = '😢';               // 하강 중
       } else if (jumpsUsed === 1) {
-        emoji = '😲';       // 1단 점프
+        emoji = '😲';               // 1단 점프
       } else if (jumpsUsed >= 2) {
-        emoji = '😆';       // 2~3단 점프
+        emoji = '😆';               // 2~3단 점프
       }
     }
     // 3) 지면: 착지 후 2초 동안만 다른 표정 허용, 그 뒤엔 무조건 🙂
@@ -206,9 +206,9 @@ const CHARS = [{
       const sinceLand = performance.now() - __landedAt;
       if (sinceLand < 2000) {
         if (speed > 480) {
-          emoji = '😅';     // 과속 땀
+          emoji = '😅';             // 과속 땀
         } else if (typeof comboMult === 'function' && comboMult() >= 5) {
-          emoji = '🤩';     // 콤보 높을 때
+          emoji = '🤩';             // 콤보 높을 때
         } else {
           emoji = '🙂';
         }
