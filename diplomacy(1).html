@@ -312,9 +312,9 @@ This is not merely a miniature AI—it is an alternative civilizational tool to 
  <strong>⚖️ 1) One‑Glance Summary of the Ultra‑Lightweight AI.</strong>
 We begin by preparing baseline data—past incidents of camp violence, signs of psychological tension, child/women’s rights violations, and food distribution issues. No personal data is stored: only non‑identifiable numeric indicators such as time, location zone, noise level, crowd density, and help‑request button activity.
 
-When a new signal arrives, the AI compares it with past data to ask, “Which previous cases are most similar?” (this is k‑NN). 
-When field staff confirm or dismiss an alert, the AI immediately adjusts its internal weights (this is RLS, online learning). 
-Thompson Sampling AI models each country or situation as a Beta-Bernoulli process, updating its posterior distribution as observations accumulate. At every decision point, it samples from this distribution to autonomously determine whether it should continue exploring or issue a warning because the risk is sufficiently high.
+💡When a new signal arrives, the AI compares it with past data to ask, “Which previous cases are most similar?” (this is k‑NN). 
+💡When field staff confirm or dismiss an alert, the AI immediately adjusts its internal weights (this is RLS, online learning). 
+💡Thompson Sampling AI models each country or situation as a Beta-Bernoulli process, updating its posterior distribution as observations accumulate. At every decision point, it samples from this distribution to autonomously determine whether it should continue exploring or issue a warning because the risk is sufficiently high.
          
 In short, it evolves through a cycle of baseline → field feedback → tailored detector. With preloaded risk data it starts useful on day one, and then adapts in real time.
 
@@ -327,9 +327,9 @@ Crucially, refugees or NGOs can directly modify the data: this is an open, self�
 Offline & low‑power: runs entirely on site with solar + low‑cost devices (Raspberry Pi / budget Android), continuing detect→alert even if communications fail. Explainability: the card shows similar cases and top features so leaders, NGOs, and protection officers can audit the reasoning.
 
 <strong>⚖️ 4) Theory in brief</strong>         
-k‑NN AI: compare with the k most similar past signals and average their outcomes (e.g., “At night in Zone X with high noise and crowding, conflicts followed”). 
-RLS AI: when staff feedback arrives, update weights in a few calculations—fast adaptation at KB scale. Blending: combine k‑NN and RLS Etc to avoid bias/overfitting (the code’s blend()). 
-Thompson Sampling AI: Samples probabilities from a Beta-Bernoulli distribution to automatically balance exploration and exploitation while updating risk assessment.
+💡k‑NN AI: compare with the k most similar past signals and average their outcomes (e.g., “At night in Zone X with high noise and crowding, conflicts followed”). 
+💡RLS AI: when staff feedback arrives, update weights in a few calculations—fast adaptation at KB scale. Blending: combine k‑NN and RLS Etc to avoid bias/overfitting (the code’s blend()). 
+💡Thompson Sampling AI: Samples probabilities from a Beta-Bernoulli distribution to automatically balance exploration and exploitation while updating risk assessment.
 
 ⚖️ 5) What the baseline data stores (non‑identifiable). Timestamp; zone ID (grid/label); signal summary (noise RMS, crowding, light change, movement); event label (argument, violence sign, GBV request, child‑missing alert, medical emergency, fire hazard, etc.); and outcome (field confirmation = true/false alarm). Human‑in‑the-loop: protection staff finalize labels; their decisions update RLS so each camp localizes over time. Compliance: no face/voice ID; coarse zone‑level location only; strict minimization & purpose limitation; on‑site processing; encrypted, auditable logs.
 
