@@ -309,9 +309,14 @@ This is not merely a miniature AI—it is an alternative civilizational tool to 
         
 🏛️ This system follows a philosophy of being free, open, and decentralized—an autonomous AI that collects no personal data whatsoever. It runs entirely offline in a browser, with no need for servers or internet, and can be distributed via USB. Learning occurs solely through user feedback, with a privacy-respecting design that avoids surveillance or censorship risks. It remains operational even during blackouts, war, or information control, offering a trust-based alternative to conventional AI. Fully compliant with GDPR and UNCRC.
 
-⚖️ 1) One‑Glance Summary of the Ultra‑Lightweight AI. We begin by preparing baseline data—past incidents of camp violence, signs of psychological tension, child/women’s rights violations, and food distribution issues. No personal data is stored: only non‑identifiable numeric indicators such as time, location zone, noise level, crowd density, and help‑request button activity.
+ <strong>⚖️ 1) One‑Glance Summary of the Ultra‑Lightweight AI.</strong>
+We begin by preparing baseline data—past incidents of camp violence, signs of psychological tension, child/women’s rights violations, and food distribution issues. No personal data is stored: only non‑identifiable numeric indicators such as time, location zone, noise level, crowd density, and help‑request button activity.
 
-When a new signal arrives, the AI compares it with past data to ask, “Which previous cases are most similar?” (this is k‑NN). When field staff confirm or dismiss an alert, the AI immediately adjusts its internal weights (this is RLS, online learning). In short, it evolves through a cycle of baseline → field feedback → tailored detector. With preloaded risk data it starts useful on day one, and then adapts in real time.
+When a new signal arrives, the AI compares it with past data to ask, “Which previous cases are most similar?” (this is k‑NN). 
+When field staff confirm or dismiss an alert, the AI immediately adjusts its internal weights (this is RLS, online learning). 
+Thompson Sampling AI models each country or situation as a Beta-Bernoulli process, updating its posterior distribution as observations accumulate. At every decision point, it samples from this distribution to autonomously determine whether it should continue exploring or issue a warning because the risk is sufficiently high.
+         
+In short, it evolves through a cycle of baseline → field feedback → tailored detector. With preloaded risk data it starts useful on day one, and then adapts in real time.
 
 Crucially, refugees or NGOs can directly modify the data: this is an open, self‑sustaining AI that can be locally maintained. The same ≈54kb engine that powers our demo card runs entirely offline in a browser—no server or cloud calls—and shows the rationale for its estimates.
 
