@@ -321,7 +321,7 @@ Crucially, refugees or NGOs can directly modify the data: this is an open, self�
 
 Offline & low‑power: runs entirely on site with solar + low‑cost devices (Raspberry Pi / budget Android), continuing detect→alert even if communications fail. Explainability: the card shows similar cases and top features so leaders, NGOs, and protection officers can audit the reasoning.
 
-⚖️ 4) Theory in brief. k‑NN: compare with the k most similar past signals and average their outcomes (e.g., “At night in Zone X with high noise and crowding, conflicts followed”). RLS: when staff feedback arrives, update weights in a few calculations—fast adaptation at KB scale. Blending: combine k‑NN and RLS to avoid bias/overfitting (the code’s blend()).
+⚖️ 4) Theory in brief. k‑NN: compare with the k most similar past signals and average their outcomes (e.g., “At night in Zone X with high noise and crowding, conflicts followed”). RLS: when staff feedback arrives, update weights in a few calculations—fast adaptation at KB scale. Blending: combine k‑NN and RLS Etc to avoid bias/overfitting (the code’s blend()).
 
 ⚖️ 5) What the baseline data stores (non‑identifiable). Timestamp; zone ID (grid/label); signal summary (noise RMS, crowding, light change, movement); event label (argument, violence sign, GBV request, child‑missing alert, medical emergency, fire hazard, etc.); and outcome (field confirmation = true/false alarm). Human‑in‑the-loop: protection staff finalize labels; their decisions update RLS so each camp localizes over time. Compliance: no face/voice ID; coarse zone‑level location only; strict minimization & purpose limitation; on‑site processing; encrypted, auditable logs.
 
@@ -382,7 +382,7 @@ This white paper analyzes how the structure and design philosophy of Vanilla HTM
 
 * Single HTML file (~54kb)
 * JavaScript-powered, fully self-contained in-browser execution
-* Vector-based decision logic (k-NN, RLS included)
+* Vector-based decision logic (k-NN, RLS, etc included)
 * Sub-millisecond inference / memory usage within tens of KB
 * No server or internet required; fully offline operation
 
@@ -421,7 +421,8 @@ This makes it especially valuable in low-income countries, refugee camps, or rem
 * Includes lightweight RLS-based online learning
 * No data collection; all processing remains within browser memory
 * Adapts locally through user feedback (dynamic tuning)
-
+* Can be integrated as different AI logic blocks.
+         
 This isn’t just a technical divergence—it marks a philosophical stance on data ethics and user control.
 
 📝 5. Privacy and Ethical Design
