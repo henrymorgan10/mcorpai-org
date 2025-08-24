@@ -543,7 +543,7 @@ Don’t steal what you’re freely allowed to honor.
 
 /* ===== Design tokens ===== */
 :root{
-  --badge-gap: 16px;  /* 배지와 글자 사이 간격 */
+  --badge-gap: 32px;  /* 배지와 글자 사이 간격 */
 
   --bg: #f5f7fb;
   --paper: #ffffff;
@@ -556,6 +556,9 @@ Don’t steal what you’re freely allowed to honor.
   --shadow: 0 10px 28px rgba(16,36,58,.07);
   --radius: 16px;
 }
+/* 변수 말고, 일반 규칙은 이렇게 따로 */
+.mc-badge{ white-space: nowrap; }
+nav .bar, .container.bar.card{ overflow: visible; }
 
 /* 배지를 왼쪽 바깥으로 빼는 규칙 */
 .brand-wrap.pull-left{ position: relative; padding-left: var(--badge-gap); }
