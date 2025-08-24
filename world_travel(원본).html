@@ -1,6 +1,9 @@
 
 
-<!-- Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
+<!-- It is 54KB excluding comments. Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
+
+
+
 <style>
 :root{color-scheme:light dark}
 /* --- Layout for the floating rail --- */
@@ -420,6 +423,59 @@
 })();
 </script>
 <!-- ADVISORY PATCH END -->
+
+
+<!--
+
+"Beta-Bernoulli posterior probabilistic decision AI" is a Bayesian model
+that updates its estimate of malaria risk as more binary observations
+("Detected" vs. "Not detected") are collected. Decisions are then made
+according to these updated probabilities in an online-learning bandit
+framework (Thompson Sampling).
+
+1. Problem framing:
+Each country is treated as a Bernoulli process: repeated trials with outcomes
+"Detected" or "Not detected". The unknown malaria risk is θ. Before any data,
+θ is assumed to follow a Beta(α, β) distribution. Beta is the conjugate prior
+for Bernoulli, so when observations arrive, the posterior remains Beta-shaped
+and updates cleanly.
+
+2. Learning and updating:
+Initially, α=1 and β=1 are set for a neutral prior. If we observe s detections
+and f non-detections, the posterior is Beta(α+s, β+f). The posterior mean
+(expected risk) is (1+s) / (2+s+f). This gives an immediate percentage risk.
+With Thompson Sampling, at each decision step we draw θ ~ Beta(α+s, β+f),
+and if θ exceeds a threshold, we choose an action such as showing "Caution".
+This balances exploration and exploitation naturally.
+
+3. Context and weighting:
+Instead of using s and f alone, contextual features like mosquito count can
+adjust the update. For example, if mosquito count is 10, a capped boost of 0.5
+is added to s (so s += 1.5). This reflects observation strength without runaway
+effects. Time decay is also applied: older records are down-weighted with a
+half-life schedule, ensuring responsiveness to recent data.
+
+4. Contrast with k-NN and RLS:
+- k-NN: finds similar countries and bases predictions on neighbors
+- RLS: continuously adapts regression weights to fit numerical signals
+- Beta-Bernoulli: models uncertainty directly. With few samples, the posterior
+  is wide → more exploration. With more samples, the posterior sharpens → more
+  exploitation. This automatic shift is what makes it a true "decision-making AI".
+
+5. Demonstration impact:
+Even a handful of inputs instantly change the posterior risk and sample count.
+Once thresholds are passed, a caution badge appears or disappears. This shows
+online learning, adaptation, and decision updates all in real time—entirely
+offline, using only HTML/JS, with statistics stored locally. Viewers clearly
+see "an offline AI that learns and changes its decisions."
+
+In summary, this is a probabilistic decision-making online learning AI,
+implementing Thompson Sampling with a Beta-Bernoulli posterior. Each
+observation updates the success/failure counts; actions are chosen by
+posterior sampling or by using the posterior mean to update UI risk values.
+
+-->
+
 
 
 
