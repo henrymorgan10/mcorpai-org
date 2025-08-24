@@ -1,6 +1,43 @@
+<!-- It is 54KB excluding comments. -->
 
 
-<!-- It is 54KB excluding comments. Paste this inside <body>. No outer <html>/<head>/<body> wrappers. -->
+<!--
+
+First, this system is a **lightweight offline AI demo** that displays country-level safety and travel risk. It combines two machine-learning methods, 
+`k-NN` (k-nearest neighbors) and `RLS` (Recursive Least Squares). Each country is represented by features such as cost, language difficulty, currency exchange, risk keywords, 
+and credit ratings. These are turned into vectors, and the AI predicts safety grades using similarity (k-NN) and regression adaptation (RLS).
+
+Second, `k-NN` works by finding countries with similar characteristics and averaging their safety grades to make predictions. For example, if a country has similar costs,
+language difficulty, and crime patterns to its neighbors, the model infers its safety level from those neighbors.
+
+Third, `RLS` is an online regression learner. Each new observation updates the model’s weights and covariance matrix, allowing it to adapt rapidly. As more data are seen, 
+predictions for those countries stabilize, while new entries are quickly absorbed. A forgetting factor (half-life) ensures that old data lose influence and recent data dominate the model.
+
+Fourth, a **probabilistic decision-making AI** based on the Beta-Bernoulli posterior is added. Each country’s malaria risk is modeled as binary outcomes: “detected” or “not detected.”
+Initially, risk is represented by a neutral Beta(1,1) prior. Each detection increments the success count, each non-detection increments the failure count, producing a posterior Beta(1+s, 1+f). 
+The mean (1+s)/(2+s+f) directly gives the risk probability as a percentage. Using Thompson Sampling, the AI draws samples from this posterior; if a sampled probability exceeds a threshold, 
+it displays a “Caution” badge. Mosquito counts slightly increase the success weight, while old data are discounted with time decay.
+
+Fifth, these three engines represent different paradigms of intelligence:
+
+* **k-NN**: case-based reasoning through similarity.
+* **RLS**: adaptive regression that learns continuous signals in real time.
+* **Beta-Bernoulli + Thompson Sampling**: probabilistic decision-making that balances exploration and exploitation automatically.
+
+With few observations, uncertainty is high and the system explores more. As samples accumulate, the posterior sharpens and the AI exploits more confidently. 
+This makes it look like a decision-making AI that learns from data.
+
+**In summary**, inside this single HTML page, three distinct AI engines operate side by side:
+
+1. k-NN for similarity-based prediction.
+2. RLS for online adaptive regression.
+3. Beta-Bernoulli with Thompson Sampling for probabilistic decision-making.
+
+Together, they transform a simple offline demo into an AI that not only makes predictions but also 
+**learns, updates, and changes its decisions in real time**—all without servers or external data.
+
+-->
+
 
 <style>
 :root{color-scheme:light dark}
