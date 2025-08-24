@@ -422,7 +422,12 @@
 <!-- ADVISORY PATCH END -->
 
 
-<!-- 신규 추가 스니펫(최종본). -->
+
+
+
+
+
+<!-- 신규 추가 스니펫 -->
 <script>
 (function(){
   'use strict';
@@ -431,7 +436,7 @@
   (function injectStyle(){
     if(document.getElementById('mm-top-style')) return;
     const css=`
-#name .mosq-btn{display:none!important} /* 기존에 나라 옆 버튼이 있으면 숨김 */
+#name .mosq-btn{display:none!important}
 #mm-top-btn{position:fixed;left:14px;top:110px;z-index:10003;font-size:.82rem;font-weight:800;border-radius:999px;padding:4px 10px;border:1px solid rgba(0,0,0,.12);background:#ffffff;color:#0b1221;box-shadow:0 4px 10px rgba(2,6,23,.12);cursor:pointer}
 #mm-top-btn .label{margin-left:4px}
 #mm-top-btn .mosq-tag{display:none;margin-left:6px;padding:0 6px;border:1px solid #ffc9c9;background:#ffe9e9;color:#7a2a2a;border-radius:999px;font-weight:900;font-size:.62rem}
@@ -447,17 +452,28 @@
 #mm-close{background:#ffecec;border-color:#ffc9c9}
 #mmhelp{font-size:.72rem;opacity:.8;margin-top:6px}
     `.trim();
-    const st=document.createElement('style'); st.id='mm-top-style'; st.textContent=css; (document.head||document.documentElement).appendChild(st);
+    const st=document.createElement('style');
+    st.id='mm-top-style';
+    st.textContent=css;
+    (document.head||document.documentElement).appendChild(st);
   })();
 
   // ==================== 신규: 안전 저장소 폴백 ====================
-  const store=(function(){ try{const k='__mmtest__'; localStorage.setItem(k,'1'); localStorage.removeItem(k); return localStorage;} catch(_){ const m={}; return {getItem:k=>m[k]||null,setItem:(k,v)=>m[k]=String(v),removeItem:k=>delete m[k]}; } })();
+  // 필요 시 sessionStorage로 바꾸면 창을 완전히 닫을 때까지로 수명이 제한됩니다.
+  const store=(function(){
+    try{
+      const k='__mmtest__'; localStorage.setItem(k,'1'); localStorage.removeItem(k);
+      return localStorage; // 여기를 sessionStorage로 바꾸면 세션 보존으로 동작합니다.
+    }catch(_){
+      const m={}; return {getItem:k=>m[k]||null,setItem:(k,v)=>m[k]=String(v),removeItem:k=>delete m[k]};
+    }
+  })();
 
   // ==================== 신규: 하이퍼파라미터 ====================
   const KEY='malaria.mm.v1';
-  const MIN_SAMPLES=3;               // 배지 노출 최소 표본 수
-  const CAUTION_THRESHOLD=0.65;      // 경고 임계 확률
-  const HALFLIFE_DAYS=180;           // 반감기(일)
+  const MIN_SAMPLES=3;
+  const CAUTION_THRESHOLD=0.65;
+  const HALFLIFE_DAYS=180;
 
   // ==================== 신규: 유틸 ====================
   const rail=()=>document.getElementById('infoRail');
@@ -466,24 +482,52 @@
   const now=()=>Date.now();
   const load=()=>{try{return JSON.parse(store.getItem(KEY)||'{}')}catch(_){return{}}};
   const save=o=>{try{store.setItem(KEY,JSON.stringify(o))}catch(_){}};
-  function decay(rec){ if(!rec||!rec.t) return rec; const days=(now()-rec.t)/(1000*60*60*24); const f=Math.pow(0.5,Math.max(0,days)/HALFLIFE_DAYS); return {s:(rec.s||0)*f,f:(rec.f||0)*f,t:now()}; }
-  function posterior(country){ const d=load(); const r=decay(d[country]||{s:0,f:0,t:now()}); const a=1+(r.s||0), b=1+(r.f||0); return {p:a/(a+b), a, b}; }
-  function record(country,{detected,count}){ const d=load(); const old=d[country]||{s:0,f:0,t:now()}; let s=old.s||0, f=old.f||0; if(detected){ const boost=Math.min(0.5,Math.max(0,Number(count||0))/20); s+=1+boost; } else { f+=1; } d[country]={s,f,t:now()}; save(d); return posterior(country); }
+
+  function decay(rec){
+    if(!rec||!rec.t) return {s:0,f:0,t:now()};
+    const days=(now()-rec.t)/(1000*60*60*24);
+    const f=Math.pow(0.5,Math.max(0,days)/HALFLIFE_DAYS);
+    return {s:(rec.s||0)*f, f:(rec.f||0)*f, t:now()};
+  }
+
+  function posterior(country){
+    const d=load();
+    const r=decay(d[country]||{s:0,f:0,t:now()});
+    const a=1+(r.s||0), b=1+(r.f||0);
+    return {p:a/(a+b), a, b};
+  }
+
+  function record(country,{detected,count}){
+    const d=load();
+    const prev=decay(d[country]||{s:0,f:0,t:now()}); // 기록 직전에 감쇠를 먼저 적용합니다.
+    let s=prev.s||0, f=prev.f||0;
+
+    const n=Number.isFinite(Number(count)) ? Math.max(0, Number(count)) : 0;
+    const boost=Math.min(0.5, n/20); // 모기 수 가중치 상한은 0.5입니다.
+
+    if(detected){ s += 1 + boost; } else { f += 1; }
+
+    d[country]={s,f,t:now()};
+    save(d);
+
+    const a=1+s, b=1+f;
+    return {p:a/(a+b), a, b};
+  }
 
   // ==================== 신규: 상단 버튼 생성 및 배치 ====================
   const topBtn=document.createElement('button');
-  topBtn.id='mm-top-btn'; topBtn.type='button';
+  topBtn.id='mm-top-btn';
+  topBtn.type='button';
   topBtn.setAttribute('aria-label','Open Malaria Meter');
   topBtn.innerHTML='🦟<span class="label">Malaria detector</span><span class="mosq-tag">Caution</span>';
   document.body.appendChild(topBtn);
 
-  // position:fixed 좌표계에 맞게 viewport 좌표만 사용 (스크롤값 더하지 않음)
   function placeTopBtn(){
     const r=(rail()||document.body).getBoundingClientRect();
     const left=Math.max(8, r.left||14);
     const top=Math.max(8, (r.top||150) - 28);
-    topBtn.style.left=left+"px";
-    topBtn.style.top=top+"px";
+    topBtn.style.left=left+'px';
+    topBtn.style.top=top+'px';
   }
   window.addEventListener('scroll',placeTopBtn,{passive:true});
   window.addEventListener('resize',placeTopBtn);
@@ -491,17 +535,16 @@
 
   // ==================== 신규: 팝업(고정, 카드 위로 겹치지 않음) ====================
   const pop=document.createElement('div'); pop.id='mm-pop-fixed';
-  pop.innerHTML='<h3>Malaria Meter</h3>'+
-    '<label><input type="radio" name="mmstat" value="1"> Detected</label>'+
-    '<label><input type="radio" name="mmstat" value="0" checked> Not detected</label>'+
-    '<label>Mosquito count (optional) <input id="mmcount" type="number" min="0" step="1" placeholder="Leave blank if unknown"></label>'+
-    '<div class="row"><button id="mm-save">Save</button><button id="mm-close">Close</button><button id="mm-reset" title="Clear this country">Reset</button></div>'+
-    '<div id="mm-out" style="margin-top:6px;font-size:.78rem;opacity:.9"></div>'+
-    '<div id="mmhelp">Important: Malaria risk varies by region. Vaccines exist but availability can be limited and do not replace prevention (nets, repellents, chemoprophylaxis). This tool is not medical advice.</div>'+
-    '<div style="margin-top:4px;font-size:.78rem;color:#0b77d5">Your data will be retained until the browser window is fully closed.</div>';
+  pop.innerHTML='<h3>Malaria Meter</h3>'
+    + '<label><input type="radio" name="mmstat" value="1"> Detected</label>'
+    + '<label><input type="radio" name="mmstat" value="0" checked> Not detected</label>'
+    + '<label>Mosquito count (optional) <input id="mmcount" type="number" min="0" step="1" placeholder="Leave blank if unknown"></label>'
+    + '<div class="row"><button id="mm-save">Save</button><button id="mm-close">Close</button><button id="mm-reset" title="Clear this country">Reset</button></div>'
+    + '<div id="mm-out" style="margin-top:6px;font-size:.78rem;opacity:.9"></div>'
+    + '<div id="mmhelp">Important: Malaria risk varies by region. Vaccines exist but availability can be limited and do not replace prevention (nets, repellents, chemoprophylaxis). This tool is not medical advice.</div>'
+    + '<div style="margin-top:4px;font-size:.78rem;color:#0b77d5">인터넷창이 완전히 닫히지 않을때까지 저장됩니다</div>';
   document.body.appendChild(pop);
 
-  // position:fixed 좌표계 기준으로 카드 상단 위에 고정 배치
   function anchorPopAboveRail(){
     const r=(rail()||document.body).getBoundingClientRect();
     const vw=window.innerWidth; const pw=Math.min(360, vw-24);
@@ -511,10 +554,11 @@
     const top=Math.max(8, r.top - pop.offsetHeight - 12);
     pop.style.top=top+'px';
   }
+
   function openPop(){
     const nm=base(nameEl()?.textContent||'');
     const r=posterior(nm);
-    document.getElementById('mm-out').textContent=r?('Posterior risk '+Math.round(r.p*100)+'% with '+Math.round(r.a+r.b-2)+' samples.'):'';
+    document.getElementById('mm-out').textContent = r ? ('Posterior risk '+Math.round(r.p*100)+'% with '+Math.round(r.a+r.b-2)+' samples.') : '';
     document.getElementById('mmcount').value='';
     pop.style.display='block';
     anchorPopAboveRail();
@@ -523,7 +567,10 @@
 
   topBtn.addEventListener('click',function(e){ e.stopPropagation(); openPop(); });
   document.getElementById('mm-close').addEventListener('click',closePop);
-  document.addEventListener('click',function(e){ if(pop.style.display==='none')return; if(!pop.contains(e.target) && e.target!==topBtn) closePop(); });
+  document.addEventListener('click',function(e){
+    if(pop.style.display==='none') return;
+    if(!pop.contains(e.target) && e.target!==topBtn) closePop();
+  });
 
   document.getElementById('mm-save').addEventListener('click',function(){
     const nm=base(nameEl()?.textContent||''); if(!nm) return;
@@ -533,6 +580,7 @@
     document.getElementById('mm-out').textContent='Posterior risk '+Math.round(res.p*100)+'% with '+Math.round(res.a+res.b-2)+' samples.';
     updateBadge();
   });
+
   document.getElementById('mm-reset').addEventListener('click',function(){
     const nm=base(nameEl()?.textContent||''); if(!nm) return;
     const d=load(); delete d[nm]; save(d);
@@ -553,8 +601,26 @@
   }
 
   // ==================== 신규: 초기 안정화 ====================
-  (function bootstrap(){ let k=0; const id=setInterval(()=>{placeTopBtn(); updateBadge(); if(++k>10) clearInterval(id)},120)})();
+  (function bootstrap(){
+    let k=0;
+    const id=setInterval(()=>{placeTopBtn(); updateBadge(); if(++k>10) clearInterval(id)},120);
+  })();
+
+  // ==================== 신규: 간단 검증 로그 ====================
+  (function sanity(){
+    try{
+      const t='__MM_TEST__';
+      const a=posterior(t).p;
+      const b=record(t,{detected:true,count:10}).p; // 최대 가중치 적용
+      const c=record(t,{detected:false,count:0}).p;
+      if(!(a>=0 && b>a && c<b)) console.warn('[Malaria Meter] update order check failed');
+    }catch(err){ console.warn('[Malaria Meter] self-check warn',err); }
+  })();
+
 })();
 </script>
+
+
+
 
 
