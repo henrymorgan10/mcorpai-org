@@ -459,6 +459,68 @@ SOFTWARE.
   const mo=new MutationObserver(relabelHeadline); if(nameEl){mo.observe(nameEl,{childList:true,subtree:true,characterData:true})}
 })();
 </script>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M-Corp AI with Logo</title>
+  <style>
+    body {margin:0; font-family:system-ui, sans-serif;}
+    nav.site {
+      position:sticky; top:0; z-index:1000;
+      background:#fff;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 20px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    .brand-fixed {
+      position:fixed;
+      right:20px;
+      top:20px;
+      z-index:2000;
+      text-align:center;
+    }
+    .brand-fixed img {
+      max-width:140px; height:auto;
+      display:block;
+    }
+    .brand-fixed span {
+      display:block;
+      margin-top:6px;
+      font-weight:700;
+      color:#0b1221;
+      font-size:0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site">
+    <div>M-Corp AI — Ethical AI</div>
+    <div class="links">
+      <a href="#summary">Overview</a>
+      <a href="#tech">Tech Plan</a>
+      <a href="#calc">Refugee Calc</a>
+      <a href="#sim">Impact Sim</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div class="brand-fixed">
+    <a href="https://mcorpai.org/" target="_blank">
+      <img src="logo.png" alt="M-Corp AI Logo">
+      <span>Refugee Self-Reliance</span>
+    </a>
+  </div>
+
+  <main class="container">
+    <section id="summary">
+      <h1>AI Necklace for Child Safety</h1>
+      <p>Rights-based, offline AI for children with disabilities and refugee self-reliance.</p>
+    </section>
+
+
+
 <!-- ADVISORY PATCH END -->
 
 
