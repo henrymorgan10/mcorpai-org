@@ -4072,16 +4072,15 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 </style>
 
 
-   <!-- 2) </body> 바로 위에 아래 블록을 한 번만 삽입 -->
+
+   
 <div id="brandRail" class="no-print" aria-label="M-Corp brand">
   <a href="https://mcorpai.org/" target="_blank" rel="noopener">
-    <!-- 원본이 768×768이므로 220px로 축소 렌더링되어 깨짐 없이 선명합니다 -->
-    <img src="https://mcorpai.org/logo.png"
-         width="220" height="220"
-         alt="M-Corp Ethical AI 로고">
+    <img src="https://mcorpai.org/logo.png" width="110" height="110" alt="M-Corp Ethical AI 로고">
     <div class="caption">Refugee Self-Reliance</div>
   </a>
 </div>
+
 
    
 
@@ -4196,62 +4195,64 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
   
 
 
-   <!-- 1) <style> 블록 맨 아래에 추가 (또는 별도 CSS 파일의 마지막에 추가) -->
 <style>
-  /* 고정 로고 박스 */
+  /* 고정 로고 박스: 폭을 220px → 110px로 50% 축소 */
   #brandRail{
     position: fixed;
     right: 18px;
-    top: 140px;                 /* 상단 고정 위치: 필요 시 120~180px 사이로 미세조정 */
-    width: 220px;               /* 데스크톱 기준 표시 크기 */
-    z-index: 10020;             /* 다른 요소 위에 오도록 충분히 크게 */
+    top: 140px;
+    width: 110px;               /* 기존 220px에서 절반 */
+    z-index: 10020;
+    text-align: center;
   }
   #brandRail a{
     display: block;
     text-decoration: none;
     color: #0b1221;
-    text-align: center;
   }
   #brandRail img{
     display: block;
     width: 100%;
-    height: auto;               /* 비율 유지 */
+    height: auto;               /* 비율 유지로 깨짐 방지 */
     border-radius: 20px;
     filter: drop-shadow(0 6px 18px rgba(0,0,0,.14));
-    image-rendering: -webkit-optimize-contrast; /* 크리스프 렌더링(크롬) */
-    -ms-interpolation-mode: bicubic;            /* 크리스프 렌더링(레거시 IE) */
+    image-rendering: -webkit-optimize-contrast;
+    -ms-interpolation-mode: bicubic;
   }
   #brandRail .caption{
-    margin-top: 8px;
+    margin-top: 6px;
     font-weight: 800;
-    font-size: .95rem;
+    font-size: .85rem;          /* 캡션도 살짝 축소 */
   }
 
-  /* 본문과 겹치지 않도록 데스크톱에서 오른쪽 여백 확보 */
+  /* 데스크톱 본문 오른쪽 여백도 함께 축소: 280px → 160px */
   @media (min-width: 1100px){
     header.container,
     main.container,
     .diplom-wrap,
     footer.container{
-      padding-right: 280px !important; /* 로고 너비(220) + 여백(60) */
+      padding-right: 160px !important; /* 로고 110 + 여백 50 */
     }
   }
 
-  /* 태블릿/모바일에서는 화면을 가리지 않게 크기/위치 자동 축소 */
+  /* 태블릿에서의 크기 */
   @media (max-width: 1099.98px){
-    #brandRail{ width: 160px; right: 12px; top: 120px; }
+    #brandRail{ width: 110px; right: 12px; top: 120px; }
   }
+
+  /* 모바일에서는 화면을 가리지 않게 하단으로 이동 */
   @media (max-width: 767.98px){
     #brandRail{
-      width: 120px;
+      width: 96px;
       right: 10px;
-      bottom: 12px;   /* 모바일은 하단 오른쪽으로 이동 */
+      bottom: 12px;
       top: auto;
       opacity: .95;
     }
   }
 </style>
 
+   
 
   
 </html>
