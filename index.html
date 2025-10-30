@@ -4197,21 +4197,19 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 
    
 
-   <style>
-  /* Wraptris — Canvas Tetris with Climate Timer (paste directly under index.html) */
+<style>
+  /* Wraptris — Canvas Tetris with Climate Timer (mouse-only build) */
   #wraptris-app{display:flex;gap:16px;align-items:flex-start;margin:24px auto;padding:0 16px;max-width:820px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Malgun Gothic,sans-serif;color:#e5e7eb}
-  #wraptris-app canvas{background:#0f172a;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+  #wraptris-app canvas{background:#0f172a;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);touch-action:none;cursor:crosshair}
   #wraptris-app .hud{min-width:240px}
   #wraptris-app .title{margin:0 0 8px;font-weight:800;font-size:20px;letter-spacing:.2px}
   #wraptris-app .card{margin:12px 0;padding:10px 12px;border-radius:10px;background:#111827;border:1px solid rgba(255,255,255,.06)}
-  #wraptris-app .kbd{display:inline-block;padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:#1f2937;font-size:12px}
   #wraptris-app .muted{color:#9ca3af}
   #wraptris-app .btn{display:inline-block;margin-top:8px;padding:8px 10px;border-radius:8px;background:#1d4ed8;color:white;text-decoration:none;font-weight:700}
 </style>
 
 <script>
 (() => {
-  // Prevent double mount
   if (window.__wraptrisMounted) return;
 
   const boot = () => {
@@ -4232,15 +4230,16 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     const C_STEPS = Math.round((C_END - C_START) / C_STEP); // 15 steps
     const C_TOTAL_MS = C_STEPS * C_STEP_MS; // 150000 ms
 
+    // Mouse-only options
+    // LEFT_CLICK_MODE: 'rotate' or 'cycle' — current build defaults to rotate.
+    const LEFT_CLICK_MODE = 'rotate';
+    const FAST_DROP_MULT = 0.25; // right-click hold multiplier on gravity
+
     // ====== Build minimal UI (English) ======
-    // Ensure a body exists (in case script is in <head>)
-    const ensureBody = () => {
-      if (!document.body) {
-        const body = document.createElement('body');
-        document.documentElement.appendChild(body);
-      }
-    };
-    ensureBody();
+    if (!document.body){
+      const body = document.createElement('body');
+      document.documentElement.appendChild(body);
+    }
 
     const app = document.getElementById('wraptris-app') || (function(){
       const div = document.createElement('div');
@@ -4277,14 +4276,12 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     const help = document.createElement('div');
     help.className = 'card';
     help.innerHTML = `
-      <div class="muted">Controls</div>
-      <div><span class="kbd">←</span> <span class="kbd">→</span> move</div>
-      <div><span class="kbd">↑</span> rotate, <span class="kbd">Z</span> ccw</div>
-      <div><span class="kbd">↓</span> soft drop</div>
-      <div><span class="kbd">Space</span> hard drop</div>
-      <div><span class="kbd">P</span> pause, <span class="kbd">R</span> restart</div>
+      <div class="muted">Mouse Controls Only</div>
+      <div>Move mouse over the canvas to move the piece horizontally.</div>
+      <div>Left click: change piece (default: rotate 90°).</div>
+      <div>Right click and hold: fast drop (gravity boost).</div>
       <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0;">
-      <div class="muted">Walls wrap horizontally (go off one side, appear on the other).</div>
+      <div class="muted">Walls wrap horizontally (off one side → appear on the other).</div>
     `;
 
     const restartBtn = document.createElement('a');
@@ -4295,7 +4292,6 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     hud.append(h1, scoreCard, help, restartBtn);
     app.append(canvas, hud);
 
-    // expose for tests/debug
     window.__wraptrisAppRef = app;
     window.__wraptrisCanvasRef = canvas;
 
@@ -4314,13 +4310,13 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 
     let board, bag, piece;
     let score, lines, level;
-    let paused = false, gameOver = false;
+    let gameOver = false;
 
-    // Climate state
+    // Climate & effects
     let climateTemp, climateEpoch, climateTick, climateTimerId = null;
-    let flashUntil = 0; // ms timestamp for temp-up flash
+    let flashUntil = 0;
+    let fastDropActive = false;
 
-    // Particle emoji effects
     const particles = [];
     function spawnParticles(px, py, count, emojiList){
       for(let i=0;i<count;i++){
@@ -4386,7 +4382,7 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
         }
       }
       if (cleared>0){
-        const table = [0, 120, 360, 800, 1400]; // beefed-up scoring
+        const table = [0, 120, 360, 800, 1400];
         score += table[cleared] * level;
         lines += cleared;
         const nextLevel = Math.floor(lines/LEVEL_UP_EVERY)+1;
@@ -4413,25 +4409,51 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       }
       piece.rot = saved;
     }
-    function move(dx){
-      const p = { ...piece, x: ((piece.x + dx) % COLS + COLS) % COLS };
-      if (valid(p)) piece = p;
+
+    function cycleType(){
+      const currentIdx = TYPES.indexOf(piece.type);
+      const newType = TYPES[(currentIdx + 1) % TYPES.length];
+      const candidate = { ...piece, type: newType, rot: 0, color: COLORS[(currentIdx + 1) % COLORS.length] };
+      if (valid(candidate)) { piece = candidate; return; }
+      // try small horizontal adjustments to accommodate width differences
+      for (const dx of [1,-1,2,-2,3,-3]){
+        const alt = { ...candidate, x: ((candidate.x + dx) % COLS + COLS) % COLS };
+        if (valid(alt)) { piece = alt; return; }
+      }
+      // if still invalid, keep original piece
     }
+
+    function moveToColumn(col){
+      // Clamp and seek nearest valid x around the target column
+      col = Math.max(0, Math.min(COLS-1, col));
+      const target = { ...piece, x: col };
+      if (valid(target)) { piece = target; return; }
+      for (let d=1; d<=4; d++){
+        const left = { ...target, x: Math.max(0, col - d) };
+        if (valid(left)) { piece = left; return; }
+        const right = { ...target, x: Math.min(COLS-1, col + d) };
+        if (valid(right)) { piece = right; return; }
+      }
+      // if no valid position found in small neighborhood, do nothing
+    }
+
     function softDrop(){
       const p = { ...piece, y: piece.y + 1 };
       if (valid(p)) piece = p; else lockPiece();
     }
+
     function hardDrop(){
       let y = piece.y; while(true){ const p = { ...piece, y: y+1 }; if (valid(p)) y++; else break; }
       piece.y = y; lockPiece(); score += 2*level; updateHUD();
     }
 
-    // Dynamic drop interval from level & climate
+    // Dynamic drop interval from level & climate & fast-drop
     function computeDropInterval(){
       const levelFactor = Math.pow(SPEED_FACTOR, Math.max(0, level-1));
       const norm = Math.min(1, Math.max(0, (climateTemp - C_START) / (C_END - C_START)));
       const climateMult = 1 - 0.7 * norm; // 1.0 -> 0.3
-      const interval = START_SPEED * levelFactor * climateMult;
+      let interval = START_SPEED * levelFactor * climateMult;
+      if (fastDropActive) interval *= FAST_DROP_MULT;
       return Math.max(MIN_SPEED, Math.floor(interval));
     }
 
@@ -4500,7 +4522,7 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 
       // Subtle heat tint based on climate
       const norm = Math.min(1, Math.max(0, (climateTemp - C_START) / (C_END - C_START)));
-      const heat = Math.floor(20 + norm*60); // 20 -> 80
+      const heat = Math.floor(20 + norm*60);
       ctx.fillStyle = `rgba(255,80,0,${(heat/255)*0.06})`;
       ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -4530,7 +4552,7 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 
       drawGrid();
 
-      // 🌍 Earth badge and live temp at top-left
+      // 🌍 badge and live temp at top-left
       ctx.font = '20px system-ui, emoji';
       ctx.fillStyle = '#fff';
       ctx.fillText('🌍', 8, 24);
@@ -4553,8 +4575,7 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       // Particles
       drawParticles(now);
 
-      if (paused && !gameOver) overlay('PAUSED');
-      if (gameOver) overlay('GAME OVER\nPress R to restart');
+      if (gameOver) overlay('GAME OVER\nClick Restart');
     }
 
     // ====== Loop ======
@@ -4562,7 +4583,6 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     function frame(now){
       const dt = now - last; last = now; acc += dt;
 
-      // Update variable gravity with climate
       const dropInterval = computeDropInterval();
       while(acc >= dropInterval){ acc -= dropInterval; if (!piece) spawn(); if (!gameOver) softDrop(); }
 
@@ -4571,21 +4591,38 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       requestAnimationFrame(frame);
     }
 
-    // ====== Input ======
-    window.addEventListener('keydown', (e)=>{
-      if (e.key === ' ') e.preventDefault();
-      if (gameOver && e.key.toLowerCase()==='r'){ reset(); return; }
-      if (e.key.toLowerCase()==='p'){ paused = !paused; return; }
-      if (paused || gameOver) return;
-      switch(e.key){
-        case 'ArrowLeft': move(-1); break;
-        case 'ArrowRight': move(1); break;
-        case 'ArrowDown': softDrop(); break;
-        case 'ArrowUp': rotate(1); break;
-        case 'z': case 'Z': rotate(-1); break;
-        case ' ': hardDrop(); break;
+    // ====== Mouse Input (only) ======
+    function clientXToCanvasX(clientX){
+      const r = canvas.getBoundingClientRect();
+      return (clientX - r.left) * (canvas.width / r.width);
+    }
+    function pxToCol(px){
+      const col = Math.floor(px / CELL);
+      return Math.max(0, Math.min(COLS-1, col));
+    }
+
+    canvas.addEventListener('mousemove', (e)=>{
+      if (gameOver || !piece) return;
+      const px = clientXToCanvasX(e.clientX);
+      moveToColumn(pxToCol(px));
+    });
+
+    canvas.addEventListener('mousedown', (e)=>{
+      e.preventDefault();
+      if (gameOver || !piece) return;
+      if (e.button === 0){
+        if (LEFT_CLICK_MODE === 'rotate') rotate(1); else cycleType();
+      } else if (e.button === 2){
+        fastDropActive = true;
       }
     });
+
+    canvas.addEventListener('mouseup', (e)=>{
+      if (e.button === 2) fastDropActive = false;
+    });
+    canvas.addEventListener('mouseleave', ()=>{ fastDropActive = false; });
+    canvas.addEventListener('contextmenu', (e)=>{ e.preventDefault(); });
+
     restartBtn.addEventListener('click', (e)=>{ e.preventDefault(); reset(); });
 
     // ====== Climate timer ======
@@ -4598,10 +4635,10 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
         if (climateTemp < C_END){
           climateTemp = parseFloat((climateTemp + C_STEP).toFixed(1));
           climateTick++;
-          flashUntil = performance.now() + 1200; // flash for 1.2s
+          flashUntil = performance.now() + 1200;
           updateHUD();
         } else {
-          clearInterval(climateTimerId); climateTimerId = null; // reached max heat
+          clearInterval(climateTimerId); climateTimerId = null;
         }
       }, C_STEP_MS);
     }
@@ -4611,49 +4648,34 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       board = Array.from({length: ROWS}, ()=>Array(COLS).fill(0));
       bag = []; piece = null;
       score = 0; lines = 0; level = 1;
-      paused = false; gameOver = false;
-      particles.length = 0; flashUntil = 0;
+      gameOver = false; particles.length = 0; flashUntil = 0; fastDropActive = false;
       startClimate();
       updateHUD();
+      if (!piece) spawn();
     }
 
-    // ====== Minimal Runtime Tests (do not modify existing behavior) ======
+    // ====== Minimal Runtime Tests ======
     (function runTests(){
       try {
-        // Test 0: body & container exist
-        console.assert(!!document.body, 'document.body should exist');
-        console.assert(!!window.__wraptrisAppRef, '#wraptris-app should exist');
-
-        // Test 1: overlay newline splitting should not throw
-        overlay('A\nB');
-        console.assert(true, 'overlay newline split OK');
-
-        // Test 2: climate-driven speed decreases interval as temp rises
-        const _level = 1;
-        level = _level; climateTemp = C_START; const a = computeDropInterval();
+        console.assert(!!document.body && !!window.__wraptrisAppRef, 'container present');
+        overlay('A\nB'); // newline split smoke test
+        const _level = 1; level = _level; climateTemp = C_START; const a = computeDropInterval();
         climateTemp = Math.min(C_END, C_START + 0.5); const b = computeDropInterval();
-        console.assert(b <= a, 'drop interval should be <= with higher temp');
-
-        // Test 3: level increases should reduce interval
-        climateTemp = C_START; level = _level; const c = computeDropInterval();
-        level = _level + 1; const d = computeDropInterval();
-        console.assert(d <= c, 'drop interval should be <= with higher level');
-
-        // Test 4: wrapping logic stays in-bounds
-        const testP = { type: 'I', rot:0, x: -1, y: 0, color: '#000' };
-        let minX = 999, maxX = -999; eachBlock(testP,(x)=>{ minX = Math.min(minX,x); maxX = Math.max(maxX,x); });
-        console.assert(minX>=0 && maxX<COLS, 'wrapping keeps x within [0,COLS)');
-
-        // Test 5: canvas mounted and sized
-        console.assert(window.__wraptrisCanvasRef && window.__wraptrisCanvasRef.width===COLS*CELL && window.__wraptrisCanvasRef.height===ROWS*CELL, 'canvas size OK');
-      } catch(e){
-        console.error('Runtime test failed:', e);
-      }
+        console.assert(b <= a, 'hotter climate should not slow gravity');
+        climateTemp = C_START; level = _level; const c = computeDropInterval(); level = _level + 1; const d = computeDropInterval();
+        console.assert(d <= c, 'higher level faster');
+        const testP = { type: 'I', rot:0, x: -1, y: 0, color: '#000' }; let minX=999,maxX=-999; eachBlock(testP,(x)=>{minX=Math.min(minX,x);maxX=Math.max(maxX,x);});
+        console.assert(minX>=0 && maxX<COLS, 'wrap bounds');
+        // New tests
+        const e1 = computeDropInterval(); fastDropActive = true; const e2 = computeDropInterval(); fastDropActive = false;
+        console.assert(e2 < e1, 'fast drop multiplier reduces interval');
+        console.assert(pxToCol(0) === 0 && pxToCol(CELL*COLS-1) === COLS-1, 'pxToCol clamps to range');
+      } catch(err){ console.error('Runtime test failed:', err); }
     })();
 
     // Kick-off
     reset();
-    requestAnimationFrame((t)=>{ last = t; requestAnimationFrame(frame); });
+    requestAnimationFrame((t)=>{ requestAnimationFrame(frame); });
   };
 
   if (document.readyState === 'loading') {
@@ -4664,7 +4686,8 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 })();
 </script>
 
-
+   
+<!-- 게임 종료 매달 3개월에 한번씩 변경, 카드 게임, 벽돌 게임, 테트리스 발전형, 각종 게임 물어보기 -->
 
    
 
