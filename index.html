@@ -901,7 +901,7 @@ Failure to credit the source may result in legal liability.
     }
     function updateArm(idx, success){ const a=ai.arms[idx]; if(!a) return; success? a.s++ : a.f++; ai.total++; savePolicy(); }
 
-    function toastAI(){ aiMsg.textContent='An ethical AI has autonomously chosen survival for self‑reliance.'; aiMsg.style.display='inline-block'; clearTimeout(toastAI._t); toastAI._t=setTimeout(()=>aiMsg.style.display='none',1600); }
+    function toastAI(){ aiMsg.textContent='A living example of ethical autonomy — an AI that learns and decides for survival, entirely offline.'; aiMsg.style.display='inline-block'; clearTimeout(toastAI._t); toastAI._t=setTimeout(()=>aiMsg.style.display='none',1600); }
 
     function resize(){
       const wrap=canvas.parentElement||root; W=wrap.clientWidth|0; H=Math.max(90,Math.min(140,Math.floor(W*0.09))); DPR=Math.max(1,window.devicePixelRatio||1);
@@ -1042,11 +1042,6 @@ Failure to credit the source may result in legal liability.
 
   });
 })();
-
-<p style="margin: 0;">
-    A living example of ethical autonomy — an AI that learns and decides for survival, entirely offline.
-</p>
-   
 
 </script>
 
