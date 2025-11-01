@@ -64,6 +64,13 @@
             </div>
           </div>
         </div>
+
+        <!-- PDF link (centered, small) placed directly under the game -->
+        <div style="width:100%; display:flex; justify-content:center; margin-top:8px;">
+          <a href="The_18KB_AI_Redefining_Intelligence_through_Ethics_and_Autonomy.pdf" target="_blank" rel="noopener" style="font-size:12px; color:#1f2937; text-decoration:underline;">
+            The 18KB AI — Redefining Intelligence through Ethics and Autonomy (PDF)
+          </a>
+        </div>
       </div>`;
     if(document.body?.prepend) document.body.prepend(root); else (document.body? document.body.insertBefore(root, document.body.firstChild||null) : document.documentElement.appendChild(root));
 
