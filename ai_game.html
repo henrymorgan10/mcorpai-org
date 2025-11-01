@@ -1,5 +1,4 @@
-
-<!-- === AI game Start 바닐라 js === -->
+<!-- === AI game Start === -->
 
 <style>
   :root {
@@ -37,12 +36,13 @@
     const root = document.createElement('div');
     root.id = 'rsr-root';
     root.innerHTML = `
-      <div class="rsr-title">
-  Refugee Self-Reliance 🌐
-  <a href="https://mcorpai.org/" target="_blank" rel="noopener" style="color:#1e90ff; text-decoration:underline;">
-    https://mcorpai.org/
-  </a>
+<div class="rsr-title">
+  Refugee Self-Reliance Sovereign AI 🌐
+  <span style="color:#1e90ff;">
+    This is an emoji-sized game (18 Kb) that contains a real-time micro offline AI.
+  </span>
 </div>
+
 
       <div class="rsr-hud">
         <span class="rsr-badge rsr-temp">🌡️ Climate Temperature <strong id="rsr-temp">1.5°C</strong></span>
@@ -135,7 +135,7 @@
     }
     function updateArm(idx, success){ const a=ai.arms[idx]; if(!a) return; success? a.s++ : a.f++; ai.total++; savePolicy(); }
 
-    function toastAI(){ aiMsg.textContent='An ethical AI has autonomously chosen survival for self‑reliance.'; aiMsg.style.display='inline-block'; clearTimeout(toastAI._t); toastAI._t=setTimeout(()=>aiMsg.style.display='none',1600); }
+    function toastAI(){ aiMsg.textContent='A living example of ethical autonomy — an AI that learns and decides for survival, entirely offline.'; aiMsg.style.display='inline-block'; clearTimeout(toastAI._t); toastAI._t=setTimeout(()=>aiMsg.style.display='none',1600); }
 
     function resize(){
       const wrap=canvas.parentElement||root; W=wrap.clientWidth|0; H=Math.max(90,Math.min(140,Math.floor(W*0.09))); DPR=Math.max(1,window.devicePixelRatio||1);
@@ -276,8 +276,7 @@
 
   });
 })();
+
 </script>
 
-
-  
 <!-- === AI game End === -->
