@@ -2049,6 +2049,73 @@ posterior sampling or by using the posterior mean to update UI risk values.
 
 
 
+<!-- M-Corp AI Goal — embeddable HTML fragment (no </html>) -->
+<section class="mcai-goal" role="region" aria-labelledby="mcai-goal-title">
+  <div class="mcai-goal-inner">
+    <span class="mcai-goal-badge" aria-hidden="true">Mission</span>
+    <h2 id="mcai-goal-title" class="mcai-goal-title">
+      M-Corp AI’s primary goal is to develop the world’s first GDPR-compliant AI sensor with a one-year battery life.
+    </h2>
+  </div>
+</section>
+
+<style>
+  /* Scoped styles (prefix: mcai-) to avoid collisions */
+  .mcai-goal { 
+    --mcai-bg: rgba(0, 122, 255, 0.06);
+    --mcai-border: rgba(0, 122, 255, 0.35);
+    --mcai-text: #0b1a33;
+    --mcai-badge-bg: #0b5fff;
+    --mcai-badge-text: #ffffff;
+    --mcai-shadow: 0 6px 18px rgba(11, 95, 255, 0.12);
+    position: relative; 
+    margin: 1.25rem auto; 
+    padding: 0; 
+    text-align: center;
+  }
+  @media (prefers-color-scheme: dark) {
+    .mcai-goal { 
+      --mcai-bg: rgba(20, 60, 160, 0.18);
+      --mcai-border: rgba(120, 170, 255, 0.35);
+      --mcai-text: #eaf1ff;
+      --mcai-badge-bg: #6aa0ff;
+      --mcai-badge-text: #0b1a33;
+      --mcai-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+  }
+  .mcai-goal-inner {
+    display: grid; 
+    gap: 0.875rem; 
+    align-items: start; 
+    justify-items: center;
+    padding: 1.25rem; 
+    border-radius: 16px; 
+    background: var(--mcai-bg); 
+    border: 1px solid var(--mcai-border); 
+    box-shadow: var(--mcai-shadow);
+    max-width: 800px; 
+    margin: 0 auto; 
+  }
+  .mcai-goal-badge { 
+    display: inline-block; 
+    font: 600 0.7rem/1.1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", Apple SD Gothic Neo, "Malgun Gothic", sans-serif; 
+    letter-spacing: 0.04em; 
+    text-transform: uppercase; 
+    color: var(--mcai-badge-text); 
+    background: var(--mcai-badge-bg); 
+    border-radius: 999px; 
+    padding: 0.3rem 0.6rem; 
+    width: max-content;
+  }
+  .mcai-goal-title { 
+    margin: 0; 
+    font: 700 clamp(0.85rem, 2.2vw + 0.4rem, 1.25rem)/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", Apple SD Gothic Neo, "Malgun Gothic", sans-serif; 
+    color: var(--mcai-text); 
+    letter-spacing: -0.01em; 
+    text-align: center;
+  }
+</style>
+
 
 
 
