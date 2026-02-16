@@ -1,6 +1,7 @@
 # VitalGuard AI — Infrastructure‑Independent Survival Framework (v4.1.6)
 
 **In summary,** the offline AI is a single HTML-based demo that operates entirely locally — capable of validating BLE proximity and stability-based decision support without any cloud dependency, even during power or network outages.
+
 **Format:** single‑file HTML demo (offline‑first; no build system; no external JS libraries)
 
 VitalGuard AI is a **single‑file, offline‑first** “Infrastructure‑Independent Survival Framework” designed to keep **critical, local decision support** available when **power and connectivity are disrupted**.
