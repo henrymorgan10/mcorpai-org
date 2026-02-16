@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="theme-color" content="#c0392b">
-<title>VitalGuard AI v4.1.7 — Infrastructure‑Independent Survival Framework</title>
+<title>Santa Claus AI v4.1 — Offline Pet Safety</title>
 <link rel="manifest" id="pwa-manifest">
 <style>
 /* ============================================================
-   VitalGuard AI v4.1.7 — MASTER STYLESHEET
+   SANTA CLAUS AI v4.1 — MASTER STYLESHEET
    © 2026 Morgan J. (Gyu-min Jeon) | M-Corp Ethical AI
    https://mcorpai.org | contact@mcorpai.org
    Managed by: https://mcorpai.org
    M-Corp Ethical AI License (Hippocratic 3.0 Derivative)
-   Exclusively for civilian, agricultural, and humanitarian use.
+   Humanitarian use only. Military/surveillance use prohibited.
    Zero External Dependencies | 100% Offline | Vanilla CSS/JS
    ============================================================ */
 :root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-card:#1c2333;--bg-elevated:#21283b;--text-primary:#e6edf3;--text-secondary:#8b949e;--text-muted:#6e7681;--accent-red:#c0392b;--accent-green:#2ecc71;--accent-yellow:#f1c40f;--accent-orange:#e67e22;--accent-blue:#3498db;--zone-safe:#2ecc71;--zone-caution:#f1c40f;--zone-warning:#e67e22;--zone-danger:#e74c3c;--zone-lost:#9b59b6;--border-color:#30363d;--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-soft:0 2px 12px rgba(0,0,0,.3);--tr-fast:.15s ease;--tr-norm:.3s ease;--font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-mono:'Courier New',Courier,monospace}
@@ -134,13 +134,6 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 .header-link{color:var(--accent-blue);text-decoration:none;border-bottom:1px dotted rgba(52,152,219,.45);padding-bottom:1px}
 .header-link:active{opacity:.7}
 .header-link-sep{opacity:.45}
-.lang-select{background:var(--bg-elevated);border:1px solid var(--border-color);color:var(--text-primary);border-radius:10px;padding:6px 10px;font-size:.78rem;min-height:32px;cursor:pointer}
-.lang-select:focus{outline:2px solid rgba(52,152,219,.35);outline-offset:2px}
-
-.lang-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.lang-grid .btn{width:100%;justify-content:center}
-@media (max-width:360px){.lang-grid{grid-template-columns:1fr}}
-
 
 .install-banner{display:none;background:rgba(52,152,219,.12);border-bottom:1px solid rgba(52,152,219,.25);padding:10px 14px;font-size:.72rem}
 .install-banner.active{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -180,13 +173,6 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 .emergency-big{font-size:2.1rem;font-weight:900;letter-spacing:1px}
 .emergency-sub{font-size:.85rem;color:rgba(255,255,255,.85);line-height:1.4;margin-top:10px;max-width:520px}
 .kbd{display:inline-block;padding:2px 6px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-elevated);font-family:var(--font-mono);font-size:.68rem;color:var(--text-secondary)}
-
-/* ----------------------------- v4.1.7 UI polish (CSS only) ----------------------------- */
-@keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-#i18n_hero_pillars { animation: fadeInUp 0.6s ease-out; }
-.highlight-box { border-left: 4px solid var(--accent, #1e88e5); }
-#i18n_hero_pillars p { line-height: 1.6; font-size: 15px; }
-
 </style>
 </head>
 <body>
@@ -195,88 +181,54 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
   <!-- INSTALL BANNER (APP INSTALL) -->
   <div id="installBanner" class="install-banner">
     <div>
-      <strong id="i18n_install_title">Install VitalGuard AI</strong><br>
-      <span id="i18n_install_sub" style="color:var(--text-secondary)">Works better as an installed app — faster launch, more reliable Bluetooth behavior.</span>
+      <strong>Install Santa Claus AI</strong><br>
+      <span style="color:var(--text-secondary)">Works better as an installed app (앱 설치) — faster launch, more reliable background behavior.</span>
     </div>
     <div style="display:flex;gap:6px;flex-shrink:0">
       <button class="btn btn-sm btn-secondary" id="installDismiss">Not now</button>
-      <button class="btn btn-sm btn-primary" id="installBtn">Install</button>
+      <button class="btn btn-sm btn-primary" id="installBtn">앱 설치</button>
     </div>
   </div>
 
   <header class="header">
-    <div class="header-logo">🛡️</div>
-    <div class="header-title" id="i18n_app_title">VitalGuard AI</div>
-    <div class="header-sub" id="i18n_app_sub">v4.1.7 — Infrastructure‑Independent Survival Framework | McorpAI</div>
-    <div class="header-mission" id="i18n_app_mission">Runs fully offline. No cloud. No telemetry. GDPR‑friendly by design.</div>
-    <div class="header-disclaimer" id="i18n_app_disclaimer">Demo skin: “Pet Safety Leash” using Bluetooth proximity (not GPS). Built to keep working when networks fail.</div>
+    <div class="header-logo">🎅</div>
+    <div class="header-title">Santa Claus AI</div>
+    <div class="header-sub">v4.1 — Offline Pet Safety | M-Corp Ethical AI</div>
+    <div class="header-mission">"The more people know about this AI, the more homeless people can become independent."</div>
+    <div class="header-disclaimer">Bluetooth Invisible Leash — NOT GPS. All data stays on your device.</div>
     <div class="header-links">
-      <a class="header-link" href="https://github.com/henrymorgan10/mcorpai-org" target="_blank" rel="noopener" id="i18n_github_link">GitHub Source</a>
+      <a class="header-link" href="https://github.com/jekymin8232/luckyvicky-homepage" target="_blank" rel="noopener">GitHub Source</a>
       <span class="header-link-sep">·</span>
-      <a class="header-link" href="#" onclick="Help.open();return false;" id="i18n_help_link">Help</a>
+      <a class="header-link" href="#" onclick="Help.open();return false;">Help</a>
       <span class="header-link-sep">·</span>
-      <a class="header-link" href="#" onclick="Legal.open();return false;" id="i18n_about_link">About</a>
-      <span class="header-link-sep">·</span>
-      <a class="header-link" href="#" onclick="Lang.open();return false;" id="i18n_lang_link">Language</a>
-      <span class="header-link-sep">·</span>
-      <select id="langSelect" class="lang-select" aria-label="Language" title="Language" onchange="try{I18N.setLang(this.value);}catch(e){}" oninput="try{I18N.setLang(this.value);}catch(e){}">
-        <option value="en">English</option>
-        <option value="ko">한국어</option>
-        <option value="ar">العربية</option>
-        <option value="ja">日本語</option>
-        <option value="fr">Français</option>
-        <option value="zh-TW">繁體中文(台灣)</option>
-        <option value="es">Español</option>
-      </select>
+      <a class="header-link" href="#" onclick="Legal.open();return false;">About & Legal</a>
     </div>
   </header>
 
   <!-- HOME -->
   <div id="panel-home" class="panel active">
     <div id="first-run-banner" class="file-warning hidden">
-      <div class="title" id="i18n_firstrun_title">⚠ Important: Run via HTTPS / localhost for best BLE reliability</div>
-      <div class="body" id="i18n_firstrun_body">
+      <div class="title">⚠ Important: Run via HTTPS / localhost for best BLE reliability</div>
+      <div class="body">
         You are running from <span class="kbd" id="fr-proto">file://</span>. Some browsers restrict Bluetooth scanning, audio, and background behavior on local files.<br>
         <br>
         Recommended:
         <ul style="margin:8px 0 0 16px;line-height:1.5">
           <li>Use <span class="kbd">https://</span> hosting, or</li>
           <li>Use <span class="kbd">http://localhost</span> (local server), or</li>
-          <li>Install as an App when available.</li>
+          <li>Install as an App (앱 설치) when available.</li>
         </ul>
       </div>
       <div class="actions">
-        <button class="btn btn-secondary btn-sm" id="i18n_firstrun_ok" onclick="App.dismissFirstRun()">Got it</button>
-        <button class="btn btn-sm btn-secondary" id="i18n_firstrun_help" onclick="Help.open()">Open Help</button>
+        <button class="btn btn-secondary btn-sm" onclick="App.dismissFirstRun()">Got it</button>
+        <button class="btn btn-sm btn-secondary" onclick="Help.open()">Open Help</button>
       </div>
     </div>
 
-
-    <div id="vgHero" class="card" style="margin-top:12px">
-      <div class="section-title" id="i18n_hero_title">🛡️ Infrastructure‑Independent Survival Framework</div>
-      <div id="i18n_hero_body" style="font-size:.82rem;color:var(--text-secondary);line-height:1.6">
-        VitalGuard AI v4.1.7 is a single‑file, offline‑first continuity toolkit combining Bluetooth beacon proximity and lightweight on‑device logic—designed to operate during outages and off‑grid deployments, with data kept on‑device by default (no cloud retention unless you export).
-      </div>
-      <div class="small" id="i18n_contact_line" style="margin-top:10px;opacity:.85;text-align:center">Contact: contact@mcorpai.org • mcorpai.org </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px">
-        <span class="badge ok" id="i18n_badge_offline">100% Offline</span>
-        <span class="badge ok" id="i18n_badge_gdpr">GDPR‑friendly</span>
-        <span class="badge med" id="i18n_badge_ble">BLE Proximity + Assist</span>
-        <span class="badge med" id="i18n_badge_tiny">Single‑file (~0 KB)</span>
-      </div>
-
-      <div class="highlight-box" id="i18n_hero_pillars" style="margin-top:12px">
-        <p><strong>Infrastructure‑Independent Survival Framework</strong> — designed for continuity during outages and off‑grid deployments.</p>
-        <p>🔍 <strong>Extreme S&amp;R (Avalanche/Landslide)</strong>: Bluetooth beacon proximity to guide a radar‑like life‑locator workflow when responders are off‑grid.</p>
-        <p>♻️ <strong>Upcycling E‑Waste (ESG &amp; SDGs)</strong>: repurpose retired smartphones into offline relief nodes.</p>
-        <p>🐄 <strong>Off‑Grid Agriculture &amp; Asset Protection</strong>: practical patterns for livestock and asset safety where coverage is unavailable.</p>
-        <p>🌍 <strong>Arabic &amp; Global Ready</strong>: built‑in multilingual UI (7 languages) including Arabic (RTL).</p>
-      </div>
-    </div>
-<div id="empty-state" class="empty-state">
-      <div class="empty-icon">🛡️</div>
-      <div class="empty-text" id="i18n_empty_text">No demo tags registered yet.<br>Add a cheap BLE key‑finder tag to run the offline proximity demo.</div>
-      <button class="btn-add" onclick="Wizard.open()" id="i18n_empty_btn">+ Add Demo Tag</button>
+    <div id="empty-state" class="empty-state">
+      <div class="empty-icon">🐾</div>
+      <div class="empty-text">No pets registered yet.<br>Add your pet with a cheap BLE tag ($2–$5).</div>
+      <button class="btn-add" onclick="Wizard.open()">+ Add New Pet</button>
     </div>
 
     <div id="dash-controls" class="hidden">
@@ -368,12 +320,42 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 
   <!-- TIPS -->
   <div id="panel-tips" class="panel">
-    <div class="section-title" id="i18n_tips_title">📋 Demo Guide & Field Notes</div>
-    <div id="tipsI18n"></div>
+    <div class="section-title">📋 Must-Read Safety Tips</div>
+
+    <div class="tip-card danger"><div class="tip-title">🚫 TOXIC FOODS</div><div class="tip-body">Chocolate, grapes/raisins, xylitol (sugar-free gum), onions, garlic, macadamia nuts, alcohol, caffeine, avocado pits. Keep ALL of these away from your pet.</div></div>
+    <div class="tip-card warn"><div class="tip-title">⚡ If Your Dog Ate Something Toxic</div><div class="tip-body">Call your vet IMMEDIATELY. Do NOT induce vomiting unless instructed. Note what was eaten, how much, and when. Time is critical — especially for xylitol and chocolate.</div></div>
+    <div class="tip-card info"><div class="tip-title">✅ Safe Snacks</div><div class="tip-body">Carrots, blueberries, watermelon (seedless), plain cooked chicken, pumpkin (plain), apple slices (no seeds), green beans, sweet potato.</div></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">📡 BLE Tag Tips</div>
+    <div class="tip-card info"><div class="tip-title">🏷️ How to Buy a Tag</div><div class="tip-body">Search: <span class="kbd">iTag</span>, <span class="kbd">Key Finder</span>, <span class="kbd">Anti-lost BLE</span>. Cost: $2–$5. Usually CR2032 battery (6–12 months). Waterproof case recommended for outdoor use.</div></div>
+    <div class="tip-card info"><div class="tip-title">🔋 Battery & Range Reality Check</div><div class="tip-body">Typical BLE range: 10–30m in clear line-of-sight. Walls, metal, water, pockets, crowds, and your own body reduce range significantly. Sudden LOST flips often mean weak battery or shielding.</div></div>
+    <div class="tip-card warn"><div class="tip-title">📱 Platform Limitations</div><div class="tip-body">This app uses Bluetooth signal strength — it is NOT GPS and cannot show a precise map location. Android Chrome recommended. Many iOS browsers block BLE scanning due to platform policy. Background restrictions vary by device.</div></div>
+    <div class="tip-card info"><div class="tip-title">⚡ High Alert (Fireworks/Storms)</div><div class="tip-body">Enable <strong>High Alert</strong> in Settings before loud events. It tightens boundaries and speeds up zone confirmation to reduce reaction delay.</div></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">🌍 Social Impact</div>
+    <div class="charity-box">
+      <p><strong>Every share helps.</strong></p>
+      <p style="color:var(--text-secondary);line-height:1.5">Santa Claus AI is designed so that as more people learn about it, more homeless people can become independent through ethical micro-income ecosystems. Your adoption + sharing creates real-world impact.</p>
+      <p style="font-size:.72rem;color:var(--text-muted)">Managed by McorpAI · mcorpai.org</p>
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>Pro tip:</strong> Use <span class="kbd">Focus</span> mode when you have multiple pets or noisy areas. It reduces BLE overload and improves match accuracy.</p>
+      <p><strong>Pro tip:</strong> If you see <span class="kbd">Signal ambiguous</span>, tap the pet card → <strong>Re-verify Tag</strong>.</p>
+    </div>
+
+    <div class="warning-legal">
+      <p><strong>Safety Disclaimer:</strong> This system provides proximity alerts only. It does not guarantee prevention of harm, loss, injury, or theft.</p>
+      <p><strong>Ethical Use:</strong> Prohibited for surveillance, stalking, military, oppression, border militarization, or individual tracking without consent.</p>
+    </div>
   </div>
 
   <!-- SETTINGS -->
-<div id="panel-settings" class="panel">
+  <div id="panel-settings" class="panel">
     <div class="section-title">⚙️ Settings</div>
 
     <div class="card">
@@ -483,7 +465,7 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
   <!-- WIZARD OVERLAY -->
   <div id="wizard-overlay" class="overlay">
     <div class="overlay-header">
-      <div class="overlay-title" id="wizard-title">Add Demo Tag Wizard</div>
+      <div class="overlay-title" id="wizard-title">Add Pet Wizard</div>
       <button class="overlay-close" onclick="Wizard.close()">✕</button>
     </div>
     <div class="overlay-body">
@@ -570,7 +552,7 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
   <!-- HELP OVERLAY -->
   <div id="help-overlay" class="overlay">
     <div class="overlay-header">
-      <div class="overlay-title" id="i18n_help_title">Help</div>
+      <div class="overlay-title">Help</div>
       <button class="overlay-close" onclick="Help.close()">✕</button>
     </div>
     <div class="overlay-body" id="help-body"></div>
@@ -579,35 +561,10 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
   <!-- LEGAL OVERLAY -->
   <div id="legal-overlay" class="overlay">
     <div class="overlay-header">
-      <div class="overlay-title" id="i18n_legal_title">About</div>
+      <div class="overlay-title">About & Legal</div>
       <button class="overlay-close" onclick="Legal.close()">✕</button>
     </div>
     <div class="overlay-body" id="legal-body"></div>
-  </div>
-
-  <!-- LANGUAGE OVERLAY -->
-  <div id="lang-overlay" class="overlay">
-    <div class="overlay-header">
-      <div class="overlay-title" id="i18n_lang_title">Language</div>
-      <button class="overlay-close" onclick="Lang.close()">✕</button>
-    </div>
-    <div class="overlay-body">
-      <div class="card" style="margin-top:0">
-        <div class="section-title" id="i18n_lang_subtitle">Choose your UI language</div>
-        <div class="small" id="i18n_lang_note" style="margin-top:6px;line-height:1.5">
-          This changes UI text only. Bluetooth behavior and offline processing remain the same.
-        </div>
-        <div class="lang-grid" style="margin-top:12px">
-          <button class="btn btn-secondary" data-lang="en" onclick="Lang.choose('en')">English</button>
-          <button class="btn btn-secondary" data-lang="ko" onclick="Lang.choose('ko')">한국어</button>
-          <button class="btn btn-secondary" data-lang="ar" onclick="Lang.choose('ar')">العربية</button>
-          <button class="btn btn-secondary" data-lang="ja" onclick="Lang.choose('ja')">日本語</button>
-          <button class="btn btn-secondary" data-lang="fr" onclick="Lang.choose('fr')">Français</button>
-          <button class="btn btn-secondary" data-lang="zh-TW" onclick="Lang.choose('zh-TW')">繁體中文(台灣)</button>
-          <button class="btn btn-secondary" data-lang="es" onclick="Lang.choose('es')">Español</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- DIAGNOSTICS OVERLAY -->
@@ -660,7 +617,7 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 <script>
 
 /* ============================================================
-   VitalGuard AI v4.1.7
+   Santa Claus AI v4.1 (V4.1)
    - Merged: V20 feature richness + V35 engine hardening + V38 UI ideas
    - Vanilla HTML/CSS/JS, single-file, offline-first.
    - Ethical AI License: Hippocratic 3.0 Derivative (Humanitarian use only)
@@ -669,13 +626,13 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 'use strict';
 
 /* ----------------------------- CONFIG ----------------------------- */
-const APP_VERSION = '4.1.7';
+const APP_VERSION = '4.1';
 const SCHEMA_VERSION = 2;
 
 // Backward compatibility (do not change)
-const DB_NAME = 'VitalGuardAI_V41';
+const DB_NAME = 'SantaAI_V35';
 const DB_VERSION = 2; // v3.9+ adds optional blob store
-const LS_PREFIX = 'vg41_';
+const LS_PREFIX = 'santa35_';
 
 const MAX_RSSI_SAMPLES = 60;
 const ZONE_CONFIRM_COUNT = 4; // v4.1: more stable zone transitions
@@ -747,8 +704,8 @@ function nowMs(){ return Date.now(); }
 const ETHICAL_MANIFEST = {
   version: APP_VERSION,
   license: 'Hippocratic 3.0 Derivative',
-  purpose: 'Life‑saving offline AI demo (no cloud, no telemetry)',
-  prohibited: ['weaponization','coercive_tracking','data_exploitation','oppression','border_enforcement'],
+  purpose: 'Humanitarian pet safety for low-income families',
+  prohibited: ['military','surveillance','weapons','individual_tracking','oppression','border_militarization'],
   principles: ['minimize_hallucinations','transparency','accessibility','no_data_exploitation','low_resource','no_liability','affordable','simplicity','non_specialist','allow_deletion']
 };
 
@@ -770,1834 +727,6 @@ const Toast = {
     }, dur);
   }
 };
-
-
-/* ----------------------------- I18N (7 Languages) ----------------------------- */
-/*
-  VitalGuard AI is intended to be shown to non-technical audiences (diplomats, NGOs, universities, companies).
-  This tiny i18n layer keeps everything in a single offline HTML file (no libraries, no network).
-*/
-const I18N = (function(){
-  const STORAGE_KEY = 'vg_lang_v41';
-  const LEGACY_KEY = 'vg_lang_v412';
-  const RTL_LANGS = new Set(['ar']);
-
-  const STR = {
-    en: {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — Infrastructure‑Independent Survival Framework | McorpAI',
-      app_mission: 'Runs fully offline. No cloud. No telemetry. GDPR‑friendly by design.',
-      app_disclaimer: 'Demo skin: “Pet Safety Leash” using Bluetooth proximity (not GPS). Built to keep working when networks fail.',
-      github: 'GitHub Source',
-      help: 'Help',
-      about: 'About',
-      help_title: 'Help',
-      legal_title: 'About',
-      tips_title: '📋 Demo Guide & Field Notes',
-      install_title: 'Install VitalGuard AI',
-      empty_text: 'No demo tags registered yet.<br>Add a cheap BLE key‑finder tag to run the offline proximity demo.',
-      empty_btn: '+ Add Demo Tag',
-      hero_title: '🛡️ Infrastructure‑Independent Survival Framework',
-      hero_body: 'VitalGuard AI v4.1.7 is a single‑file, offline‑first continuity toolkit combining Bluetooth beacon proximity and lightweight on‑device logic—designed to operate during outages and off‑grid deployments, with data kept on‑device by default (no cloud retention unless you export).',
-      hero_pillars_html: '<p><strong>Infrastructure‑Independent Survival Framework</strong> — designed for continuity during outages and off‑grid deployments.</p><p>• <strong>Extreme S&amp;R (Avalanche/Landslide)</strong>: Bluetooth beacon proximity to guide a radar‑like life‑locator workflow when responders are off‑grid.</p><p>• <strong>Upcycling E‑Waste (ESG &amp; SDGs)</strong>: repurpose retired smartphones into offline relief nodes.</p><p>• <strong>Off‑Grid Agriculture &amp; Asset Protection</strong>: practical patterns for livestock and asset safety where coverage is unavailable.</p><p>• <strong>Arabic &amp; Global Ready</strong>: built‑in multilingual UI (7 languages) including Arabic (RTL).</p>',
-      badge_offline: '100% Offline',
-      badge_gdpr: 'GDPR‑friendly',
-      badge_ble: 'BLE Proximity + Assist',
-      badge_tiny: 'Single‑file (~{KB} KB)',
-      contact_line: 'Contact: contact@mcorpai.org • mcorpai.org • Morgan J. (Gyumin Jeon)'
-    ,
-      nav_home: 'Home',
-      nav_sos: 'SOS',
-      nav_tips: 'Guide',
-      nav_settings: 'Settings',
-      install_sub: 'Works better as an installed app — faster launch, more reliable Bluetooth behavior.',
-      install_btn: 'Install',
-      install_dismiss: 'Not now'
-    },
-    ko: {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — 인프라 독립형 생존 프레임워크 | McorpAI',
-      app_mission: '완전 오프라인. 클라우드 없음. 추적(텔레메트리) 없음. GDPR 친화 설계.',
-      app_disclaimer: '데모 스킨: “강아지 안전 목줄(Pet Safety Leash)” — 블루투스 근접( GPS 아님 ). 네트워크가 끊겨도 동작하도록 설계.',
-      github: 'GitHub 소스',
-      help: '사용법',
-      about: '소개',
-      help_title: '사용법',
-      legal_title: '소개',
-      tips_title: '📋 데모 가이드 & 필드 노트',
-      install_title: 'VitalGuard AI 설치',
-      empty_text: '등록된 데모 태그가 없습니다.<br>저가 BLE 키파인더 태그를 추가해 오프라인 근접 데모를 실행하세요.',
-      empty_btn: '+ 데모 태그 추가',
-      hero_title: '🛡️ 인프라 독립형 생존 프레임워크',
-      hero_body: 'VitalGuard AI v4.1.7는 단일 HTML 파일 기반의 오프라인 연속성 도구로, BLE 비콘 근접도와 온디바이스 경량 로직을 결합해 전력·통신 장애 및 오프그리드 환경에서도 작동하도록 설계되었습니다. 데이터는 기기에만 보관됩니다.',
-      hero_pillars_html: '<p><strong>인프라 독립형 생존 프레임워크</strong> — 전력·통신 장애 및 오프그리드 환경에서도 연속성을 확보합니다.</p><p>• <strong>극한 수색·구조(눈사태/산사태)</strong>: BLE 비콘 근접도와 온디바이스 로직으로, 구조대가 오프라인에서도 단계적으로 위치를 좁혀갈 수 있도록 지원합니다.</p><p>• <strong>폐스마트폰 업사이클링(ESG/SDGs)</strong>: 방치된 기기를 ‘오프라인 구호 노드’로 재탄생시킵니다.</p><p>• <strong>오프그리드 목축·자산 보호</strong>: 초원/사막 등 무커버리지 환경에서 가축·자산 안전 패턴을 제공합니다.</p><p>• <strong>Arabic 포함 7개국어</strong>: 아랍어(RTL)까지 내장되어 즉시 배포 가능합니다.</p>',
-      badge_offline: '완전 오프라인',
-      badge_gdpr: 'GDPR 친화',
-      badge_ble: 'BLE 근접 + 협력 탐색',
-      badge_tiny: '단일 파일 (~{KB}KB)',
-      contact_line: '문의: contact@mcorpai.org • mcorpai.org • Morgan J. (한국명: Gyumin Jeon)'
-    ,
-      nav_home: '홈',
-      nav_sos: '긴급',
-      nav_tips: '가이드',
-      nav_settings: '설정',
-      install_sub: '앱으로 설치하면 더 안정적입니다 — 더 빠른 실행, 블루투스 동작 안정.',
-      install_btn: '앱 설치',
-      install_dismiss: '나중에'
-    },
-    ar: {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — إطار بقاء مستقل عن البنية التحتية | McorpAI',
-      app_mission: 'يعمل دون اتصال بالكامل. لا سحابة. لا تتبع. مصمم ليكون متوافقًا مع GDPR.',
-      app_disclaimer: 'واجهة العرض: «مقود أمان للحيوانات الأليفة» عبر قرب Bluetooth (ليس GPS). مصمم للعمل حتى عند انقطاع الشبكات.',
-      github: 'مصدر GitHub',
-      help: 'مساعدة',
-      about: 'حول',
-      help_title: 'مساعدة',
-      legal_title: 'حول',
-      tips_title: '📋 دليل العرض وملاحظات ميدانية',
-      install_title: 'تثبيت VitalGuard AI',
-      empty_text: 'لا توجد علامات مسجّلة للعرض بعد.<br>أضف علامة BLE رخيصة (مُعَثِّر مفاتيح) لتشغيل عرض القرب دون اتصال.',
-      empty_btn: '+ إضافة علامة للعرض',
-      hero_title: '🛡️ إطار بقاء مستقل عن البنية التحتية',
-      hero_body: 'VitalGuard AI v4.1.7 أداة استمرارية ضمن ملف واحد تعمل دون اتصال، تجمع بين قرب منارة Bluetooth ومنطق خفيف على الجهاز—لتعمل أثناء الانقطاعات وفي البيئات خارج الشبكة، مع حفظ البيانات على الجهاز (بدون احتفاظ سحابي إلا عند التصدير).',
-      hero_pillars_html: '<p><strong>إطار بقاء مستقل عن البنية التحتية</strong> — للاستمرارية أثناء الانقطاعات وعمليات النشر خارج الشبكة.</p><p>• <strong>البحث والإنقاذ في الظروف القاسية (انهيارات ثلجية/انزلاقات أرضية)</strong>: قرب منارات BLE لدعم سير عمل تحديد موقع يشبه الرادار عند العمل خارج الشبكة.</p><p>• <strong>إعادة توظيف النفايات الإلكترونية (ESG/SDGs)</strong>: تحويل الهواتف المتقاعدة إلى عقد إغاثة تعمل دون اتصال.</p><p>• <strong>زراعة خارج الشبكة وحماية الأصول</strong>: أنماط عملية لسلامة الماشية والأصول حيث لا توجد تغطية.</p><p>• <strong>جاهز للعربية والعالم</strong>: واجهة متعددة اللغات (7 لغات) بما في ذلك العربية (RTL).</p>',
-      badge_offline: 'دون اتصال 100%',
-      badge_gdpr: 'صديق لـ GDPR',
-      badge_ble: 'قرب BLE + مساعدة إنقاذ',
-      badge_tiny: 'ملف واحد (~{KB} كيلوبايت)',
-      contact_line: 'للتواصل: contact@mcorpai.org • mcorpai.org • Morgan J. (Gyumin Jeon)'
-    ,
-      nav_home: 'الرئيسية',
-      nav_sos: 'SOS',
-      nav_tips: 'الدليل',
-      nav_settings: 'الإعدادات',
-      install_sub: 'يعمل بشكل أفضل كتطبيق مُثبت — تشغيل أسرع وBluetooth أكثر موثوقية.',
-      install_btn: 'تثبيت',
-      install_dismiss: 'ليس الآن'
-    },
-    ja: {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — インフラ非依存サバイバル・フレームワーク | McorpAI',
-      app_mission: '完全オフライン。クラウドなし。テレメトリーなし。GDPRに配慮した設計。',
-      app_disclaimer: 'デモ用スキン：「ペット安全リード」— Bluetooth近接（GPSではありません）。ネットワーク障害時でも動作する設計。',
-      github: 'GitHub ソース',
-      help: '使い方',
-      about: '概要',
-      help_title: '使い方',
-      legal_title: '概要',
-      tips_title: '📋 デモガイド & フィールドノート',
-      install_title: 'VitalGuard AI をインストール',
-      empty_text: 'デモ用タグがまだ登録されていません。<br>安価なBLEキーファインダーを追加してオフライン近接デモを開始してください。',
-      empty_btn: '+ デモタグを追加',
-      hero_title: '🛡️ インフラ非依存サバイバル・フレームワーク',
-      hero_body: 'VitalGuard AI v4.1.7 は単一 HTML ファイルのオフライン継続性ツールです。BLE ビーコン近接と軽量なオンデバイス・ロジックを組み合わせ、停電や通信障害、オフグリッド環境でも動作するよう設計されています。データは端末内にのみ保持されます。',
-      hero_pillars_html: '<p><strong>インフラ非依存サバイバル・フレームワーク</strong> — 停電・通信障害やオフグリッド配備でも継続運用できる設計です。</p><p>• <strong>極限の捜索救助（雪崩/土砂崩れ）</strong>: BLE ビーコン近接により、オフグリッド環境でも段階的に位置を絞り込むワークフローを支援します。</p><p>• <strong>E‑Waste のアップサイクル（ESG/SDGs）</strong>: 退役したスマホをオフライン救援ノードとして再利用します。</p><p>• <strong>オフグリッド農業＆資産保護</strong>: 電波の届かない環境での家畜・資産の安全パターンを提供します。</p><p>• <strong>アラビア語を含む 7 言語</strong>: アラビア語（RTL）を含む多言語 UI を内蔵しています。</p>',
-      badge_offline: '完全オフライン',
-      badge_gdpr: 'GDPR配慮',
-      badge_ble: 'BLE近接 + 協力探索',
-      badge_tiny: '単一ファイル（約{KB}KB）',
-      contact_line: '連絡先: contact@mcorpai.org • mcorpai.org • Morgan J. (Gyumin Jeon)'
-    ,
-      nav_home: 'ホーム',
-      nav_sos: 'SOS',
-      nav_tips: 'ガイド',
-      nav_settings: '設定',
-      install_sub: 'インストールすると安定します — 起動が速く、Bluetoothがより確実。',
-      install_btn: 'インストール',
-      install_dismiss: '今はしない'
-    },
-    fr: {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — Cadre de survie indépendant de l’infrastructure | McorpAI',
-      app_mission: 'Fonctionne entièrement hors ligne. Pas de cloud. Pas de télémétrie. Conçu pour être compatible RGPD.',
-      app_disclaimer: 'Habillage de démo : « Laisse de sécurité pour animaux » via la proximité Bluetooth (pas GPS). Conçu pour fonctionner même quand les réseaux tombent.',
-      github: 'Code GitHub',
-      help: 'Aide',
-      about: 'À propos',
-      help_title: 'Aide',
-      legal_title: 'À propos',
-      tips_title: '📋 Guide de démo & notes terrain',
-      install_title: 'Installer VitalGuard AI',
-      empty_text: 'Aucune balise de démo enregistrée.<br>Ajoutez une balise BLE bon marché (porte‑clés anti‑perte) pour lancer la démo de proximité hors ligne.',
-      empty_btn: '+ Ajouter une balise',
-      hero_title: '🛡️ Cadre de survie indépendant de l’infrastructure',
-      hero_body: 'VitalGuard AI v4.1.7 est un outil de continuité hors‑ligne en fichier unique, combinant la proximité de balises Bluetooth et une logique légère sur l’appareil—conçu pour fonctionner pendant les pannes et les déploiements hors‑réseau, avec des données conservées localement (pas de rétention dans le cloud sauf export).',
-      hero_pillars_html: '<p><strong>Cadre de survie indépendant de l’infrastructure</strong> — pour assurer la continuité pendant les pannes et les déploiements hors‑réseau.</p><p>• <strong>S&amp;R extrême (avalanche/glissement de terrain)</strong> : proximité de balises BLE pour soutenir un workflow de localisation « type radar » en mode hors‑réseau.</p><p>• <strong>Upcycling des e‑déchets (ESG &amp; ODD)</strong> : réutiliser des smartphones retraités comme nœuds de secours hors‑ligne.</p><p>• <strong>Agriculture hors‑réseau &amp; protection des actifs</strong> : patterns pratiques pour le bétail et les actifs sans couverture.</p><p>• <strong>Arabe &amp; prêt pour le monde</strong> : UI multilingue intégrée (7 langues) dont l’arabe (RTL).</p>',
-      badge_offline: '100% hors ligne',
-      badge_gdpr: 'RGPD‑friendly',
-      badge_ble: 'Proximité BLE + Assistance',
-      badge_tiny: 'Fichier unique (~{KB} Ko)',
-      contact_line: 'Contact: contact@mcorpai.org • mcorpai.org • Morgan J. (Gyumin Jeon)'
-    ,
-      nav_home: 'Accueil',
-      nav_sos: 'SOS',
-      nav_tips: 'Guide',
-      nav_settings: 'Paramètres',
-      install_sub: 'Meilleur en appli installée — démarrage plus rapide, Bluetooth plus fiable.',
-      install_btn: 'Installer',
-      install_dismiss: 'Plus tard'
-    },
-    'zh-TW': {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — 救命離線 AI 示範 | McorpAI',
-      app_mission: '完全離線運作。無雲端。無追蹤。以 GDPR 友善為設計原則。',
-      app_disclaimer: '示範外觀：「寵物安全牽繩」— 以藍牙近距離偵測（非 GPS）。為網路中斷情境而設計。',
-      github: 'GitHub 原始碼',
-      help: '說明',
-      about: '關於',
-      help_title: '說明',
-      legal_title: '關於',
-      tips_title: '📋 示範指南與現場筆記',
-      install_title: '安裝 VitalGuard AI',
-      empty_text: '尚未註冊任何示範標籤。<br>新增便宜的 BLE 防丟鑰匙圈標籤，即可開始離線近距離示範。',
-      empty_btn: '+ 新增示範標籤',
-      hero_title: '🛡️ 救命離線 AI 示範',
-      hero_body: 'VitalGuard AI 是「AI + 藍牙近距離」的離線示範：雲端不可用時仍能運作。沒有帳號、沒有雲端同步、沒有暗中上傳。除非你選擇匯出，所有資料都只留在你的裝置上。',
-      badge_offline: '完全離線',
-      badge_gdpr: 'GDPR 友善',
-      badge_ble: 'BLE 近距離 + 協作',
-      badge_tiny: '單一檔案（約{KB} KB）',
-      contact_line: '聯絡: contact@mcorpai.org • mcorpai.org • Morgan J. (Gyumin Jeon)'
-    ,
-      nav_home: '首頁',
-      nav_sos: 'SOS',
-      nav_tips: '指南',
-      nav_settings: '設定',
-      install_sub: '安裝成 App 會更穩定 — 啟動更快、藍牙更可靠。',
-      install_btn: '安裝',
-      install_dismiss: '稍後'
-    },
-    es: {
-      app_title: 'VitalGuard AI',
-      app_sub: 'v4.1.7 — Marco de supervivencia independiente de la infraestructura | McorpAI',
-      app_mission: 'Funciona totalmente sin conexión. Sin nube. Sin telemetría. Diseñado para ser compatible con el GDPR.',
-      app_disclaimer: 'Piel de demo: “Correa de seguridad para mascotas” usando proximidad Bluetooth (no GPS). Diseñado para funcionar cuando fallan las redes.',
-      github: 'Código en GitHub',
-      help: 'Ayuda',
-      about: 'Acerca de',
-      help_title: 'Ayuda',
-      legal_title: 'Acerca de',
-      tips_title: '📋 Guía de demo y notas de campo',
-      install_title: 'Instalar VitalGuard AI',
-      empty_text: 'Aún no hay etiquetas registradas.<br>Agrega una etiqueta BLE barata (buscador de llaves) para iniciar la demo de proximidad sin conexión.',
-      empty_btn: '+ Añadir etiqueta',
-      hero_title: '🛡️ Marco de supervivencia independiente de la infraestructura',
-      hero_body: 'VitalGuard AI v4.1.7 es una herramienta de continuidad en un solo archivo y sin conexión, que combina proximidad de balizas Bluetooth y lógica ligera en el dispositivo—diseñada para funcionar durante interrupciones y despliegues fuera de red, con los datos guardados en el dispositivo (sin retención en la nube salvo exportación).',
-      hero_pillars_html: '<p><strong>Marco de supervivencia independiente de la infraestructura</strong> — para continuidad durante interrupciones y despliegues fuera de red.</p><p>• <strong>B&amp;R extremo (avalancha/deslizamiento)</strong>: proximidad de balizas BLE para apoyar un flujo de localización «tipo radar» fuera de red.</p><p>• <strong>Upcycling de e‑waste (ESG &amp; ODS)</strong>: reutilizar smartphones retirados como nodos de ayuda sin conexión.</p><p>• <strong>Agricultura fuera de red &amp; protección de activos</strong>: patrones prácticos para ganado y activos sin cobertura.</p><p>• <strong>Árabe y listo para el mundo</strong>: UI multilingüe integrada (7 idiomas), incluido árabe (RTL).</p>',
-      badge_offline: '100% sin conexión',
-      badge_gdpr: 'Compatible GDPR',
-      badge_ble: 'Proximidad BLE + Asistencia',
-      badge_tiny: 'Archivo único (~{KB} KB)',
-      contact_line: 'Contacto: contact@mcorpai.org • mcorpai.org • Morgan J. (Gyumin Jeon)'
-    ,
-      nav_home: 'Inicio',
-      nav_sos: 'SOS',
-      nav_tips: 'Guía',
-      nav_settings: 'Ajustes',
-      install_sub: 'Mejor como app instalada — inicio más rápido, Bluetooth más fiable.',
-      install_btn: 'Instalar',
-      install_dismiss: 'Ahora no'
-    }
-  };
-
-  const HTML = {
-    tips: {
-      en: `
-        <div class="tip-card info">
-          <div class="tip-title">What you are looking at</div>
-          <div class="tip-body">
-            This page is a <strong>technology demonstration</strong>. The UI is intentionally “Pet Safety Leash” because it is universal and harmless,
-            but the underlying engine is built for <strong>life‑saving offline scenarios</strong>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2‑minute demo</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>Get a cheap BLE key‑finder tag (often called <span class="kbd">iTag</span> / <span class="kbd">Key Finder</span>).</li>
-              <li>Home → <strong>Add Demo Tag</strong> → follow the wizard (near → move away → name).</li>
-              <li>Start monitoring. Watch the zone change (SAFE → CAUTION → WARNING) as distance changes.</li>
-              <li>Try SOS: generate an offline QR card and test the audio beacon.</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 Why offline matters in disasters</div>
-        <div class="tip-card warn">
-          <div class="tip-title">When the network fails</div>
-          <div class="tip-body">
-            During wildfires, landslides, tsunamis, and mass evacuations, cloud apps can fail: no signal, no power, no accounts, no payments.
-            VitalGuard AI keeps a <strong>tiny offline “brain”</strong> on the device, so the demo still runs.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Example deployments (easy to understand)</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>Evacuation centers:</strong> put BLE tags on medical kits / generators → alert if moved outside a zone.</li>
-              <li><strong>Search & rescue:</strong> tag team members or gear → help locate what is nearby when visibility is poor.</li>
-              <li><strong>Family reunification:</strong> a phone can monitor proximity between a guardian and a child (not GPS).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Privacy & GDPR</div>
-          <div class="tip-body">
-            No accounts. No analytics. No cloud calls. Data is stored locally and can be erased anytime.
-            Exports (backup/diagnostics) happen only when you press the button.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Important limitation</div>
-          <div class="tip-body">
-            Bluetooth RSSI is noisy (walls, crowds, pockets). Use zones as <em>signals</em>, not exact meters.
-            This is a demo, not a certified life‑critical device.
-          </div>
-        </div>
-      `,
-      ko: `
-        <div class="tip-card info">
-          <div class="tip-title">지금 보고 있는 것은?</div>
-          <div class="tip-body">
-            이 페이지는 <strong>기술 시연(데모)</strong>입니다. UI가 “강아지 안전 목줄”처럼 보이도록 만든 이유는 가장 보편적이고 무해한 사례이기 때문이며,
-            실제 핵심은 <strong>재난/셧다운 환경에서도 동작하는 오프라인 AI 엔진</strong>입니다.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2분 데모 절차</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>저가 BLE 키파인더 태그 준비 (<span class="kbd">iTag</span> / <span class="kbd">Key Finder</span> 등).</li>
-              <li>Home → <strong>데모 태그 추가</strong> → 위자드(가까이 → 멀리 이동 → 이름 지정).</li>
-              <li>모니터링 시작 → 거리 변화에 따라 SAFE → CAUTION → WARNING 존이 바뀌는지 확인.</li>
-              <li>SOS에서 오프라인 QR 카드 생성 + 오디오 비콘 테스트.</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 재난에서 “오프라인”이 중요한 이유</div>
-        <div class="tip-card warn">
-          <div class="tip-title">네트워크가 끊기면</div>
-          <div class="tip-body">
-            산불·산사태·쓰나미·대규모 대피 상황에서는 신호/전력/계정/결제가 모두 불안정해질 수 있습니다.
-            VitalGuard AI는 기기 안에 <strong>작은 오프라인 두뇌</strong>를 넣어 이런 상황에서도 데모가 계속 동작하도록 설계했습니다.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">이해하기 쉬운 활용 예시</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>대피소:</strong> 의료 키트/발전기 등에 BLE 태그 부착 → 지정 구역 이탈 시 경보.</li>
-              <li><strong>수색/구조:</strong> 팀원/장비에 태그 → 시야가 나쁠 때 “근처에 무엇이 있는지” 빠르게 파악.</li>
-              <li><strong>가족 재결합:</strong> 보호자‑아이 근접 모니터링( GPS 아님 ).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">개인정보 & GDPR</div>
-          <div class="tip-body">
-            계정 없음 · 분석 없음 · 클라우드 통신 없음. 데이터는 기기에만 저장되며 언제든 삭제할 수 있습니다.
-            백업/진단 내보내기는 사용자가 버튼을 눌렀을 때만 수행됩니다.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">중요한 한계</div>
-          <div class="tip-body">
-            BLE RSSI는 벽/사람/주머니 등 환경에 따라 크게 흔들립니다. 미터 단위 “정확한 거리”가 아니라 <em>신호</em>로 보세요.
-            본 파일은 데모이며 생명‑안전 인증 장비가 아닙니다.
-          </div>
-        </div>
-      `,
-      ar: `
-        <div class="tip-card info">
-          <div class="tip-title">ما الذي تراه هنا؟</div>
-          <div class="tip-body">
-            هذه <strong>تجربة تقنية</strong>. تم اختيار واجهة “مقود أمان للحيوانات الأليفة” لأنها عامة وغير حساسة،
-            لكن المحرك الأساسي موجّه لسيناريوهات <strong>الإنقاذ والعمل دون اتصال</strong>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">عرض خلال دقيقتين</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>احصل على علامة BLE رخيصة (غالبًا <span class="kbd">iTag</span> أو <span class="kbd">Key Finder</span>).</li>
-              <li>Home → <strong>إضافة علامة للعرض</strong> ثم اتبع المعالج (قريب → ابتعد → سمِّها).</li>
-              <li>ابدأ المراقبة وشاهد تغيّر المناطق (SAFE → CAUTION → WARNING) مع تغيّر القرب.</li>
-              <li>جرّب SOS: أنشئ بطاقة QR دون اتصال واختبر منارة الصوت.</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 لماذا يهم العمل دون اتصال في الكوارث</div>
-        <div class="tip-card warn">
-          <div class="tip-title">عندما تتعطل الشبكات</div>
-          <div class="tip-body">
-            أثناء الحرائق والانهيارات الأرضية وأمواج تسونامي وعمليات الإجلاء الكبيرة قد تفشل تطبيقات السحابة: لا إشارة، لا طاقة، لا حسابات.
-            VitalGuard AI يحتفظ بـ <strong>عقل صغير دون اتصال</strong> داخل الجهاز ليستمر العرض.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">أمثلة سهلة الفهم</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>مراكز الإيواء:</strong> ضع علامات على حقائب الإسعاف/المولدات → تنبيه عند خروجها من منطقة.</li>
-              <li><strong>البحث والإنقاذ:</strong> علّم أعضاء الفريق أو المعدات → معرفة ما هو قريب عند ضعف الرؤية.</li>
-              <li><strong>لمّ شمل العائلة:</strong> مراقبة قرب طفل وولي أمر (ليس GPS).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">الخصوصية و GDPR</div>
-          <div class="tip-body">
-            لا حسابات، لا تحليلات، لا سحابة. البيانات محلية ويمكن حذفها في أي وقت. التصدير يتم فقط عند الضغط على الزر.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">قيد مهم</div>
-          <div class="tip-body">
-            إشارة Bluetooth (RSSI) متقلبة بسبب الجدران والحشود والجيوب. اعتبر المناطق إشارات لا أمتار دقيقة.
-            هذا عرض تقني وليس جهازًا معتمدًا للسلامة الحرجة.
-          </div>
-        </div>
-      `,
-      ja: `
-        <div class="tip-card info">
-          <div class="tip-title">これは何のデモ？</div>
-          <div class="tip-body">
-            これは <strong>技術デモ</strong> です。UI を「ペット安全リード」にしているのは、最も普遍的で無害な例だからです。
-            しかし中身は <strong>災害/シャットダウン環境でも動くオフラインAIエンジン</strong> を示しています。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2分デモ</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>安価な BLE キーファインダー（<span class="kbd">iTag</span> / <span class="kbd">Key Finder</span> など）を用意。</li>
-              <li>Home → <strong>デモタグ追加</strong> → ウィザード（近く→離れる→名前）。</li>
-              <li>監視を開始し、SAFE → CAUTION → WARNING の変化を確認。</li>
-              <li>SOS: オフライン QR カード生成 + 音のビーコンをテスト。</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 災害で「オフライン」が重要な理由</div>
-        <div class="tip-card warn">
-          <div class="tip-title">ネットワークが落ちると</div>
-          <div class="tip-body">
-            山火事・土砂災害・津波・大規模避難では、電波/電力/アカウント/課金が成立しないことがあります。
-            VitalGuard AI は端末内に <strong>小さなオフライン脳</strong> を持ち、デモを継続できます。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">分かりやすい用途例</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>避難所:</strong> 医療キット/発電機にタグ → ゾーン外に出たら警告。</li>
-              <li><strong>捜索救助:</strong> 隊員/装備にタグ → 視界不良でも「近くに何があるか」を把握。</li>
-              <li><strong>家族の再会:</strong> 保護者と子どもの近接監視（GPSではない）。</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">プライバシー / GDPR</div>
-          <div class="tip-body">
-            アカウントなし・解析なし・クラウド通信なし。データは端末内に保存され、いつでも消去できます。
-            エクスポートはボタン操作時のみです。
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">重要な制限</div>
-          <div class="tip-body">
-            Bluetooth RSSI は壁や人混みで大きく揺れます。距離を「正確なメートル」として扱わず、ゾーンを <em>目安</em> にしてください。
-            本ファイルはデモであり、生命安全の認証機器ではありません。
-          </div>
-        </div>
-      `,
-      fr: `
-        <div class="tip-card info">
-          <div class="tip-title">Ce que vous voyez</div>
-          <div class="tip-body">
-            Ceci est une <strong>démo technologique</strong>. L’interface “Laisse de sécurité” est volontairement neutre,
-            mais le moteur sert des scénarios <strong>hors ligne et de sauvetage</strong>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Démo en 2 minutes</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>Procurez‑vous une balise BLE bon marché (souvent <span class="kbd">iTag</span> / <span class="kbd">Key Finder</span>).</li>
-              <li>Home → <strong>Ajouter une balise</strong> → assistant (près → éloignez‑vous → nom).</li>
-              <li>Démarrez le suivi et observez SAFE → CAUTION → WARNING selon la proximité.</li>
-              <li>Testez SOS : QR hors ligne + balise audio.</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 Pourquoi le hors‑ligne est crucial</div>
-        <div class="tip-card warn">
-          <div class="tip-title">Quand le réseau tombe</div>
-          <div class="tip-body">
-            Incendies, glissements de terrain, tsunamis, évacuations : les applis cloud peuvent échouer (signal/paiement/comptes).
-            VitalGuard AI garde un <strong>petit “cerveau”</strong> sur l’appareil pour continuer.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Exemples simples</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>Centres d’évacuation:</strong> balises sur kits médicaux/générateurs → alerte si sortie de zone.</li>
-              <li><strong>Recherche & sauvetage:</strong> balises sur personnes/équipements → savoir ce qui est proche quand la visibilité est faible.</li>
-              <li><strong>Réunification familiale:</strong> suivi de proximité (pas GPS).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Vie privée & RGPD</div>
-          <div class="tip-body">
-            Pas de comptes, pas d’analytics, pas de cloud. Données locales, effaçables à tout moment. Export uniquement sur action.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Limitation importante</div>
-          <div class="tip-body">
-            Le RSSI Bluetooth est bruité (murs, foule). Utilisez les zones comme <em>indications</em>, pas des mètres exacts.
-            Démo non certifiée pour un usage vital.
-          </div>
-        </div>
-      `,
-      'zh-TW': `
-        <div class="tip-card info">
-          <div class="tip-title">你正在看的內容</div>
-          <div class="tip-body">
-            這是一個 <strong>技術示範</strong>。介面刻意做成「寵物安全牽繩」是因為它最普遍且不具爭議；
-            但核心其實是在展示 <strong>離線、可救命的 AI 引擎</strong>。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2 分鐘示範流程</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>準備便宜的 BLE 防丟鑰匙圈（常見關鍵字 <span class="kbd">iTag</span> / <span class="kbd">Key Finder</span>）。</li>
-              <li>Home → <strong>新增示範標籤</strong> → 依精靈流程（靠近→走遠→命名）。</li>
-              <li>開始監測，觀察 SAFE → CAUTION → WARNING 依近距離變化。</li>
-              <li>測試 SOS：產生離線 QR 名片與音訊信標。</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 為什麼災害情境需要離線</div>
-        <div class="tip-card warn">
-          <div class="tip-title">當網路失效</div>
-          <div class="tip-body">
-            山火、土石流、海嘯、大規模撤離時，雲端 App 可能失效（無訊號/無電/無帳號/無付款）。
-            VitalGuard AI 把 <strong>小型離線大腦</strong> 放在裝置內，所以示範仍能運作。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">容易理解的部署例子</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>避難中心:</strong> 醫療包/發電機貼 BLE 標籤 → 超出區域就警示。</li>
-              <li><strong>搜救:</strong> 人員/裝備貼標籤 → 視線差時快速知道「附近有什麼」。</li>
-              <li><strong>家屬重聚:</strong> 監測保護者與孩童的近距離（非 GPS）。</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">隱私與 GDPR</div>
-          <div class="tip-body">
-            無帳號、無分析、無雲端呼叫。資料只在本機，可隨時刪除；匯出只在你按下按鈕時發生。
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">重要限制</div>
-          <div class="tip-body">
-            藍牙 RSSI 會受牆壁/人潮/口袋影響而大幅波動。請把區域當作 <em>訊號</em> 而非精準公尺。
-            這是示範，非生命關鍵認證設備。
-          </div>
-        </div>
-      `,
-      es: `
-        <div class="tip-card info">
-          <div class="tip-title">Qué estás viendo</div>
-          <div class="tip-body">
-            Esto es una <strong>demostración tecnológica</strong>. La interfaz “Correa de seguridad” es neutral y fácil de entender,
-            pero el motor está pensado para <strong>escenarios offline que salvan vidas</strong>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Demo en 2 minutos</div>
-          <div class="tip-body">
-            <ol style="margin:8px 0 0 18px;line-height:1.6">
-              <li>Consigue una etiqueta BLE barata (a menudo <span class="kbd">iTag</span> / <span class="kbd">Key Finder</span>).</li>
-              <li>Home → <strong>Añadir etiqueta</strong> → asistente (cerca → aléjate → nómbrala).</li>
-              <li>Inicia la monitorización y observa SAFE → CAUTION → WARNING según la proximidad.</li>
-              <li>Prueba SOS: QR sin conexión + baliza de audio.</li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title" style="font-size:.82rem">🌋 Por qué el modo offline importa</div>
-        <div class="tip-card warn">
-          <div class="tip-title">Cuando falla la red</div>
-          <div class="tip-body">
-            Incendios, deslizamientos, tsunamis y evacuaciones: las apps en la nube pueden fallar (sin señal, sin energía, sin cuentas).
-            VitalGuard AI mantiene un <strong>pequeño “cerebro” offline</strong> en el dispositivo para seguir funcionando.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Ejemplos fáciles</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>Centros de evacuación:</strong> etiquetas en kits médicos/generadores → alerta si salen de una zona.</li>
-              <li><strong>Búsqueda y rescate:</strong> etiquetas en personas/equipo → saber qué está cerca con poca visibilidad.</li>
-              <li><strong>Reunificación familiar:</strong> monitorización de proximidad (no GPS).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Privacidad y GDPR</div>
-          <div class="tip-body">
-            Sin cuentas, sin analíticas, sin nube. Datos locales y borrables. Exportación solo cuando tú lo decides.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Limitación importante</div>
-          <div class="tip-body">
-            El RSSI Bluetooth es ruidoso (paredes, gente). Usa las zonas como <em>señales</em>, no metros exactos.
-            Demo no certificada para uso crítico.
-          </div>
-        </div>
-      `
-    },
-
-    help: {
-      en: `
-        <h2 style="margin-bottom:12px">📖 Quick Start (for non‑technical audiences)</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">Why this demo looks like “Pet Safety Leash”</div>
-          <div class="tip-body">
-            To test how flawlessly the offline AI engine and BLE proximity system perform in everyday environments, I initially built the prototype skinned as a “Pet Safety Leash” — the most universal and harmless use case.
-            <br><br>
-            The same engine can be re‑skinned for evacuation, search & rescue, and humanitarian field operations.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) What you need</div>
-          <div class="tip-body">
-            <strong>Android + Chrome</strong> is recommended.<br>
-            Get a cheap BLE key‑finder tag (keywords: <span class="kbd">iTag</span>, <span class="kbd">Key Finder</span>, <span class="kbd">Anti‑lost BLE</span>).<br>
-            For best reliability, run via <span class="kbd">https://</span> or <span class="kbd">localhost</span> (not all browsers allow BLE from file://).
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) Register a demo tag</div>
-          <div class="tip-body">
-            Home → <strong>Add Demo Tag</strong>.<br>
-            The wizard asks you to (A) hold the tag near the phone, then (B) move it away.
-            This helps the app identify the right tag in crowded BLE environments.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) Start monitoring</div>
-          <div class="tip-body">
-            Tap <strong>Start</strong>. You will see a zone such as SAFE / CAUTION / WARNING.
-            The “AI” is not a giant model — it is a set of compact algorithms that:
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>smooth noisy signals (Kalman filter),</li>
-              <li>stabilize decisions to prevent alert spam (hysteresis + anti‑flapping),</li>
-              <li>optionally learn locally from feedback (lightweight learning modules).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">What this is NOT</div>
-          <div class="tip-body">
-            This is <strong>not GPS</strong>. Bluetooth proximity works best within tens of meters and is affected by walls, bodies, metal, and pockets.
-            Treat it as a <strong>signal</strong> that helps decisions when internet/phones are unreliable.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / Emergency demo</h3>
-        <div class="tip-card info">
-          <div class="tip-title">Offline QR + audio beacon</div>
-          <div class="tip-body">
-            SOS mode can generate an <strong>offline QR contact card</strong> and play a loud <strong>audio beacon</strong>.
-            This is a demo of “resilience primitives”: simple tools that still work during blackouts or severe network disruptions.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 Privacy / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">No data collection</div>
-          <div class="tip-body">
-            VitalGuard AI does not send telemetry, analytics, or personal data to any server. Data stays on the device.
-            You can export/backup only by explicit user action, and you can erase everything at any time.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Safety note</div>
-          <div class="tip-body">
-            This is a technical demonstration. Do not use as the sole tool for life‑critical decisions.
-          </div>
-        </div>
-      `,
-      ko: `
-        <h2 style="margin-bottom:12px">📖 빠른 사용법 (비전문가용)</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">왜 “강아지 안전 목줄”처럼 보이나요?</div>
-          <div class="tip-body">
-            오프라인 AI 엔진과 BLE 근접 시스템가 일상 환경에서 얼마나 안정적으로 동작하는지 시험하기 위해,
-            가장 보편적이고 무해한 사례인 “강아지 안전 목줄(Pet Safety Leash)” 스킨으로 프로토타입을 만들었습니다.
-            <br><br>
-            같은 엔진을 대피/수색·구조/인도주의 현장 운영용으로 쉽게 재포장(스킨 변경)할 수 있습니다.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) 준비물</div>
-          <div class="tip-body">
-            <strong>Android + Chrome</strong> 권장.<br>
-            저가 BLE 키파인더 태그 준비 (검색어: <span class="kbd">iTag</span>, <span class="kbd">Key Finder</span>, <span class="kbd">Anti‑lost BLE</span>).<br>
-            BLE 안정성을 위해 <span class="kbd">https://</span> 또는 <span class="kbd">localhost</span> 실행을 권장합니다.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) 데모 태그 등록</div>
-          <div class="tip-body">
-            Home → <strong>데모 태그 추가</strong>.<br>
-            위자드는 (A) 태그를 가까이 대기 → (B) 멀리 이동하기를 요청합니다.
-            주변 BLE 기기가 많을 때도 “내 태그”를 찾기 위한 절차입니다.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) 모니터링 시작</div>
-          <div class="tip-body">
-            <strong>Start</strong>를 누르면 SAFE / CAUTION / WARNING 같은 존이 표시됩니다.
-            여기서 말하는 “AI”는 거대한 모델이 아니라, 작은 알고리즘 묶음입니다:
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>노이즈 신호를 부드럽게(칼만 필터),</li>
-              <li>알림 폭주 방지(히스테리시스 + 플래핑 억제),</li>
-              <li>원하면 사용자 피드백을 로컬에서 학습(경량 학습 모듈).</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">이것은 무엇이 “아닌가”</div>
-          <div class="tip-body">
-            <strong>GPS가 아닙니다.</strong> BLE 근접은 수십 미터 내에서 유용하지만, 벽/사람/금속/주머니에 크게 영향을 받습니다.
-            “정답”이 아니라 <strong>참고 신호</strong>로 사용하세요.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / 긴급 데모</h3>
-        <div class="tip-card info">
-          <div class="tip-title">오프라인 QR + 오디오 비콘</div>
-          <div class="tip-body">
-            SOS 모드는 <strong>오프라인 QR 연락 카드</strong>를 만들고, 큰 소리의 <strong>오디오 비콘</strong>을 재생할 수 있습니다.
-            정전/통신장애 상황에서도 동작하는 “복원력(Resilience) 기본 도구” 시연입니다.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 개인정보 / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">데이터 수집 없음</div>
-          <div class="tip-body">
-            VitalGuard AI는 서버로 텔레메트리/분석/개인정보를 전송하지 않습니다. 모든 데이터는 기기에만 저장됩니다.
-            백업/내보내기는 사용자가 버튼을 눌렀을 때만 수행되며, 언제든 전체 삭제가 가능합니다.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">안전 주의</div>
-          <div class="tip-body">
-            본 파일은 기술 시연용입니다. 생명‑안전 의사결정의 유일한 도구로 사용하지 마세요.
-          </div>
-        </div>
-      `,
-      ar: `
-        <h2 style="margin-bottom:12px">📖 بدء سريع (لغير المختصين)</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">لماذا تبدو الواجهة كـ “مقود أمان للحيوانات”؟</div>
-          <div class="tip-body">
-            لاختبار أداء محرك الذكاء الاصطناعي دون اتصال ونظام القرب BLE في الحياة اليومية، تم تقديمه بواجهة “مقود أمان للحيوانات” لأنها حالة استخدام عامة وغير حساسة.
-            <br><br>
-            ويمكن إعادة تهيئة هذا المحرك نفسه لعمليات الإجلاء والبحث والإنقاذ والعمليات الإنسانية الميدانية.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) المتطلبات</div>
-          <div class="tip-body">
-            يوصى بـ <strong>Android + Chrome</strong>.<br>
-            احصل على علامة BLE رخيصة (كلمات البحث: <span class="kbd">iTag</span>، <span class="kbd">Key Finder</span>، <span class="kbd">Anti‑lost BLE</span>).<br>
-            لأفضل موثوقية استخدم <span class="kbd">https://</span> أو <span class="kbd">localhost</span>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) تسجيل علامة</div>
-          <div class="tip-body">
-            Home → <strong>إضافة علامة للعرض</strong>.<br>
-            سيطلب منك المعالج تقريب العلامة ثم إبعادها للمساعدة على اختيار العلامة الصحيحة في بيئات BLE المزدحمة.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) ابدأ المراقبة</div>
-          <div class="tip-body">
-            اضغط <strong>Start</strong>. سترى مناطق مثل SAFE / CAUTION / WARNING.
-            “الذكاء الاصطناعي” هنا ليس نموذجًا ضخمًا، بل خوارزميات صغيرة:
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>تنعيم الضجيج (Kalman)،</li>
-              <li>تثبيت القرار لمنع التنبيه المتكرر (hysteresis + anti‑flapping)،</li>
-              <li>تعلم محلي اختياري من الملاحظات.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">ما ليس عليه هذا النظام</div>
-          <div class="tip-body">
-            هذا <strong>ليس GPS</strong>. القرب عبر Bluetooth يتأثر بالجدران والأجسام والازدحام والجيوب.
-            استخدمه كإشارة مساعدة وليس كمسافة دقيقة.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / الطوارئ</h3>
-        <div class="tip-card info">
-          <div class="tip-title">QR دون اتصال + منارة صوتية</div>
-          <div class="tip-body">
-            يمكن لوضع SOS إنشاء بطاقة QR دون اتصال وتشغيل منارة صوتية عالية.
-            هذا عرض لأدوات بسيطة تعمل أثناء انقطاع الكهرباء أو الإنترنت.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 الخصوصية / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">لا جمع للبيانات</div>
-          <div class="tip-body">
-            لا يرسل VitalGuard AI أي تحليلات أو بيانات شخصية إلى خوادم. كل شيء يبقى على الجهاز.
-            يمكن التصدير فقط عند ضغط المستخدم، ويمكن الحذف في أي وقت.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">ملاحظة سلامة</div>
-          <div class="tip-body">
-            هذا عرض تقني. لا تستخدمه كأداة وحيدة لقرارات حرجة للحياة.
-          </div>
-        </div>
-      `,
-      ja: `
-        <h2 style="margin-bottom:12px">📖 クイックスタート（非技術者向け）</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">なぜ「ペット安全リード」なのか</div>
-          <div class="tip-body">
-            オフラインAIエンジンと BLE 近接システムの動作を日常環境で検証するため、最も普遍的で無害な例として「ペット安全リード」スキンで作りました。
-            <br><br>
-            同じエンジンは、避難・捜索救助・人道支援の現場向けにスキンを変えて再利用できます。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) 必要なもの</div>
-          <div class="tip-body">
-            <strong>Android + Chrome</strong> 推奨。<br>
-            安価な BLE キーファインダー（検索: <span class="kbd">iTag</span> / <span class="kbd">Key Finder</span> / <span class="kbd">Anti‑lost BLE</span>）。<br>
-            できれば <span class="kbd">https://</span> か <span class="kbd">localhost</span> で実行。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) デモタグ登録</div>
-          <div class="tip-body">
-            Home → <strong>デモタグ追加</strong>。<br>
-            近づける→離す手順で、混雑した BLE 環境でも正しいタグを見分けやすくします。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) 監視開始</div>
-          <div class="tip-body">
-            <strong>Start</strong> を押すと SAFE / CAUTION / WARNING が表示されます。
-            ここでの “AI” は巨大モデルではなく、小さなアルゴリズム群です：
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>ノイズを平滑化（Kalman）、</li>
-              <li>判断を安定化してアラート乱発を防ぐ（ヒステリシス＋フラッピング抑制）、</li>
-              <li>必要に応じて端末内で学習（軽量学習）。</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">これは GPS ではありません</div>
-          <div class="tip-body">
-            Bluetooth 近接は壁や人混みで大きく変動します。距離の“正確さ”ではなく、判断のための <strong>目安</strong> として扱ってください。
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / 緊急デモ</h3>
-        <div class="tip-card info">
-          <div class="tip-title">オフライン QR + 音ビーコン</div>
-          <div class="tip-body">
-            SOS ではオフライン QR 連絡カードを生成し、大音量の音ビーコンを再生できます。
-            停電やネット障害でも動く “レジリエンス要素” のデモです。
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 プライバシー / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">データ収集なし</div>
-          <div class="tip-body">
-            VitalGuard AI はサーバーへテレメトリー/解析/個人情報を送信しません。データは端末内のみ。
-            エクスポートはボタン操作時のみで、いつでも全消去できます。
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">安全上の注意</div>
-          <div class="tip-body">
-            本ファイルは技術デモです。生命に関わる判断の唯一の手段として使用しないでください。
-          </div>
-        </div>
-      `,
-      fr: `
-        <h2 style="margin-bottom:12px">📖 Démarrage rapide (public non technique)</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">Pourquoi “Laisse de sécurité” ?</div>
-          <div class="tip-body">
-            Pour tester le moteur IA hors ligne et la système de proximité BLE en conditions réelles, le prototype est habillé en “Laisse de sécurité” — un cas d’usage universel et neutre.
-            <br><br>
-            Le même moteur peut être réhabillé pour l’évacuation, la recherche‑sauvetage et les opérations humanitaires.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) Ce qu’il faut</div>
-          <div class="tip-body">
-            <strong>Android + Chrome</strong> recommandé.<br>
-            Balise BLE bon marché (mots‑clés : <span class="kbd">iTag</span>, <span class="kbd">Key Finder</span>, <span class="kbd">Anti‑lost BLE</span>).<br>
-            Pour plus de fiabilité, exécuter via <span class="kbd">https://</span> ou <span class="kbd">localhost</span>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) Enregistrer une balise</div>
-          <div class="tip-body">
-            Home → <strong>Ajouter une balise</strong>.<br>
-            L’assistant demande de rapprocher puis d’éloigner la balise pour l’identifier dans un environnement BLE chargé.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) Lancer le suivi</div>
-          <div class="tip-body">
-            Appuyez sur <strong>Start</strong>. Vous verrez SAFE / CAUTION / WARNING.
-            Ici, “IA” = algorithmes compacts :
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>lisser le signal (Kalman),</li>
-              <li>stabiliser les décisions (hystérésis + anti‑flapping),</li>
-              <li>apprentissage local optionnel.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">Ce n’est pas du GPS</div>
-          <div class="tip-body">
-            Le RSSI Bluetooth est bruité. Utilisez les zones comme <strong>indications</strong>, pas comme une distance exacte.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / Urgence</h3>
-        <div class="tip-card info">
-          <div class="tip-title">QR hors ligne + balise audio</div>
-          <div class="tip-body">
-            Le mode SOS peut générer une carte QR hors ligne et jouer une balise sonore.
-            Démonstration de primitives simples qui fonctionnent pendant une panne.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 Vie privée / RGPD</h3>
-        <div class="tip-card info">
-          <div class="tip-title">Aucune collecte</div>
-          <div class="tip-body">
-            VitalGuard AI n’envoie pas de télémétrie/analytics/données personnelles. Tout reste sur l’appareil.
-            Export uniquement sur action explicite, suppression possible à tout moment.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Note de sécurité</div>
-          <div class="tip-body">
-            Démo technique. Ne pas utiliser comme seul outil pour des décisions vitales.
-          </div>
-        </div>
-      `,
-      'zh-TW': `
-        <h2 style="margin-bottom:12px">📖 快速上手（非技術人員）</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">為什麼看起來像「寵物安全牽繩」？</div>
-          <div class="tip-body">
-            為了在日常環境測試離線 AI 引擎與 BLE 近距離系統的穩定性，原型先以「寵物安全牽繩」呈現——最普遍且無害的情境。
-            <br><br>
-            同一套引擎也能透過換皮，快速改成撤離、搜救與人道現場作業用途。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) 你需要什麼</div>
-          <div class="tip-body">
-            建議使用 <strong>Android + Chrome</strong>。<br>
-            準備便宜的 BLE 防丟鑰匙圈（搜尋：<span class="kbd">iTag</span> / <span class="kbd">Key Finder</span> / <span class="kbd">Anti‑lost BLE</span>）。<br>
-            為了更穩定，建議在 <span class="kbd">https://</span> 或 <span class="kbd">localhost</span> 執行。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) 註冊示範標籤</div>
-          <div class="tip-body">
-            Home → <strong>新增示範標籤</strong>。<br>
-            精靈會要求先靠近再走遠，用來在 BLE 很擁擠的環境中找到正確的標籤。
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) 開始監測</div>
-          <div class="tip-body">
-            按下 <strong>Start</strong> 後會看到 SAFE / CAUTION / WARNING。
-            這裡的 “AI” 不是巨大模型，而是小型演算法組合：
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>平滑雜訊（Kalman）、</li>
-              <li>穩定判斷避免狂跳（遲滯 + 防抖）、</li>
-              <li>可選：在本機從回饋學習。</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">這不是 GPS</div>
-          <div class="tip-body">
-            藍牙 RSSI 會受牆壁、人群、口袋影響。請把區域當作 <strong>指標</strong>，不要視為精準距離。
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / 緊急示範</h3>
-        <div class="tip-card info">
-          <div class="tip-title">離線 QR + 音訊信標</div>
-          <div class="tip-body">
-            SOS 可產生離線 QR 聯絡卡並播放高分貝音訊信標。這是在展示停電/斷網時仍可用的基礎工具。
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 隱私 / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">不收集資料</div>
-          <div class="tip-body">
-            VitalGuard AI 不會把任何分析或個資送到伺服器。資料只在本機。
-            匯出僅在你按下按鈕時發生，且可隨時全部刪除。
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">安全提醒</div>
-          <div class="tip-body">
-            這是技術示範，請勿作為生命關鍵決策的唯一工具。
-          </div>
-        </div>
-      `,
-      es: `
-        <h2 style="margin-bottom:12px">📖 Inicio rápido (para no técnicos)</h2>
-
-        <div class="tip-card info">
-          <div class="tip-title">Por qué parece una “correa para mascotas”</div>
-          <div class="tip-body">
-            Para probar el motor de IA offline y la sistema de proximidad BLE en entornos cotidianos, el prototipo se mostró como “Correa de seguridad para mascotas”, el caso más universal y neutro.
-            <br><br>
-            El mismo motor puede “cambiar de piel” para evacuación, búsqueda y rescate, y operaciones humanitarias.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">1) Qué necesitas</div>
-          <div class="tip-body">
-            Recomendado: <strong>Android + Chrome</strong>.<br>
-            Etiqueta BLE barata (busca: <span class="kbd">iTag</span>, <span class="kbd">Key Finder</span>, <span class="kbd">Anti‑lost BLE</span>).<br>
-            Para mayor fiabilidad, ejecuta con <span class="kbd">https://</span> o <span class="kbd">localhost</span>.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">2) Registrar una etiqueta</div>
-          <div class="tip-body">
-            Home → <strong>Añadir etiqueta</strong>.<br>
-            El asistente te pide acercar y luego alejar la etiqueta para identificarla en entornos BLE con mucho ruido.
-          </div>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">3) Iniciar la monitorización</div>
-          <div class="tip-body">
-            Pulsa <strong>Start</strong>. Verás SAFE / CAUTION / WARNING.
-            Aquí “IA” significa algoritmos compactos:
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li>suavizar el ruido (Kalman),</li>
-              <li>estabilizar decisiones (histéresis + anti‑flapping),</li>
-              <li>aprendizaje local opcional.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">Esto NO es GPS</div>
-          <div class="tip-body">
-            El RSSI Bluetooth es ruidoso. Usa las zonas como <strong>señales</strong>, no como distancia exacta.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🚨 SOS / Emergencia</h3>
-        <div class="tip-card info">
-          <div class="tip-title">QR offline + baliza de audio</div>
-          <div class="tip-body">
-            SOS puede generar una tarjeta QR sin conexión y reproducir una baliza sonora.
-            Es una demo de herramientas simples que funcionan durante apagones.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>🔒 Privacidad / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">Sin recopilación de datos</div>
-          <div class="tip-body">
-            VitalGuard AI no envía analíticas ni datos personales a servidores. Todo queda en el dispositivo.
-            Exportación solo con acción explícita, borrado disponible en cualquier momento.
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Nota de seguridad</div>
-          <div class="tip-body">
-            Demostración técnica. No usar como única herramienta para decisiones críticas.
-          </div>
-        </div>
-      `
-    },
-
-    legal: {
-      en: `
-        <h2 style="margin-bottom:10px">About VitalGuard AI</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong> is a single‑file, offline‑only demonstration of a tiny on‑device AI engine paired with Bluetooth proximity sensing.</p>
-          <p style="margin-top:8px"><strong>Designed for outage conditions:</strong> no internet, no cloud, no accounts, no app store — still functional.</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">What makes this credible</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>Auditable:</strong> one HTML file, no external libraries, no hidden network calls.</li>
-              <li><strong>Privacy‑first:</strong> zero telemetry. Data stays on the device by default.</li>
-              <li><strong>Resilient:</strong> BLE proximity + compact math‑based AI (filters, decision stability, local learning).</li>
-              <li><strong>Deployable:</strong> runs on older Android phones with cheap BLE tags.</li>
-              <li><strong>Cooperative search (Rescue Assist):</strong> share an offline “Rescue Pack” so another phone can scan for the same tag.</li>
-              <li><strong>Secure exports:</strong> optional encrypted “Rescue Pack” backups for audits/hand‑off.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>How it works (plain language)</h3>
-        <div class="tip-card info">
-          <div class="tip-title">1) Listen</div>
-          <div class="tip-body">The phone listens for BLE advertisements. Each advertisement includes an RSSI value (signal strength).</div>
-        </div>
-        <div class="tip-card info">
-          <div class="tip-title">2) Stabilize</div>
-          <div class="tip-body">RSSI is noisy, so the engine filters it and stabilizes zone decisions to avoid “alert spam”.</div>
-        </div>
-        <div class="tip-card info">
-          <div class="tip-title">3) Act</div>
-          <div class="tip-body">When the zone crosses a threshold for long enough, the app can alert, log, and provide SOS primitives (QR, audio).</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>Privacy / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">No data collection</div>
-          <div class="tip-body">
-            The demo does not send analytics or personal data anywhere. Optional exports are user‑initiated. You can erase everything.
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">Ethical use</div>
-          <div class="tip-body">
-            Exclusively for civilian, agricultural, and humanitarian use (privacy‑first, local‑only).
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>Contact</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            Website: <span class="kbd">mcorpai.org</span><br>
-            Creator: <strong>Morgan J.</strong> (Korean name: <strong>Gyumin Jeon</strong>)<br>
-            Email: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">Disclaimer</div>
-          <div class="tip-body">This is a technology demonstration, not a certified life‑critical device.</div>
-        </div>
-      `,
-      ko: `
-        <h2 style="margin-bottom:10px">VitalGuard AI 소개</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong>는 “단일 HTML 파일” 안에서 동작하는 <strong>오프라인 AI 엔진 + 블루투스 근접</strong> 기술 시연입니다.</p>
-          <p style="margin-top:8px"><strong>오프그리드(Off‑grid)·통신 장애(Outage) 조건</strong>—인터넷 없음, 클라우드 없음, 계정 없음, 앱스토어 없음—에서도 동작하도록 설계했습니다.</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">왜 신뢰할 만한가?</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>감사 가능:</strong> 외부 라이브러리 없이 단일 HTML 파일(숨은 네트워크 호출 없음).</li>
-              <li><strong>프라이버시 우선:</strong> 텔레메트리 0. 데이터는 기본적으로 기기에만.</li>
-              <li><strong>복원력:</strong> BLE 근접 + 수학 기반 경량 AI(필터/안정화/로컬 학습).</li>
-              <li><strong>현장성:</strong> 구형 안드로이드폰 + 저가 BLE 태그로도 시연 가능.</li>
-              <li><strong>협력 탐색(Rescue Assist):</strong> 오프라인 “Rescue Pack”을 공유해 다른 폰도 동일 태그를 스캔할 수 있습니다.</li>
-              <li><strong>보안 내보내기:</strong> 선택적으로 암호화된 “Rescue Pack” 백업을 제공.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>작동 원리(쉽게)</h3>
-        <div class="tip-card info">
-          <div class="tip-title">1) 듣기</div>
-          <div class="tip-body">휴대폰이 BLE 광고 패킷을 듣습니다. 패킷에는 RSSI(신호세기)가 포함됩니다.</div>
-        </div>
-        <div class="tip-card info">
-          <div class="tip-title">2) 안정화</div>
-          <div class="tip-body">RSSI는 노이즈가 커서 필터링하고, 존 판정을 안정화해 “알림 폭주”를 줄입니다.</div>
-        </div>
-        <div class="tip-card info">
-          <div class="tip-title">3) 행동</div>
-          <div class="tip-body">임계값을 충분히 오래 넘으면 경보/기록을 만들고, SOS(오프라인 QR, 오디오)를 제공합니다.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>개인정보 / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">데이터 수집 없음</div>
-          <div class="tip-body">
-            이 데모는 분석/개인정보를 외부로 전송하지 않습니다. 내보내기/백업은 사용자가 버튼을 눌렀을 때만 실행됩니다. 전체 삭제도 가능합니다.
-          </div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">윤리적 사용</div>
-          <div class="tip-body">
-            인도주의 목적에 한함. 군사용/감시용 사용은 윤리 라이선스로 금지합니다.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>연락처</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            Website: <span class="kbd">mcorpai.org</span><br>
-            Creator: <strong>Morgan J.</strong> (Korean name: <strong>Gyumin Jeon</strong>)<br>
-            Email: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger">
-          <div class="tip-title">면책</div>
-          <div class="tip-body">본 파일은 기술 시연이며 생명‑안전 인증 장비가 아닙니다.</div>
-        </div>
-      `,
-      ar: `
-        <h2 style="margin-bottom:10px">حول VitalGuard AI</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong> هو عرض توضيحي داخل ملف HTML واحد لمحرك ذكاء اصطناعي صغير يعمل دون اتصال مع استشعار القرب عبر Bluetooth.</p>
-          <p style="margin-top:8px"><strong>مصمم لظروف “الإغلاق/الانقطاع”:</strong> بدون إنترنت، بدون سحابة، بدون حسابات — ومع ذلك يعمل.</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">لماذا هو مقنع</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>قابل للتدقيق:</strong> ملف واحد، بدون مكتبات خارجية، بدون مكالمات شبكة مخفية.</li>
-              <li><strong>خصوصية أولاً:</strong> لا تليمترية، البيانات محلية.</li>
-              <li><strong>مرن:</strong> قرب BLE + خوارزميات رياضية صغيرة لتنعيم القرار.</li>
-              <li><strong>قابل للنشر:</strong> يعمل على هواتف Android قديمة مع علامات BLE رخيصة.</li>
-              <li><strong>بحث تعاوني (Rescue Assist):</strong> شارك “Rescue Pack” دون اتصال ليتمكن هاتف آخر من مسح نفس العلامة.</li>
-              <li><strong>تصدير آمن:</strong> نسخ احتياطية “Rescue Pack” مشفّرة اختياريًا.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>كيف يعمل (ببساطة)</h3>
-        <div class="tip-card info"><div class="tip-title">1) الاستماع</div><div class="tip-body">الهاتف يستمع لإعلانات BLE ويقرأ RSSI (قوة الإشارة).</div></div>
-        <div class="tip-card info"><div class="tip-title">2) التثبيت</div><div class="tip-body">الإشارة ضجيجية، لذلك يتم تنعيمها وتثبيت القرار لمنع تكرار التنبيه.</div></div>
-        <div class="tip-card info"><div class="tip-title">3) الفعل</div><div class="tip-body">عند تجاوز العتبة لفترة كافية، يمكن إرسال تنبيه وتسجيل وتفعيل أدوات SOS.</div></div>
-
-        <div class="divider"></div>
-
-        <h3>الخصوصية / GDPR</h3>
-        <div class="tip-card info">
-          <div class="tip-title">لا جمع للبيانات</div>
-          <div class="tip-body">لا يرسل العرض أي بيانات إلى خوادم. التصدير اختياري وبقرار المستخدم. يمكن حذف كل شيء.</div>
-        </div>
-
-        <div class="tip-card warn">
-          <div class="tip-title">استخدام أخلاقي</div>
-          <div class="tip-body">للاستخدام الإنساني فقط. يُحظر الاستخدام العسكري أو للمراقبة وفقًا للترخيص الأخلاقي.</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>اتصال</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            الموقع: <span class="kbd">mcorpai.org</span><br>
-            المنشئ: <strong>Morgan J.</strong> (الاسم الكوري: <strong>Gyumin Jeon</strong>)<br>
-            البريد: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger"><div class="tip-title">تنبيه</div><div class="tip-body">هذا عرض تقني وليس جهازًا معتمدًا للسلامة الحرجة.</div></div>
-      `,
-      ja: `
-        <h2 style="margin-bottom:10px">VitalGuard AI について</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong> は、1つのHTMLファイル内で動作する「小さなオフラインAIエンジン + Bluetooth近接」の技術デモです。</p>
-          <p style="margin-top:8px"><strong>シャットダウン条件</strong>（ネットなし・クラウドなし・アカウントなし）でも動くことを目的に設計しています。</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">信頼できるポイント</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>監査しやすい:</strong> 単一HTML、外部ライブラリなし、隠れた通信なし。</li>
-              <li><strong>プライバシー優先:</strong> テレメトリーなし。データは端末内。</li>
-              <li><strong>レジリエンス:</strong> BLE近接 + 数学ベースの軽量AI。</li>
-              <li><strong>現場向け:</strong> 古いAndroid端末 + 安価なBLEタグで動作。</li>
-              <li><strong>協力探索（Rescue Assist）:</strong> オフラインの「Rescue Pack」を共有して、別の端末でも同じタグをスキャンできます。</li>
-              <li><strong>安全なエクスポート:</strong> 任意で暗号化された「Rescue Pack」バックアップ。</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>仕組み（やさしく）</h3>
-        <div class="tip-card info"><div class="tip-title">1) 受信</div><div class="tip-body">BLE広告を受信し、RSSI（信号強度）を読みます。</div></div>
-        <div class="tip-card info"><div class="tip-title">2) 安定化</div><div class="tip-body">ノイズが大きいのでフィルタで平滑化し、ゾーン判定を安定化します。</div></div>
-        <div class="tip-card info"><div class="tip-title">3) 行動</div><div class="tip-body">一定条件でアラートやログ、SOS（QR/音）を提供します。</div></div>
-
-        <div class="divider"></div>
-
-        <h3>プライバシー / GDPR</h3>
-        <div class="tip-card info"><div class="tip-title">データ収集なし</div><div class="tip-body">デモは分析や個人情報を送信しません。エクスポートは任意で、全消去できます。</div></div>
-
-        <div class="tip-card warn"><div class="tip-title">倫理的利用</div><div class="tip-body">人道目的のみ。軍事/監視用途は禁止（倫理ライセンス）。</div></div>
-
-        <div class="divider"></div>
-
-        <h3>連絡先</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            Website: <span class="kbd">mcorpai.org</span><br>
-            Creator: <strong>Morgan J.</strong> (Korean name: <strong>Gyumin Jeon</strong>)<br>
-            Email: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger"><div class="tip-title">免責</div><div class="tip-body">技術デモであり、生命安全の認証機器ではありません。</div></div>
-      `,
-      fr: `
-        <h2 style="margin-bottom:10px">À propos de VitalGuard AI</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong> est une démonstration “tout‑en‑un” (un seul fichier HTML) d’un petit moteur IA hors ligne couplé à la proximité Bluetooth.</p>
-          <p style="margin-top:8px"><strong>Conçu pour les scénarios de panne :</strong> pas d’internet, pas de cloud, pas de comptes — et pourtant fonctionnel.</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Pourquoi c’est crédible</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>Auditabilité:</strong> un seul fichier, aucune dépendance externe.</li>
-              <li><strong>Vie privée:</strong> zéro télémétrie, données locales.</li>
-              <li><strong>Résilience:</strong> BLE + IA mathématique compacte.</li>
-              <li><strong>Déployable:</strong> vieux Android + balises bon marché.</li>
-              <li><strong>Recherche coopérative (Rescue Assist):</strong> partagez un “Rescue Pack” hors ligne pour qu’un autre téléphone scanne la même balise.</li>
-              <li><strong>Exports sécurisés:</strong> sauvegardes “Rescue Pack” chiffrées en option.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>Fonctionnement (simple)</h3>
-        <div class="tip-card info"><div class="tip-title">1) Écouter</div><div class="tip-body">Le téléphone écoute les annonces BLE et lit le RSSI.</div></div>
-        <div class="tip-card info"><div class="tip-title">2) Stabiliser</div><div class="tip-body">Filtrage + stabilité de décision pour éviter les alertes en boucle.</div></div>
-        <div class="tip-card info"><div class="tip-title">3) Agir</div><div class="tip-body">Alerte/Journal/SOS (QR, audio) quand les conditions sont remplies.</div></div>
-
-        <div class="divider"></div>
-
-        <h3>Vie privée / RGPD</h3>
-        <div class="tip-card info"><div class="tip-title">Aucune collecte</div><div class="tip-body">Aucune donnée n’est envoyée à des serveurs. Export sur action de l’utilisateur, suppression possible.</div></div>
-
-        <div class="tip-card warn"><div class="tip-title">Usage éthique</div><div class="tip-body">Usage humanitaire uniquement. Usage militaire/Monitoring interdit par la licence.</div></div>
-
-        <div class="divider"></div>
-
-        <h3>Contact</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            Site: <span class="kbd">mcorpai.org</span><br>
-            Créateur: <strong>Morgan J.</strong> (Nom coréen : <strong>Gyumin Jeon</strong>)<br>
-            Email: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger"><div class="tip-title">Avertissement</div><div class="tip-body">Démo technique, pas un dispositif certifié.</div></div>
-      `,
-      'zh-TW': `
-        <h2 style="margin-bottom:10px">關於 VitalGuard AI</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong> 是單一 HTML 檔案的離線技術示範：小型 AI 引擎 + 藍牙近距離偵測。</p>
-          <p style="margin-top:8px"><strong>為「網路/電力中斷」情境而設計：</strong>沒網路、沒雲端、沒帳號也能運作。</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">為什麼它值得信任</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>可審計:</strong> 單一檔案、無外部套件、無隱藏網路呼叫。</li>
-              <li><strong>隱私優先:</strong> 零遙測，資料只在本機。</li>
-              <li><strong>韌性:</strong> BLE 近距離 + 數學式輕量 AI。</li>
-              <li><strong>可部署:</strong> 舊 Android + 便宜 BLE 標籤。</li>
-              <li><strong>協作搜尋（Rescue Assist）:</strong> 離線分享「Rescue Pack」讓另一支手機也能掃描同一標籤。</li>
-              <li><strong>安全匯出:</strong> 可選加密「Rescue Pack」備份，方便交接/稽核。</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>運作方式（白話）</h3>
-        <div class="tip-card info"><div class="tip-title">1) 監聽</div><div class="tip-body">手機監聽 BLE 廣播並讀取 RSSI（訊號強度）。</div></div>
-        <div class="tip-card info"><div class="tip-title">2) 穩定</div><div class="tip-body">RSSI 很吵，先用濾波平滑，再把區域判斷穩定化避免狂跳。</div></div>
-        <div class="tip-card info"><div class="tip-title">3) 行動</div><div class="tip-body">符合條件時觸發提醒/記錄，並提供 SOS（QR/音訊）。</div></div>
-
-        <div class="divider"></div>
-
-        <h3>隱私 / GDPR</h3>
-        <div class="tip-card info"><div class="tip-title">不收集資料</div><div class="tip-body">示範不會把資料送到伺服器。匯出需使用者操作，亦可隨時全刪。</div></div>
-
-        <div class="tip-card warn"><div class="tip-title">倫理使用</div><div class="tip-body">僅限人道用途。軍事/監控用途由倫理授權禁止。</div></div>
-
-        <div class="divider"></div>
-
-        <h3>聯絡方式</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            Website: <span class="kbd">mcorpai.org</span><br>
-            Creator: <strong>Morgan J.</strong> (Korean name: <strong>Gyumin Jeon</strong>)<br>
-            Email: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger"><div class="tip-title">免責聲明</div><div class="tip-body">技術示範，非生命關鍵認證設備。</div></div>
-      `,
-      es: `
-        <h2 style="margin-bottom:10px">Acerca de VitalGuard AI</h2>
-        <div class="highlight-box">
-          <p><strong>VitalGuard AI</strong> es una demostración en un solo archivo HTML de un pequeño motor de IA offline combinado con proximidad Bluetooth.</p>
-          <p style="margin-top:8px"><strong>Diseñado para interrupciones:</strong> sin internet, sin nube, sin cuentas — y aun así funciona.</p>
-        </div>
-
-        <div class="tip-card info">
-          <div class="tip-title">Por qué es creíble</div>
-          <div class="tip-body">
-            <ul style="margin:8px 0 0 18px;line-height:1.6">
-              <li><strong>Auditable:</strong> un solo archivo, sin librerías externas, sin llamadas ocultas.</li>
-              <li><strong>Privacidad primero:</strong> cero telemetría, datos locales.</li>
-              <li><strong>Resiliente:</strong> BLE + IA matemática compacta.</li>
-              <li><strong>Desplegable:</strong> funciona en Android antiguos con etiquetas BLE baratas.</li>
-              <li><strong>Búsqueda cooperativa (Rescue Assist):</strong> comparte un “Rescue Pack” offline para que otro teléfono escanee la misma etiqueta.</li>
-              <li><strong>Exportaciones seguras:</strong> copias “Rescue Pack” cifradas opcionales.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>Cómo funciona (simple)</h3>
-        <div class="tip-card info"><div class="tip-title">1) Escuchar</div><div class="tip-body">El teléfono escucha anuncios BLE y lee el RSSI.</div></div>
-        <div class="tip-card info"><div class="tip-title">2) Estabilizar</div><div class="tip-body">Filtra el ruido y estabiliza decisiones para evitar alertas constantes.</div></div>
-        <div class="tip-card info"><div class="tip-title">3) Actuar</div><div class="tip-body">Activa alertas, registros y SOS (QR/audio) cuando se cumplen condiciones.</div></div>
-
-        <div class="divider"></div>
-
-        <h3>Privacidad / GDPR</h3>
-        <div class="tip-card info"><div class="tip-title">Sin recopilación</div><div class="tip-body">No se envía información a servidores. Exportación solo con acción del usuario y borrado disponible.</div></div>
-
-        <div class="tip-card warn"><div class="tip-title">Uso ético</div><div class="tip-body">Solo uso humanitario. Prohibido uso militar o de vigilancia por licencia ética.</div></div>
-
-        <div class="divider"></div>
-
-        <h3>Contacto</h3>
-        <div class="tip-card info">
-          <div class="tip-title">McorpAI</div>
-          <div class="tip-body">
-            Web: <span class="kbd">mcorpai.org</span><br>
-            Creador: <strong>Morgan J.</strong> (Nombre coreano: <strong>Gyumin Jeon</strong>)<br>
-            Email: <span class="kbd">contact@mcorpai.org</span>
-          </div>
-        </div>
-
-        <div class="tip-card danger"><div class="tip-title">Aviso</div><div class="tip-body">Demostración técnica, no un dispositivo certificado.</div></div>
-      `
-    }
-  };
-
-  // v4.1.7 additions (Language menu + first-run HTTPS notice)
-  try{
-    Object.assign(STR.en, {
-      lang_link: 'Language',
-      lang_title: 'Language',
-      lang_subtitle: 'Choose your UI language',
-      lang_note: 'This changes UI text only. Bluetooth behavior and offline processing remain the same.',
-      firstrun_title: '⚠ Important: Run via HTTPS / localhost for best BLE reliability',
-      firstrun_body: `You are running from <span class="kbd" id="fr-proto">file://</span>. Some browsers restrict Bluetooth scanning, audio, and background behavior on local files.<br><br>
-      Recommended:<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li>Use <span class="kbd">https://</span> hosting, or</li>
-        <li>Use <span class="kbd">http://localhost</span> (local server), or</li>
-        <li>Install as an App when available.</li>
-      </ul>`,
-      firstrun_ok: 'Got it',
-      firstrun_help: 'Open Help'
-    });
-
-    Object.assign(STR.ko, {
-      lang_link: '언어',
-      lang_title: '언어',
-      lang_subtitle: '화면 언어 선택',
-      lang_note: '화면 문구만 바뀝니다. 블루투스 동작과 오프라인 처리는 그대로입니다.',
-      firstrun_title: '⚠ 중요: BLE 안정성을 위해 HTTPS / localhost로 실행하세요',
-      firstrun_body: `현재 <span class="kbd" id="fr-proto">file://</span> 환경에서 실행 중입니다. 일부 브라우저는 로컬 파일에서 블루투스 스캔/오디오/백그라운드 동작을 제한할 수 있습니다.<br><br>
-      권장:<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li><span class="kbd">https://</span>로 호스팅하거나</li>
-        <li><span class="kbd">http://localhost</span> (로컬 서버)를 사용하거나</li>
-        <li>가능하면 앱으로 설치하세요.</li>
-      </ul>`,
-      firstrun_ok: '확인',
-      firstrun_help: '사용법'
-    });
-
-    Object.assign(STR.ar, {
-      lang_link: 'اللغة',
-      lang_title: 'اللغة',
-      lang_subtitle: 'اختر لغة الواجهة',
-      lang_note: 'هذا يغيّر نص الواجهة فقط. سلوك Bluetooth والمعالجة دون اتصال تبقى كما هي.',
-      firstrun_title: '⚠ مهم: شغّل عبر HTTPS / localhost لتحسين استقرار BLE',
-      firstrun_body: `أنت تعمل من <span class="kbd" id="fr-proto">file://</span>. قد تقيّد بعض المتصفحات مسح Bluetooth والصوت وسلوك الخلفية عند تشغيل الملفات محليًا.<br><br>
-      الموصى به:<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li>استخدم استضافة <span class="kbd">https://</span>، أو</li>
-        <li>استخدم <span class="kbd">http://localhost</span> (خادم محلي)، أو</li>
-        <li>ثبّت كتطبيق عندما يتوفر ذلك.</li>
-      </ul>`,
-      firstrun_ok: 'حسنًا',
-      firstrun_help: 'مساعدة'
-    });
-
-    Object.assign(STR.ja, {
-      lang_link: '言語',
-      lang_title: '言語',
-      lang_subtitle: '表示言語を選択',
-      lang_note: '表示テキストのみ変更されます。Bluetooth の挙動とオフライン処理は同じです。',
-      firstrun_title: '⚠ 重要: BLE の安定性のため HTTPS / localhost で実行してください',
-      firstrun_body: `現在 <span class="kbd" id="fr-proto">file://</span> で実行中です。ブラウザによってはローカルファイルで Bluetooth スキャン/音声/バックグラウンド動作が制限される場合があります。<br><br>
-      推奨:<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li><span class="kbd">https://</span> でホスティングする、または</li>
-        <li><span class="kbd">http://localhost</span>（ローカルサーバー）を使用する、または</li>
-        <li>可能であればアプリとしてインストールしてください。</li>
-      </ul>`,
-      firstrun_ok: 'OK',
-      firstrun_help: 'ヘルプ'
-    });
-
-    Object.assign(STR.fr, {
-      lang_link: 'Langue',
-      lang_title: 'Langue',
-      lang_subtitle: 'Choisir la langue de l’interface',
-      lang_note: 'Cela change uniquement le texte de l’interface. Le Bluetooth et le traitement hors‑ligne restent identiques.',
-      firstrun_title: '⚠ Important : exécutez via HTTPS / localhost pour une meilleure fiabilité BLE',
-      firstrun_body: `Vous exécutez depuis <span class="kbd" id="fr-proto">file://</span>. Certains navigateurs limitent le scan Bluetooth, l’audio et le fonctionnement en arrière‑plan pour les fichiers locaux.<br><br>
-      Recommandé :<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li>Utiliser un hébergement <span class="kbd">https://</span>, ou</li>
-        <li>Utiliser <span class="kbd">http://localhost</span> (serveur local), ou</li>
-        <li>Installer en tant qu’application lorsque disponible.</li>
-      </ul>`,
-      firstrun_ok: 'Compris',
-      firstrun_help: 'Aide'
-    });
-
-    Object.assign(STR['zh-TW'], {
-      lang_link: '語言',
-      lang_title: '語言',
-      lang_subtitle: '選擇介面語言',
-      lang_note: '只會更改介面文字。Bluetooth 行為與離線處理保持不變。',
-      firstrun_title: '⚠ 重要：為了 BLE 穩定性，請使用 HTTPS / localhost 執行',
-      firstrun_body: `你正在從 <span class="kbd" id="fr-proto">file://</span> 執行。部分瀏覽器在本機檔案環境可能限制藍牙掃描、音訊與背景行為。<br><br>
-      建議：<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li>使用 <span class="kbd">https://</span> 託管，或</li>
-        <li>使用 <span class="kbd">http://localhost</span>（本機伺服器），或</li>
-        <li>可用時安裝為 App 以獲得更佳體驗。</li>
-      </ul>`,
-      firstrun_ok: '知道了',
-      firstrun_help: '說明'
-    });
-
-    Object.assign(STR.es, {
-      lang_link: 'Idioma',
-      lang_title: 'Idioma',
-      lang_subtitle: 'Elige el idioma de la interfaz',
-      lang_note: 'Esto solo cambia el texto de la interfaz. El Bluetooth y el procesamiento sin conexión siguen igual.',
-      firstrun_title: '⚠ Importante: ejecuta vía HTTPS / localhost para mejor fiabilidad BLE',
-      firstrun_body: `Estás ejecutando desde <span class="kbd" id="fr-proto">file://</span>. Algunos navegadores restringen el escaneo Bluetooth, el audio y el comportamiento en segundo plano en archivos locales.<br><br>
-      Recomendado:<ul style="margin:8px 0 0 16px;line-height:1.5">
-        <li>Usar alojamiento <span class="kbd">https://</span>, o</li>
-        <li>Usar <span class="kbd">http://localhost</span> (servidor local), o</li>
-        <li>Instalar como app cuando esté disponible.</li>
-      </ul>`,
-      firstrun_ok: 'Entendido',
-      firstrun_help: 'Ayuda'
-    });
-  }catch(e){}
-
-  let lang = 'en';
-
-  function currentDict(){
-    return STR[lang] || STR.en;
-  }
-  function t(key){
-    const d = currentDict();
-    return (d && d[key]) || (STR.en && STR.en[key]) || key;
-  }
-  function setLang(next){
-    if(!next || !STR[next]) next = 'en';
-    lang = next;
-    try{ localStorage.setItem(STORAGE_KEY, lang); }catch(e){}
-    apply();
-  }
-  function getLang(){ return lang; }
-
-  function apply(){
-    // html lang/dir
-    const htmlLang = (lang==='zh-TW') ? 'zh-Hant' : lang;
-    document.documentElement.lang = htmlLang;
-    document.documentElement.dir = RTL_LANGS.has(lang) ? 'rtl' : 'ltr';
-
-    // Header
-    if($('i18n_app_title')) $('i18n_app_title').textContent = t('app_title');
-    if($('i18n_app_sub')) $('i18n_app_sub').textContent = t('app_sub');
-    if($('i18n_app_mission')) $('i18n_app_mission').textContent = t('app_mission');
-    if($('i18n_app_disclaimer')) $('i18n_app_disclaimer').textContent = t('app_disclaimer');
-    if($('i18n_github_link')) $('i18n_github_link').textContent = t('github');
-    if($('i18n_help_link')) $('i18n_help_link').textContent = t('help');
-    if($('i18n_about_link')) $('i18n_about_link').textContent = t('about');
-
-    // Overlay titles
-    if($('i18n_help_title')) $('i18n_help_title').textContent = t('help_title');
-    if($('i18n_legal_title')) $('i18n_legal_title').textContent = t('legal_title');
-
-    // Install banner
-    if($('i18n_install_title')) $('i18n_install_title').textContent = t('install_title');
-    if($('i18n_install_sub')) $('i18n_install_sub').textContent = t('install_sub');
-    if($('installBtn')) $('installBtn').textContent = t('install_btn');
-    if($('installDismiss')) $('installDismiss').textContent = t('install_dismiss');
-
-    // Home hero
-    if($('i18n_hero_title')) $('i18n_hero_title').textContent = t('hero_title');
-    if($('i18n_hero_body')) $('i18n_hero_body').textContent = t('hero_body');
-    if($('i18n_hero_pillars')) $('i18n_hero_pillars').innerHTML = t('hero_pillars_html');
-    if($('i18n_badge_offline')) $('i18n_badge_offline').textContent = t('badge_offline');
-    if($('i18n_badge_gdpr')) $('i18n_badge_gdpr').textContent = t('badge_gdpr');
-    if($('i18n_badge_ble')) $('i18n_badge_ble').textContent = t('badge_ble');
-    if($('i18n_badge_tiny')){
-      let kb=0;
-      try{ kb = Math.round(new Blob([document.documentElement.outerHTML]).size/1024); }catch(e){ kb=0; }
-      $('i18n_badge_tiny').textContent = t('badge_tiny').replace('{KB}', kb||0);
-    }
-    if($('i18n_contact_line')) $('i18n_contact_line').textContent = t('contact_line');
-
-    // Empty state
-    if($('i18n_empty_text')) $('i18n_empty_text').innerHTML = t('empty_text');
-    if($('i18n_empty_btn')) $('i18n_empty_btn').textContent = t('empty_btn');
-
-    // Tips
-    if($('i18n_tips_title')) $('i18n_tips_title').textContent = t('tips_title');
-    if($('tipsI18n')) $('tipsI18n').innerHTML = (HTML.tips[lang] || HTML.tips.en);
-
-    // Bottom nav labels
-    document.querySelectorAll('.bnav-btn').forEach(btn=>{
-      const tab = btn.getAttribute('data-tab');
-      const label = btn.querySelector('span:last-child');
-      if(!label) return;
-      if(tab==='home') label.textContent = t('nav_home');
-      else if(tab==='sos') label.textContent = t('nav_sos');
-      else if(tab==='tips') label.textContent = t('nav_tips');
-      else if(tab==='settings') label.textContent = t('nav_settings');
-    });
-
-    // Language UI
-    if($('i18n_lang_link')) $('i18n_lang_link').textContent = t('lang_link');
-    if($('i18n_lang_title')) $('i18n_lang_title').textContent = t('lang_title');
-    if($('i18n_lang_subtitle')) $('i18n_lang_subtitle').textContent = t('lang_subtitle');
-    if($('i18n_lang_note')) $('i18n_lang_note').textContent = t('lang_note');
-
-    // First-run banner (HTTPS / localhost notice)
-    if($('i18n_firstrun_title')) $('i18n_firstrun_title').textContent = t('firstrun_title');
-    if($('i18n_firstrun_body')) $('i18n_firstrun_body').innerHTML = t('firstrun_body');
-    if($('i18n_firstrun_ok')) $('i18n_firstrun_ok').textContent = t('firstrun_ok');
-    if($('i18n_firstrun_help')) $('i18n_firstrun_help').textContent = t('firstrun_help');
-    try{ const p=$('fr-proto'); if(p) p.textContent = location.protocol; }catch(e){}
-  }
-
-  function init(){
-    try{
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if(saved && STR[saved]) lang = saved;
-    }catch(e){}
-    const sel = $('langSelect');
-    if(sel){
-      sel.value = lang;
-      sel.addEventListener('change', ()=>setLang(sel.value));
-    }
-    apply();
-  }
-
-  return { init, apply, t, setLang, getLang, HTML };
-})();
 
 /* ----------------------------- STORAGE ----------------------------- */
 const Store = {
@@ -5003,7 +3132,7 @@ const SOS = {
       m+='Owner location: '+this.savedLocation.lat.toFixed(5)+', '+this.savedLocation.lon.toFixed(5)+'\n';
       m+='Map: https://maps.google.com/?q='+this.savedLocation.lat+','+this.savedLocation.lon+'\n';
     }
-    m+='\nSent via VitalGuard AI (mcorpai.org)\nNOT GPS — Bluetooth proximity only';
+    m+='\nSent via Santa Claus AI (mcorpai.org)\nNOT GPS — Bluetooth proximity only';
 
     if(navigator.share){
       navigator.share({title:'Lost Pet Alert', text:m}).catch(()=>{});
@@ -5232,11 +3361,11 @@ const Emergency = {
     // short payload string
     const phone=(this.data.phone||'').trim();
     const med=(this.data.medical||'').trim();
-    return `EMERGENCY|NAME:${this.data.name||''}|PHONE:${phone}|INFO:${med}|APP:VitalGuardAI`;
+    return `EMERGENCY|NAME:${this.data.name||''}|PHONE:${phone}|INFO:${med}|APP:SantaAI`;
   },
 
   share(){
-    const text = `EMERGENCY\nName: ${this.data.name||'N/A'}\nPhone: ${this.data.phone||'N/A'}\nInfo: ${this.data.medical||''}\nSent via VitalGuard AI`;
+    const text = `EMERGENCY\nName: ${this.data.name||'N/A'}\nPhone: ${this.data.phone||'N/A'}\nInfo: ${this.data.medical||''}\nSent via Santa Claus AI`;
     if(navigator.share){
       navigator.share({title:'Emergency', text}).catch(()=>{});
     }else{
@@ -5451,7 +3580,7 @@ const Detail = {
     $('detail-body').innerHTML=html;
 
     // Generate QR for rescue ID and name (visual code)
-    const qrPayload = `VG_TAG|NAME:${p.name}|RESCUE:${p.rescueId}|APP:VitalGuardAI`;
+    const qrPayload = `SANTA_PET|NAME:${p.name}|RESCUE:${p.rescueId}|APP:SantaAI`;
     QRGenerator.generate(qrPayload, $('qr-'+p.id), 180);
   },
 
@@ -5734,7 +3863,7 @@ const Settings = {
   },
 
   resetApp(){
-    if(!confirm('DELETE ALL VitalGuard AI DATA?')) return;
+    if(!confirm('DELETE ALL Santa AI DATA?')) return;
     if(!confirm('Are you sure? This cannot be undone.')) return;
     Store.clearAll();
     location.reload();
@@ -5772,7 +3901,7 @@ const DataManager = {
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url;
-    a.download='vitalguard-ai-v41-7-backup-'+Date.now()+'.json';
+    a.download='santa-ai-v41-backup-'+Date.now()+'.json';
     a.click();
     URL.revokeObjectURL(url);
     Toast.show('Backup exported!');
@@ -5849,67 +3978,265 @@ const DataManager = {
 };
 
 /* ----------------------------- HELP (expanded) ----------------------------- */
-/* ----------------------------- HELP (i18n) ----------------------------- */
 const Help = {
   open(){
-    try{
-      if($('help-body')) $('help-body').innerHTML = this._content();
-    }catch(e){}
     $('help-overlay').classList.add('active');
+    $('help-body').innerHTML=this._content();
   },
-  close(){
-    $('help-overlay').classList.remove('active');
-  },
+  close(){ $('help-overlay').classList.remove('active'); },
+
   _content(){
-    const lang = (typeof I18N!=='undefined' && I18N.getLang) ? I18N.getLang() : 'en';
-    return (I18N && I18N.HTML && I18N.HTML.help && (I18N.HTML.help[lang] || I18N.HTML.help.en)) || '';
+    // Long-form manual (adds size intentionally; improves real usability)
+    return `
+      <h2 style="margin-bottom:12px">📖 Quick Start (60 seconds)</h2>
+
+      <div class="tip-card info">
+  <div class="tip-title">Why this prototype looks like “Pet Safety Leash”</div>
+  <div class="tip-body">To test how flawlessly the offline AI engine and BLE proximity mesh perform in everyday environments, I initially built the prototype skinned as a 'Pet Safety Leash'—the most universal and harmless use case. However, this exact same underlying engine directly powers the Activist Survival Mode and the Refugee Self-Reliance system.</div>
+</div>
+
+      <div class="tip-card info">
+        <div class="tip-title">1) Get a BLE Tag ($2–$5)</div>
+        <div class="tip-body">
+          Search keywords: <span class="kbd">iTag</span>, <span class="kbd">Key Finder</span>, <span class="kbd">Anti-lost BLE</span>.<br>
+          Most use a CR2032 coin battery and advertise a Bluetooth signal every few hundred milliseconds.
+          Santa Claus AI listens for that signal — <strong>no GPS</strong>, no SIM, no cloud.
+        </div>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">2) Add a Pet (Wizard)</div>
+        <div class="tip-body">
+          Home → <strong>+ Add New Pet</strong> → hold the tag <strong>2–5 cm</strong> from your phone.<br>
+          Select the strongest device → Step 2 verifies by requiring a signal drop when you move the tag away.<br>
+          This reduces false matches when multiple tags are nearby.
+        </div>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">3) Start Monitoring</div>
+        <div class="tip-body">
+          On Home, tap <strong>Start Monitoring</strong>. Keep the screen on for maximum reliability.<br>
+          If your phone blocks background scanning, install as an app (앱 설치) (Install banner) or keep the app foreground.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 style="margin:0 0 10px">Zones Explained (Bluetooth Invisible Leash)</h3>
+      <div class="tip-card info">
+        <div class="tip-title">SAFE / CAUTION / WARNING / DANGER / LOST</div>
+        <div class="tip-body">
+          Zones are decided from smoothed RSSI (signal strength) using hysteresis + confirmation:
+          <ul style="margin:8px 0 0 18px;line-height:1.5">
+            <li><strong>SAFE</strong> — close & stable.</li>
+            <li><strong>CAUTION</strong> — drifting away; this is where Voice Recall can play your voice.</li>
+            <li><strong>WARNING</strong> — likely leaving range soon.</li>
+            <li><strong>DANGER</strong> — urgent; treat as near-loss risk.</li>
+            <li><strong>LOST</strong> — no signal for several seconds (tag out of range, dead battery, or blocked).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip-card warn">
+        <div class="tip-title">Distance ≈ Approximate</div>
+        <div class="tip-body">
+          The “meters” estimate is a radio model, not a ruler. Human bodies, walls, metal, and tag orientation can change readings drastically.
+          Use distance as a <em>trend indicator</em>, not an exact measurement.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 style="margin:0 0 10px">Modes: Track All vs Focus</h3>
+      <div class="tip-card info">
+        <div class="tip-title">Track All</div>
+        <div class="tip-body">
+          Tracks every registered pet at once. Best for 1–2 pets in calm RF environments.
+        </div>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">Focus Mode</div>
+        <div class="tip-body">
+          Tracks one selected pet with maximum accuracy and less BLE overload.
+          Recommended for crowded places, apartments, or when multiple tags are in range.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 style="margin:0 0 10px">SOS Finder</h3>
+      <div class="tip-card info">
+        <div class="tip-title">Hot / Cold Navigation</div>
+        <div class="tip-body">
+          SOS Finder uses a rolling median of RSSI to tell if you are getting closer.
+          <ul style="margin:8px 0 0 18px;line-height:1.5">
+            <li><strong>🔥 HOT</strong> — stronger signal than a moment ago.</li>
+            <li><strong>🧊 COLD</strong> — weaker signal.</li>
+            <li><strong>➡️ STEADY</strong> — similar; keep searching.</li>
+          </ul>
+          Tip: Walk in a grid pattern. If signal improves, keep that direction.
+        </div>
+      </div>
+
+      <div class="tip-card warn">
+        <div class="tip-title">If You See “Signal ambiguous”</div>
+        <div class="tip-body">
+          When multiple tags look similar, the engine blocks routing to avoid false alarms.
+          Fix: bring your tag close → open pet card → <strong>Re-verify Tag</strong>.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 style="margin:0 0 10px">Troubleshooting</h3>
+      <div class="tip-card warn">
+        <div class="tip-title">No devices found</div>
+        <div class="tip-body">
+          1) Confirm tag battery is installed correctly.<br>
+          2) Move tag closer (2–5 cm).<br>
+          3) Ensure Bluetooth is ON.<br>
+          4) Use Android Chrome for best support.<br>
+          5) If running from <span class="kbd">file://</span>, try HTTPS/localhost.
+        </div>
+      </div>
+
+      <div class="tip-card warn">
+        <div class="tip-title">Monitoring stops / freezes</div>
+        <div class="tip-body">
+          Try:
+          <ul style="margin:8px 0 0 18px;line-height:1.5">
+            <li>Enable <strong>Audio Keepalive</strong> in Settings.</li>
+            <li>Install as an App (앱 설치) when the banner appears.</li>
+            <li>Disable battery optimization for your browser/app (Android).</li>
+            <li>Keep screen on (some devices pause BLE in background).</li>
+          </ul>
+          V4.1 includes a scan stall watchdog and auto-restart to reduce freezes.
+        </div>
+      </div>
+
+      <div class="tip-card warn">
+        <div class="tip-title">Too many false alarms</div>
+        <div class="tip-body">
+          Use Focus mode, re-verify tag signature, and consider loosening thresholds (widen boundaries).
+          Also check for BLE congestion in the Home status bar.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 style="margin:0 0 10px">Privacy & Offline Guarantee</h3>
+      <div class="tip-card info">
+        <div class="tip-title">No Cloud</div>
+        <div class="tip-body">
+          Santa Claus AI stores data locally (IndexedDB / localStorage). There is no account, no tracking, no analytics.
+          Export/Import backups are manual JSON files you control.
+        </div>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">Ethical Use</div>
+        <div class="tip-body">
+          This project is designed for humanitarian pet safety and social impact.
+          Prohibited for surveillance, stalking, oppression, or military use.
+        </div>
+      </div>
+    `;
   }
 };
 
-/* ----------------------------- ABOUT / LEGAL (i18n) ----------------------------- */
+/* ----------------------------- LEGAL + SOCIAL IMPACT (expanded) ----------------------------- */
 const Legal = {
   open(){
-    try{
-      if($('legal-body')) $('legal-body').innerHTML = this._content();
-    }catch(e){}
     $('legal-overlay').classList.add('active');
+    $('legal-body').innerHTML=this._content();
   },
-  close(){
-    $('legal-overlay').classList.remove('active');
-  },
-  _content(){
-    const lang = (typeof I18N!=='undefined' && I18N.getLang) ? I18N.getLang() : 'en';
-    return (I18N && I18N.HTML && I18N.HTML.legal && (I18N.HTML.legal[lang] || I18N.HTML.legal.en)) || '';
-  }
-};
+  close(){ $('legal-overlay').classList.remove('active'); },
 
-/* ----------------------------- LANGUAGE MENU ----------------------------- */
-const Lang = {
-  open(){
-    const ov = $('lang-overlay');
-    if(!ov) return;
-    ov.classList.add('active');
-    this._syncUI();
-  },
-  close(){
-    const ov = $('lang-overlay');
-    if(ov) ov.classList.remove('active');
-  },
-  choose(code){
-    try{ if(typeof I18N!=='undefined' && I18N.setLang) I18N.setLang(code); }catch(e){}
-    const sel = $('langSelect');
-    if(sel){
-      try{ sel.value = (typeof I18N!=='undefined' && I18N.getLang) ? I18N.getLang() : code; }catch(e){ sel.value = code; }
-    }
-    this.close();
-  },
-  _syncUI(){
-    const current = (typeof I18N!=='undefined' && I18N.getLang) ? I18N.getLang() : 'en';
-    document.querySelectorAll('#lang-overlay [data-lang]').forEach(btn=>{
-      const is = btn.getAttribute('data-lang') === current;
-      btn.classList.toggle('btn-primary', is);
-      btn.classList.toggle('btn-secondary', !is);
-    });
+  _content(){
+    return `
+      <h2 style="margin-bottom:10px">About Santa Claus AI</h2>
+      <div class="highlight-box">
+        <p><strong>Santa Claus AI</strong> is an offline-first, single-file, ethical tool for pet safety using Bluetooth proximity (not GPS).</p>
+        <p style="margin-top:8px"><strong>Core social mission:</strong> “The more people know about this AI, the more homeless people can become independent.”</p>
+      </div>
+
+      <div class="warning-legal">
+        <p><strong>No Warranty / No Liability:</strong> This app provides best-effort alerts only. Use common sense and real-world safety practices.</p>
+        <p><strong>Not GPS:</strong> Bluetooth RSSI cannot produce an accurate map location.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Ethical License (Hippocratic 3.0 Derivative)</h3>
+      <div class="tip-card info">
+        <div class="tip-title">Humanitarian Use Only</div>
+        <div class="tip-body">
+          Allowed: pet safety, family safety, rescue coordination, accessibility tools, humanitarian support.<br>
+          Prohibited: military, surveillance, oppression, non-consensual tracking, border militarization, weaponization.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Social Impact Ecosystem (How this helps independence)</h3>
+      <div class="tip-card info">
+        <div class="tip-title">A Share → A Skill → A Micro-Income</div>
+        <div class="tip-body">
+          The Santa AI ecosystem is designed as a lightweight bridge from <em>need</em> to <em>skill</em> to <em>stable autonomy</em>.
+          When more people adopt the tool, partners can route ethical micro-work (translation, local delivery coordination, community support)
+          to people who need a path back to independence — without exploitation.
+        </div>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">Community-First Partnerships</div>
+        <div class="tip-body">
+          Managed by McorpAI. Partnerships focus on:
+          <ul style="margin:8px 0 0 18px;line-height:1.5">
+            <li>low-income pet guardians,</li>
+            <li>shelters and rescues,</li>
+            <li>local shops & repair services,</li>
+            <li>ethical logistics support.</li>
+          </ul>
+          This is not a surveillance network — it is a trust network.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Partnership Direction Document (Market Expansion Concepts)</h3>
+      <div class="highlight-box">
+        <p><strong>Concept A — “Fishing Rod BLE Guard”</strong></p>
+        <p style="margin-top:6px">
+          Adapt the same BLE proximity engine to prevent loss/theft of fishing rods, bikes, backpacks, or tools.
+          The same principles apply: proximity alert, SOS search, and offline-first operation.
+        </p>
+        <p style="margin-top:10px"><strong>Concept B — Shelter Toolkit</strong></p>
+        <p style="margin-top:6px">
+          A shelter can use low-cost tags for temporary outdoor play yards, volunteer check-ins, and quick recovery workflows
+          without needing expensive proprietary systems.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Contact</h3>
+      <div class="tip-card info">
+        <div class="tip-title">M-Corp Ethical AI</div>
+        <div class="tip-body">
+          Website: mcorpai.org<br>
+          Managed by: mcorpai.org<br>
+          Source: GitHub (header link)
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Technical Manifest</h3>
+      <pre style="white-space:pre-wrap;background:var(--bg-elevated);padding:12px;border-radius:12px;border:1px solid var(--border-color);font-size:.72rem;color:var(--text-secondary);line-height:1.4">${safeJson(ETHICAL_MANIFEST)}</pre>
+    `;
   }
 };
 
@@ -6006,7 +4333,7 @@ const Diag = {
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url;
-    a.download='vitalguard-ai-v41-7-diagnostics-'+Date.now()+'.json';
+    a.download='santa-ai-v41-diagnostics-'+Date.now()+'.json';
     a.click();
     URL.revokeObjectURL(url);
     Toast.show('Downloaded');
@@ -6157,7 +4484,7 @@ const App = {
       AudioEngine.stopKeepAlive();
     });
 
-    Toast.show('VitalGuard AI v'+APP_VERSION+' ready');
+    Toast.show('Santa Claus AI v'+APP_VERSION+' ready');
   },
 
   initFirstRunBanner(){
@@ -6331,7 +4658,7 @@ const App = {
     // Notifications
     if(Settings.prefs.notifWanted && 'Notification' in window && Notification.permission==='granted'){
       try{
-        new Notification('VitalGuard AI: '+pet.name, {body:`${pet.zone.stable} — ~${pet.distMeters.toFixed(1)}m (approx)`});
+        new Notification('Santa AI: '+pet.name, {body:`${pet.zone.stable} — ~${pet.distMeters.toFixed(1)}m (approx)`});
       }catch(e){}
     }
 
@@ -6539,19 +4866,17 @@ const App = {
   registerPWA(){
     if(!('serviceWorker' in navigator)) return;
 
-    const startUrl = location.href;
-
     const manifest = {
-      name: "VitalGuard AI v"+APP_VERSION,
-      short_name: "VitalGuard AI",
-      start_url: startUrl,
+      name: "Santa Claus AI v"+APP_VERSION,
+      short_name: "Santa AI",
+      start_url: "./",
       display: "standalone",
       background_color: "#0d1117",
       theme_color: "#c0392b",
-      description: "Life‑Saving Offline AI Demo — Bluetooth proximity + tiny on‑device AI (no cloud).",
+      description: "Offline pet safety using Bluetooth proximity (not GPS).",
       icons: [
-        {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Crect width='192' height='192' rx='40' fill='%23c0392b'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='120'%3E%F0%9F%9B%A1%3C/text%3E%3C/svg%3E", sizes:"192x192", type:"image/svg+xml"},
-        {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Crect width='512' height='512' rx='96' fill='%23c0392b'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='340'%3E%F0%9F%9B%A1%3C/text%3E%3C/svg%3E", sizes:"512x512", type:"image/svg+xml"}
+        {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Crect width='192' height='192' rx='40' fill='%23c0392b'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='120'%3E%F0%9F%8E%85%3C/text%3E%3C/svg%3E", sizes:"192x192", type:"image/svg+xml"},
+        {src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Crect width='512' height='512' rx='96' fill='%23c0392b'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='340'%3E%F0%9F%8E%85%3C/text%3E%3C/svg%3E", sizes:"512x512", type:"image/svg+xml"}
       ]
     };
 
@@ -6561,12 +4886,10 @@ const App = {
     if(link) link.setAttribute('href', url);
 
     const swCode = `
-      const CACHE='vitalguard-ai-${APP_VERSION}-cache';
-      const START_URL=${JSON.stringify(startUrl)};
+      const CACHE='santa-ai-v41-cache';
       self.addEventListener('install', e=>{
-        e.waitUntil(caches.open(CACHE).then(c=>c.addAll([START_URL])));
+        e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./'])));
       });
-      self.addEventListener('activate', e=>{ e.waitUntil(self.clients.claim()); });
       self.addEventListener('fetch', e=>{
         e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
       });
@@ -6610,7 +4933,7 @@ const App = {
 
 
 /* ============================================================
-   V4.1 Upgrade Pack (VitalGuardAI)
+   V4.1 Upgrade Pack (SantaAI)
    - Adds: Reset/Initialize center, ErrorShield, Conductor AI,
            AI Pack v4 (kNN + IsolationForestLite + RLS calibration),
            Encrypted backup (AES-GCM), Wake Lock for monitoring,
@@ -7305,7 +5628,7 @@ const App = {
           <div class="tip-body">
             Use this if you experience bugs, tag confusion, or you want to hand the phone to a new owner.
             <br><br>
-            <strong>Reminder:</strong> VitalGuard AI stores data locally (IndexedDB/localStorage). No cloud sync.
+            <strong>Reminder:</strong> Santa AI stores data locally (IndexedDB/localStorage). No cloud sync.
           </div>
         </div>
 
@@ -7607,7 +5930,7 @@ const App = {
 
       try{
         const pack = await CryptoBox.encryptString(JSON.stringify(data), pass);
-        downloadText('vitalguard-ai-v41-7-backup-encrypted-'+Date.now()+'.json', safeJson(pack), 'application/json');
+        downloadText('santa-ai-v41-backup-encrypted-'+Date.now()+'.json', safeJson(pack), 'application/json');
         Toast.show('Encrypted backup exported');
       }catch(e){
         Toast.show('Encrypt failed');
@@ -7923,7 +6246,7 @@ const App = {
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url;
-    a.download='vitalguard-ai-v41-7-diagnostics-'+Date.now()+'.json';
+    a.download='santa-ai-v41-diagnostics-'+Date.now()+'.json';
     a.click();
     URL.revokeObjectURL(url);
     Toast.show('Downloaded');
@@ -7964,20 +6287,287 @@ const App = {
     card.style.display='block';
   };
 
-    /* ----------------------------- PATCH: Legal / About (VitalGuard Demo) ----------------------------- */
-  // Replace the previous social-impact deck with a diplomacy‑friendly, life‑saving demo explanation.
-  Legal.open = function(){
-    try{
-      const lang = (typeof I18N!=='undefined' && I18N.getLang) ? I18N.getLang() : 'en';
-      if($('legal-body')) $('legal-body').innerHTML = (I18N && I18N.HTML && I18N.HTML.legal && (I18N.HTML.legal[lang] || I18N.HTML.legal.en)) || '';
-    }catch(e){
-      if($('legal-body')) $('legal-body').textContent = '';
+  /* ----------------------------- PATCH: Legal / About (Impact Deck + Refugee Self-Reliance content) ----------------------------- */
+  const ImpactDeck = {
+    _lastTab:'about',
+    open(tab='about'){
+      this._lastTab=tab;
+      Legal.open(tab);
+    },
+    // draw a simple unit economics + scale chart
+    draw(){
+      try{
+        const c1=$('impact-chart1');
+        const c2=$('impact-chart2');
+        if(c1) this._drawUnitEconomics(c1);
+        if(c2) this._drawScale(c2);
+      }catch(e){}
+    },
+    _drawUnitEconomics(canvas){
+      const ctx=canvas.getContext('2d');
+      const w=canvas.width=canvas.clientWidth||320;
+      const h=canvas.height=180;
+      ctx.clearRect(0,0,w,h);
+      const pad=18;
+      const barW=62;
+      const x0=pad;
+      const y0=h-pad;
+      const scale= (h-2*pad)/20;
+      // $20 price
+      const parts=[
+        {label:'Social\n$9.50', val:9.5},
+        {label:'Hardware\n$3.00', val:3.0},
+        {label:'R&D\n$2.50', val:2.5},
+        {label:'Retail\n$5.00', val:5.0}
+      ];
+      // stacked bar
+      let y=y0;
+      parts.forEach((p,i)=>{
+        const bh=p.val*scale;
+        ctx.fillStyle = ['#2ecc71','#3498db','#f1c40f','#9b59b6'][i%4];
+        ctx.fillRect(x0, y-bh, barW, bh);
+        y-=bh;
+      });
+      ctx.fillStyle='rgba(255,255,255,.75)';
+      ctx.font='12px system-ui';
+      ctx.fillText('Unit Economics ($20)', x0, pad-4);
+      ctx.font='11px system-ui';
+      let lx=x0+barW+14, ly=pad+18;
+      parts.forEach((p,i)=>{
+        ctx.fillStyle = ['#2ecc71','#3498db','#f1c40f','#9b59b6'][i%4];
+        ctx.fillRect(lx, ly-10, 10, 10);
+        ctx.fillStyle='rgba(255,255,255,.85)';
+        ctx.fillText(p.label.replace('\n',' '), lx+14, ly);
+        ly+=18;
+      });
+    },
+    _drawScale(canvas){
+      const ctx=canvas.getContext('2d');
+      const w=canvas.width=canvas.clientWidth||320;
+      const h=canvas.height=200;
+      ctx.clearRect(0,0,w,h);
+      const pad=28;
+      const x0=pad;
+      const y0=h-pad;
+      ctx.fillStyle='rgba(255,255,255,.75)';
+      ctx.font='12px system-ui';
+      ctx.fillText('Impact Scale Prediction', x0, pad-8);
+
+      const tiers=[
+        {label:'1k', units:1000, val:9500},
+        {label:'10k', units:10000, val:95000},
+        {label:'100k', units:100000, val:950000}
+      ];
+      const max=tiers[2].val;
+      const bw=60;
+      const gap=24;
+      tiers.forEach((t,i)=>{
+        const bh=(t.val/max)*(h-2*pad);
+        const x=x0+i*(bw+gap);
+        ctx.fillStyle='#2ecc71';
+        ctx.fillRect(x, y0-bh, bw, bh);
+        ctx.fillStyle='rgba(255,255,255,.9)';
+        ctx.font='12px system-ui';
+        ctx.fillText(t.label, x+18, y0+16);
+        ctx.font='11px system-ui';
+        ctx.fillText('$'+Math.round(t.val/1000)+'k', x+10, y0-bh-6);
+      });
     }
-    $('legal-overlay').classList.add('active');
   };
-  Legal._content = function(){
-    const lang = (typeof I18N!=='undefined' && I18N.getLang) ? I18N.getLang() : 'en';
-    return (I18N && I18N.HTML && I18N.HTML.legal && (I18N.HTML.legal[lang] || I18N.HTML.legal.en)) || '';
+
+  Legal.open = function(tab){
+    $('legal-overlay').classList.add('active');
+    $('legal-body').innerHTML = this._content(tab||'about');
+    setTimeout(()=>ImpactDeck.draw(), 60);
+  };
+
+  Legal._content = function(tab='about'){
+    const tabs = [
+      {k:'about', t:'About'},
+      {k:'impact', t:'Impact Report'},
+      {k:'refugee', t:'Refugee System'},
+      {k:'legal', t:'Legal'}
+    ];
+    const tabBtns = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        ${tabs.map(x=>`
+          <button class="btn btn-sm ${tab===x.k?'btn-primary':'btn-secondary'}" onclick="Legal.open('${x.k}')">${x.t}</button>
+        `).join('')}
+      </div>
+    `;
+
+    const about = `
+      ${tabBtns}
+      <h2 style="margin-bottom:10px">Santa Claus AI (Offline)</h2>
+      <div class="highlight-box">
+        <p><strong>Santa Claus AI</strong> is an offline-first, single-file safety tool for pets and families using Bluetooth proximity (not GPS).</p>
+        <p style="margin-top:8px"><strong>Core mission:</strong> “The more people know about this AI, the more homeless people can become independent.”</p>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">Why offline matters</div>
+        <div class="tip-body">
+          Cloud AI assumes money, internet, and modern devices. Offline-first tools can run on old phones, with no monthly fees,
+          and with <strong>privacy-by-design</strong> because data stays on-device.
+        </div>
+      </div>
+
+      <div class="tip-card warn">
+        <div class="tip-title">Reality check</div>
+        <div class="tip-body">
+          Bluetooth RSSI is noisy. Walls, metal, crowds, and tag orientation change signal strength.
+          Use alerts as <em>signals</em>, not absolute truth.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Source / Project</h3>
+      <div class="tip-card info">
+        <div class="tip-title">Open-source direction</div>
+        <div class="tip-body">
+          Repository: GitHub (header link)<br>
+          Partners: McorpAI / Mesa (impact program)
+        </div>
+      </div>
+    `;
+
+    const impact = `
+      ${tabBtns}
+      <h2 style="margin-bottom:6px">[SOCIAL IMPACT REPORT] Santa Claus AI</h2>
+      <div style="color:var(--text-muted);font-size:.78rem;margin-bottom:12px">Project: The Resurrection of Dignity · Date: February 2026</div>
+
+      <div class="tip-card info">
+        <div class="tip-title">Executive Summary</div>
+        <div class="tip-body">
+          This project combines <strong>Offline AI</strong> with a <strong>self-reliance manufacturing model</strong> to turn tech exclusion into a safety net.
+          We do not just sell a product — we propose a new standard for <strong>dignity</strong> and <strong>survival</strong>.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="font-size:.82rem;margin-top:0">Problem</div>
+        <div style="font-size:.78rem;color:var(--text-secondary);line-height:1.6">
+          <ul style="margin:8px 0 0 18px">
+            <li><strong>Digital exclusion:</strong> most AI requires expensive devices + internet.</li>
+            <li><strong>Low-value self-help work:</strong> many programs offer only short-term, low-skill labor.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="font-size:.82rem;margin-top:0">Innovation</div>
+        <div style="font-size:.78rem;color:var(--text-secondary);line-height:1.6">
+          <strong>Sentinel Survival Core</strong> concepts:
+          앱 설치, Wake Lock, self-reload, safety-grade offline operation, and multi-hazard readiness.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="font-size:.82rem;margin-top:0">Unit Economics</div>
+        <div style="font-size:.78rem;color:var(--text-secondary);line-height:1.55">
+          Retail price example: <strong>$20</strong><br>
+          Social value returned: <strong>$9.50</strong> (47.5% of revenue)
+        </div>
+        <canvas id="impact-chart1" style="width:100%;border-radius:12px;border:1px solid var(--border-color);margin-top:10px"></canvas>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="font-size:.82rem;margin-top:0">Impact Scale</div>
+        <div style="font-size:.78rem;color:var(--text-secondary);line-height:1.55">
+          10,000 units sold → <strong>$95,000</strong> social fund + 5,000 hours of dignified work (example model).
+        </div>
+        <canvas id="impact-chart2" style="width:100%;border-radius:12px;border:1px solid var(--border-color);margin-top:10px"></canvas>
+      </div>
+
+      <div class="tip-card info">
+        <div class="tip-title">Ethical Trojan Horse (Strategy)</div>
+        <div class="tip-body">
+          We do not fight big-tech in their home turf. We go where they cannot:
+          <ul style="margin:8px 0 0 18px;line-height:1.5">
+            <li><strong>B2B:</strong> ESG-driven corporate purchases,</li>
+            <li><strong>B2G:</strong> city budgets for missing pets/children,</li>
+            <li><strong>B2C:</strong> “lifetime safety” with no monthly subscription.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Entrepreneur Pitch (1-minute)</h3>
+      <div class="highlight-box">
+        <p><strong>We are not donating gadgets.</strong> We are building an economy where every sale funds wages, operations, and safety infrastructure — automatically.</p>
+        <p style="margin-top:8px">Offline-first + privacy-first makes it viable in the exact places where “AI revolution” never arrives.</p>
+      </div>
+    `;
+
+    const refugee = `
+      ${tabBtns}
+      <h2 style="margin-bottom:10px">Refugee Self-Reliance System</h2>
+
+      <div class="tip-card info">
+        <div class="tip-title">Concept</div>
+        <div class="tip-body">
+          A <strong>Refugee Self-Reliance System</strong> adapts the same offline manufacturing model to humanitarian settings:
+          refugee camps, temporary shelters, and conflict-displaced communities.
+          The goal is to convert “aid dependency” into <strong>skills + income + community safety</strong>.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="font-size:.82rem;margin-top:0">How it works</div>
+        <div style="font-size:.78rem;color:var(--text-secondary);line-height:1.65">
+          <ol style="margin:8px 0 0 18px">
+            <li><strong>Offline devices</strong> assembled locally with visual step-by-step guides.</li>
+            <li><strong>Immediate micro-wages</strong> per assembly (transparent payout).</li>
+            <li><strong>Community safety layer</strong>: missing children, elder wandering, disaster alerts — without internet.</li>
+            <li><strong>Privacy-by-design</strong>: no cloud profiles, no forced registration, local-only data.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="tip-card warn">
+        <div class="tip-title">Human rights constraint</div>
+        <div class="tip-body">
+          This system must never become surveillance. Deployment requires consent, anti-abuse safeguards, and independent oversight.
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p><strong>Why it matters:</strong> dignity is not a slogan — it is cashflow, identity, and safety you can measure.</p>
+      </div>
+    `;
+
+    const legal = `
+      ${tabBtns}
+      <h2 style="margin-bottom:10px">Legal & Safety</h2>
+
+      <div class="warning-legal">
+        <p><strong>No Warranty / No Liability:</strong> This app provides best-effort alerts only. Use common sense and real-world safety practices.</p>
+        <p><strong>Not GPS:</strong> Bluetooth RSSI cannot produce an accurate map location.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Ethical License (Hippocratic 3.0 Derivative)</h3>
+      <div class="tip-card info">
+        <div class="tip-title">Humanitarian Use Only</div>
+        <div class="tip-body">
+          Allowed: pet safety, family safety, rescue coordination, accessibility tools, humanitarian support.<br>
+          Prohibited: military, surveillance, oppression, non-consensual tracking, border militarization, weaponization.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Technical Manifest</h3>
+      <pre style="white-space:pre-wrap;background:var(--bg-elevated);padding:12px;border-radius:12px;border:1px solid var(--border-color);font-size:.72rem;color:var(--text-secondary);line-height:1.4">${safeJson(ETHICAL_MANIFEST)}</pre>
+    `;
+
+    if(tab==='impact') return impact;
+    if(tab==='refugee') return refugee;
+    if(tab==='legal') return legal;
+    return about;
   };
 
   /* ----------------------------- PATCH: SOS snapshot sanitize ----------------------------- */
@@ -8779,13 +7369,13 @@ V41UI.injectDetailAlertPrefs = function(pet){
   SOS.encodeRescuePack = function(pack){
     const json = safeJson(pack);
     const crc = crcHex(crc32(json));
-    return `VG-RP1.${b64urlEncodeUtf8(json)}.${crc}`;
+    return `SANTA-RP1.${b64urlEncodeUtf8(json)}.${crc}`;
   };
 
   SOS.decodeRescuePack = function(code){
     if(!code || typeof code !== 'string') throw new Error('Empty code');
     const txt = code.trim();
-    if(!txt.startsWith('VG-RP1.')) throw new Error('Not a Rescue Pack (VG-RP1)');
+    if(!txt.startsWith('SANTA-RP1.')) throw new Error('Not a Rescue Pack (SANTA-RP1)');
     const parts = txt.split('.');
     if(parts.length < 3) throw new Error('Invalid code format');
     const b64 = parts[1];
@@ -8968,7 +7558,7 @@ V41UI.injectDetailAlertPrefs = function(pet){
         if(!codeEl.value.trim()){ generate(); }
         const text = codeEl.value.trim();
         if(navigator.share){
-          await navigator.share({ title:'VitalGuard AI Rescue Pack', text });
+          await navigator.share({ title:'Santa AI Rescue Pack', text });
         }else{
           await navigator.clipboard.writeText(text);
           Toast.show('Share not supported. Copied to clipboard.', 2400);
@@ -9075,7 +7665,7 @@ V41UI.injectDetailAlertPrefs = function(pet){
 
     // 1) QR generator
     try{
-      const qr = qrcodegen.QrCode.encodeText('VG-SELFTEST', qrcodegen.QrCode.Ecc.MEDIUM);
+      const qr = qrcodegen.QrCode.encodeText('SANTA-SELFTEST', qrcodegen.QrCode.Ecc.MEDIUM);
       results.push({test:'QR', ok:true, detail:`version ${qr.version} size ${qr.size}`});
     }catch(e){
       results.push({test:'QR', ok:false, detail:String(e)});
@@ -9147,7 +7737,7 @@ V41UI.injectDetailAlertPrefs = function(pet){
     const okAll = results.every(r=>r.ok);
 
     Diag._lastSelfTest = { time: new Date().toISOString(), ok: okAll, dtMs: Math.round(dt), results };
-    console.log('[VitalGuardAI SelfTest]', Diag._lastSelfTest);
+    console.log('[SantaAI SelfTest]', Diag._lastSelfTest);
 
     Toast.show(okAll ? `Self-Test OK (${Math.round(dt)}ms)` : `Self-Test found issues (see Diagnostics)`, 2600);
 
@@ -9248,10 +7838,7 @@ document.addEventListener('pointerdown', async ()=>{
 }, {once:true});
 
 /* ----------------------------- INIT ----------------------------- */
-document.addEventListener('DOMContentLoaded', ()=>{
-  try{ I18N.init(); }catch(e){ console.warn('I18N.init error:', e); }
-  App.init();
-});
+document.addEventListener('DOMContentLoaded', ()=>App.init());
 
 </script>
 </body>
