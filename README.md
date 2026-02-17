@@ -1,6 +1,13 @@
-# VitalGuard AI - Infrastructure-Independent Survival Framework (v4.1.7)
+> **This “Pet Safety Leash” interface is deliberate Conceptual Steganography for everyday testing.**  
+> The true system is an **Offline Bluetooth Swarm Network** engineered for zero‑infrastructure disaster response.  
+> When internet and grid power collapse to zero—wildfires, floods, hurricanes—devices self‑organize and keep operating.  
+> No cloud. No cell towers. No accounts: local coordination, SOS relay, and continuity across nearby nodes.  
+> **Early‑warning system + life‑saving mesh**—an infrastructure‑independent resilience layer, deployable from ordinary phones.
+
+# VitalGuard AI - Infrastructure-Independent Survival Framework (v4.1.9)
 
 VitalGuard AI is a **single-file, offline-first** continuity demo that keeps **local decision support** available when **power and connectivity are disrupted** - with **no accounts, no cloud dependency, and no telemetry by design**.
+**UI languages (7):** English · 한국어 · العربية (RTL) · 日本語 · Français · 繁體中文(台灣) · Español
 
 **Format:** one self-contained HTML file (no build system; no external JS/CSS libraries)
 
@@ -11,9 +18,9 @@ VitalGuard AI is a **single-file, offline-first** continuity demo that keeps **l
 | Field | Value |
 |---|---|
 | Document | VitalGuard AI README (Executive + Audit Notes) |
-| Release artifact | `VitalGuard_AI_complete_V41_7.html` (single-file offline demo) |
-| Version | v4.1.7 |
-| Release date | 2026-02-16 |
+| Release artifact | `VitalGuard_AI_complete_V41_9.html` (single-file offline demo) |
+| Version | v4.1.9 |
+| Release date | 2026-02-17 |
 | Owner | Morgan J. (Gyumin Jeon) |
 | Contact | contact@mcorpai.org (mcorpai.org) |
 | Classification | Unclassified - For external review |
@@ -22,13 +29,13 @@ VitalGuard AI is a **single-file, offline-first** continuity demo that keeps **l
 
 ## Release integrity (recommended for restricted environments)
 
-**SHA-256 (approved artifact):** `a0365169d37cd03df0b59912488931e1ee7fcc91fbe9f697c6c4b924a02bc1df`  
-**File size:** 404418 bytes (~394.9 KiB)
+**SHA-256 (approved artifact):** `62b0157e537f22d599c961d9a66f144396dc0526cc3964d6516ba8aefdb310cb`  
+**File size:** 412716 bytes (~403.0 KiB)
 
 Integrity verification commands:
-- macOS: `shasum -a 256 VitalGuard_AI_complete_V41_7.html`
-- Linux: `sha256sum VitalGuard_AI_complete_V41_7.html`
-- Windows (PowerShell): `Get-FileHash .\VitalGuard_AI_complete_V41_7.html -Algorithm SHA256`
+- macOS: `shasum -a 256 VitalGuard_AI_complete_V41_9.html`
+- Linux: `sha256sum VitalGuard_AI_complete_V41_9.html`
+- Windows (PowerShell): `Get-FileHash .\VitalGuard_AI_complete_V41_9.html -Algorithm SHA256`
 
 Why this matters:
 - **Single audited artifact:** reduces runtime supply-chain exposure and "what exactly ran?" ambiguity.
@@ -98,7 +105,7 @@ Use these as fast, objective "done" conditions for reviewers:
 
 ## How to run the demo (practical)
 
-1. Open `VitalGuard_AI_complete_V41_7.html`.
+1. Open `VitalGuard_AI_complete_V41_9.html`.
 2. Use a Chromium-based browser that supports Web Bluetooth scanning (platform support varies).
 3. For the most reliable BLE behavior, open from a **secure context**:
    - `https://...` or `http://localhost` (recommended)
@@ -146,7 +153,7 @@ Use these as fast, objective "done" conditions for reviewers:
 
 - Official site: https://mcorpai.org  
 - Demo (hosted): https://mcorpai.org/VitalGuard_AI  
-- Source (GitHub): https://github.com/henrymorgan10/mcorpai-org  
+- Source (GitHub): https://github.com/jekymin8232/luckyvicky-homepage  
 - Contact: Morgan J. (Gyumin Jeon) - contact@mcorpai.org
 
 ---
