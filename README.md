@@ -1,5 +1,5 @@
-> **This “Pet Safety Leash” interface is deliberate Conceptual Steganography for everyday testing.**  
-> The true system is an **Offline Bluetooth Swarm Network** engineered for zero‑infrastructure disaster response.  
+> **This “Pet Safety Leash” UI is a neutral demo skin for everyday usability testing.**  
+> Under the hood, it is an **Offline Bluetooth Swarm Network** built for zero‑infrastructure disaster response.  
 > When internet and grid power collapse to zero—wildfires, floods, hurricanes—devices self‑organize and keep operating.  
 > No cloud. No cell towers. No accounts: local coordination, SOS relay, and continuity across nearby nodes.  
 > **Early‑warning system + life‑saving mesh**—an infrastructure‑independent resilience layer, deployable from ordinary phones.
@@ -18,7 +18,7 @@ VitalGuard AI is a **single-file, offline-first** continuity demo that keeps **l
 | Field | Value |
 |---|---|
 | Document | VitalGuard AI README (Executive + Audit Notes) |
-| Release artifact | `VitalGuard_AI_complete_V42.html` (single-file offline demo) |
+| Release artifact | `VitalGuard_AI_complete_V42_1.html` (single-file offline demo) |
 | Version | v4.2 |
 | Release date | 2026-02-17 |
 | Owner | Morgan J. (Gyumin Jeon) |
@@ -29,13 +29,13 @@ VitalGuard AI is a **single-file, offline-first** continuity demo that keeps **l
 
 ## Release integrity (recommended for restricted environments)
 
-**SHA-256 (approved artifact):** `18f72c391a16a769b5b77d15fe5771711a91504f42b106f33627d97e01ed7594`  
-**File size:** 412673 bytes (~403.0 KiB)
+**SHA-256 (approved artifact):** `f37502a9f511c856d4c6d720b93cac202214ff23e01280d7f69eabf33bdd3721`  
+**File size:** 412572 bytes (~402.9 KiB)
 
 Integrity verification commands:
-- macOS: `shasum -a 256 VitalGuard_AI_complete_V42.html`
-- Linux: `sha256sum VitalGuard_AI_complete_V42.html`
-- Windows (PowerShell): `Get-FileHash .\VitalGuard_AI_complete_V42.html -Algorithm SHA256`
+- macOS: `shasum -a 256 VitalGuard_AI_complete_V42_1.html`
+- Linux: `sha256sum VitalGuard_AI_complete_V42_1.html`
+- Windows (PowerShell): `Get-FileHash .\VitalGuard_AI_complete_V42_1.html -Algorithm SHA256`
 
 Why this matters:
 - **Single audited artifact:** reduces runtime supply-chain exposure and "what exactly ran?" ambiguity.
@@ -105,7 +105,7 @@ Use these as fast, objective "done" conditions for reviewers:
 
 ## How to run the demo (practical)
 
-1. Open `VitalGuard_AI_complete_V42.html`.
+1. Open `VitalGuard_AI_complete_V42_1.html`.
 2. Use a Chromium-based browser that supports Web Bluetooth scanning (platform support varies).
 3. For the most reliable BLE behavior, open from a **secure context**:
    - `https://...` or `http://localhost` (recommended)
