@@ -153,7 +153,6 @@ Use these as fast, objective "done" conditions for reviewers:
 
 - Official site: https://mcorpai.org  
 - Demo (hosted): https://mcorpai.org/VitalGuard_AI  
-- Source (GitHub): https://github.com/jekymin8232/luckyvicky-homepage  
 - Contact: Morgan J. (Gyumin Jeon) - contact@mcorpai.org
 
 ---
