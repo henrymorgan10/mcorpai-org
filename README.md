@@ -1,10 +1,48 @@
+## I’m just a blacksmith forging tools
+
+<img width="358" height="237" alt="1" src="https://github.com/user-attachments/assets/1ed6d48d-46cc-4ede-8736-9496dec6280b" />
+
+## If you underpay the blacksmith, you’ll only get cheap tools.
+
+**The following 10 principles are non-negotiable in my AI design philosophy:**
+1. Hallucinations must be minimized.
+2. Transparency must be fully guaranteed.
+3. AI must remain free or extremely affordable, even in low-income environments.
+4. Data exploitation must be completely eliminated.
+5. AI must operate reliably in low-resource environments.
+6. Legal liability risks (including GDPR-related risks) must be minimized as much as possible.
+7. The system must be open-source and customizable by anyone.
+8. Simplicity, standardization, and modularity must be prioritized.
+9. The system must be accessible and understandable to non-specialists.
+10. The AI must not collect unnecessary data, and if any data is stored, users must be able to delete it easily at any time.
+
+## I am a white-box AI architect. “I deeply respect open-source culture.”
+
+**The AI I develop is not designed for the wealthy. It is designed for the socially vulnerable, the poor, and those most in need.**
+
+The AI I develop is not a black-box AI designed to replace human jobs. It is a white-box AI designed to create jobs and opportunities for people living in poverty.
+
+White-box AI is built through the contributions of many individuals, allowing fair and legitimate compensation to be distributed to those in need. Even something as simple as typing “Hello, World!” can become a meaningful contribution that enables people in low-income environments to receive legal payment for their work.
+
+**White-box AI can evolve into a large-scale ESG ethical certification system.** 
+
+In other words, when wealthy individuals or organizations donate to white-box AI initiatives, they can receive ESG ethical certification reports documenting their humanitarian and social contributions. At the same time, people living in low-income environments can contribute to the white-box AI ecosystem and receive fair and legitimate compensation for their work.
+
+Fair compensation is not just about money — it can also restore dignity, strengthen self-esteem, and give people a meaningful sense of purpose and participation in society.
+
+**Massive data centers are often an inefficient use of resources.** They consume enormous amounts of money just to maintain infrastructure and server operations. If even a fraction of that investment were redirected toward building white-box AI, tens of thousands of people living in poverty could directly benefit from it.
+
+All academic contributions worldwide are provided completely free of charge. If these contributions are recognized as meaningful ethical and humanitarian work, I believe that a public nomination for the Nobel Peace Prize would also be justified. Moral authority can help save even more lives. 
+
+I have also already developed a refugee self-sufficiency model — **[McorpAi.org](https://mcorpai.org/)** — an AI system designed to help refugees achieve self-reliance within refugee camps themselves, without requiring relocation to other countries. A sovereign AI system that refugees can directly operate means that refugee communities themselves can become self-sustaining.
+
 > **This “Pet Safety Leash” UI is a neutral demo skin for everyday usability testing.**  
 > Under the hood, it is an **Offline Bluetooth Swarm Network** built for zero‑infrastructure disaster response.  
 > When internet and grid power collapse to zero—wildfires, floods, hurricanes—devices self‑organize and keep operating.  
 > No cloud. No cell towers. No accounts: local coordination, SOS relay, and continuity across nearby nodes.  
 > **Early‑warning system + life‑saving mesh**—an infrastructure‑independent resilience layer, deployable from ordinary phones.
 
-# VitalGuard AI - Infrastructure-Independent Survival Framework (v4.2)
+# VitalGuard AI - Infrastructure-Independent Survival Framework
 
 VitalGuard AI is a **single-file, offline-first** continuity demo that keeps **local decision support** available when **power and connectivity are disrupted** - with **no accounts, no cloud dependency, and no telemetry by design**.
 **UI languages (7):** English · 한국어 · العربية (RTL) · 日本語 · Français · 繁體中文(台灣) · Español
@@ -153,6 +191,7 @@ Use these as fast, objective "done" conditions for reviewers:
 
 - Official site: https://mcorpai.org  
 - Demo (hosted): https://mcorpai.org/VitalGuard_AI  
+- Source (GitHub): https://github.com/jekymin8232/luckyvicky-homepage  
 - Contact: Morgan J. (Gyumin Jeon) - contact@mcorpai.org
 
 ---
