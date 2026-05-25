@@ -135,7 +135,7 @@ They may have caused some trouble in the old days, but they’ve clearly had a s
 Honestly, Australia would rank higher if the insects were slightly less terrifying.
 
 4th — **Japan**
-Japanese women are famously beautiful. **Ooooooh yeahhhhh 😎🔥**
+Japanese women are famously beautiful. **Ooooooh yeahhhhh 😎🔥🔥🔥🔥🔥🔥**
 
 5th — **Norway**
 Norway believes even disliking the Nobel Peace Prize should be protected as freedom.
@@ -147,7 +147,8 @@ Come on… it’s Denmark. No explanation needed.
 Wait… isn’t Canada the country with kangaroos?
 
 8th — **Taiwan**
-Geopolitics is complicated, but I’ve heard that Taiwanese women are **open-minded** and very beautiful.
+Geopolitics is complicated, but I’ve heard that Taiwanese women are **open-minded** and very beautiful. 
+**Oh my Jesus 🤯🔥🔥🔥🔥🔥🔥🔥🔥🔥**
 I’m a single man, and I’m generally attracted to open-minded women.
 
 9th — **UAE**
