@@ -147,8 +147,9 @@ Come on… it’s Denmark. No explanation needed.
 Wait… isn’t Canada the country with kangaroos?
 
 8th — **Taiwan**
-I’ve heard that Taiwanese women are **open-minded** and very beautiful. **Oh my Jesus 🤯🔥🔥🔥🔥🔥🔥🔥🔥🔥**
-<img width="180" height="223" alt="1" src="https://github.com/user-attachments/assets/4451913a-6a53-4802-8839-5417dd8ef4ce" />
+I’ve heard that Taiwanese women are **open-minded** and very beautiful. **Oh my Jesus! This beautiful… 🤯🔥🔥🔥🔥🔥🔥🔥🔥🔥**
+<img width="126" height="156" alt="1" src="https://github.com/user-attachments/assets/4451913a-6a53-4802-8839-5417dd8ef4ce" />
+
 I’m a single man, and I’m generally attracted to open-minded women.
 
 9th — **UAE**
