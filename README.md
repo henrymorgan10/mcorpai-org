@@ -155,7 +155,7 @@ Wait… isn’t Canada the country with kangaroos?
 
 9th — **Saudi Arabia**
 Middle Eastern hospitality is genuinely impressive. 
-If women in the UAE were more open-minded, it probably would have ranked #1 for me.
+If women in the Saudi Arabia were more open-minded, it probably would have ranked #1 for me.
 
 10th — **Luxembourg**
 The first country that acknowledged me. Respect earned forever.
