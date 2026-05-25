@@ -153,7 +153,7 @@ Wait… isn’t Canada the country with kangaroos?
 
 **Oh my Jesus! This beautiful… 🤯🔥🔥🔥 It’s often said that Taiwanese women are among the most beautiful in Asia.**
 
-9th — **UAE**
+9th — **Saudi Arabia**
 Middle Eastern hospitality is genuinely impressive. 
 If women in the UAE were more open-minded, it probably would have ranked #1 for me.
 
