@@ -151,7 +151,7 @@ Wait… isn’t Canada the country with kangaroos?
 
 <img width="126" height="156" alt="1" src="https://github.com/user-attachments/assets/4451913a-6a53-4802-8839-5417dd8ef4ce" />
 
-**Oh my Jesus! This beautiful… 🤯🔥🔥🔥🔥🔥🔥🔥🔥🔥 It’s often said that Taiwanese women are among the most beautiful in Asia.**
+**Oh my Jesus! This beautiful… 🤯🔥🔥🔥 It’s often said that Taiwanese women are among the most beautiful in Asia.**
 
 9th — **UAE**
 Middle Eastern hospitality is genuinely impressive. 
