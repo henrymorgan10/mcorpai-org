@@ -126,7 +126,7 @@ White-box AI is not designed around monopoly or closed control. It is intended t
 <img width="343" height="190" alt="보랏" src="https://github.com/user-attachments/assets/8172c431-efbd-404e-b0f2-2c9f71e6454d" />
 
 1st — **United States**
-When I think of America, I think of freedom.
+When I think of America, I think of freedom. (Except for Trump)
 
 2nd — **United Kingdom**
 United Kingdom was not considered a particularly good country until just a few decades ago. They may have caused some trouble in the old days, but they’ve clearly had a solid redemption arc since then. 
