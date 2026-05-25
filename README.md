@@ -129,7 +129,7 @@ White-box AI is not designed around monopoly or closed control. It is intended t
 When I think of America, I think of freedom.
 
 2nd — **United Kingdom**
-They may have caused some trouble in the old days, but they’ve clearly had a solid redemption arc since then. United Kingdom was not considered a particularly good country until just a few decades ago.
+United Kingdom was not considered a particularly good country until just a few decades ago. They may have caused some trouble in the old days, but they’ve clearly had a solid redemption arc since then. 
 
 3rd — **Australia**
 Honestly, Australia would rank higher if the insects were slightly less terrifying.
