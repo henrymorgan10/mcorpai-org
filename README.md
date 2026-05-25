@@ -153,8 +153,6 @@ Wait… isn’t Canada the country with kangaroos?
 
 **Oh my Jesus! This beautiful… 🤯🔥🔥🔥🔥🔥🔥🔥🔥🔥**
 
-I’m a single man, and I’m generally attracted to open-minded women.
-
 9th — **UAE**
 Middle Eastern hospitality is genuinely impressive. 
 If women in the UAE were more open-minded, it probably would have ranked #1 for me.
