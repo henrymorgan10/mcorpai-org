@@ -73,6 +73,88 @@ the field.
 
 <head>
 
+  <!-- ===================== 테트리스 Wraptris SEO (블록 A) ===================== -->
+<title>Wraptris — Offline Climate Puzzle Game | M-Corp Ethical AI</title>
+<meta name="description" content="Free offline climate puzzle game: clear lines to cut carbon and beat the 3.0°C tipping point. Zero-dependency vanilla JavaScript by M-Corp Ethical AI.">
+<meta name="keywords" content="Wraptris, climate game, offline puzzle game, tetris, vanilla javascript game, ethical AI, M-Corp Ethical AI, VitalGuard, mcorpai, zero dependency, privacy game, browser game, free game">
+<meta name="author" content="M-Corp Ethical AI (Morgan J.)">
+<meta name="theme-color" content="#0a1628">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://mcorpai.org/wraptris">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="M-Corp Ethical AI">
+<meta property="og:title" content="Wraptris — Offline Climate Puzzle Game">
+<meta property="og:description" content="Clear lines to cut carbon and beat the 3.0°C tipping point. Free, offline, zero-dependency vanilla JS.">
+<meta property="og:url" content="https://mcorpai.org/wraptris">
+<meta property="og:image" content="https://mcorpai.org/og-wraptris.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wraptris — Offline Climate Puzzle Game">
+<meta name="twitter:description" content="Clear lines to cut carbon and beat the 3.0°C tipping point. Free & offline.">
+<meta name="twitter:image" content="https://mcorpai.org/og-wraptris.png">
+
+<!-- 구조화 데이터: VideoGame + Organization + WebSite + FAQ -->
+<script type="application/ld+json" id="wraptris-jsonld">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Wraptris",
+    "alternateName": "Wraptris Climate Edition",
+    "url": "https://mcorpai.org/wraptris",
+    "description": "Free offline climate puzzle game: clear lines to cut carbon and beat the 3.0°C tipping point. Zero-dependency vanilla JavaScript by M-Corp Ethical AI.",
+    "genre": ["Puzzle", "Arcade", "Educational"],
+    "gamePlatform": "Web Browser",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any (HTML5 browser)",
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "M-Corp Ethical AI", "url": "https://mcorpai.org" },
+    "publisher": { "@type": "Organization", "name": "M-Corp Ethical AI", "url": "https://mcorpai.org" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "M-Corp Ethical AI",
+    "url": "https://mcorpai.org",
+    "email": "contact@mcorpai.org",
+    "description": "Builder of VitalGuard AI and offline-first, privacy-respecting ethical AI tools."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "M-Corp Ethical AI",
+    "url": "https://mcorpai.org",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://mcorpai.org/?s={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is Wraptris free to play?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Wraptris is completely free, runs in any browser, and requires no install or account." } },
+      { "@type": "Question", "name": "Does Wraptris work offline?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Once the page loads, Wraptris runs entirely in your browser with no servers and no internet connection required." } },
+      { "@type": "Question", "name": "Does Wraptris collect my data?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. There is no tracking or data collection. Your best score is stored only in your own browser and never leaves your device." } }
+    ]
+  }
+]
+</script>
+<!-- =================== 테트리스  Wraptris SEO 끝 (블록 A) =================== -->
+
+
+
+
+  
 
 
   <div style="max-width: 1080px; margin: 12px auto 20px;
@@ -4789,18 +4871,108 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 </p>
 </section>
 
-   
-   
+   <!-- ===================== 테트리스 Wraptris (블록 B) ===================== -->
 <style>
-  /* Wraptris — Canvas Tetris with Climate Timer (mouse-only build) */
-  #wraptris-app{display:flex;gap:16px;align-items:flex-start;margin:24px auto;padding:0 16px;max-width:820px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Malgun Gothic,sans-serif;color:#e5e7eb}
-  #wraptris-app canvas{background:#0f172a;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);touch-action:none;cursor:crosshair}
-  #wraptris-app .hud{min-width:240px}
-  #wraptris-app .title{margin:0 0 8px;font-weight:800;font-size:20px;letter-spacing:.2px}
-  #wraptris-app .card{margin:12px 0;padding:10px 12px;border-radius:10px;background:#111827;border:1px solid rgba(255,255,255,.06)}
-  #wraptris-app .muted{color:#9ca3af}
-  #wraptris-app .btn{display:inline-block;margin-top:8px;padding:8px 10px;border-radius:8px;background:#1d4ed8;color:white;text-decoration:none;font-weight:700}
+  #wraptris-app{
+    --wt-text:#e2e8f0; --wt-dim:#94a3b8; --wt-panel:#0f1f38;
+    --wt-line:rgba(255,255,255,.07); --wt-accent:#22d3ee; --wt-warm:#fb7185; --wt-green:#4ade80;
+    max-width:760px; margin:28px auto; padding:0 16px;
+    font-family:"Segoe UI",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    color:var(--wt-text); -webkit-font-smoothing:antialiased;
+  }
+  #wraptris-app *{box-sizing:border-box;}
+  #wraptris-app .wt-shell{display:flex; gap:18px; align-items:flex-start; justify-content:center; flex-wrap:wrap;}
+  #wraptris-app .wt-stage{flex:0 0 auto;}
+  #wraptris-app #wt-canvas{
+    display:block; width:300px; max-width:88vw; height:auto;
+    background:#0b1220; border-radius:14px; cursor:crosshair; touch-action:none; outline:none;
+    box-shadow:0 10px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.05);
+  }
+  #wraptris-app #wt-canvas:focus{box-shadow:0 10px 40px rgba(0,0,0,.45), 0 0 0 2px var(--wt-accent);}
+  #wraptris-app .wt-hud{flex:1 1 220px; min-width:200px; max-width:300px;}
+  #wraptris-app .wt-title{
+    margin:0 0 12px; font-size:26px; font-weight:800; letter-spacing:2px; line-height:1;
+    background:linear-gradient(90deg,#22d3ee,#4ade80); -webkit-background-clip:text; background-clip:text;
+    color:transparent; -webkit-text-fill-color:transparent;
+  }
+  #wraptris-app .wt-title .wt-sub{
+    display:block; margin-top:5px; font-size:11px; letter-spacing:3px; font-weight:600;
+    color:var(--wt-dim); -webkit-text-fill-color:var(--wt-dim);
+  }
+  #wraptris-app .wt-row{display:flex; gap:10px; margin-bottom:12px;}
+  #wraptris-app .wt-mini{flex:1; background:var(--wt-panel); border:1px solid var(--wt-line); border-radius:10px; padding:8px; text-align:center;}
+  #wraptris-app .wt-cap{display:block; font-size:10px; letter-spacing:2px; color:var(--wt-dim); margin-bottom:6px;}
+  #wraptris-app .wt-mini canvas{display:block; margin:0 auto; max-width:100%; height:auto;}
+  #wraptris-app .wt-card{background:var(--wt-panel); border:1px solid var(--wt-line); border-radius:10px; padding:10px 12px; margin-bottom:12px;}
+  #wraptris-app .wt-line{display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:3px 0; color:var(--wt-dim);}
+  #wraptris-app .wt-line b{color:var(--wt-text); font-variant-numeric:tabular-nums; font-size:14px;}
+  #wraptris-app .wt-climate .wt-line span{font-size:12px;}
+  #wraptris-app .wt-bar{height:6px; border-radius:4px; background:rgba(255,255,255,.08); overflow:hidden; margin:4px 0 8px;}
+  #wraptris-app .wt-bar i{display:block; height:100%; width:0%; border-radius:4px; background:linear-gradient(90deg,#4ade80,#facc15,#fb7185); transition:width .4s ease;}
+  #wraptris-app .wt-controls{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+  #wraptris-app .wt-btn{
+    flex:1; min-width:80px; padding:10px; border:1px solid var(--wt-line); border-radius:10px;
+    background:#152844; color:var(--wt-text); font-size:13px; font-weight:700; cursor:pointer; transition:.15s;
+  }
+  #wraptris-app .wt-btn:hover{background:#1c3357; transform:translateY(-1px);}
+  #wraptris-app .wt-btn:active{transform:translateY(0);}
+  #wraptris-app .wt-primary{background:linear-gradient(135deg,#0891b2,#22d3ee); border-color:transparent; color:#04141c;}
+  #wraptris-app .wt-primary:hover{background:linear-gradient(135deg,#0aa3c9,#3bdcf0);}
+  #wraptris-app .wt-help{font-size:12px; color:var(--wt-dim);}
+  #wraptris-app .wt-help summary{cursor:pointer; padding:8px 0; font-weight:600; color:var(--wt-text);}
+  #wraptris-app .wt-help ul{margin:6px 0 0; padding-left:18px; line-height:1.7;}
+  #wraptris-app .wt-help b{color:var(--wt-text);}
+
+  /* SEO 설명 섹션 (게임 컨테이너 밖이라 변수 미상속 → 직접 색상 지정) */
+  .wt-about{
+    max-width:760px; margin:26px auto 0; padding:20px; line-height:1.75; font-size:14px;
+    background:#0f1f38; border:1px solid rgba(255,255,255,.07); border-radius:14px; color:#94a3b8;
+    font-family:"Segoe UI",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  .wt-about h2{margin:0 0 10px; font-size:19px; color:#e2e8f0;}
+  .wt-about h3{margin:18px 0 6px; font-size:15px; color:#e2e8f0;}
+  .wt-about p{margin:0 0 10px;}
+  .wt-about strong{color:#cbd5e1;}
+  .wt-about a{color:#22d3ee; text-decoration:none;}
+  .wt-about a:hover{text-decoration:underline;}
+
+  @media (max-width:560px){
+    #wraptris-app .wt-hud{max-width:100%; flex-basis:100%;}
+  }
 </style>
+
+<!-- 게임 컨테이너 (JS가 내부를 채웁니다) -->
+<section id="wraptris-app" aria-label="Wraptris climate puzzle game"></section>
+
+<!-- SEO 설명 (검색엔진이 읽는 정적 텍스트 — 지우지 마세요) -->
+<section class="wt-about">
+  <h2>Wraptris — an offline climate puzzle game</h2>
+  <p><strong>Wraptris</strong> is a free, offline-first puzzle game built by
+  <a href="https://mcorpai.org">M-Corp Ethical AI</a>. It plays like the falling-block
+  puzzle you already love, with one twist: the planet is heating up. Every line you clear
+  cuts carbon and pushes back the 3.0&deg;C climate tipping point. Survive as long as you
+  can, chase Carbon Milestones, and keep the world below the line.</p>
+
+  <h3>How to play</h3>
+  <p>Move your mouse over the board to slide the piece left and right. Left-click to rotate,
+  hold right-click for a fast drop, and double-click for a hard drop. On touch devices, drag
+  to move, tap to rotate, and swipe down to slam a piece home. Blocks <strong>wrap around the
+  walls</strong> — leave one side and you reappear on the other.</p>
+
+  <h3>Why we built it</h3>
+  <p>Wraptris runs as a single block of <strong>vanilla JavaScript with zero external
+  libraries</strong>, no servers, and no tracking. It is a small, playable demonstration of
+  the same offline-first, privacy-respecting engineering philosophy behind our flagship
+  project, <strong>VitalGuard AI</strong> — proof that powerful, responsible software can be
+  tiny, transparent, and free.</p>
+
+  <h3>Frequently asked questions</h3>
+  <p><strong>Is Wraptris free?</strong> Yes — completely free, no install, no account.</p>
+  <p><strong>Does it work offline?</strong> Yes. Once the page loads it runs entirely in your
+  browser, with no internet connection required.</p>
+  <p><strong>Does it collect my data?</strong> No. Your best score is saved only in your own
+  browser and never leaves your device.</p>
+</section>
 
 <script>
 (() => {
@@ -4810,87 +4982,198 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     if (window.__wraptrisMounted) return;
     window.__wraptrisMounted = true;
 
-    // ====== Difficulty & Climate Settings ======
+    // ============================================================
+    // Wraptris — Climate Edition (Vanilla JS, zero dependency)
+    // by M-Corp Ethical AI / mcorpai.org
+    // Core idea: clearing lines (= cutting carbon) slows global warming.
+    // ============================================================
+
+    // ---------- Board & speed ----------
     const COLS = 10;
     const ROWS = 20;
-    const CELL = 32; // px per cell
-    const START_SPEED = 650; // base ms per drop (higher = slower)
-    const SPEED_FACTOR = 0.80; // per-level multiplier (stronger than usual)
-    const MIN_SPEED = 60;      // hard cap (very fast)
-    const LEVEL_UP_EVERY = 8;  // lines per level (tighter leveling)
+    const CELL = 30;                 // px per cell (canvas internal res)
+    const START_SPEED = 700;         // base ms per gravity step
+    const SPEED_FACTOR = 0.82;       // per-level multiplier
+    const MIN_SPEED = 70;            // fastest cap
+    const LEVEL_UP_EVERY = 10;       // lines per level
+    const GOAL_PER_STAGE = 30;       // lines per "Carbon Milestone"
 
-    // Climate timer: 🌍 1.5°C -> 3.0°C, +0.1°C every 10s
-    const C_START = 1.5, C_END = 3.0, C_STEP = 0.1, C_STEP_MS = 10000;
-    const C_STEPS = Math.round((C_END - C_START) / C_STEP); // 15 steps
-    const C_TOTAL_MS = C_STEPS * C_STEP_MS; // 150000 ms
+    // ---------- Climate model ----------
+    // Earth heats from 1.5C toward the 3.0C tipping point.
+    const C_START = 1.5, C_END = 3.0, C_STEP = 0.1;
+    const C_STEP_MS = 9000;                              // base time per +0.1C
+    const C_DELAY_PER_LINE = 2600;                       // warming delay earned per cleared line
+    const C_STEPS = Math.round((C_END - C_START) / C_STEP);
 
-    // Mouse-only options
-    // LEFT_CLICK_MODE: 'rotate' or 'cycle' — current build defaults to rotate.
-    const LEFT_CLICK_MODE = 'rotate';
-    const FAST_DROP_MULT = 0.25; // right-click hold multiplier on gravity
+    // ---------- Mouse / control options ----------
+    const FAST_DROP_MULT = 0.22;     // right-click hold gravity boost
 
-    // ====== Build minimal UI (English) ======
+    // ---------- Storage keys ----------
+    const LS_HISCORE = 'wraptris.hiscore';
+    const LS_MUTE = 'wraptris.muted';
+
+    // ---------- SEO: inject metadata (works even when only the block is pasted) ----------
+    function injectSEO(){
+      try {
+        const SITE = 'https://mcorpai.org';
+        const PAGE = SITE + '/wraptris';
+        const DESC = 'Free offline climate puzzle game: clear lines to cut carbon and beat the 3.0\u00B0C '
+          + 'tipping point. Zero-dependency vanilla JavaScript by M-Corp Ethical AI.';
+        const setMeta = (attr, key, val) => {
+          let el = document.head.querySelector(`meta[${attr}="${key}"]`);
+          if (!el){ el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
+          el.setAttribute('content', val);
+        };
+        if (!document.title || /^(index|home|untitled)?$/i.test(document.title.trim())) {
+          document.title = 'Wraptris — Offline Climate Puzzle Game | M-Corp Ethical AI';
+        }
+        setMeta('name', 'description', DESC);
+        setMeta('name', 'keywords', 'Wraptris, climate game, offline puzzle game, tetris, vanilla javascript game, '
+          + 'ethical AI, M-Corp Ethical AI, VitalGuard, mcorpai, zero dependency, privacy game, browser game, free game');
+        setMeta('name', 'author', 'M-Corp Ethical AI (Morgan J.)');
+        setMeta('name', 'theme-color', '#0a1628');
+        setMeta('name', 'robots', 'index, follow, max-image-preview:large');
+        // Open Graph
+        setMeta('property', 'og:type', 'website');
+        setMeta('property', 'og:site_name', 'M-Corp Ethical AI');
+        setMeta('property', 'og:title', 'Wraptris — Offline Climate Puzzle Game');
+        setMeta('property', 'og:description', DESC);
+        setMeta('property', 'og:url', PAGE);
+        // Twitter
+        setMeta('name', 'twitter:card', 'summary_large_image');
+        setMeta('name', 'twitter:title', 'Wraptris — Offline Climate Puzzle Game');
+        setMeta('name', 'twitter:description', DESC);
+        // canonical
+        let link = document.head.querySelector('link[rel="canonical"]');
+        if (!link){ link = document.createElement('link'); link.setAttribute('rel','canonical'); document.head.appendChild(link); }
+        link.setAttribute('href', PAGE);
+        // JSON-LD structured data
+        if (!document.getElementById('wraptris-jsonld')){
+          const ld = document.createElement('script');
+          ld.type = 'application/ld+json';
+          ld.id = 'wraptris-jsonld';
+          ld.textContent = JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "VideoGame",
+              "name": "Wraptris",
+              "alternateName": "Wraptris Climate Edition",
+              "url": PAGE,
+              "description": DESC,
+              "genre": ["Puzzle", "Arcade", "Educational"],
+              "gamePlatform": "Web Browser",
+              "applicationCategory": "Game",
+              "operatingSystem": "Any (HTML5 browser)",
+              "inLanguage": "en",
+              "isAccessibleForFree": true,
+              "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+              "author": { "@type": "Organization", "name": "M-Corp Ethical AI", "url": SITE },
+              "publisher": { "@type": "Organization", "name": "M-Corp Ethical AI", "url": SITE }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "M-Corp Ethical AI",
+              "url": SITE,
+              "email": "contact@mcorpai.org",
+              "description": "Builder of VitalGuard AI and offline-first, privacy-respecting ethical AI tools."
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "M-Corp Ethical AI",
+              "url": SITE,
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": SITE + "/?s={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            }
+          ]);
+          document.head.appendChild(ld);
+        }
+      } catch(e){ /* SEO injection is best-effort, never break the game */ }
+    }
+    injectSEO();
+
+    // ---------- Mount container ----------
     if (!document.body){
       const body = document.createElement('body');
       document.documentElement.appendChild(body);
     }
+    let app = document.getElementById('wraptris-app');
+    if (!app){
+      app = document.createElement('section');
+      app.id = 'wraptris-app';
+      document.body.appendChild(app);
+    }
+    // Build inner layout only once
+    app.innerHTML = `
+      <div class="wt-shell" role="application" aria-label="Wraptris climate puzzle game">
+        <div class="wt-stage">
+          <canvas id="wt-canvas" width="${COLS*CELL}" height="${ROWS*CELL}"
+                  aria-label="Game board" tabindex="0"></canvas>
+        </div>
+        <aside class="wt-hud" aria-label="Game status">
+          <h2 class="wt-title">WRAPTRIS<span class="wt-sub">Climate Edition</span></h2>
+          <div class="wt-row">
+            <div class="wt-mini">
+              <span class="wt-cap">HOLD</span>
+              <canvas id="wt-hold" width="${4*22}" height="${4*22}"></canvas>
+            </div>
+            <div class="wt-mini">
+              <span class="wt-cap">NEXT</span>
+              <canvas id="wt-next" width="${4*22}" height="${3*3*22}"></canvas>
+            </div>
+          </div>
+          <div class="wt-card">
+            <div class="wt-line"><span>Score</span><b id="wt-score">0</b></div>
+            <div class="wt-line"><span>Best</span><b id="wt-best">0</b></div>
+            <div class="wt-line"><span>Lines</span><b id="wt-lines">0</b></div>
+            <div class="wt-line"><span>Level</span><b id="wt-level">1</b></div>
+            <div class="wt-line"><span>Combo</span><b id="wt-combo">0</b></div>
+          </div>
+          <div class="wt-card wt-climate">
+            <div class="wt-line"><span>🌍 Global Temp</span><b id="wt-temp">1.5°C</b></div>
+            <div class="wt-bar" aria-hidden="true"><i id="wt-tempbar"></i></div>
+            <div class="wt-line"><span>Tipping point in</span><b id="wt-ctimer">--:--</b></div>
+            <div class="wt-line"><span>CO₂ cut</span><b id="wt-co2">0 t</b></div>
+            <div class="wt-line"><span>Milestone</span><b id="wt-goal">0 / ${GOAL_PER_STAGE}</b></div>
+          </div>
+          <div class="wt-controls">
+            <button id="wt-play" class="wt-btn wt-primary" type="button">▶ Play</button>
+            <button id="wt-pause" class="wt-btn" type="button">⏸ Pause</button>
+            <button id="wt-mute" class="wt-btn" type="button">🔊 Sound</button>
+          </div>
+          <details class="wt-help">
+            <summary>How to play</summary>
+            <ul>
+              <li><b>Mouse move</b> — slide the piece left/right</li>
+              <li><b>Left click</b> — rotate 90°</li>
+              <li><b>Right click (hold)</b> — fast drop</li>
+              <li><b>Double click</b> — hard drop</li>
+              <li><b>Wheel up</b> — hold piece</li>
+              <li><b>Keyboard</b> (when hovering the board): ← → move, ↑ rotate, ↓ soft drop, Space hard drop, C hold, P pause</li>
+              <li><b>Walls wrap</b>: leave one side, appear on the other.</li>
+              <li><b>Clear lines to cut carbon</b> and push back the 3.0°C tipping point.</li>
+            </ul>
+          </details>
+        </aside>
+      </div>
+    `;
 
-    const app = document.getElementById('wraptris-app') || (function(){
-      const div = document.createElement('div');
-      div.id = 'wraptris-app';
-      document.body.appendChild(div);
-      return div;
-    })();
-
-    // Canvas
-    const canvas = document.createElement('canvas');
-    canvas.id = 'wraptris-canvas';
-    canvas.width = COLS * CELL; // 320
-    canvas.height = ROWS * CELL; // 640
+    const canvas = document.getElementById('wt-canvas');
     const ctx = canvas.getContext('2d');
-
-    // HUD
-    const hud = document.createElement('div');
-    hud.className = 'hud';
-    const h1 = document.createElement('h1');
-    h1.className = 'title';
-    h1.textContent = 'Wraptris';
-
-    const scoreCard = document.createElement('div');
-    scoreCard.className = 'card';
-    scoreCard.innerHTML = `
-      <div><strong>Score</strong> <span id="wt-score">0</span></div>
-      <div><strong>Lines</strong> <span id="wt-lines">0</span></div>
-      <div><strong>Level</strong> <span id="wt-level">1</span></div>
-      <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0;">
-      <div><span style="font-size:18px">🌍</span> <strong>Global Temp</strong> <span id="wt-temp">1.5°C</span></div>
-      <div><strong>Climate Timer</strong> <span id="wt-ctimer">02:30</span></div>
-    `;
-
-    const help = document.createElement('div');
-    help.className = 'card';
-    help.innerHTML = `
-      <div class="muted">Mouse Controls Only</div>
-      <div>Move mouse over the canvas to move the piece horizontally.</div>
-      <div>Left click: change piece (default: rotate 90°).</div>
-      <div>Right click and hold: fast drop (gravity boost).</div>
-      <hr style="border:0;border-top:1px solid rgba(255,255,255,.08);margin:10px 0;">
-      <div class="muted">Walls wrap horizontally (off one side → appear on the other).</div>
-    `;
-
-    const restartBtn = document.createElement('a');
-    restartBtn.href = '#';
-    restartBtn.className = 'btn';
-    restartBtn.textContent = 'Restart';
-
-    hud.append(h1, scoreCard, help, restartBtn);
-    app.append(canvas, hud);
+    const holdCv = document.getElementById('wt-hold');
+    const holdCtx = holdCv.getContext('2d');
+    const nextCv = document.getElementById('wt-next');
+    const nextCtx = nextCv.getContext('2d');
 
     window.__wraptrisAppRef = app;
     window.__wraptrisCanvasRef = canvas;
 
-    // ====== Game Data ======
-    const COLORS = ['#00f5d4', '#ffd166', '#80ed99', '#ef476f', '#8ecae6', '#f72585', '#b388eb'];
+    // ---------- Pieces ----------
+    const COLORS = ['#22d3ee', '#facc15', '#4ade80', '#fb7185', '#60a5fa', '#f472b6', '#c084fc'];
     const SHAPES = {
       I: [[[-1,0],[0,0],[1,0],[2,0]], [[0,-1],[0,0],[0,1],[0,2]], [[-1,0],[0,0],[1,0],[2,0]], [[0,-1],[0,0],[0,1],[0,2]]],
       O: [[[0,0],[1,0],[0,1],[1,1]], [[0,0],[1,0],[0,1],[1,1]], [[0,0],[1,0],[0,1],[1,1]], [[0,0],[1,0],[0,1],[1,1]]],
@@ -4901,385 +5184,612 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       T: [[[-1,0],[0,0],[1,0],[0,1]], [[0,-1],[0,0],[0,1],[1,0]], [[0,-1],[-1,0],[0,0],[1,0]], [[-1,0],[0,-1],[0,0],[0,1]]]
     };
     const TYPES = Object.keys(SHAPES);
+    const colorOf = (type) => COLORS[TYPES.indexOf(type)];
 
-    let board, bag, piece;
-    let score, lines, level;
-    let gameOver = false;
+    // ---------- State ----------
+    let board, bag, queue, piece, holdType, canHold;
+    let score, lines, level, combo, b2b, hiscore;
+    let stageGoal, stageBase;
+    let running = false, paused = false, gameOver = false, won = false;
 
-    // Climate & effects
-    let climateTemp, climateEpoch, climateTick, climateTimerId = null;
-    let flashUntil = 0;
+    // climate
+    let climateTemp, climateEpoch, climateDelayMs, flashUntil;
     let fastDropActive = false;
+    let muted = false;
 
+    // banners / fx
+    let bannerText = '', bannerUntil = 0;
     const particles = [];
-    function spawnParticles(px, py, count, emojiList){
-      for(let i=0;i<count;i++){
-        particles.push({
-          x:px, y:py,
-          vx:(Math.random()*2-1)*1.2,
-          vy:(-Math.random()*1.5)-0.6,
-          life:800 + Math.random()*600,
-          born: performance.now(),
-          char: emojiList[Math.floor(Math.random()*emojiList.length)],
-          size: 18 + Math.random()*10
-        });
-      }
-    }
+    const floaters = [];   // floating score / +0.1C text
 
-    // ====== Helpers ======
+    // ---------- Audio (Web Audio API, zero dependency) ----------
+    let audioCtx = null;
+    function ensureAudio(){
+      if (muted) return null;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      } catch(e){ audioCtx = null; }
+      return audioCtx;
+    }
+    function tone(freq, dur, type, vol, when){
+      const a = ensureAudio(); if (!a) return;
+      const t0 = a.currentTime + (when || 0);
+      const o = a.createOscillator(); const g = a.createGain();
+      o.type = type || 'square'; o.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(vol || 0.05, t0);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + (dur || 0.08));
+      o.connect(g); g.connect(a.destination);
+      o.start(t0); o.stop(t0 + (dur || 0.08) + 0.02);
+    }
+    const sMove   = () => tone(200, 0.03, 'square', 0.03);
+    const sRotate = () => tone(340, 0.04, 'square', 0.04);
+    const sLock   = () => tone(150, 0.06, 'sine', 0.05);
+    const sHold   = () => tone(440, 0.06, 'triangle', 0.05);
+    const sDrop   = () => tone(110, 0.05, 'sawtooth', 0.04);
+    function sClear(n){
+      const base = 420;
+      for (let i=0;i<n;i++) tone(base + i*120, 0.10, 'triangle', 0.06, i*0.05);
+    }
+    function sTetris(){ [523,659,784,1046].forEach((f,i)=>tone(f,0.12,'square',0.06,i*0.05)); }
+    function sLevel(){ [392,523,659].forEach((f,i)=>tone(f,0.10,'triangle',0.06,i*0.06)); }
+    function sMilestone(){ [523,659,784,1046,784,1046].forEach((f,i)=>tone(f,0.12,'triangle',0.07,i*0.07)); }
+    function sOver(){ [400,330,260,180].forEach((f,i)=>tone(f,0.18,'sawtooth',0.06,i*0.12)); }
+    function sWarm(){ tone(90, 0.25, 'sawtooth', 0.05); }
+
+    // ---------- Helpers ----------
+    function refillBag(){
+      const b = TYPES.slice();
+      for (let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; }
+      return b;
+    }
+    function nextType(){
+      if (!bag.length) bag = refillBag();
+      return bag.pop();
+    }
+    function fillQueue(){
+      while (queue.length < 4) queue.push(nextType());
+    }
     function makePiece(type){
-      const idx = TYPES.indexOf(type);
-      return { type, color: COLORS[idx], rot:0, x: Math.floor(COLS/2), y: -2 };
+      return { type, rot:0, x: Math.floor(COLS/2), y: -2 };
     }
     function eachBlock(p, fn){
       const shape = SHAPES[p.type][p.rot];
-      for(const [dx,dy] of shape){
+      for (const [dx,dy] of shape){
         const x = ((p.x + dx) % COLS + COLS) % COLS;
         const y = p.y + dy;
-        fn(x,y);
+        fn(x, y);
       }
     }
     function valid(p){
       let ok = true;
-      eachBlock(p,(x,y)=>{
-        if (y >= ROWS) ok = false; else if (y>=0 && board[y][x]) ok = false;
-      });
+      eachBlock(p, (x,y)=>{ if (y>=ROWS) ok=false; else if (y>=0 && board[y][x]) ok=false; });
       return ok;
-    }
-    function nextType(){
-      if (!bag.length){
-        bag = TYPES.slice();
-        for(let i=bag.length-1;i>0;i--){
-          const j = Math.floor(Math.random()*(i+1));
-          [bag[i],bag[j]] = [bag[j],bag[i]];
-        }
-      }
-      return bag.pop();
-    }
-
-    function lockPiece(){
-      eachBlock(piece,(x,y)=>{ if (y>=0) board[y][x] = TYPES.indexOf(piece.type)+1; });
-      const clearedInfo = clearLines();
-      spawn();
-      if (clearedInfo.cleared>0){
-        const emojis = clearedInfo.cleared>=4 ? ['🔥','💥','✨','🌋'] : ['✨','💫','⭐'];
-        spawnParticles(canvas.width/2, (clearedInfo.avgY+0.5)*CELL, 18 + clearedInfo.cleared*6, emojis);
-      }
-    }
-
-    function clearLines(){
-      let cleared = 0; let ySum = 0;
-      for(let y=ROWS-1;y>=0;y--){
-        if (board[y].every(v=>v!==0)){
-          board.splice(y,1); board.unshift(Array(COLS).fill(0));
-          cleared++; ySum += y; y++;
-        }
-      }
-      if (cleared>0){
-        const table = [0, 120, 360, 800, 1400];
-        score += table[cleared] * level;
-        lines += cleared;
-        const nextLevel = Math.floor(lines/LEVEL_UP_EVERY)+1;
-        if (nextLevel>level){ level = nextLevel; }
-        updateHUD();
-      }
-      return { cleared, avgY: cleared? ySum/cleared : ROWS/2 };
     }
 
     function spawn(){
-      piece = makePiece(nextType());
-      if (!valid(piece)) gameOver = true;
+      fillQueue();
+      piece = makePiece(queue.shift());
+      fillQueue();
+      canHold = true;
+      if (!valid(piece)){ endGame(false); }
+    }
+
+    function doHold(){
+      if (!canHold || !piece || paused || gameOver) return;
+      const cur = piece.type;
+      if (holdType == null){ holdType = cur; spawn(); }
+      else { const tmp = holdType; holdType = cur; piece = makePiece(tmp); }
+      canHold = false;
+      sHold();
     }
 
     function rotate(dir){
       const saved = piece.rot;
       piece.rot = (piece.rot + dir + 4) % 4;
-      if (valid(piece)) return;
-      const kicks = [-1,1,-2,2,-3,3];
-      for(const k of kicks){
+      if (valid(piece)){ sRotate(); return; }
+      for (const k of [-1,1,-2,2,-3,3]){
         const ox = piece.x;
         piece.x = ((piece.x + k) % COLS + COLS) % COLS;
-        if (valid(piece)) return; piece.x = ox;
+        if (valid(piece)){ sRotate(); return; }
+        piece.x = ox;
       }
       piece.rot = saved;
     }
 
-    function cycleType(){
-      const currentIdx = TYPES.indexOf(piece.type);
-      const newType = TYPES[(currentIdx + 1) % TYPES.length];
-      const candidate = { ...piece, type: newType, rot: 0, color: COLORS[(currentIdx + 1) % COLORS.length] };
-      if (valid(candidate)) { piece = candidate; return; }
-      // try small horizontal adjustments to accommodate width differences
-      for (const dx of [1,-1,2,-2,3,-3]){
-        const alt = { ...candidate, x: ((candidate.x + dx) % COLS + COLS) % COLS };
-        if (valid(alt)) { piece = alt; return; }
-      }
-      // if still invalid, keep original piece
-    }
-
     function moveToColumn(col){
-      // Clamp and seek nearest valid x around the target column
       col = Math.max(0, Math.min(COLS-1, col));
       const target = { ...piece, x: col };
-      if (valid(target)) { piece = target; return; }
+      if (valid(target)){ if (target.x!==piece.x) sMove(); piece = target; return; }
       for (let d=1; d<=4; d++){
-        const left = { ...target, x: Math.max(0, col - d) };
-        if (valid(left)) { piece = left; return; }
-        const right = { ...target, x: Math.min(COLS-1, col + d) };
-        if (valid(right)) { piece = right; return; }
+        const left = { ...target, x: Math.max(0, col-d) };
+        if (valid(left)){ piece = left; return; }
+        const right = { ...target, x: Math.min(COLS-1, col+d) };
+        if (valid(right)){ piece = right; return; }
       }
-      // if no valid position found in small neighborhood, do nothing
+    }
+    function nudge(dx){
+      const p = { ...piece, x: ((piece.x + dx) % COLS + COLS) % COLS };
+      if (valid(p)){ piece = p; sMove(); }
     }
 
-    function softDrop(){
+    function softDrop(auto){
       const p = { ...piece, y: piece.y + 1 };
-      if (valid(p)) piece = p; else lockPiece();
+      if (valid(p)){ piece = p; if (!auto){ score += level; updateHUD(); } }
+      else lockPiece();
     }
-
     function hardDrop(){
-      let y = piece.y; while(true){ const p = { ...piece, y: y+1 }; if (valid(p)) y++; else break; }
-      piece.y = y; lockPiece(); score += 2*level; updateHUD();
+      let y = piece.y, dist = 0;
+      while (true){ const p = { ...piece, y: y+1 }; if (valid(p)){ y++; dist++; } else break; }
+      piece.y = y; score += 2*dist; sDrop(); lockPiece(); updateHUD();
     }
 
-    // Dynamic drop interval from level & climate & fast-drop
-    function computeDropInterval(){
-      const levelFactor = Math.pow(SPEED_FACTOR, Math.max(0, level-1));
+    function lockPiece(){
+      let topY = ROWS;
+      eachBlock(piece, (x,y)=>{ if (y>=0){ board[y][x] = TYPES.indexOf(piece.type)+1; if (y<topY) topY=y; } });
+      sLock();
+      const info = clearLines();
+      if (info.cleared > 0){
+        // carbon reward: delay warming
+        climateDelayMs += info.cleared * C_DELAY_PER_LINE;
+        const cy = (info.avgY + 0.5) * CELL;
+        const emojis = info.cleared >= 4 ? ['🔥','💥','✨','🌱'] : ['✨','💫','🌱'];
+        spawnParticles(canvas.width/2, cy, 16 + info.cleared*6, emojis);
+        floaters.push({ x: canvas.width/2, y: cy, text: '−CO₂', color:'#4ade80', born: performance.now(), life: 900 });
+      }
+      spawn();
+    }
+
+    function clearLines(){
+      let cleared = 0, ySum = 0;
+      for (let y=ROWS-1; y>=0; y--){
+        if (board[y].every(v=>v!==0)){
+          board.splice(y,1); board.unshift(Array(COLS).fill(0));
+          cleared++; ySum += y; y++;
+        }
+      }
+      if (cleared > 0){
+        const table = [0, 100, 300, 500, 800];
+        let gained = table[cleared] * level;
+        // back-to-back tetris bonus
+        const isTetris = (cleared === 4);
+        if (isTetris && b2b) gained = Math.floor(gained * 1.5);
+        b2b = isTetris;
+        // combo
+        combo++;
+        if (combo > 1) gained += 50 * (combo - 1) * level;
+        score += gained;
+        lines += cleared;
+
+        floaters.push({ x: canvas.width/2, y: (ySum/cleared)*CELL, text: '+'+gained, color:'#facc15', born: performance.now(), life: 1000 });
+
+        const nextLevel = Math.floor(lines / LEVEL_UP_EVERY) + 1;
+        if (nextLevel > level){ level = nextLevel; sLevel(); banner('LEVEL ' + level); }
+        else if (cleared === 4) sTetris();
+        else sClear(cleared);
+
+        // carbon milestone (stage goal)
+        if (lines >= stageBase + stageGoal){
+          stageBase += stageGoal;
+          climateDelayMs += C_STEP_MS * 2;     // big warming pushback
+          score += 1000 * level;
+          sMilestone();
+          banner('🌱 CARBON MILESTONE');
+          spawnParticles(canvas.width/2, canvas.height/3, 40, ['🌱','🌍','✨','💚']);
+        }
+        updateHUD();
+      } else {
+        combo = 0;
+      }
+      return { cleared, avgY: cleared ? ySum/cleared : ROWS/2 };
+    }
+
+    // ---------- Climate ----------
+    function effectiveElapsed(now){
+      return Math.max(0, (now - climateEpoch) - climateDelayMs);
+    }
+    function tempAt(now){
+      const steps = Math.floor(effectiveElapsed(now) / C_STEP_MS);
+      const t = C_START + Math.min(C_STEPS, steps) * C_STEP;
+      return Math.min(C_END, parseFloat(t.toFixed(1)));
+    }
+    function updateClimate(now){
+      const newTemp = tempAt(now);
+      if (newTemp > climateTemp){
+        climateTemp = newTemp;
+        flashUntil = now + 900;
+        floaters.push({ x: canvas.width/2, y: 60, text:'🌍 +0.1°C', color:'#fb923c', born: now, life: 1100 });
+        sWarm();
+        updateHUD();
+        if (climateTemp >= C_END - 1e-9){ endGame(false, true); }
+      }
+    }
+    function climateRemainMs(now){
+      const stepsDone = Math.floor(effectiveElapsed(now) / C_STEP_MS);
+      const stepsLeft = Math.max(0, C_STEPS - stepsDone);
+      const intoStep = effectiveElapsed(now) % C_STEP_MS;
+      return Math.max(0, stepsLeft * C_STEP_MS - intoStep);
+    }
+
+    // ---------- Speed ----------
+    function dropInterval(now){
+      const levelMul = Math.pow(SPEED_FACTOR, Math.max(0, level-1));
       const norm = Math.min(1, Math.max(0, (climateTemp - C_START) / (C_END - C_START)));
-      const climateMult = 1 - 0.7 * norm; // 1.0 -> 0.3
-      let interval = START_SPEED * levelFactor * climateMult;
-      if (fastDropActive) interval *= FAST_DROP_MULT;
-      return Math.max(MIN_SPEED, Math.floor(interval));
+      const climateMul = 1 - 0.6 * norm;       // hotter = faster
+      let iv = START_SPEED * levelMul * climateMul;
+      if (fastDropActive) iv *= FAST_DROP_MULT;
+      return Math.max(MIN_SPEED, Math.floor(iv));
     }
 
-    // HUD helpers
-    const elScore = ()=>document.getElementById('wt-score');
-    const elLines = ()=>document.getElementById('wt-lines');
-    const elLevel = ()=>document.getElementById('wt-level');
-    const elTemp  = ()=>document.getElementById('wt-temp');
-    const elCTimer= ()=>document.getElementById('wt-ctimer');
+    // ---------- FX ----------
+    function spawnParticles(px, py, count, chars){
+      for (let i=0;i<count;i++){
+        particles.push({
+          x:px, y:py,
+          vx:(Math.random()*2-1)*1.4, vy:(-Math.random()*1.6)-0.5,
+          life:700 + Math.random()*700, born:performance.now(),
+          char:chars[Math.floor(Math.random()*chars.length)], size:16+Math.random()*10
+        });
+      }
+    }
+    function banner(text){ bannerText = text; bannerUntil = performance.now() + 1400; }
 
+    // ---------- HUD ----------
+    const $ = (id) => document.getElementById(id);
     function updateHUD(){
-      elScore().textContent = String(score);
-      elLines().textContent = String(lines);
-      elLevel().textContent = String(level);
-      elTemp().textContent  = `${climateTemp.toFixed(1)}°C`;
+      $('wt-score').textContent = String(score);
+      $('wt-best').textContent  = String(hiscore);
+      $('wt-lines').textContent = String(lines);
+      $('wt-level').textContent = String(level);
+      $('wt-combo').textContent = String(Math.max(0, combo-1));
+      $('wt-temp').textContent  = climateTemp.toFixed(1) + '°C';
+      const norm = Math.min(1, Math.max(0, (climateTemp - C_START)/(C_END - C_START)));
+      $('wt-tempbar').style.width = Math.round(norm*100) + '%';
+      // CO2 cut: each cleared line ~ symbolic 0.5 t
+      $('wt-co2').textContent = (lines * 0.5).toFixed(1) + ' t';
+      $('wt-goal').textContent = Math.max(0, lines - stageBase) + ' / ' + stageGoal;
     }
-    function updateClimateTimer(now){
-      const elapsed = Math.max(0, now - climateEpoch);
-      const remain = Math.max(0, C_TOTAL_MS - elapsed);
+    function updateTimer(now){
+      const remain = running && !paused && !gameOver ? climateRemainMs(now) : climateRemainMs(now);
       const m = Math.floor(remain/60000), s = Math.floor((remain%60000)/1000);
-      elCTimer().textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      $('wt-ctimer').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
 
-    // ====== Drawing ======
-    function drawCell(x,y,color){
-      const px = x*CELL, py = y*CELL;
-      ctx.fillStyle = color; ctx.fillRect(px, py, CELL, CELL);
-      ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(px, py, CELL, 4);
-      ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.fillRect(px, py + CELL - 4, CELL, 4);
-      ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(px+3, py+3, CELL-6, CELL-6);
+    // ---------- Drawing ----------
+    function drawCell(c, x, y, color, size){
+      const s = size || CELL;
+      const px = x*s, py = y*s;
+      c.fillStyle = color; c.fillRect(px, py, s, s);
+      c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(px, py, s, Math.max(2, s*0.12));
+      c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px, py + s - Math.max(2, s*0.12), s, Math.max(2, s*0.12));
+      c.fillStyle = 'rgba(255,255,255,.06)'; c.fillRect(px+2, py+2, s-4, s-4);
     }
     function drawGrid(){
-      ctx.strokeStyle = 'rgba(255,255,255,.06)'; ctx.lineWidth = 1;
-      for(let x=1;x<COLS;x++){ ctx.beginPath(); ctx.moveTo(x*CELL+.5,0); ctx.lineTo(x*CELL+.5,ROWS*CELL); ctx.stroke(); }
-      for(let y=1;y<ROWS;y++){ ctx.beginPath(); ctx.moveTo(0,y*CELL+.5); ctx.lineTo(COLS*CELL,y*CELL+.5); ctx.stroke(); }
+      ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1;
+      for (let x=1;x<COLS;x++){ ctx.beginPath(); ctx.moveTo(x*CELL+.5,0); ctx.lineTo(x*CELL+.5,ROWS*CELL); ctx.stroke(); }
+      for (let y=1;y<ROWS;y++){ ctx.beginPath(); ctx.moveTo(0,y*CELL+.5); ctx.lineTo(COLS*CELL,y*CELL+.5); ctx.stroke(); }
     }
-    function overlay(text){
-      ctx.save();
-      ctx.fillStyle = 'rgba(0,0,0,.5)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#fff';
-      ctx.textAlign='center';
-      ctx.textBaseline='middle';
-      ctx.font='bold 32px system-ui, sans-serif';
-      const lines = text.split('\n');
-      lines.forEach((t,i)=>ctx.fillText(t, canvas.width/2, canvas.height/2 + i*36));
-      ctx.restore();
+    function drawHeatBackground(now){
+      const norm = Math.min(1, Math.max(0, (climateTemp - C_START)/(C_END - C_START)));
+      // sky gradient cools->warms
+      const g = ctx.createLinearGradient(0,0,0,canvas.height);
+      g.addColorStop(0, `rgb(${10+norm*60}, ${22-norm*8}, ${40-norm*18})`);
+      g.addColorStop(1, `rgb(${6+norm*30}, ${12}, ${26-norm*10})`);
+      ctx.fillStyle = g; ctx.fillRect(0,0,canvas.width,canvas.height);
+      // rising sea level (visual) from bottom
+      const seaH = norm * canvas.height * 0.32;
+      if (seaH > 1){
+        const sg = ctx.createLinearGradient(0, canvas.height-seaH, 0, canvas.height);
+        sg.addColorStop(0, 'rgba(56,189,248,0.10)');
+        sg.addColorStop(1, 'rgba(2,132,199,0.22)');
+        ctx.fillStyle = sg; ctx.fillRect(0, canvas.height-seaH, canvas.width, seaH);
+        // wavy line
+        ctx.strokeStyle = 'rgba(125,211,252,0.35)'; ctx.lineWidth = 2; ctx.beginPath();
+        for (let x=0;x<=canvas.width;x+=8){
+          const yy = canvas.height - seaH + Math.sin((x*0.05) + now*0.003)*3;
+          if (x===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy);
+        }
+        ctx.stroke();
+      }
     }
-
+    function drawPortals(){
+      const gl = ctx.createLinearGradient(0,0,CELL,0);
+      gl.addColorStop(0,'rgba(255,255,255,.07)'); gl.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle = gl; ctx.fillRect(0,0,CELL,ROWS*CELL);
+      const gr = ctx.createLinearGradient(canvas.width-CELL,0,canvas.width,0);
+      gr.addColorStop(0,'rgba(255,255,255,0)'); gr.addColorStop(1,'rgba(255,255,255,.07)');
+      ctx.fillStyle = gr; ctx.fillRect(canvas.width-CELL,0,CELL,ROWS*CELL);
+    }
     function drawParticles(now){
-      for(let i=particles.length-1;i>=0;i--){
-        const p = particles[i];
-        const age = now - p.born;
+      for (let i=particles.length-1;i>=0;i--){
+        const p = particles[i]; const age = now - p.born;
         if (age > p.life){ particles.splice(i,1); continue; }
-        const t = age / p.life;
-        p.x += p.vx; p.y += p.vy; p.vy += 0.035; // gravity
+        const t = age/p.life;
+        p.x += p.vx; p.y += p.vy; p.vy += 0.04;
         ctx.globalAlpha = 1 - t;
-        ctx.font = `${p.size}px system-ui, emoji`;
+        ctx.font = p.size + 'px system-ui, "Apple Color Emoji", "Segoe UI Emoji", emoji';
         ctx.fillText(p.char, p.x, p.y);
         ctx.globalAlpha = 1;
       }
     }
+    function drawFloaters(now){
+      ctx.textAlign = 'center';
+      for (let i=floaters.length-1;i>=0;i--){
+        const f = floaters[i]; const age = now - f.born;
+        if (age > f.life){ floaters.splice(i,1); continue; }
+        const t = age/f.life;
+        ctx.globalAlpha = 1 - t;
+        ctx.fillStyle = f.color;
+        ctx.font = 'bold 18px system-ui, sans-serif';
+        ctx.fillText(f.text, f.x, f.y - t*30);
+        ctx.globalAlpha = 1;
+      }
+      ctx.textAlign = 'start';
+    }
+    function drawMini(c, cv, type){
+      c.clearRect(0,0,cv.width,cv.height);
+      if (!type) return;
+      const s = 22;
+      const shape = SHAPES[type][0];
+      let minX=99,maxX=-99,minY=99,maxY=-99;
+      shape.forEach(([dx,dy])=>{ minX=Math.min(minX,dx);maxX=Math.max(maxX,dx);minY=Math.min(minY,dy);maxY=Math.max(maxY,dy); });
+      const w=(maxX-minX+1)*s, h=(maxY-minY+1)*s;
+      const ox=(cv.width-w)/2 - minX*s, oy=(s); // top padding
+      shape.forEach(([dx,dy])=>{
+        const px=ox+dx*s, py=oy+dy*s;
+        c.fillStyle = colorOf(type); c.fillRect(px,py,s,s);
+        c.fillStyle='rgba(255,255,255,.18)'; c.fillRect(px,py,s,3);
+        c.fillStyle='rgba(0,0,0,.25)'; c.fillRect(px,py+s-3,s,3);
+      });
+    }
+    function drawHold(){ drawMini(holdCtx, holdCv, holdType); }
+    function drawNext(){
+      nextCtx.clearRect(0,0,nextCv.width,nextCv.height);
+      const s = 22, slotH = 3*s;
+      for (let k=0;k<3;k++){
+        const type = queue[k]; if (!type) continue;
+        const shape = SHAPES[type][0];
+        let minX=99,maxX=-99,minY=99,maxY=-99;
+        shape.forEach(([dx,dy])=>{ minX=Math.min(minX,dx);maxX=Math.max(maxX,dx);minY=Math.min(minY,dy);maxY=Math.max(maxY,dy); });
+        const w=(maxX-minX+1)*s;
+        const ox=(nextCv.width-w)/2 - minX*s;
+        const oy=k*slotH + s*0.6;
+        shape.forEach(([dx,dy])=>{
+          const px=ox+dx*s, py=oy+dy*s;
+          nextCtx.fillStyle = colorOf(type); nextCtx.fillRect(px,py,s,s);
+          nextCtx.fillStyle='rgba(255,255,255,.18)'; nextCtx.fillRect(px,py,s,3);
+          nextCtx.fillStyle='rgba(0,0,0,.25)'; nextCtx.fillRect(px,py+s-3,s,3);
+        });
+      }
+    }
+    function overlay(title, sub){
+      ctx.save();
+      ctx.fillStyle = 'rgba(3,8,18,.78)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle = '#f8fafc'; ctx.font='bold 26px system-ui, sans-serif';
+      title.split('\n').forEach((t,i)=>ctx.fillText(t, canvas.width/2, canvas.height/2 - 28 + i*30));
+      if (sub){
+        ctx.fillStyle='#94a3b8'; ctx.font='14px system-ui, sans-serif';
+        sub.split('\n').forEach((t,i)=>ctx.fillText(t, canvas.width/2, canvas.height/2 + 30 + i*20));
+      }
+      ctx.restore();
+    }
 
-    function drawBoard(now){
+    function render(now){
       ctx.clearRect(0,0,canvas.width,canvas.height);
+      drawHeatBackground(now);
+      drawPortals();
 
-      // Subtle heat tint based on climate
-      const norm = Math.min(1, Math.max(0, (climateTemp - C_START) / (C_END - C_START)));
-      const heat = Math.floor(20 + norm*60);
-      ctx.fillStyle = `rgba(255,80,0,${(heat/255)*0.06})`;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
+      for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++){ const v=board[y][x]; if (v) drawCell(ctx,x,y,COLORS[v-1]); }
 
-      // Portal columns
-      const gradL = ctx.createLinearGradient(0,0,CELL,0);
-      gradL.addColorStop(0,'rgba(255,255,255,.06)'); gradL.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.fillStyle = gradL; ctx.fillRect(0,0,CELL,ROWS*CELL);
-      const gradR = ctx.createLinearGradient(canvas.width-CELL,0,canvas.width,0);
-      gradR.addColorStop(0,'rgba(255,255,255,0)'); gradR.addColorStop(1,'rgba(255,255,255,.06)');
-      ctx.fillStyle = gradR; ctx.fillRect(canvas.width-CELL,0,CELL,ROWS*CELL);
-
-      // Fixed blocks
-      for(let y=0;y<ROWS;y++){
-        for(let x=0;x<COLS;x++){
-          const v = board[y][x]; if (v) drawCell(x,y,COLORS[v-1]);
-        }
+      if (piece && running && !gameOver){
+        let gy = piece.y; while (true){ const p={...piece,y:gy+1}; if (valid(p)) gy++; else break; }
+        ctx.globalAlpha = .22; eachBlock({...piece,y:gy},(x,y)=>{ if (y>=0) drawCell(ctx,x,y,colorOf(piece.type)); }); ctx.globalAlpha = 1;
+        eachBlock(piece,(x,y)=>{ if (y>=0) drawCell(ctx,x,y,colorOf(piece.type)); });
       }
-
-      // Ghost
-      if (piece){
-        let gy = piece.y; while(true){ const p = { ...piece, y: gy+1 }; if (valid(p)) gy++; else break; }
-        ctx.globalAlpha = 0.25; eachBlock({ ...piece, y: gy }, (x,y)=>{ if (y>=0) drawCell(x,y,piece.color); }); ctx.globalAlpha = 1;
-      }
-
-      // Current piece
-      if (piece){ eachBlock(piece,(x,y)=>{ if (y>=0) drawCell(x,y,piece.color); }); }
 
       drawGrid();
 
-      // 🌍 badge and live temp at top-left
-      ctx.font = '20px system-ui, emoji';
-      ctx.fillStyle = '#fff';
-      ctx.fillText('🌍', 8, 24);
-      ctx.font = 'bold 14px system-ui, emoji';
-      ctx.fillText(`${climateTemp.toFixed(1)}°C`, 34, 22);
+      // top-left climate badge
+      ctx.font = '18px system-ui, "Segoe UI Emoji", emoji'; ctx.fillStyle='#fff';
+      ctx.fillText('🌍', 6, 22);
+      ctx.font = 'bold 13px system-ui, sans-serif';
+      ctx.fillStyle = climateTemp >= 2.5 ? '#fb7185' : '#e2e8f0';
+      ctx.fillText(climateTemp.toFixed(1)+'°C', 30, 20);
 
-      // Temperature step flash
       if (now < flashUntil){
-        ctx.save();
-        ctx.globalAlpha = 0.6;
-        ctx.fillStyle = 'rgba(255,80,0,0.35)';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.globalAlpha = 1;
-        ctx.font = 'bold 24px system-ui, emoji';
-        ctx.textAlign='center';
-        ctx.fillText('🌍 +0.1°C', canvas.width/2, 40);
+        ctx.save(); ctx.globalAlpha=.5; ctx.fillStyle='rgba(251,113,86,.45)';
+        ctx.fillRect(0,0,canvas.width,canvas.height); ctx.restore();
+      }
+
+      drawParticles(now);
+      drawFloaters(now);
+
+      if (now < bannerUntil && bannerText){
+        ctx.save(); ctx.textAlign='center';
+        ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0, canvas.height/2-26, canvas.width, 52);
+        ctx.fillStyle='#fef08a'; ctx.font='bold 22px system-ui, sans-serif';
+        ctx.fillText(bannerText, canvas.width/2, canvas.height/2+8);
         ctx.restore();
       }
 
-      // Particles
-      drawParticles(now);
+      drawHold(); drawNext();
 
-      if (gameOver) overlay('GAME OVER\nClick Restart');
+      if (!running && !gameOver){ overlay('WRAPTRIS\nClimate Edition', 'Press ▶ Play\nClear lines · cut carbon · beat 3.0°C'); }
+      else if (paused){ overlay('PAUSED', 'Press ⏸ or P to resume'); }
+      else if (gameOver){
+        if (won) overlay('🌱 YOU HELD THE LINE', 'Score ' + score + '\nClick ▶ Play to try again');
+        else overlay(climateTemp>=C_END ? '🔥 TIPPING POINT\nREACHED' : 'GAME OVER',
+                     'Score ' + score + '  ·  Best ' + hiscore + '\nClick ▶ Play to try again');
+      }
     }
 
-    // ====== Loop ======
+    // ---------- Loop ----------
     let last = 0, acc = 0;
     function frame(now){
-      const dt = now - last; last = now; acc += dt;
-
-      const dropInterval = computeDropInterval();
-      while(acc >= dropInterval){ acc -= dropInterval; if (!piece) spawn(); if (!gameOver) softDrop(); }
-
-      drawBoard(now);
-      updateClimateTimer(now);
+      const dt = now - last; last = now;
+      if (running && !paused && !gameOver){
+        updateClimate(now);
+        acc += dt;
+        const iv = dropInterval(now);
+        let guard = 0;
+        while (acc >= iv && guard < 6){ acc -= iv; if (!piece) spawn(); if (!gameOver) softDrop(true); guard++; }
+      }
+      render(now);
+      updateTimer(now);
       requestAnimationFrame(frame);
     }
 
-    // ====== Mouse Input (only) ======
-    function clientXToCanvasX(clientX){
-      const r = canvas.getBoundingClientRect();
-      return (clientX - r.left) * (canvas.width / r.width);
+    // ---------- Game control ----------
+    function loadHiscore(){
+      try { hiscore = parseInt(localStorage.getItem(LS_HISCORE)||'0',10) || 0; } catch(e){ hiscore = 0; }
+      try { muted = localStorage.getItem(LS_MUTE) === '1'; } catch(e){ muted = false; }
+      const mb = $('wt-mute'); if (mb) mb.textContent = muted ? '🔇 Muted' : '🔊 Sound';
     }
-    function pxToCol(px){
-      const col = Math.floor(px / CELL);
-      return Math.max(0, Math.min(COLS-1, col));
+    function saveHiscore(){ try { if (score > hiscore){ hiscore = score; localStorage.setItem(LS_HISCORE, String(hiscore)); } } catch(e){} }
+
+    function newGame(){
+      board = Array.from({length:ROWS}, ()=>Array(COLS).fill(0));
+      bag = refillBag(); queue = []; fillQueue();
+      holdType = null; canHold = true;
+      score = 0; lines = 0; level = 1; combo = 0; b2b = false;
+      stageGoal = GOAL_PER_STAGE; stageBase = 0;
+      climateTemp = C_START; climateEpoch = performance.now(); climateDelayMs = 0; flashUntil = 0;
+      fastDropActive = false; particles.length = 0; floaters.length = 0;
+      gameOver = false; won = false; paused = false; running = true;
+      spawn(); updateHUD();
+      $('wt-pause').textContent = '⏸ Pause';
     }
-
-    canvas.addEventListener('mousemove', (e)=>{
-      if (gameOver || !piece) return;
-      const px = clientXToCanvasX(e.clientX);
-      moveToColumn(pxToCol(px));
-    });
-
-    canvas.addEventListener('mousedown', (e)=>{
-      e.preventDefault();
-      if (gameOver || !piece) return;
-      if (e.button === 0){
-        if (LEFT_CLICK_MODE === 'rotate') rotate(1); else cycleType();
-      } else if (e.button === 2){
-        fastDropActive = true;
+    function endGame(isWin, byClimate){
+      gameOver = true; running = false; won = !!isWin;
+      saveHiscore(); updateHUD();
+      if (byClimate) sWarm();
+      sOver();
+    }
+    function togglePause(){
+      if (!running || gameOver) return;
+      paused = !paused;
+      if (paused){
+        // freeze climate clock by absorbing the pause into delay later: capture pause start
+        pauseStart = performance.now();
+      } else if (pauseStart){
+        // shift epoch forward so the paused span doesn't heat the planet
+        const span = performance.now() - pauseStart;
+        climateEpoch += span; pauseStart = 0;
       }
-    });
-
-    canvas.addEventListener('mouseup', (e)=>{
-      if (e.button === 2) fastDropActive = false;
-    });
-    canvas.addEventListener('mouseleave', ()=>{ fastDropActive = false; });
-    canvas.addEventListener('contextmenu', (e)=>{ e.preventDefault(); });
-
-    restartBtn.addEventListener('click', (e)=>{ e.preventDefault(); reset(); });
-
-    // ====== Climate timer ======
-    function startClimate(){
-      climateTemp = C_START;
-      climateEpoch = performance.now();
-      climateTick = 0;
-      if (climateTimerId) clearInterval(climateTimerId);
-      climateTimerId = setInterval(()=>{
-        if (climateTemp < C_END){
-          climateTemp = parseFloat((climateTemp + C_STEP).toFixed(1));
-          climateTick++;
-          flashUntil = performance.now() + 1200;
-          updateHUD();
-        } else {
-          clearInterval(climateTimerId); climateTimerId = null;
-        }
-      }, C_STEP_MS);
+      $('wt-pause').textContent = paused ? '▶ Resume' : '⏸ Pause';
+    }
+    let pauseStart = 0;
+    function toggleMute(){
+      muted = !muted;
+      try { localStorage.setItem(LS_MUTE, muted ? '1':'0'); } catch(e){}
+      $('wt-mute').textContent = muted ? '🔇 Muted' : '🔊 Sound';
+      if (!muted) ensureAudio();
     }
 
-    // ====== Reset & Start ======
-    function reset(){
-      board = Array.from({length: ROWS}, ()=>Array(COLS).fill(0));
-      bag = []; piece = null;
-      score = 0; lines = 0; level = 1;
-      gameOver = false; particles.length = 0; flashUntil = 0; fastDropActive = false;
-      startClimate();
-      updateHUD();
-      if (!piece) spawn();
+    // ---------- Input: mouse ----------
+    function clientXToCol(clientX){
+      const r = canvas.getBoundingClientRect();
+      const px = (clientX - r.left) * (canvas.width / r.width);
+      return Math.max(0, Math.min(COLS-1, Math.floor(px / CELL)));
     }
+    let pointerInside = false;
+    canvas.addEventListener('mousemove', (e)=>{ if (running && !paused && !gameOver && piece) moveToColumn(clientXToCol(e.clientX)); });
+    canvas.addEventListener('mouseenter', ()=>{ pointerInside = true; });
+    canvas.addEventListener('mouseleave', ()=>{ pointerInside = false; fastDropActive = false; });
+    canvas.addEventListener('mousedown', (e)=>{
+      e.preventDefault(); ensureAudio();
+      if (!running || paused || gameOver || !piece) return;
+      if (e.button === 0) rotate(1);
+      else if (e.button === 2) fastDropActive = true;
+    });
+    canvas.addEventListener('mouseup', (e)=>{ if (e.button === 2) fastDropActive = false; });
+    canvas.addEventListener('dblclick', (e)=>{ e.preventDefault(); if (running && !paused && !gameOver && piece) hardDrop(); });
+    canvas.addEventListener('contextmenu', (e)=> e.preventDefault());
+    canvas.addEventListener('wheel', (e)=>{ if (running && !paused && !gameOver){ e.preventDefault(); if (e.deltaY < 0) doHold(); else softDrop(false); } }, { passive:false });
 
-    // ====== Minimal Runtime Tests ======
-    (function runTests(){
+    // ---------- Input: touch ----------
+    let touchStartX=0, touchStartY=0, touchStartT=0, touchCol=0, touchMoved=false;
+    canvas.addEventListener('touchstart', (e)=>{
+      ensureAudio();
+      if (!running || paused || gameOver || !piece) return;
+      const t = e.touches[0]; touchStartX=t.clientX; touchStartY=t.clientY; touchStartT=performance.now();
+      touchCol = piece.x; touchMoved=false;
+    }, { passive:true });
+    canvas.addEventListener('touchmove', (e)=>{
+      if (!running || paused || gameOver || !piece) return;
+      const t = e.touches[0];
+      const r = canvas.getBoundingClientRect();
+      const scale = canvas.width / r.width;
+      const dxCells = Math.round(((t.clientX - touchStartX) * scale) / CELL);
+      if (dxCells !== 0){ moveToColumn(touchCol + dxCells); touchMoved = true; }
+      if (e.cancelable) e.preventDefault();
+    }, { passive:false });
+    canvas.addEventListener('touchend', (e)=>{
+      if (!running || paused || gameOver || !piece) return;
+      const dt = performance.now() - touchStartT;
+      const dy = (e.changedTouches[0].clientY - touchStartY);
+      if (!touchMoved){
+        if (dy > 60) hardDrop();        // swipe down = hard drop
+        else if (dt < 250) rotate(1);   // tap = rotate
+      }
+    }, { passive:true });
+
+    // ---------- Input: keyboard (only while hovering the board, to avoid hijacking the page) ----------
+    window.addEventListener('keydown', (e)=>{
+      const focused = (document.activeElement === canvas);
+      if (!pointerInside && !focused) return;
+      if (!running || gameOver) return;
+      const k = e.key;
+      if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(k)) e.preventDefault();
+      if (paused){ if (k==='p'||k==='P') togglePause(); return; }
+      if (k==='ArrowLeft') nudge(-1);
+      else if (k==='ArrowRight') nudge(1);
+      else if (k==='ArrowUp') rotate(1);
+      else if (k==='ArrowDown') softDrop(false);
+      else if (k===' ') hardDrop();
+      else if (k==='c'||k==='C') doHold();
+      else if (k==='p'||k==='P') togglePause();
+    });
+
+    // ---------- Buttons ----------
+    $('wt-play').addEventListener('click', ()=>{ ensureAudio(); newGame(); canvas.focus(); });
+    $('wt-pause').addEventListener('click', ()=> togglePause());
+    $('wt-mute').addEventListener('click', ()=> toggleMute());
+
+    // ---------- Self tests (console only) ----------
+    (function tests(){
       try {
-        console.assert(!!document.body && !!window.__wraptrisAppRef, 'container present');
-        overlay('A\nB'); // newline split smoke test
-        const _level = 1; level = _level; climateTemp = C_START; const a = computeDropInterval();
-        climateTemp = Math.min(C_END, C_START + 0.5); const b = computeDropInterval();
-        console.assert(b <= a, 'hotter climate should not slow gravity');
-        climateTemp = C_START; level = _level; const c = computeDropInterval(); level = _level + 1; const d = computeDropInterval();
-        console.assert(d <= c, 'higher level faster');
-        const testP = { type: 'I', rot:0, x: -1, y: 0, color: '#000' }; let minX=999,maxX=-999; eachBlock(testP,(x)=>{minX=Math.min(minX,x);maxX=Math.max(maxX,x);});
-        console.assert(minX>=0 && maxX<COLS, 'wrap bounds');
-        // New tests
-        const e1 = computeDropInterval(); fastDropActive = true; const e2 = computeDropInterval(); fastDropActive = false;
-        console.assert(e2 < e1, 'fast drop multiplier reduces interval');
-        console.assert(pxToCol(0) === 0 && pxToCol(CELL*COLS-1) === COLS-1, 'pxToCol clamps to range');
-      } catch(err){ console.error('Runtime test failed:', err); }
+        board = Array.from({length:ROWS}, ()=>Array(COLS).fill(0));
+        const tp = { type:'I', rot:0, x:-1, y:0 }; let mn=99,mx=-99;
+        eachBlock(tp,(x)=>{ mn=Math.min(mn,x); mx=Math.max(mx,x); });
+        console.assert(mn>=0 && mx<COLS, 'wrap stays in bounds');
+        level=1; climateTemp=C_START; const a=dropInterval(0);
+        climateTemp=C_END; const b=dropInterval(0);
+        console.assert(b<=a, 'hotter = not slower');
+        climateTemp=C_START; level=1; const c=dropInterval(0); level=2; const d=dropInterval(0);
+        console.assert(d<=c, 'higher level faster'); level=1;
+        const e1=dropInterval(0); fastDropActive=true; const e2=dropInterval(0); fastDropActive=false;
+        console.assert(e2<e1, 'fast drop reduces interval');
+        console.assert(clientXToCol(-9999)===0, 'col clamps low');
+      } catch(err){ console.error('Wraptris self-test:', err); }
     })();
 
-    // Kick-off
-    reset();
-    requestAnimationFrame((t)=>{ requestAnimationFrame(frame); });
+    // ---------- Kick off ----------
+    loadHiscore();
+    newGame(); running = false; gameOver = false; // start on title screen
+    updateHUD();
+    requestAnimationFrame((t)=>{ last = t; requestAnimationFrame(frame); });
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
+  else boot();
 })();
-</script>
 
+</script>
+<!-- ===================== 테트리스 Wraptris 끝 (블록 B) ===================== -->
+
+  
    
 
    
