@@ -4871,7 +4871,8 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 </p>
 </section>
 
-   <!-- ===================== 테트리스 Wraptris (블록 B) ===================== -->
+  
+<!-- ===================== 테트리스 Wraptris V1.1 (블록 B) ===================== -->
 <style>
   #wraptris-app{
     --wt-text:#e2e8f0; --wt-dim:#94a3b8; --wt-panel:#0f1f38;
@@ -4918,10 +4919,25 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
   #wraptris-app .wt-btn:active{transform:translateY(0);}
   #wraptris-app .wt-primary{background:linear-gradient(135deg,#0891b2,#22d3ee); border-color:transparent; color:#04141c;}
   #wraptris-app .wt-primary:hover{background:linear-gradient(135deg,#0aa3c9,#3bdcf0);}
+
+  /* 온스크린 컨트롤 패드 (V1.1 신설) */
+  #wraptris-app .wt-pad{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px;}
+  #wraptris-app .wt-pad-btn{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:12px 0 8px; border:1px solid var(--wt-line); border-radius:10px;
+    background:#13243f; color:var(--wt-text); font-size:20px; line-height:1; cursor:pointer;
+    user-select:none; -webkit-user-select:none; touch-action:manipulation; transition:.1s;
+  }
+  #wraptris-app .wt-pad-btn small{font-size:9px; letter-spacing:1px; color:var(--wt-dim); margin-top:4px;}
+  #wraptris-app .wt-pad-btn:hover{background:#1c3357;}
+  #wraptris-app .wt-pad-btn:active{background:var(--wt-accent); color:#04141c; transform:scale(.95);}
+  #wraptris-app .wt-pad-btn:active small{color:#04141c;}
+
   #wraptris-app .wt-help{font-size:12px; color:var(--wt-dim);}
   #wraptris-app .wt-help summary{cursor:pointer; padding:8px 0; font-weight:600; color:var(--wt-text);}
   #wraptris-app .wt-help ul{margin:6px 0 0; padding-left:18px; line-height:1.7;}
   #wraptris-app .wt-help b{color:var(--wt-text);}
+  #wraptris-app .wt-help em{color:var(--wt-accent); font-style:normal;}
 
   /* SEO 설명 섹션 (게임 컨테이너 밖이라 변수 미상속 → 직접 색상 지정) */
   .wt-about{
@@ -4954,10 +4970,10 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
   can, chase Carbon Milestones, and keep the world below the line.</p>
 
   <h3>How to play</h3>
-  <p>Move your mouse over the board to slide the piece left and right. Left-click to rotate,
-  hold right-click for a fast drop, and double-click for a hard drop. On touch devices, drag
-  to move, tap to rotate, and swipe down to slam a piece home. Blocks <strong>wrap around the
-  walls</strong> — leave one side and you reappear on the other.</p>
+  <p>Move your mouse over the board to slide the piece left and right, and left-click to
+  rotate. Use the on-screen pad — or the keyboard — to soft drop, hard drop, and hold. On
+  touch devices, drag to move, tap to rotate, and swipe down to slam a piece home. Blocks
+  <strong>wrap around the walls</strong> — leave one side and you reappear on the other.</p>
 
   <h3>Why we built it</h3>
   <p>Wraptris runs as a single block of <strong>vanilla JavaScript with zero external
@@ -4983,36 +4999,24 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     window.__wraptrisMounted = true;
 
     // ============================================================
-    // Wraptris — Climate Edition (Vanilla JS, zero dependency)
+    // Wraptris — Climate Edition V1.1 (Vanilla JS, zero dependency)
     // by M-Corp Ethical AI / mcorpai.org
-    // Core idea: clearing lines (= cutting carbon) slows global warming.
+    // V1.1: left-click = rotate ONLY. Fast drop fully separated.
+    //       Fixed stuck-fast-drop bug + control/UX overhaul.
     // ============================================================
 
-    // ---------- Board & speed ----------
-    const COLS = 10;
-    const ROWS = 20;
-    const CELL = 30;                 // px per cell (canvas internal res)
-    const START_SPEED = 700;         // base ms per gravity step
-    const SPEED_FACTOR = 0.82;       // per-level multiplier
-    const MIN_SPEED = 70;            // fastest cap
-    const LEVEL_UP_EVERY = 10;       // lines per level
-    const GOAL_PER_STAGE = 30;       // lines per "Carbon Milestone"
+    const COLS = 10, ROWS = 20, CELL = 30;
+    const START_SPEED = 700, SPEED_FACTOR = 0.82, MIN_SPEED = 70;
+    const LEVEL_UP_EVERY = 10, GOAL_PER_STAGE = 30;
 
-    // ---------- Climate model ----------
-    // Earth heats from 1.5C toward the 3.0C tipping point.
     const C_START = 1.5, C_END = 3.0, C_STEP = 0.1;
-    const C_STEP_MS = 9000;                              // base time per +0.1C
-    const C_DELAY_PER_LINE = 2600;                       // warming delay earned per cleared line
+    const C_STEP_MS = 9000, C_DELAY_PER_LINE = 2600;
     const C_STEPS = Math.round((C_END - C_START) / C_STEP);
 
-    // ---------- Mouse / control options ----------
-    const FAST_DROP_MULT = 0.22;     // right-click hold gravity boost
+    const FAST_DROP_MULT = 0.22;
+    const LS_HISCORE = 'wraptris.hiscore', LS_MUTE = 'wraptris.muted';
 
-    // ---------- Storage keys ----------
-    const LS_HISCORE = 'wraptris.hiscore';
-    const LS_MUTE = 'wraptris.muted';
-
-    // ---------- SEO: inject metadata (works even when only the block is pasted) ----------
+    // ---------- SEO (fallback injection) ----------
     function injectSEO(){
       try {
         const SITE = 'https://mcorpai.org';
@@ -5024,107 +5028,53 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
           if (!el){ el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
           el.setAttribute('content', val);
         };
-        if (!document.title || /^(index|home|untitled)?$/i.test(document.title.trim())) {
+        if (!document.title || /^(index|home|untitled)?$/i.test(document.title.trim()))
           document.title = 'Wraptris — Offline Climate Puzzle Game | M-Corp Ethical AI';
-        }
-        setMeta('name', 'description', DESC);
-        setMeta('name', 'keywords', 'Wraptris, climate game, offline puzzle game, tetris, vanilla javascript game, '
-          + 'ethical AI, M-Corp Ethical AI, VitalGuard, mcorpai, zero dependency, privacy game, browser game, free game');
-        setMeta('name', 'author', 'M-Corp Ethical AI (Morgan J.)');
-        setMeta('name', 'theme-color', '#0a1628');
-        setMeta('name', 'robots', 'index, follow, max-image-preview:large');
-        // Open Graph
-        setMeta('property', 'og:type', 'website');
-        setMeta('property', 'og:site_name', 'M-Corp Ethical AI');
-        setMeta('property', 'og:title', 'Wraptris — Offline Climate Puzzle Game');
-        setMeta('property', 'og:description', DESC);
-        setMeta('property', 'og:url', PAGE);
-        // Twitter
-        setMeta('name', 'twitter:card', 'summary_large_image');
-        setMeta('name', 'twitter:title', 'Wraptris — Offline Climate Puzzle Game');
-        setMeta('name', 'twitter:description', DESC);
-        // canonical
+        setMeta('name','description',DESC);
+        setMeta('name','keywords','Wraptris, climate game, offline puzzle game, tetris, vanilla javascript game, ethical AI, M-Corp Ethical AI, VitalGuard, mcorpai, zero dependency, privacy game, browser game, free game');
+        setMeta('name','author','M-Corp Ethical AI (Morgan J.)');
+        setMeta('name','theme-color','#0a1628');
+        setMeta('name','robots','index, follow, max-image-preview:large');
+        setMeta('property','og:type','website');
+        setMeta('property','og:site_name','M-Corp Ethical AI');
+        setMeta('property','og:title','Wraptris — Offline Climate Puzzle Game');
+        setMeta('property','og:description',DESC);
+        setMeta('property','og:url',PAGE);
+        setMeta('name','twitter:card','summary_large_image');
+        setMeta('name','twitter:title','Wraptris — Offline Climate Puzzle Game');
+        setMeta('name','twitter:description',DESC);
         let link = document.head.querySelector('link[rel="canonical"]');
         if (!link){ link = document.createElement('link'); link.setAttribute('rel','canonical'); document.head.appendChild(link); }
         link.setAttribute('href', PAGE);
-        // JSON-LD structured data
         if (!document.getElementById('wraptris-jsonld')){
           const ld = document.createElement('script');
-          ld.type = 'application/ld+json';
-          ld.id = 'wraptris-jsonld';
+          ld.type = 'application/ld+json'; ld.id = 'wraptris-jsonld';
           ld.textContent = JSON.stringify([
-            {
-              "@context": "https://schema.org",
-              "@type": "VideoGame",
-              "name": "Wraptris",
-              "alternateName": "Wraptris Climate Edition",
-              "url": PAGE,
-              "description": DESC,
-              "genre": ["Puzzle", "Arcade", "Educational"],
-              "gamePlatform": "Web Browser",
-              "applicationCategory": "Game",
-              "operatingSystem": "Any (HTML5 browser)",
-              "inLanguage": "en",
-              "isAccessibleForFree": true,
-              "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-              "author": { "@type": "Organization", "name": "M-Corp Ethical AI", "url": SITE },
-              "publisher": { "@type": "Organization", "name": "M-Corp Ethical AI", "url": SITE }
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "M-Corp Ethical AI",
-              "url": SITE,
-              "email": "contact@mcorpai.org",
-              "description": "Builder of VitalGuard AI and offline-first, privacy-respecting ethical AI tools."
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "name": "M-Corp Ethical AI",
-              "url": SITE,
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": SITE + "/?s={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            }
+            {"@context":"https://schema.org","@type":"VideoGame","name":"Wraptris","alternateName":"Wraptris Climate Edition","url":PAGE,"description":DESC,"genre":["Puzzle","Arcade","Educational"],"gamePlatform":"Web Browser","applicationCategory":"Game","operatingSystem":"Any (HTML5 browser)","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"M-Corp Ethical AI","url":SITE},"publisher":{"@type":"Organization","name":"M-Corp Ethical AI","url":SITE}},
+            {"@context":"https://schema.org","@type":"Organization","name":"M-Corp Ethical AI","url":SITE,"email":"contact@mcorpai.org","description":"Builder of VitalGuard AI and offline-first, privacy-respecting ethical AI tools."},
+            {"@context":"https://schema.org","@type":"WebSite","name":"M-Corp Ethical AI","url":SITE,"potentialAction":{"@type":"SearchAction","target":SITE+"/?s={search_term_string}","query-input":"required name=search_term_string"}}
           ]);
           document.head.appendChild(ld);
         }
-      } catch(e){ /* SEO injection is best-effort, never break the game */ }
+      } catch(e){}
     }
     injectSEO();
 
-    // ---------- Mount container ----------
-    if (!document.body){
-      const body = document.createElement('body');
-      document.documentElement.appendChild(body);
-    }
+    // ---------- Mount ----------
+    if (!document.body){ document.documentElement.appendChild(document.createElement('body')); }
     let app = document.getElementById('wraptris-app');
-    if (!app){
-      app = document.createElement('section');
-      app.id = 'wraptris-app';
-      document.body.appendChild(app);
-    }
-    // Build inner layout only once
+    if (!app){ app = document.createElement('section'); app.id = 'wraptris-app'; document.body.appendChild(app); }
+
     app.innerHTML = `
       <div class="wt-shell" role="application" aria-label="Wraptris climate puzzle game">
         <div class="wt-stage">
-          <canvas id="wt-canvas" width="${COLS*CELL}" height="${ROWS*CELL}"
-                  aria-label="Game board" tabindex="0"></canvas>
+          <canvas id="wt-canvas" width="${COLS*CELL}" height="${ROWS*CELL}" aria-label="Game board" tabindex="0"></canvas>
         </div>
         <aside class="wt-hud" aria-label="Game status">
-          <h2 class="wt-title">WRAPTRIS<span class="wt-sub">Climate Edition</span></h2>
+          <h2 class="wt-title">WRAPTRIS<span class="wt-sub">CLIMATE EDITION</span></h2>
           <div class="wt-row">
-            <div class="wt-mini">
-              <span class="wt-cap">HOLD</span>
-              <canvas id="wt-hold" width="${4*22}" height="${4*22}"></canvas>
-            </div>
-            <div class="wt-mini">
-              <span class="wt-cap">NEXT</span>
-              <canvas id="wt-next" width="${4*22}" height="${3*3*22}"></canvas>
-            </div>
+            <div class="wt-mini"><span class="wt-cap">HOLD</span><canvas id="wt-hold" width="${4*22}" height="${4*22}"></canvas></div>
+            <div class="wt-mini"><span class="wt-cap">NEXT</span><canvas id="wt-next" width="${4*22}" height="${3*3*22}"></canvas></div>
           </div>
           <div class="wt-card">
             <div class="wt-line"><span>Score</span><b id="wt-score">0</b></div>
@@ -5145,35 +5095,38 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
             <button id="wt-pause" class="wt-btn" type="button">⏸ Pause</button>
             <button id="wt-mute" class="wt-btn" type="button">🔊 Sound</button>
           </div>
+          <div class="wt-pad" aria-label="Game controls">
+            <button id="wt-left"    class="wt-pad-btn" type="button" aria-label="Move left">◀<small>MOVE</small></button>
+            <button id="wt-rotate"  class="wt-pad-btn" type="button" aria-label="Rotate">⟳<small>ROTATE</small></button>
+            <button id="wt-right"   class="wt-pad-btn" type="button" aria-label="Move right">▶<small>MOVE</small></button>
+            <button id="wt-soft"    class="wt-pad-btn" type="button" aria-label="Soft drop (hold)">⇩<small>SOFT</small></button>
+            <button id="wt-hard"    class="wt-pad-btn" type="button" aria-label="Hard drop">⤓<small>HARD</small></button>
+            <button id="wt-holdbtn" class="wt-pad-btn" type="button" aria-label="Hold">⇄<small>HOLD</small></button>
+          </div>
           <details class="wt-help">
             <summary>How to play</summary>
             <ul>
-              <li><b>Mouse move</b> — slide the piece left/right</li>
-              <li><b>Left click</b> — rotate 90°</li>
-              <li><b>Right click (hold)</b> — fast drop</li>
-              <li><b>Double click</b> — hard drop</li>
-              <li><b>Wheel up</b> — hold piece</li>
-              <li><b>Keyboard</b> (when hovering the board): ← → move, ↑ rotate, ↓ soft drop, Space hard drop, C hold, P pause</li>
+              <li><b>Mouse move</b> — slide the piece left / right</li>
+              <li><b>Left click</b> — rotate 90° <em>(rotate only — never drops)</em></li>
+              <li><b>Soft button (hold)</b> or <b>↓</b> — fast drop</li>
+              <li><b>Hard button</b> or <b>Space</b> — instant drop</li>
+              <li><b>Hold button</b>, <b>C</b>, or <b>wheel up</b> — hold piece</li>
+              <li><b>Keyboard</b> (pointer over board): ← → move, ↑ rotate</li>
               <li><b>Walls wrap</b>: leave one side, appear on the other.</li>
-              <li><b>Clear lines to cut carbon</b> and push back the 3.0°C tipping point.</li>
+              <li><b>Clear lines to cut carbon</b> and push back 3.0°C.</li>
             </ul>
           </details>
         </aside>
-      </div>
-    `;
+      </div>`;
 
     const canvas = document.getElementById('wt-canvas');
     const ctx = canvas.getContext('2d');
-    const holdCv = document.getElementById('wt-hold');
-    const holdCtx = holdCv.getContext('2d');
-    const nextCv = document.getElementById('wt-next');
-    const nextCtx = nextCv.getContext('2d');
-
-    window.__wraptrisAppRef = app;
-    window.__wraptrisCanvasRef = canvas;
+    const holdCv = document.getElementById('wt-hold'), holdCtx = holdCv.getContext('2d');
+    const nextCv = document.getElementById('wt-next'), nextCtx = nextCv.getContext('2d');
+    window.__wraptrisAppRef = app; window.__wraptrisCanvasRef = canvas;
 
     // ---------- Pieces ----------
-    const COLORS = ['#22d3ee', '#facc15', '#4ade80', '#fb7185', '#60a5fa', '#f472b6', '#c084fc'];
+    const COLORS = ['#22d3ee','#facc15','#4ade80','#fb7185','#60a5fa','#f472b6','#c084fc'];
     const SHAPES = {
       I: [[[-1,0],[0,0],[1,0],[2,0]], [[0,-1],[0,0],[0,1],[0,2]], [[-1,0],[0,0],[1,0],[2,0]], [[0,-1],[0,0],[0,1],[0,2]]],
       O: [[[0,0],[1,0],[0,1],[1,1]], [[0,0],[1,0],[0,1],[1,1]], [[0,0],[1,0],[0,1],[1,1]], [[0,0],[1,0],[0,1],[1,1]]],
@@ -5190,132 +5143,85 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     let board, bag, queue, piece, holdType, canHold;
     let score, lines, level, combo, b2b, hiscore;
     let stageGoal, stageBase;
-    let running = false, paused = false, gameOver = false, won = false;
-
-    // climate
-    let climateTemp, climateEpoch, climateDelayMs, flashUntil;
-    let fastDropActive = false;
-    let muted = false;
-
-    // banners / fx
+    let running = false, paused = false, gameOver = false, overByClimate = false;
+    let climateTemp, climateEpoch, climateDelayMs, flashUntil, pauseStart = 0;
+    let fastDropActive = false, muted = false;
     let bannerText = '', bannerUntil = 0;
-    const particles = [];
-    const floaters = [];   // floating score / +0.1C text
+    const particles = [], floaters = [];
 
-    // ---------- Audio (Web Audio API, zero dependency) ----------
+    const active = () => running && !paused && !gameOver && !!piece;
+
+    // ---------- Audio ----------
     let audioCtx = null;
     function ensureAudio(){
       if (muted) return null;
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-      } catch(e){ audioCtx = null; }
+      try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume(); } catch(e){ audioCtx = null; }
       return audioCtx;
     }
     function tone(freq, dur, type, vol, when){
       const a = ensureAudio(); if (!a) return;
       const t0 = a.currentTime + (when || 0);
-      const o = a.createOscillator(); const g = a.createGain();
+      const o = a.createOscillator(), g = a.createGain();
       o.type = type || 'square'; o.frequency.setValueAtTime(freq, t0);
       g.gain.setValueAtTime(vol || 0.05, t0);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + (dur || 0.08));
-      o.connect(g); g.connect(a.destination);
-      o.start(t0); o.stop(t0 + (dur || 0.08) + 0.02);
+      o.connect(g); g.connect(a.destination); o.start(t0); o.stop(t0 + (dur || 0.08) + 0.02);
     }
-    const sMove   = () => tone(200, 0.03, 'square', 0.03);
-    const sRotate = () => tone(340, 0.04, 'square', 0.04);
-    const sLock   = () => tone(150, 0.06, 'sine', 0.05);
-    const sHold   = () => tone(440, 0.06, 'triangle', 0.05);
-    const sDrop   = () => tone(110, 0.05, 'sawtooth', 0.04);
-    function sClear(n){
-      const base = 420;
-      for (let i=0;i<n;i++) tone(base + i*120, 0.10, 'triangle', 0.06, i*0.05);
-    }
+    const sMove = () => tone(200,0.03,'square',0.03);
+    const sRotate = () => tone(340,0.04,'square',0.04);
+    const sLock = () => tone(150,0.06,'sine',0.05);
+    const sHold = () => tone(440,0.06,'triangle',0.05);
+    const sDrop = () => tone(110,0.05,'sawtooth',0.04);
+    function sClear(n){ for (let i=0;i<n;i++) tone(420+i*120,0.10,'triangle',0.06,i*0.05); }
     function sTetris(){ [523,659,784,1046].forEach((f,i)=>tone(f,0.12,'square',0.06,i*0.05)); }
     function sLevel(){ [392,523,659].forEach((f,i)=>tone(f,0.10,'triangle',0.06,i*0.06)); }
     function sMilestone(){ [523,659,784,1046,784,1046].forEach((f,i)=>tone(f,0.12,'triangle',0.07,i*0.07)); }
     function sOver(){ [400,330,260,180].forEach((f,i)=>tone(f,0.18,'sawtooth',0.06,i*0.12)); }
-    function sWarm(){ tone(90, 0.25, 'sawtooth', 0.05); }
+    function sWarm(){ tone(90,0.25,'sawtooth',0.05); }
 
     // ---------- Helpers ----------
-    function refillBag(){
-      const b = TYPES.slice();
-      for (let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; }
-      return b;
-    }
-    function nextType(){
-      if (!bag.length) bag = refillBag();
-      return bag.pop();
-    }
-    function fillQueue(){
-      while (queue.length < 4) queue.push(nextType());
-    }
-    function makePiece(type){
-      return { type, rot:0, x: Math.floor(COLS/2), y: -2 };
-    }
-    function eachBlock(p, fn){
-      const shape = SHAPES[p.type][p.rot];
-      for (const [dx,dy] of shape){
-        const x = ((p.x + dx) % COLS + COLS) % COLS;
-        const y = p.y + dy;
-        fn(x, y);
-      }
-    }
-    function valid(p){
-      let ok = true;
-      eachBlock(p, (x,y)=>{ if (y>=ROWS) ok=false; else if (y>=0 && board[y][x]) ok=false; });
-      return ok;
-    }
+    function refillBag(){ const b = TYPES.slice(); for (let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+    function nextType(){ if (!bag.length) bag = refillBag(); return bag.pop(); }
+    function fillQueue(){ while (queue.length < 4) queue.push(nextType()); }
+    function makePiece(type){ return { type, rot:0, x: Math.floor(COLS/2), y: -2 }; }
+    function eachBlock(p, fn){ for (const [dx,dy] of SHAPES[p.type][p.rot]){ fn(((p.x+dx)%COLS+COLS)%COLS, p.y+dy); } }
+    function valid(p){ let ok = true; eachBlock(p,(x,y)=>{ if (y>=ROWS) ok=false; else if (y>=0 && board[y][x]) ok=false; }); return ok; }
 
     function spawn(){
-      fillQueue();
-      piece = makePiece(queue.shift());
-      fillQueue();
-      canHold = true;
-      if (!valid(piece)){ endGame(false); }
+      fillQueue(); piece = makePiece(queue.shift()); fillQueue(); canHold = true;
+      if (!valid(piece)) endGame(false);
     }
-
     function doHold(){
       if (!canHold || !piece || paused || gameOver) return;
       const cur = piece.type;
       if (holdType == null){ holdType = cur; spawn(); }
       else { const tmp = holdType; holdType = cur; piece = makePiece(tmp); }
-      canHold = false;
-      sHold();
+      canHold = false; sHold();
     }
-
     function rotate(dir){
       const saved = piece.rot;
       piece.rot = (piece.rot + dir + 4) % 4;
       if (valid(piece)){ sRotate(); return; }
       for (const k of [-1,1,-2,2,-3,3]){
-        const ox = piece.x;
-        piece.x = ((piece.x + k) % COLS + COLS) % COLS;
-        if (valid(piece)){ sRotate(); return; }
-        piece.x = ox;
+        const ox = piece.x; piece.x = ((piece.x + k) % COLS + COLS) % COLS;
+        if (valid(piece)){ sRotate(); return; } piece.x = ox;
       }
       piece.rot = saved;
     }
-
     function moveToColumn(col){
       col = Math.max(0, Math.min(COLS-1, col));
       const target = { ...piece, x: col };
       if (valid(target)){ if (target.x!==piece.x) sMove(); piece = target; return; }
       for (let d=1; d<=4; d++){
-        const left = { ...target, x: Math.max(0, col-d) };
-        if (valid(left)){ piece = left; return; }
-        const right = { ...target, x: Math.min(COLS-1, col+d) };
-        if (valid(right)){ piece = right; return; }
+        const left = { ...target, x: Math.max(0, col-d) }; if (valid(left)){ piece = left; return; }
+        const right = { ...target, x: Math.min(COLS-1, col+d) }; if (valid(right)){ piece = right; return; }
       }
     }
-    function nudge(dx){
-      const p = { ...piece, x: ((piece.x + dx) % COLS + COLS) % COLS };
-      if (valid(p)){ piece = p; sMove(); }
-    }
-
-    function softDrop(auto){
+    function nudge(dx){ const p = { ...piece, x: ((piece.x+dx)%COLS+COLS)%COLS }; if (valid(p)){ piece = p; sMove(); } }
+    function softDrop(scored){
       const p = { ...piece, y: piece.y + 1 };
-      if (valid(p)){ piece = p; if (!auto){ score += level; updateHUD(); } }
+      if (valid(p)){ piece = p; if (scored){ score += level; updateHUD(); } }
       else lockPiece();
     }
     function hardDrop(){
@@ -5323,114 +5229,74 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       while (true){ const p = { ...piece, y: y+1 }; if (valid(p)){ y++; dist++; } else break; }
       piece.y = y; score += 2*dist; sDrop(); lockPiece(); updateHUD();
     }
-
     function lockPiece(){
-      let topY = ROWS;
-      eachBlock(piece, (x,y)=>{ if (y>=0){ board[y][x] = TYPES.indexOf(piece.type)+1; if (y<topY) topY=y; } });
+      eachBlock(piece,(x,y)=>{ if (y>=0) board[y][x] = TYPES.indexOf(piece.type)+1; });
       sLock();
       const info = clearLines();
       if (info.cleared > 0){
-        // carbon reward: delay warming
         climateDelayMs += info.cleared * C_DELAY_PER_LINE;
         const cy = (info.avgY + 0.5) * CELL;
-        const emojis = info.cleared >= 4 ? ['🔥','💥','✨','🌱'] : ['✨','💫','🌱'];
-        spawnParticles(canvas.width/2, cy, 16 + info.cleared*6, emojis);
-        floaters.push({ x: canvas.width/2, y: cy, text: '−CO₂', color:'#4ade80', born: performance.now(), life: 900 });
+        spawnParticles(canvas.width/2, cy, 16 + info.cleared*6, info.cleared>=4?['🔥','💥','✨','🌱']:['✨','💫','🌱']);
+        floaters.push({ x: canvas.width/2, y: cy, text:'−CO₂', color:'#4ade80', born: performance.now(), life: 900 });
       }
       spawn();
     }
-
     function clearLines(){
       let cleared = 0, ySum = 0;
       for (let y=ROWS-1; y>=0; y--){
-        if (board[y].every(v=>v!==0)){
-          board.splice(y,1); board.unshift(Array(COLS).fill(0));
-          cleared++; ySum += y; y++;
-        }
+        if (board[y].every(v=>v!==0)){ board.splice(y,1); board.unshift(Array(COLS).fill(0)); cleared++; ySum += y; y++; }
       }
       if (cleared > 0){
-        const table = [0, 100, 300, 500, 800];
-        let gained = table[cleared] * level;
-        // back-to-back tetris bonus
+        let gained = [0,100,300,500,800][cleared] * level;
         const isTetris = (cleared === 4);
         if (isTetris && b2b) gained = Math.floor(gained * 1.5);
         b2b = isTetris;
-        // combo
-        combo++;
-        if (combo > 1) gained += 50 * (combo - 1) * level;
-        score += gained;
-        lines += cleared;
-
-        floaters.push({ x: canvas.width/2, y: (ySum/cleared)*CELL, text: '+'+gained, color:'#facc15', born: performance.now(), life: 1000 });
-
-        const nextLevel = Math.floor(lines / LEVEL_UP_EVERY) + 1;
+        combo++; if (combo > 1) gained += 50 * (combo-1) * level;
+        score += gained; lines += cleared;
+        floaters.push({ x: canvas.width/2, y:(ySum/cleared)*CELL, text:'+'+gained, color:'#facc15', born: performance.now(), life:1000 });
+        const nextLevel = Math.floor(lines/LEVEL_UP_EVERY) + 1;
         if (nextLevel > level){ level = nextLevel; sLevel(); banner('LEVEL ' + level); }
-        else if (cleared === 4) sTetris();
-        else sClear(cleared);
-
-        // carbon milestone (stage goal)
+        else if (isTetris) sTetris(); else sClear(cleared);
         if (lines >= stageBase + stageGoal){
-          stageBase += stageGoal;
-          climateDelayMs += C_STEP_MS * 2;     // big warming pushback
-          score += 1000 * level;
-          sMilestone();
-          banner('🌱 CARBON MILESTONE');
+          stageBase += stageGoal; climateDelayMs += C_STEP_MS*2; score += 1000*level;
+          sMilestone(); banner('🌱 CARBON MILESTONE');
           spawnParticles(canvas.width/2, canvas.height/3, 40, ['🌱','🌍','✨','💚']);
         }
         updateHUD();
-      } else {
-        combo = 0;
-      }
+      } else combo = 0;
       return { cleared, avgY: cleared ? ySum/cleared : ROWS/2 };
     }
 
     // ---------- Climate ----------
-    function effectiveElapsed(now){
-      return Math.max(0, (now - climateEpoch) - climateDelayMs);
-    }
-    function tempAt(now){
-      const steps = Math.floor(effectiveElapsed(now) / C_STEP_MS);
-      const t = C_START + Math.min(C_STEPS, steps) * C_STEP;
-      return Math.min(C_END, parseFloat(t.toFixed(1)));
-    }
+    function effectiveElapsed(now){ return Math.max(0, (now - climateEpoch) - climateDelayMs); }
+    function tempAt(now){ const steps = Math.floor(effectiveElapsed(now)/C_STEP_MS); return Math.min(C_END, parseFloat((C_START + Math.min(C_STEPS,steps)*C_STEP).toFixed(1))); }
     function updateClimate(now){
-      const newTemp = tempAt(now);
-      if (newTemp > climateTemp){
-        climateTemp = newTemp;
-        flashUntil = now + 900;
+      const nt = tempAt(now);
+      if (nt > climateTemp){
+        climateTemp = nt; flashUntil = now + 900;
         floaters.push({ x: canvas.width/2, y: 60, text:'🌍 +0.1°C', color:'#fb923c', born: now, life: 1100 });
-        sWarm();
-        updateHUD();
-        if (climateTemp >= C_END - 1e-9){ endGame(false, true); }
+        sWarm(); updateHUD();
+        if (climateTemp >= C_END - 1e-9) endGame(true);
       }
     }
     function climateRemainMs(now){
-      const stepsDone = Math.floor(effectiveElapsed(now) / C_STEP_MS);
-      const stepsLeft = Math.max(0, C_STEPS - stepsDone);
-      const intoStep = effectiveElapsed(now) % C_STEP_MS;
-      return Math.max(0, stepsLeft * C_STEP_MS - intoStep);
+      const done = Math.floor(effectiveElapsed(now)/C_STEP_MS);
+      const left = Math.max(0, C_STEPS - done);
+      const into = effectiveElapsed(now) % C_STEP_MS;
+      return Math.max(0, left*C_STEP_MS - into);
     }
-
-    // ---------- Speed ----------
-    function dropInterval(now){
+    function dropInterval(){
       const levelMul = Math.pow(SPEED_FACTOR, Math.max(0, level-1));
-      const norm = Math.min(1, Math.max(0, (climateTemp - C_START) / (C_END - C_START)));
-      const climateMul = 1 - 0.6 * norm;       // hotter = faster
-      let iv = START_SPEED * levelMul * climateMul;
+      const norm = Math.min(1, Math.max(0, (climateTemp - C_START)/(C_END - C_START)));
+      let iv = START_SPEED * levelMul * (1 - 0.6*norm);
       if (fastDropActive) iv *= FAST_DROP_MULT;
       return Math.max(MIN_SPEED, Math.floor(iv));
     }
 
     // ---------- FX ----------
     function spawnParticles(px, py, count, chars){
-      for (let i=0;i<count;i++){
-        particles.push({
-          x:px, y:py,
-          vx:(Math.random()*2-1)*1.4, vy:(-Math.random()*1.6)-0.5,
-          life:700 + Math.random()*700, born:performance.now(),
-          char:chars[Math.floor(Math.random()*chars.length)], size:16+Math.random()*10
-        });
-      }
+      for (let i=0;i<count;i++) particles.push({ x:px, y:py, vx:(Math.random()*2-1)*1.4, vy:(-Math.random()*1.6)-0.5,
+        life:700+Math.random()*700, born:performance.now(), char:chars[Math.floor(Math.random()*chars.length)], size:16+Math.random()*10 });
     }
     function banner(text){ bannerText = text; bannerUntil = performance.now() + 1400; }
 
@@ -5445,24 +5311,22 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       $('wt-temp').textContent  = climateTemp.toFixed(1) + '°C';
       const norm = Math.min(1, Math.max(0, (climateTemp - C_START)/(C_END - C_START)));
       $('wt-tempbar').style.width = Math.round(norm*100) + '%';
-      // CO2 cut: each cleared line ~ symbolic 0.5 t
       $('wt-co2').textContent = (lines * 0.5).toFixed(1) + ' t';
       $('wt-goal').textContent = Math.max(0, lines - stageBase) + ' / ' + stageGoal;
     }
     function updateTimer(now){
-      const remain = running && !paused && !gameOver ? climateRemainMs(now) : climateRemainMs(now);
+      const remain = climateRemainMs(now);
       const m = Math.floor(remain/60000), s = Math.floor((remain%60000)/1000);
       $('wt-ctimer').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
 
     // ---------- Drawing ----------
-    function drawCell(c, x, y, color, size){
-      const s = size || CELL;
-      const px = x*s, py = y*s;
-      c.fillStyle = color; c.fillRect(px, py, s, s);
-      c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(px, py, s, Math.max(2, s*0.12));
-      c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px, py + s - Math.max(2, s*0.12), s, Math.max(2, s*0.12));
-      c.fillStyle = 'rgba(255,255,255,.06)'; c.fillRect(px+2, py+2, s-4, s-4);
+    function drawCell(c, x, y, color){
+      const s = CELL, px = x*s, py = y*s;
+      c.fillStyle = color; c.fillRect(px,py,s,s);
+      c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(px,py,s,Math.max(2,s*0.12));
+      c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(px,py+s-Math.max(2,s*0.12),s,Math.max(2,s*0.12));
+      c.fillStyle = 'rgba(255,255,255,.06)'; c.fillRect(px+2,py+2,s-4,s-4);
     }
     function drawGrid(){
       ctx.strokeStyle = 'rgba(255,255,255,.05)'; ctx.lineWidth = 1;
@@ -5471,24 +5335,17 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     }
     function drawHeatBackground(now){
       const norm = Math.min(1, Math.max(0, (climateTemp - C_START)/(C_END - C_START)));
-      // sky gradient cools->warms
       const g = ctx.createLinearGradient(0,0,0,canvas.height);
       g.addColorStop(0, `rgb(${10+norm*60}, ${22-norm*8}, ${40-norm*18})`);
-      g.addColorStop(1, `rgb(${6+norm*30}, ${12}, ${26-norm*10})`);
+      g.addColorStop(1, `rgb(${6+norm*30}, 12, ${26-norm*10})`);
       ctx.fillStyle = g; ctx.fillRect(0,0,canvas.width,canvas.height);
-      // rising sea level (visual) from bottom
       const seaH = norm * canvas.height * 0.32;
       if (seaH > 1){
         const sg = ctx.createLinearGradient(0, canvas.height-seaH, 0, canvas.height);
-        sg.addColorStop(0, 'rgba(56,189,248,0.10)');
-        sg.addColorStop(1, 'rgba(2,132,199,0.22)');
+        sg.addColorStop(0,'rgba(56,189,248,0.10)'); sg.addColorStop(1,'rgba(2,132,199,0.22)');
         ctx.fillStyle = sg; ctx.fillRect(0, canvas.height-seaH, canvas.width, seaH);
-        // wavy line
         ctx.strokeStyle = 'rgba(125,211,252,0.35)'; ctx.lineWidth = 2; ctx.beginPath();
-        for (let x=0;x<=canvas.width;x+=8){
-          const yy = canvas.height - seaH + Math.sin((x*0.05) + now*0.003)*3;
-          if (x===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy);
-        }
+        for (let x=0;x<=canvas.width;x+=8){ const yy = canvas.height - seaH + Math.sin((x*0.05)+now*0.003)*3; if (x===0) ctx.moveTo(x,yy); else ctx.lineTo(x,yy); }
         ctx.stroke();
       }
     }
@@ -5502,126 +5359,84 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     }
     function drawParticles(now){
       for (let i=particles.length-1;i>=0;i--){
-        const p = particles[i]; const age = now - p.born;
+        const p = particles[i], age = now - p.born;
         if (age > p.life){ particles.splice(i,1); continue; }
-        const t = age/p.life;
         p.x += p.vx; p.y += p.vy; p.vy += 0.04;
-        ctx.globalAlpha = 1 - t;
+        ctx.globalAlpha = 1 - age/p.life;
         ctx.font = p.size + 'px system-ui, "Apple Color Emoji", "Segoe UI Emoji", emoji';
-        ctx.fillText(p.char, p.x, p.y);
-        ctx.globalAlpha = 1;
+        ctx.fillText(p.char, p.x, p.y); ctx.globalAlpha = 1;
       }
     }
     function drawFloaters(now){
       ctx.textAlign = 'center';
       for (let i=floaters.length-1;i>=0;i--){
-        const f = floaters[i]; const age = now - f.born;
+        const f = floaters[i], age = now - f.born;
         if (age > f.life){ floaters.splice(i,1); continue; }
         const t = age/f.life;
-        ctx.globalAlpha = 1 - t;
-        ctx.fillStyle = f.color;
-        ctx.font = 'bold 18px system-ui, sans-serif';
-        ctx.fillText(f.text, f.x, f.y - t*30);
-        ctx.globalAlpha = 1;
+        ctx.globalAlpha = 1 - t; ctx.fillStyle = f.color; ctx.font = 'bold 18px system-ui, sans-serif';
+        ctx.fillText(f.text, f.x, f.y - t*30); ctx.globalAlpha = 1;
       }
       ctx.textAlign = 'start';
     }
     function drawMini(c, cv, type){
-      c.clearRect(0,0,cv.width,cv.height);
-      if (!type) return;
-      const s = 22;
-      const shape = SHAPES[type][0];
-      let minX=99,maxX=-99,minY=99,maxY=-99;
-      shape.forEach(([dx,dy])=>{ minX=Math.min(minX,dx);maxX=Math.max(maxX,dx);minY=Math.min(minY,dy);maxY=Math.max(maxY,dy); });
-      const w=(maxX-minX+1)*s, h=(maxY-minY+1)*s;
-      const ox=(cv.width-w)/2 - minX*s, oy=(s); // top padding
-      shape.forEach(([dx,dy])=>{
-        const px=ox+dx*s, py=oy+dy*s;
+      c.clearRect(0,0,cv.width,cv.height); if (!type) return;
+      const s = 22, shape = SHAPES[type][0];
+      let minX=99,maxX=-99; shape.forEach(([dx])=>{ minX=Math.min(minX,dx); maxX=Math.max(maxX,dx); });
+      const w=(maxX-minX+1)*s, ox=(cv.width-w)/2 - minX*s, oy=s;
+      shape.forEach(([dx,dy])=>{ const px=ox+dx*s, py=oy+dy*s;
         c.fillStyle = colorOf(type); c.fillRect(px,py,s,s);
         c.fillStyle='rgba(255,255,255,.18)'; c.fillRect(px,py,s,3);
-        c.fillStyle='rgba(0,0,0,.25)'; c.fillRect(px,py+s-3,s,3);
-      });
+        c.fillStyle='rgba(0,0,0,.25)'; c.fillRect(px,py+s-3,s,3); });
     }
-    function drawHold(){ drawMini(holdCtx, holdCv, holdType); }
     function drawNext(){
       nextCtx.clearRect(0,0,nextCv.width,nextCv.height);
       const s = 22, slotH = 3*s;
       for (let k=0;k<3;k++){
         const type = queue[k]; if (!type) continue;
         const shape = SHAPES[type][0];
-        let minX=99,maxX=-99,minY=99,maxY=-99;
-        shape.forEach(([dx,dy])=>{ minX=Math.min(minX,dx);maxX=Math.max(maxX,dx);minY=Math.min(minY,dy);maxY=Math.max(maxY,dy); });
-        const w=(maxX-minX+1)*s;
-        const ox=(nextCv.width-w)/2 - minX*s;
-        const oy=k*slotH + s*0.6;
-        shape.forEach(([dx,dy])=>{
-          const px=ox+dx*s, py=oy+dy*s;
+        let minX=99,maxX=-99; shape.forEach(([dx])=>{ minX=Math.min(minX,dx); maxX=Math.max(maxX,dx); });
+        const w=(maxX-minX+1)*s, ox=(nextCv.width-w)/2 - minX*s, oy=k*slotH + s*0.6;
+        shape.forEach(([dx,dy])=>{ const px=ox+dx*s, py=oy+dy*s;
           nextCtx.fillStyle = colorOf(type); nextCtx.fillRect(px,py,s,s);
           nextCtx.fillStyle='rgba(255,255,255,.18)'; nextCtx.fillRect(px,py,s,3);
-          nextCtx.fillStyle='rgba(0,0,0,.25)'; nextCtx.fillRect(px,py+s-3,s,3);
-        });
+          nextCtx.fillStyle='rgba(0,0,0,.25)'; nextCtx.fillRect(px,py+s-3,s,3); });
       }
     }
     function overlay(title, sub){
-      ctx.save();
-      ctx.fillStyle = 'rgba(3,8,18,.78)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.save(); ctx.fillStyle = 'rgba(3,8,18,.80)'; ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillStyle = '#f8fafc'; ctx.font='bold 26px system-ui, sans-serif';
       title.split('\n').forEach((t,i)=>ctx.fillText(t, canvas.width/2, canvas.height/2 - 28 + i*30));
-      if (sub){
-        ctx.fillStyle='#94a3b8'; ctx.font='14px system-ui, sans-serif';
-        sub.split('\n').forEach((t,i)=>ctx.fillText(t, canvas.width/2, canvas.height/2 + 30 + i*20));
-      }
+      if (sub){ ctx.fillStyle='#94a3b8'; ctx.font='14px system-ui, sans-serif';
+        sub.split('\n').forEach((t,i)=>ctx.fillText(t, canvas.width/2, canvas.height/2 + 30 + i*20)); }
       ctx.restore();
     }
-
     function render(now){
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      drawHeatBackground(now);
-      drawPortals();
-
+      drawHeatBackground(now); drawPortals();
       for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++){ const v=board[y][x]; if (v) drawCell(ctx,x,y,COLORS[v-1]); }
-
       if (piece && running && !gameOver){
         let gy = piece.y; while (true){ const p={...piece,y:gy+1}; if (valid(p)) gy++; else break; }
         ctx.globalAlpha = .22; eachBlock({...piece,y:gy},(x,y)=>{ if (y>=0) drawCell(ctx,x,y,colorOf(piece.type)); }); ctx.globalAlpha = 1;
         eachBlock(piece,(x,y)=>{ if (y>=0) drawCell(ctx,x,y,colorOf(piece.type)); });
       }
-
       drawGrid();
-
-      // top-left climate badge
-      ctx.font = '18px system-ui, "Segoe UI Emoji", emoji'; ctx.fillStyle='#fff';
-      ctx.fillText('🌍', 6, 22);
-      ctx.font = 'bold 13px system-ui, sans-serif';
-      ctx.fillStyle = climateTemp >= 2.5 ? '#fb7185' : '#e2e8f0';
+      ctx.font = '18px system-ui, "Segoe UI Emoji", emoji'; ctx.fillStyle='#fff'; ctx.fillText('🌍', 6, 22);
+      ctx.font = 'bold 13px system-ui, sans-serif'; ctx.fillStyle = climateTemp>=2.5?'#fb7185':'#e2e8f0';
       ctx.fillText(climateTemp.toFixed(1)+'°C', 30, 20);
-
-      if (now < flashUntil){
-        ctx.save(); ctx.globalAlpha=.5; ctx.fillStyle='rgba(251,113,86,.45)';
-        ctx.fillRect(0,0,canvas.width,canvas.height); ctx.restore();
-      }
-
-      drawParticles(now);
-      drawFloaters(now);
-
+      if (now < flashUntil){ ctx.save(); ctx.globalAlpha=.5; ctx.fillStyle='rgba(251,113,86,.45)'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.restore(); }
+      drawParticles(now); drawFloaters(now);
       if (now < bannerUntil && bannerText){
         ctx.save(); ctx.textAlign='center';
         ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0, canvas.height/2-26, canvas.width, 52);
         ctx.fillStyle='#fef08a'; ctx.font='bold 22px system-ui, sans-serif';
-        ctx.fillText(bannerText, canvas.width/2, canvas.height/2+8);
-        ctx.restore();
+        ctx.fillText(bannerText, canvas.width/2, canvas.height/2+8); ctx.restore();
       }
-
-      drawHold(); drawNext();
-
-      if (!running && !gameOver){ overlay('WRAPTRIS\nClimate Edition', 'Press ▶ Play\nClear lines · cut carbon · beat 3.0°C'); }
-      else if (paused){ overlay('PAUSED', 'Press ⏸ or P to resume'); }
-      else if (gameOver){
-        if (won) overlay('🌱 YOU HELD THE LINE', 'Score ' + score + '\nClick ▶ Play to try again');
-        else overlay(climateTemp>=C_END ? '🔥 TIPPING POINT\nREACHED' : 'GAME OVER',
-                     'Score ' + score + '  ·  Best ' + hiscore + '\nClick ▶ Play to try again');
-      }
+      drawMini(holdCtx, holdCv, holdType); drawNext();
+      if (!running && !gameOver) overlay('WRAPTRIS\nClimate Edition', 'Press ▶ Play\nClear lines · cut carbon · beat 3.0°C');
+      else if (paused) overlay('PAUSED', 'Press ⏸ or P to resume');
+      else if (gameOver) overlay(overByClimate ? '🔥 TIPPING POINT\nREACHED' : 'GAME OVER',
+                                 'Score ' + score + '  ·  Best ' + hiscore + '\nClick ▶ Play to try again');
     }
 
     // ---------- Loop ----------
@@ -5629,15 +5444,11 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
     function frame(now){
       const dt = now - last; last = now;
       if (running && !paused && !gameOver){
-        updateClimate(now);
-        acc += dt;
-        const iv = dropInterval(now);
-        let guard = 0;
-        while (acc >= iv && guard < 6){ acc -= iv; if (!piece) spawn(); if (!gameOver) softDrop(true); guard++; }
+        updateClimate(now); acc += dt;
+        const iv = dropInterval(); let guard = 0;
+        while (acc >= iv && guard < 6){ acc -= iv; if (!piece) spawn(); if (!gameOver) softDrop(false); guard++; }
       }
-      render(now);
-      updateTimer(now);
-      requestAnimationFrame(frame);
+      render(now); updateTimer(now); requestAnimationFrame(frame);
     }
 
     // ---------- Game control ----------
@@ -5647,7 +5458,6 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       const mb = $('wt-mute'); if (mb) mb.textContent = muted ? '🔇 Muted' : '🔊 Sound';
     }
     function saveHiscore(){ try { if (score > hiscore){ hiscore = score; localStorage.setItem(LS_HISCORE, String(hiscore)); } } catch(e){} }
-
     function newGame(){
       board = Array.from({length:ROWS}, ()=>Array(COLS).fill(0));
       bag = refillBag(); queue = []; fillQueue();
@@ -5656,30 +5466,21 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       stageGoal = GOAL_PER_STAGE; stageBase = 0;
       climateTemp = C_START; climateEpoch = performance.now(); climateDelayMs = 0; flashUntil = 0;
       fastDropActive = false; particles.length = 0; floaters.length = 0;
-      gameOver = false; won = false; paused = false; running = true;
-      spawn(); updateHUD();
-      $('wt-pause').textContent = '⏸ Pause';
+      gameOver = false; overByClimate = false; paused = false; running = true;
+      spawn(); updateHUD(); $('wt-pause').textContent = '⏸ Pause';
     }
-    function endGame(isWin, byClimate){
-      gameOver = true; running = false; won = !!isWin;
-      saveHiscore(); updateHUD();
-      if (byClimate) sWarm();
+    function endGame(byClimate){
+      gameOver = true; running = false; overByClimate = !!byClimate;
+      fastDropActive = false; saveHiscore(); updateHUD();
       sOver();
     }
     function togglePause(){
       if (!running || gameOver) return;
       paused = !paused;
-      if (paused){
-        // freeze climate clock by absorbing the pause into delay later: capture pause start
-        pauseStart = performance.now();
-      } else if (pauseStart){
-        // shift epoch forward so the paused span doesn't heat the planet
-        const span = performance.now() - pauseStart;
-        climateEpoch += span; pauseStart = 0;
-      }
+      if (paused){ pauseStart = performance.now(); fastDropActive = false; }
+      else if (pauseStart){ climateEpoch += performance.now() - pauseStart; pauseStart = 0; }
       $('wt-pause').textContent = paused ? '▶ Resume' : '⏸ Pause';
     }
-    let pauseStart = 0;
     function toggleMute(){
       muted = !muted;
       try { localStorage.setItem(LS_MUTE, muted ? '1':'0'); } catch(e){}
@@ -5687,58 +5488,51 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       if (!muted) ensureAudio();
     }
 
-    // ---------- Input: mouse ----------
+    // ---------- Input: mouse over board ----------
     function clientXToCol(clientX){
       const r = canvas.getBoundingClientRect();
       const px = (clientX - r.left) * (canvas.width / r.width);
       return Math.max(0, Math.min(COLS-1, Math.floor(px / CELL)));
     }
     let pointerInside = false;
-    canvas.addEventListener('mousemove', (e)=>{ if (running && !paused && !gameOver && piece) moveToColumn(clientXToCol(e.clientX)); });
+    canvas.addEventListener('mousemove', (e)=>{ if (active()) moveToColumn(clientXToCol(e.clientX)); });
     canvas.addEventListener('mouseenter', ()=>{ pointerInside = true; });
-    canvas.addEventListener('mouseleave', ()=>{ pointerInside = false; fastDropActive = false; });
+    canvas.addEventListener('mouseleave', ()=>{ pointerInside = false; });
+    // LEFT click = rotate ONLY. (No drop is ever triggered by the left button.)
     canvas.addEventListener('mousedown', (e)=>{
       e.preventDefault(); ensureAudio();
-      if (!running || paused || gameOver || !piece) return;
+      if (!active()) return;
       if (e.button === 0) rotate(1);
-      else if (e.button === 2) fastDropActive = true;
+      else if (e.button === 2) fastDropActive = true;   // right hold = optional fast drop
     });
-    canvas.addEventListener('mouseup', (e)=>{ if (e.button === 2) fastDropActive = false; });
-    canvas.addEventListener('dblclick', (e)=>{ e.preventDefault(); if (running && !paused && !gameOver && piece) hardDrop(); });
     canvas.addEventListener('contextmenu', (e)=> e.preventDefault());
-    canvas.addEventListener('wheel', (e)=>{ if (running && !paused && !gameOver){ e.preventDefault(); if (e.deltaY < 0) doHold(); else softDrop(false); } }, { passive:false });
+    // FIX: release fast drop no matter where the mouse button is released, or if focus is lost.
+    window.addEventListener('mouseup', ()=>{ fastDropActive = false; });
+    window.addEventListener('blur', ()=>{ fastDropActive = false; });
+    canvas.addEventListener('wheel', (e)=>{ if (active()){ e.preventDefault(); if (e.deltaY < 0) doHold(); else softDrop(true); } }, { passive:false });
 
-    // ---------- Input: touch ----------
-    let touchStartX=0, touchStartY=0, touchStartT=0, touchCol=0, touchMoved=false;
+    // ---------- Input: touch (drag move / tap rotate / swipe-down hard) ----------
+    let tStartX=0, tStartY=0, tStartT=0, tCol=0, tMoved=false;
     canvas.addEventListener('touchstart', (e)=>{
-      ensureAudio();
-      if (!running || paused || gameOver || !piece) return;
-      const t = e.touches[0]; touchStartX=t.clientX; touchStartY=t.clientY; touchStartT=performance.now();
-      touchCol = piece.x; touchMoved=false;
+      ensureAudio(); if (!active()) return;
+      const t = e.touches[0]; tStartX=t.clientX; tStartY=t.clientY; tStartT=performance.now(); tCol=piece.x; tMoved=false;
     }, { passive:true });
     canvas.addEventListener('touchmove', (e)=>{
-      if (!running || paused || gameOver || !piece) return;
-      const t = e.touches[0];
-      const r = canvas.getBoundingClientRect();
-      const scale = canvas.width / r.width;
-      const dxCells = Math.round(((t.clientX - touchStartX) * scale) / CELL);
-      if (dxCells !== 0){ moveToColumn(touchCol + dxCells); touchMoved = true; }
+      if (!active()) return;
+      const t = e.touches[0], r = canvas.getBoundingClientRect(), scale = canvas.width / r.width;
+      const dxCells = Math.round(((t.clientX - tStartX) * scale) / CELL);
+      if (dxCells !== 0){ moveToColumn(tCol + dxCells); tMoved = true; }
       if (e.cancelable) e.preventDefault();
     }, { passive:false });
     canvas.addEventListener('touchend', (e)=>{
-      if (!running || paused || gameOver || !piece) return;
-      const dt = performance.now() - touchStartT;
-      const dy = (e.changedTouches[0].clientY - touchStartY);
-      if (!touchMoved){
-        if (dy > 60) hardDrop();        // swipe down = hard drop
-        else if (dt < 250) rotate(1);   // tap = rotate
-      }
+      if (!active()) return;
+      const dt = performance.now() - tStartT, dy = e.changedTouches[0].clientY - tStartY;
+      if (!tMoved){ if (dy > 60) hardDrop(); else if (dt < 250) rotate(1); }
     }, { passive:true });
 
-    // ---------- Input: keyboard (only while hovering the board, to avoid hijacking the page) ----------
+    // ---------- Input: keyboard (only while pointer over board / canvas focused) ----------
     window.addEventListener('keydown', (e)=>{
-      const focused = (document.activeElement === canvas);
-      if (!pointerInside && !focused) return;
+      if (!pointerInside && document.activeElement !== canvas) return;
       if (!running || gameOver) return;
       const k = e.key;
       if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(k)) e.preventDefault();
@@ -5746,38 +5540,60 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
       if (k==='ArrowLeft') nudge(-1);
       else if (k==='ArrowRight') nudge(1);
       else if (k==='ArrowUp') rotate(1);
-      else if (k==='ArrowDown') softDrop(false);
+      else if (k==='ArrowDown') softDrop(true);
       else if (k===' ') hardDrop();
       else if (k==='c'||k==='C') doHold();
       else if (k==='p'||k==='P') togglePause();
     });
+    window.addEventListener('keyup', (e)=>{ if (e.key==='ArrowDown') fastDropActive = false; });
+
+    // ---------- Input: on-screen control pad ----------
+    function tap(id, fn){
+      const el = $(id); if (!el) return;
+      el.addEventListener('pointerdown', (e)=>{ e.preventDefault(); ensureAudio(); fn(); });
+    }
+    tap('wt-left',   ()=>{ if (active()) nudge(-1); });
+    tap('wt-right',  ()=>{ if (active()) nudge(1); });
+    tap('wt-rotate', ()=>{ if (active()) rotate(1); });
+    tap('wt-hard',   ()=>{ if (active()) hardDrop(); });
+    tap('wt-holdbtn',()=>{ doHold(); });
+    // SOFT = press-and-hold to accelerate (its own button, never the left mouse click)
+    const softBtn = $('wt-soft');
+    const softOn  = (e)=>{ e.preventDefault(); ensureAudio(); if (active()) fastDropActive = true; };
+    const softOff = ()=>{ fastDropActive = false; };
+    if (softBtn){
+      softBtn.addEventListener('pointerdown', softOn);
+      softBtn.addEventListener('pointerup', softOff);
+      softBtn.addEventListener('pointerleave', softOff);
+      softBtn.addEventListener('pointercancel', softOff);
+    }
 
     // ---------- Buttons ----------
     $('wt-play').addEventListener('click', ()=>{ ensureAudio(); newGame(); canvas.focus(); });
     $('wt-pause').addEventListener('click', ()=> togglePause());
     $('wt-mute').addEventListener('click', ()=> toggleMute());
 
-    // ---------- Self tests (console only) ----------
+    // ---------- Self tests ----------
     (function tests(){
       try {
         board = Array.from({length:ROWS}, ()=>Array(COLS).fill(0));
-        const tp = { type:'I', rot:0, x:-1, y:0 }; let mn=99,mx=-99;
-        eachBlock(tp,(x)=>{ mn=Math.min(mn,x); mx=Math.max(mx,x); });
-        console.assert(mn>=0 && mx<COLS, 'wrap stays in bounds');
-        level=1; climateTemp=C_START; const a=dropInterval(0);
-        climateTemp=C_END; const b=dropInterval(0);
-        console.assert(b<=a, 'hotter = not slower');
-        climateTemp=C_START; level=1; const c=dropInterval(0); level=2; const d=dropInterval(0);
-        console.assert(d<=c, 'higher level faster'); level=1;
-        const e1=dropInterval(0); fastDropActive=true; const e2=dropInterval(0); fastDropActive=false;
-        console.assert(e2<e1, 'fast drop reduces interval');
-        console.assert(clientXToCol(-9999)===0, 'col clamps low');
+        let mn=99,mx=-99; eachBlock({type:'I',rot:0,x:-1,y:0},(x)=>{ mn=Math.min(mn,x); mx=Math.max(mx,x); });
+        console.assert(mn>=0 && mx<COLS, 'wrap in bounds');
+        level=1; climateTemp=C_START; const a=dropInterval();
+        climateTemp=C_END; const b=dropInterval(); console.assert(b<=a,'hotter not slower');
+        climateTemp=C_START; level=1; const c=dropInterval(); level=2; const d=dropInterval(); console.assert(d<=c,'higher level faster'); level=1;
+        const e1=dropInterval(); fastDropActive=true; const e2=dropInterval(); fastDropActive=false; console.assert(e2<e1,'fast drop faster');
+        console.assert(clientXToCol(-9999)===0,'col clamps');
+        // line clear preserves height
+        let bd2=Array.from({length:ROWS},()=>Array(COLS).fill(0)); bd2[19]=Array(COLS).fill(1);
+        board=bd2; score=0;lines=0;level=1;combo=0;b2b=false;stageGoal=GOAL_PER_STAGE;stageBase=0;
+        const r=clearLines(); console.assert(r.cleared===1 && board.length===ROWS,'clear keeps height');
       } catch(err){ console.error('Wraptris self-test:', err); }
     })();
 
     // ---------- Kick off ----------
     loadHiscore();
-    newGame(); running = false; gameOver = false; // start on title screen
+    newGame(); running = false; gameOver = false;
     updateHUD();
     requestAnimationFrame((t)=>{ last = t; requestAnimationFrame(frame); });
   };
@@ -5787,8 +5603,7 @@ Prepared extension points for **CSV/JSON import, threshold-setting UI, and mesh-
 })();
 
 </script>
-<!-- ===================== 테트리스 Wraptris 끝 (블록 B) ===================== -->
-
+<!-- ===================== 테트리스 Wraptris V1.1 끝 (블록 B) ===================== -->
   
    
 
