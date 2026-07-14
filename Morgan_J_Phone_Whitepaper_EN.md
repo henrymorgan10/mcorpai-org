@@ -221,4 +221,4 @@ We would be grateful for the chance to build the first hundred and find out, hon
 
 *Contact: M-Corp Ethical AI — mcorpai.org*
 
-*This document is a design proposal and working hypothesis. All cost, range, and performance figures are pre-validation engineering estimates. No partnership, endorsement, or commitment by any named organization is implied. References to independent security review will be finalized upon completion of the pending audit process.*
+*This document is a design proposal and working hypothesis. All cost, range, and performance figures are pre-validation engineering estimates. No partnership, endorsement, or commitment by any named organization is implied.*
