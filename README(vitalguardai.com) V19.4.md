@@ -1,7 +1,7 @@
 # Offline AI Technology
 **Foundational Research Paper :** https://mcorpai.org/VitalGuard_Offline_AI.pdf
 
-My research plan is to submit this work on offline AI technology—covering Humanitarian AI, AI Ethics, ICT4D, Privacy, and Edge AI—to ACM FAccT and the AAAI AI for Social Impact Track.
+As part of my broader publication plan, I intend to submit this work on offline AI technology—covering Humanitarian AI, AI Ethics, ICT4D, Privacy, and Edge AI—to ACM FAccT and the AAAI AI for Social Impact Track.
 
 ## Biography & Milestones 📜
 
