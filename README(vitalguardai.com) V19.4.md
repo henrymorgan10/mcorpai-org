@@ -1,5 +1,3 @@
-<img width="490" height="490" alt="image" src="https://github.com/user-attachments/assets/034c351e-0726-4877-999d-61a277dec241" />
-
 # Offline AI Technology (Research Website: [mcorpai.org](https://mcorpai.org/))
 **Foundational Research Paper :** https://mcorpai.org/VitalGuard_Offline_AI.pdf
 
