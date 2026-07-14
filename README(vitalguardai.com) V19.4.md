@@ -1,5 +1,5 @@
 # Offline AI Technology
-Initial Research Paper: https://mcorpai.org/VitalGuard_Offline_AI.pdf
+**Foundational Research Paper :** https://mcorpai.org/VitalGuard_Offline_AI.pdf
 ## Biography & Milestones 📜
 
 *   **November 2025** — Officially reviewed by the Government of Luxembourg.
