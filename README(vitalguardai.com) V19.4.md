@@ -8,7 +8,7 @@ As part of my broader publication plan, I intend to submit this work on offline 
 *   **November 2025** — Officially reviewed by the Government of Luxembourg.
 *   **February 2026** — Reviewed by University College London (UCL) and the Institute of Development Studies (IDS) in the United Kingdom.
 *   **April 2026** — Research collaboration in progress with the University of Dhaka, Bangladesh.
-*   **February–October 2026** — Officially reviewed by the OTF Security Lab in the United States.
+*   **February–October 2026 — Officially reviewed by the OTF Security Lab in the United States.**
 *   **2027 — Future Plan:** Pursuing collaboration with KOTRA (Korea Trade-Investment Promotion Agency) and KOICA (Korea International Cooperation Agency), alongside technology matching-fund programs.
 
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
