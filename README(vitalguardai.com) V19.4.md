@@ -11,6 +11,9 @@ As part of my broader publication plan, I intend to submit this work on offline 
 *   **February–October 2026 — Officially reviewed by the OTF Security Lab in the United States.**
   
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
+
+My personal goal is to obtain an EB-1A visa and secure stable research funding.
+
 *   **2027 — Future Plan:** Pursuing collaboration with KOTRA (Korea Trade-Investment Promotion Agency) and KOICA (Korea International Cooperation Agency), alongside technology matching-fund programs.
 *   **2028 — Offline AI Technology v1.0 will be publicly released worldwide.**
   
