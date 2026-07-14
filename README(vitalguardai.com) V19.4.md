@@ -1,12 +1,5 @@
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
-**US$30 Smartphone for Africa**
-
-I also hope to explore future collaboration with TSMC. This initiative has the potential to contribute to TSMC's ESG objectives and may also help support the company's continued **MSCI ESG "AAA"** rating.
-
-**White Paper:**
-https://github.com/henrymorgan10/mcorpai-org/blob/main/Morgan_J_Phone_Whitepaper_EN.md
-
 ## Partnerships
 
 **For partnership and collaboration inquiries:**
@@ -18,6 +11,13 @@ I welcome opportunities for collaboration in any form.
 As a South Korean national, I am currently based in South Korea and, due to my ongoing professional responsibilities and commitments, I generally prefer remote collaboration whenever feasible.
 
 At the same time, I remain open to relocation when it is genuinely necessary to support a meaningful long-term collaboration or research initiative. This is not limited to any particular country. Should an appropriate visa, residency status, or other lawful immigration pathway be available, I would be pleased to consider relocation based on the nature of the opportunity, the scope of the collaboration, and its potential social, humanitarian, or technological impact.
+
+**Smartphone for Africa**
+
+I also hope to explore future collaboration with TSMC. This initiative has the potential to contribute to TSMC's ESG objectives and may also help support the company's continued **MSCI ESG "AAA"** rating.
+
+**White Paper:**
+https://github.com/henrymorgan10/mcorpai-org/blob/main/Morgan_J_Phone_Whitepaper_EN.md
 
 ### Technology That Prioritizes People Over Infrastructure
 **"AI that runs on a single sheet of paper" is not a slogan—it is a fact. Complexity weakens security and control; simplicity strengthens them. Privacy-enhancing and life-saving AI technologies do not necessarily require large-scale data centers. What matters most is sustainability.**
