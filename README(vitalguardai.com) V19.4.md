@@ -10,7 +10,7 @@ I am open to partnerships with organizations in any country. However, I am a cit
 
 ---
 
-## Morgan J. | Republic of Korea 🇰🇷 | Partnerships 🌍
+## Morgan J. | Republic of Korea | Partnerships 🌍
 
 **For partnership and collaboration inquiries:**
 
