@@ -1,4 +1,4 @@
-# Offline AI
+# Offline AI Technology
 ## Biography & Milestones 📜
 
 *   **November 2025** — Officially reviewed by the Government of Luxembourg.
