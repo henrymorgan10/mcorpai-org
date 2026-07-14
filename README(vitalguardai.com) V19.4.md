@@ -1,5 +1,12 @@
 [![OTF Security Lab Audited](https://img.shields.io/badge/OTF_Security_Lab-Audited-blue?style=for-the-badge&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
+**US$30 Smartphone for Africa**
+
+I also hope to explore future collaboration with TSMC. This initiative has the potential to contribute to TSMC's ESG objectives and may also help support the company's continued **MSCI ESG "AAA"** rating.
+
+**White Paper:**
+https://github.com/henrymorgan10/mcorpai-org/blob/main/Morgan_J_Phone_Whitepaper_EN.md
+
 ## Partnerships
 
 **For partnership and collaboration inquiries:**
