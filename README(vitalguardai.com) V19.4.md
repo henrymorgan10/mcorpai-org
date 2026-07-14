@@ -1,3 +1,4 @@
+# Offline AI
 ## Biography & Milestones 📜
 
 *   **November 2025** — Officially reviewed by the Government of Luxembourg.
