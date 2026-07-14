@@ -1,4 +1,4 @@
-### ⏳ Biography & Milestones
+## ⏳ Biography & Milestones
 
 *   **November 2025** — Officially reviewed by the Government of Luxembourg.
 *   **February 2026** — Reviewed by University College London (UCL) and the Institute of Development Studies (IDS) in the United Kingdom.
@@ -10,7 +10,7 @@ I am open to partnerships with organizations in any country. However, I am a cit
 
 ---
 
-## Partnerships
+## 🌍🤝 Partnerships
 
 **For partnership and collaboration inquiries:**
 
