@@ -45,6 +45,8 @@ https://github.com/henrymorgan10/mcorpai-org/blob/main/Morgan_J_Phone_Whitepaper
 ### Technology That Prioritizes People Over Infrastructure
 **"AI that runs on a single sheet of paper" is not a slogan—it is a fact. Complexity weakens security and control; simplicity strengthens them. Privacy-enhancing and life-saving AI technologies do not necessarily require large-scale data centers. What matters most is sustainability.**
 
+---
+
 # The Potential of Offline AI
 ### Building and maintaining data centers is not always feasible in every environment.
 
@@ -74,6 +76,7 @@ I welcome opportunities for collaboration in any form.
 
 As a South Korean national, I am not currently considering relocation abroad due to the nature of my work and ongoing commitments. Therefore, I generally prefer remote collaboration whenever possible.
 
+---
 
 ## Ultrasonic Communication and Offline AI Resilience Research
 
@@ -136,6 +139,8 @@ The integration of offline AI with ultrasonic communication introduces additiona
 The objective is not to replace radio-frequency or optical communication systems. Instead, ultrasonic communication may serve as a complementary resilience technology that provides additional operational flexibility when conventional communication methods are unavailable, degraded, restricted, or otherwise unsuitable.
 
 As future exploration missions move toward long-duration operations on the Moon, Mars, and other planetary environments, resilient communication architectures may benefit from incorporating multiple independent communication pathways. Ultrasonic AI-enabled communication represents one possible area of research within this broader pursuit of robust, autonomous, and infrastructure-resilient space systems.
+
+---
 
 ## Expanding Communication Options for Resilience, Privacy, and Continuity
 
