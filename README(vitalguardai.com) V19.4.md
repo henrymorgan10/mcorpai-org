@@ -1,4 +1,4 @@
-[![U.S. Federal Government Independent Agency | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Federal_Government_Independent_Agency-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
+[![OTF | Independent U.S.-Funded Organization | Security Lab Audited](https://img.shields.io/badge/Independent_U.S.-Funded_Organization-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
 **US$30 Smartphone for Africa**
 
