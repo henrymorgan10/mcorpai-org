@@ -12,6 +12,8 @@ I am open to partnerships with organizations in any country. However, I am a cit
 
 ## Morgan J. | Republic of Korea | Global Partnerships 🌍
 
+**For more in-depth international collaboration, I would welcome an in-person visit via Incheon International Airport.**
+
 **For partnership and collaboration inquiries:**
 
 [M-Corp AI Contact Page](https://mcorpai.org/#contact)
