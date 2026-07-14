@@ -1,4 +1,4 @@
-[![OTF (U.S.-Funded) | Security Lab Audited](https://img.shields.io/badge/U.S.-Funded_OTF-Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
+[![OTF | Security Lab Audited](https://img.shields.io/badge/OTF-Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
 **US$30 Smartphone for Africa**
 
