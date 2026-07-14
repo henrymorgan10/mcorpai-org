@@ -12,7 +12,7 @@ As part of my broader publication plan, I intend to submit this work on offline 
   
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 *   **2027 — Future Plan:** Pursuing collaboration with KOTRA (Korea Trade-Investment Promotion Agency) and KOICA (Korea International Cooperation Agency), alongside technology matching-fund programs.
-*   **2028 — Planned public release of the Offline AI technology worldwide.**
+*   **2028 — Offline AI Technology v1.0 will be publicly released worldwide.**
   
 I am open to partnerships with organizations in any country. However, I am a citizen of the Republic of Korea and collaborate remotely from South Korea. My goal is to establish a small offline AI research lab in South Korea with a team of three to five people and contribute to the global open-source ecosystem.
 
