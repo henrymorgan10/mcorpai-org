@@ -1,5 +1,7 @@
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Federal_Government_Independent_Agency-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
+[![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
+
 **US$30 Smartphone for Africa**
 
 I also hope to explore future collaboration with TSMC. This initiative has the potential to contribute to TSMC's ESG objectives and may also help support the company's continued **MSCI ESG "AAA"** rating.
