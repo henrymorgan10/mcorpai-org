@@ -1,4 +1,4 @@
-# The official website of the offline AI I’m developing is [mcorpai.org](https://mcorpai.org/)
+# My Ingenious Imagination & Creativity Studio [mcorpai.org](https://mcorpai.org/)
 
 ### AI that collects user data destroys jobs, while offline AI that respects people's personal data creates new ones.
 
