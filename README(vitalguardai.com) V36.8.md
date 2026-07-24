@@ -219,8 +219,3 @@ Ultimately, the goal is not to promote any single technology, but to contribute 
 **Offline AI can be developed and deployed by teams of just three to five people while still achieving world-class capabilities. This is possible because the foundations, architectures, and design principles required for such systems already exist.**
 
 ### AI that collects user data destroys jobs, while offline AI that respects people's personal data creates new ones.
-
-
-UN reform comes down to freedom of expression. If you're hesitant to partner with me because you aren't comfortable with free speech, feel free to stop reading right here.
-
-I genuinely care about the future of the UN, and the truth is, people selected for USAGM-OTF are a unique breed. If that eccentricity makes you think, 'I'd rather not work with this person,' you'd probably struggle to work with Elon Musk at SpaceX, too. Trust me—Elon is far more eccentric than I am.
