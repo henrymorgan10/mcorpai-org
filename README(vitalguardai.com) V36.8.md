@@ -34,10 +34,6 @@
 
 **Offline AI is designed to reach the remaining 6 billion.**
 
-UN reform comes down to freedom of expression. If you're hesitant to partner with me because you aren't comfortable with free speech, feel free to stop reading right here.
-
-I genuinely care about the future of the UN, and the truth is, people selected for USAGM-OTF are a unique breed. If that eccentricity makes you think, 'I'd rather not work with this person,' you'd probably struggle to work with Elon Musk at SpaceX, too. Trust me—Elon is far more eccentric than I am.
-
 ---
 
 ## Elon Musk founded SpaceX to help make humanity a multiplanetary species. 
