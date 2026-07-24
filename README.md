@@ -1,3 +1,4 @@
+## Personal Workspace
 # ⚖️ Ethical AI for Humanitarian Contexts
 
 > *"Technical excellence alone is insufficient. Legal security and ethical trustworthiness must come first."*
