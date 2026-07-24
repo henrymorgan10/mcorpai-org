@@ -42,7 +42,6 @@ I genuinely care about the future of the UN, and the truth is, people selected f
 ## On Mars, however, Big Tech AI that depends on cloud infrastructure will not be practical.
 
 ### AI that collects user data destroys jobs, while offline AI that respects people's personal data creates new ones.
-## [[Must Read] An OTF Security Lab Participant's Vision for UN Reform](https://github.com/henrymorgan10/-mcorp-home/blob/main/README.md) 👈
 
 ## GPUs don't grow. People do. 
 ## My personal goal is to obtain an EB-1A visa and secure stable research funding.
@@ -99,7 +98,6 @@ https://github.com/henrymorgan10/mcorpai-org/blob/main/Morgan_J_Phone_Whitepaper
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
 ### AI that collects user data destroys jobs, while offline AI that respects people's personal data creates new ones.
-## [[Must Read] An OTF Security Lab Participant's Vision for UN Reform](https://github.com/henrymorgan10/-mcorp-home/blob/main/README.md) 👈
 
 ---
 
@@ -218,10 +216,7 @@ Ultimately, the goal is not to promote any single technology, but to contribute 
 
 **Offline AI can be developed and deployed by teams of just three to five people while still achieving world-class capabilities. This is possible because the foundations, architectures, and design principles required for such systems already exist.**
 
-[![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
-
 ### AI that collects user data destroys jobs, while offline AI that respects people's personal data creates new ones.
-## [[Must Read] An OTF Security Lab Participant's Vision for UN Reform](https://github.com/henrymorgan10/-mcorp-home/blob/main/README.md) 👈
 
 
 UN reform comes down to freedom of expression. If you're hesitant to partner with me because you aren't comfortable with free speech, feel free to stop reading right here.
