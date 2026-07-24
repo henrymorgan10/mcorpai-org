@@ -2,8 +2,6 @@
 
 ### AI that collects user data destroys jobs, while offline AI that respects people's personal data creates new ones.
 
-## [[Must Read] An OTF Security Lab Participant's Vision for UN Reform](https://github.com/henrymorgan10/-mcorp-home/blob/main/README.md) 👈
-
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
 UN reform comes down to freedom of expression. If you're hesitant to partner with me because you aren't comfortable with free speech, feel free to stop reading right here.
