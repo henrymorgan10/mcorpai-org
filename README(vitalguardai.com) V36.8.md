@@ -4,7 +4,7 @@
 
 [![U.S. Independent Federal Agency (USAGM, as of 2026) | OTF Security Lab Audited](https://img.shields.io/badge/U.S._Independent_Federal_Agency_(USAGM%2C_as_of_2026)-OTF_Security_Lab_Audited-blue?style=for-the-badge&labelColor=grey&logo=shield&logoColor=white)](https://www.opentech.fund/)
 
-> ### 💡 Executive Summary (TL;DR)
+> ### 💡 Executive Summary
 > * **Who I Am:** Morgan J., a South Korean Offline AI Architect & Systems Designer focused on Privacy-by-Design and Digital Sovereignty.
 > * **What I Built:** Lightweight, zero-dependency Offline AI & acoustic/ultrasonic communication protocols that operate without cloud infrastructure, internet connectivity, or personal data collection—designed for the 6.8 billion people in resource-constrained environments.
 > * **Key Milestones & Verification:**
