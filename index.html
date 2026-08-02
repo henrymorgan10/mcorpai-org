@@ -610,6 +610,168 @@ nav .bar, .container.bar.card{ overflow: visible; }
 </head>
    
 <body>
+
+<!-- ===== M-Corp PDF gateway: minimal overlay start ===== -->
+<style id="mcorp-pdf-gateway-style">
+  html,
+  body {
+    overflow: hidden !important;
+  }
+
+  #mcorp-pdf-gateway {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background: #0b1220;
+    color: #f8fafc;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 52px;
+    padding: 8px 12px;
+    background: #111827;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-title {
+    min-width: 0;
+    overflow: hidden;
+    color: #f8fafc;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-action.secondary {
+    background: #334155;
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-frame {
+    display: block;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    border: 0;
+    background: #ffffff;
+  }
+
+  #mcorp-pdf-gateway .mcorp-pdf-fallback {
+    margin: 0;
+    padding: 14px;
+    background: #ffffff;
+    color: #0f172a;
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    #mcorp-pdf-gateway .mcorp-pdf-toolbar {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    #mcorp-pdf-gateway .mcorp-pdf-actions {
+      width: 100%;
+    }
+
+    #mcorp-pdf-gateway .mcorp-pdf-action {
+      flex: 1 1 50%;
+    }
+  }
+</style>
+
+<div id="mcorp-pdf-gateway" role="dialog" aria-modal="true" aria-label="VitalGuard Offline AI PDF">
+  <div class="mcorp-pdf-toolbar">
+    <div class="mcorp-pdf-title">VitalGuard: Offline AI for Humanitarian Contexts</div>
+    <div class="mcorp-pdf-actions">
+      <button class="mcorp-pdf-action secondary" id="mcorp-popup-open" type="button">Open mcorpai.pdf</button>
+      <a class="mcorp-pdf-action" href="https://mcorpai.org/VitalGuard_Offline_AI.pdf" target="_blank" rel="noopener noreferrer">Open main PDF</a>
+    </div>
+  </div>
+
+  <object
+    class="mcorp-pdf-frame"
+    data="https://mcorpai.org/VitalGuard_Offline_AI.pdf#view=FitH&amp;toolbar=1&amp;navpanes=0"
+    type="application/pdf"
+    aria-label="VitalGuard Offline AI PDF document">
+    <iframe
+      class="mcorp-pdf-frame"
+      src="https://mcorpai.org/VitalGuard_Offline_AI.pdf#view=FitH&amp;toolbar=1&amp;navpanes=0"
+      title="VitalGuard Offline AI PDF"
+      loading="eager">
+    </iframe>
+    <p class="mcorp-pdf-fallback">
+      PDF 미리보기를 지원하지 않는 브라우저입니다.
+      <a href="https://mcorpai.org/VitalGuard_Offline_AI.pdf" target="_blank" rel="noopener noreferrer">VitalGuard PDF 열기</a>
+    </p>
+  </object>
+</div>
+
+<script id="mcorp-pdf-popup-script">
+(function () {
+  'use strict';
+
+  const popupUrl = 'https://mcorpai.org/mcorpai.pdf';
+  const popupName = 'mcorpaiPdfPopup';
+  const popupFeatures = 'popup=yes,width=1100,height=850,resizable=yes,scrollbars=yes';
+
+  function openMcorpPdfPopup() {
+    const popupWindow = window.open(popupUrl, popupName, popupFeatures);
+    if (popupWindow) {
+      try {
+        popupWindow.focus();
+      } catch (error) {
+        // The PDF is already opened; focus support varies by browser.
+      }
+      return true;
+    }
+    return false;
+  }
+
+  const openButton = document.getElementById('mcorp-popup-open');
+  if (openButton) {
+    openButton.addEventListener('click', openMcorpPdfPopup);
+  }
+
+  window.addEventListener('load', function () {
+    openMcorpPdfPopup();
+  }, { once: true });
+})();
+</script>
+<!-- ===== M-Corp PDF gateway: minimal overlay end ===== -->
+
   <a href="#content" class="sr-only">Skip to content</a>
 
   <!--
