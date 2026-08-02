@@ -618,6 +618,15 @@ nav .bar, .container.bar.card{ overflow: visible; }
     overflow: hidden !important;
   }
 
+  html.mcorp-main-visible,
+  html.mcorp-main-visible body {
+    overflow: auto !important;
+  }
+
+  #mcorp-pdf-gateway[hidden] {
+    display: none !important;
+  }
+
   #mcorp-pdf-gateway {
     position: fixed;
     inset: 0;
@@ -679,6 +688,10 @@ nav .bar, .container.bar.card{ overflow: visible; }
     background: #334155;
   }
 
+  #mcorp-pdf-gateway .mcorp-pdf-action.home {
+    background: #0f766e;
+  }
+
   #mcorp-pdf-gateway .mcorp-pdf-frame {
     display: block;
     flex: 1 1 auto;
@@ -703,11 +716,12 @@ nav .bar, .container.bar.card{ overflow: visible; }
     }
 
     #mcorp-pdf-gateway .mcorp-pdf-actions {
+      flex-wrap: wrap;
       width: 100%;
     }
 
     #mcorp-pdf-gateway .mcorp-pdf-action {
-      flex: 1 1 50%;
+      flex: 1 1 30%;
     }
   }
 </style>
@@ -718,6 +732,7 @@ nav .bar, .container.bar.card{ overflow: visible; }
     <div class="mcorp-pdf-actions">
       <button class="mcorp-pdf-action secondary" id="mcorp-popup-open" type="button">Open mcorpai.pdf</button>
       <a class="mcorp-pdf-action" href="https://mcorpai.org/VitalGuard_Offline_AI.pdf" target="_blank" rel="noopener noreferrer">Open main PDF</a>
+      <button class="mcorp-pdf-action home" id="mcorp-main-website" type="button">Main Website</button>
     </div>
   </div>
 
@@ -745,13 +760,26 @@ nav .bar, .container.bar.card{ overflow: visible; }
 
   const popupUrl = 'https://mcorpai.org/mcorpai.pdf';
   const popupName = 'mcorpaiPdfPopup';
-  const popupFeatures = 'popup=yes,width=1100,height=850,resizable=yes,scrollbars=yes';
+  const popupWidth = Math.min(760, Math.max(420, screen.availWidth - 80));
+  const popupHeight = Math.min(620, Math.max(480, screen.availHeight - 140));
+  const popupLeft = 24;
+  const popupTop = Math.max(24, Math.round((screen.availHeight - popupHeight) / 2));
+  const popupFeatures = [
+    'popup=yes',
+    'width=' + popupWidth,
+    'height=' + popupHeight,
+    'left=' + popupLeft,
+    'top=' + popupTop,
+    'resizable=yes',
+    'scrollbars=yes'
+  ].join(',');
+  let popupWindowRef = null;
 
   function openMcorpPdfPopup() {
-    const popupWindow = window.open(popupUrl, popupName, popupFeatures);
-    if (popupWindow) {
+    popupWindowRef = window.open(popupUrl, popupName, popupFeatures);
+    if (popupWindowRef) {
       try {
-        popupWindow.focus();
+        popupWindowRef.focus();
       } catch (error) {
         // The PDF is already opened; focus support varies by browser.
       }
@@ -760,9 +788,36 @@ nav .bar, .container.bar.card{ overflow: visible; }
     return false;
   }
 
+  function showMainWebsite() {
+    const gateway = document.getElementById('mcorp-pdf-gateway');
+    document.documentElement.classList.add('mcorp-main-visible');
+    if (gateway) {
+      gateway.hidden = true;
+      gateway.setAttribute('aria-hidden', 'true');
+    }
+    if (popupWindowRef && !popupWindowRef.closed) {
+      try {
+        popupWindowRef.close();
+      } catch (error) {
+        // Closing a popup can be restricted by some browser policies.
+      }
+    }
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      window.focus();
+    } catch (error) {
+      // Scrolling and focus support vary by browser.
+    }
+  }
+
   const openButton = document.getElementById('mcorp-popup-open');
   if (openButton) {
     openButton.addEventListener('click', openMcorpPdfPopup);
+  }
+
+  const mainWebsiteButton = document.getElementById('mcorp-main-website');
+  if (mainWebsiteButton) {
+    mainWebsiteButton.addEventListener('click', showMainWebsite);
   }
 
   window.addEventListener('load', function () {
