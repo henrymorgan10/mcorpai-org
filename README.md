@@ -2,6 +2,8 @@
 
 If an AI cannot explain what it decided or why it reached a particular conclusion, how can we trust its judgment? An AI truly designed to serve people should be more than simply highly capable. It should be able to **explain and validate its own decisions.**
 
+### Black-box AI is chaos, much like the Joker in *The Dark Knight*.
+
 ## Personal Workspace
 # ⚖️ Ethical AI for Humanitarian Contexts
 
