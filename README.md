@@ -1,3 +1,7 @@
+**An unexplained black-box AI is ultimately nothing more than the Joker from *The Dark Knight*.**
+
+If an AI cannot explain what it decided or why it reached a particular conclusion, how can we trust its judgment? An AI truly designed to serve people should be more than simply highly capable. It should be able to **explain and validate its own decisions.**
+
 ## Personal Workspace
 # ⚖️ Ethical AI for Humanitarian Contexts
 
