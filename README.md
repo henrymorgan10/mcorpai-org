@@ -1,10 +1,11 @@
+## Personal Workspace
+
 I have always been drawn to cinematic imagination, as watching films provides me with creative inspiration as a writer.
 
 ### Black-box AI is chaos, much like the Joker in *The Dark Knight*.
 
 If an AI cannot explain what it decided or why it reached a particular conclusion, how can we trust its judgment? An AI truly designed to serve people should be more than simply highly capable. It should be able to **explain and validate its own decisions.**
 
-## Personal Workspace
 # ⚖️ Ethical AI for Humanitarian Contexts
 
 > *"Technical excellence alone is insufficient. Legal security and ethical trustworthiness must come first."*
