@@ -7,6 +7,7 @@ If an AI cannot explain what it decided or why it reached a particular conclusio
 ## Personal Workspace
 # ⚖️ Ethical AI for Humanitarian Contexts
 
+> I have always been drawn to cinematic imagination, as watching films provides me with creative inspiration as a writer.
 > *"Technical excellence alone is insufficient. Legal security and ethical trustworthiness must come first."*
 >
 > — Gyumin Jeon (Morgan J.)
