@@ -1,4 +1,4 @@
-## Micro Cinema: Environmental, Social, and Governance
+## Micro Cinema - Environmental, Social, and Governance
 ### ESG is an essential ethical responsibility for every company. 
 ### Scholarships for Arthouse Film Production : Creative Freedom
 
