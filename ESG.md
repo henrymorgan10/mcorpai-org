@@ -8,6 +8,8 @@
 
 ---
 
+### Micro Cinema: A Pioneering Model for ESG.
+
 The production model is simple, transparent, and designed to create a sustainable cycle of artistic opportunity and social impact.
 
 M-Corp AI supports independent arthouse filmmakers in submitting their works to international film festivals, helping their creative voices reach audiences around the world.
