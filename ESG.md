@@ -26,6 +26,8 @@ Our goal is not simply to finance individual films, but to build a lasting ecosy
 
 **Every film becomes an opportunity to create another film—and to make a meaningful difference in someone's life.**
 
+---
+
 ## A Security Researcher’s Manifesto
 
 # My Dream Is to Become an ESG Leader.
