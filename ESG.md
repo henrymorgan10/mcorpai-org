@@ -1,6 +1,6 @@
 ### Public Interest Project Director:
 #### Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
-#### I don't drive an expensive car. Instead, I choose to use that money to help children with incurable diseases.
+### I don't drive an expensive car. Instead, I choose to use that money to help children with incurable diseases.
 #### Official Founder’s Email: contact@mcorpai.org
 
 ## Micro Cinema - Environmental, Social, and Governance
