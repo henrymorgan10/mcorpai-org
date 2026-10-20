@@ -80,7 +80,7 @@ Beyond simply promoting the idea that **“we did something good,”** we will a
 ### ESG embodies the social responsibility and sustainable values that every company should pursue.
 ### I care deeply about ESG because I believe it is the most human-centered measure of corporate responsibility.
 
-# Human Rights-Based Development — [mcorpai.kr](https://mcorpai.kr/)
+# Human Rights-Based Development
 ### It directly contributes to achieving SDG 1 (No Poverty) and SDG 8 (Decent Work and Economic Growth).
 
 The true value of investment lies in serving the public good. If $1 million is spent solely on global marketing, people may forget about it once the campaign ends. But if that $1 million is invested in something sustainable, it can help save countless lives.
