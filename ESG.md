@@ -30,8 +30,6 @@ Box office revenue is distributed as follows:
 
 - **Zero licensing fees.** No licensing fees are charged, and communities from all regions are welcome to participate.
 
-Once the production costs and the additional 30% contingency reserve have been recovered, these funds are reinvested into new arthouse film productions and international film festival submission fees.
-
 **The revenue distribution shifts from 60:20:20 to 60:40, with one essential principle remaining unchanged: the 60% share allocated to participating arthouse cinemas is always fixed.**
 
 Our core principle is to support children in local communities. In essence, it is about helping those in need right in your own neighborhood.
