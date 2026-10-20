@@ -3,7 +3,7 @@
 
 **If this positive impact expands globally, it could open the door to scholarship opportunities at numerous universities across Europe and Asia that place a strong emphasis on film directing. Through these scholarships, aspiring filmmakers studying directing would gain greater financial support and creative freedom, making it easier for them to bring their artistic visions to life through arthouse cinema.**
 
-**Cinema can never be replaced by AI.**
+**Cinema can never be replaced by AI. Because cinema is what connects us as human beings.**
 
 ## A Security Researcher’s Manifesto
 
