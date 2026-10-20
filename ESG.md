@@ -34,7 +34,7 @@ Box office revenue is initially distributed according to a **60:20:20 model**. O
 
 **However, one principle remains absolute and non-negotiable: 60% of all box office revenue will always be allocated to participating local arthouse cinemas, under all circumstances.**
 
-### Collaboration with Multiple Universities
+## International Collaboration with Multiple Universities
 
 **M-Corp AI oversees overall project management, while the university handles administrative responsibilities and ensures the transparent allocation and management of funds.**
 
