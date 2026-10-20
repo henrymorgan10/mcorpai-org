@@ -1,6 +1,6 @@
 ## Environmental, Social, and Governance
 ### ESG is an essential ethical responsibility for every company. 
-### Scholarships for Arthouse Film Production
+### Scholarships for Arthouse Film Production : Creative Freedom
 
 **Although M-Corp AI is a very small startup based in South Korea, we believe that expanding the positive impact of our ESG initiatives globally could create opportunities for meaningful collaborations and long-term partnerships with more companies and organizations around the world.**
 
