@@ -24,6 +24,8 @@ Once the production costs and the additional 30% contingency reserve have been r
 
 The revenue distribution shifts from 60:20:20 to 60:40, with one essential principle remaining unchanged: the 60% share allocated to participating arthouse cinemas is always fixed.
 
+Our core principle is to support children in local communities. In essence, it is about helping those in need right in your own neighborhood.
+
 **This creates a sustainable, self-reinforcing cycle: each film helps sustain local cinemas, supports vulnerable children, and generates resources to bring the next generation of independent films to life.**
 
 Our goal is not simply to finance individual films, but to build a lasting ecosystem in which artistic freedom, cultural sustainability, and social responsibility reinforce one another.
