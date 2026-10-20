@@ -36,6 +36,12 @@ Our goal is not simply to finance individual films, but to build a lasting ecosy
 
 ---
 
+This is not about sending donations to distant communities with little connection to our own. **It is about directly helping children in your local community.**
+
+Through partnerships with local hospitals, a portion of the film's box office revenue is donated directly to these hospitals to help cover medical treatment and educational expenses for children in need.
+
+**In other words, every ticket sold helps support vulnerable children in your own community—turning the simple act of watching a film into a meaningful opportunity to make a difference in the lives of those around you.**
+
 **How Can We Raise Awareness of Our Films for Charity?**
 
 Simply share [https://mcorpai.org/CSR](https://mcorpai.org/CSR) with audiences in your local community to help spread the word about our charitable film initiative.
