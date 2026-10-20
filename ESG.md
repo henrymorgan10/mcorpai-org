@@ -4,7 +4,7 @@
 
 **Although M-Corp AI is a very small startup based in South Korea, we believe that expanding the positive impact of our ESG initiatives globally could create opportunities for meaningful collaborations and long-term partnerships with more companies and organizations around the world.**
 
-**As a small IT startup, M-Corp AI has the financial capacity to make an initial investment of $150,000 in this initiative. As our company grows, we are committed to giving back to society on an ongoing basis, expanding our positive social impact alongside our business growth.**
+**As our company grows, we are committed to giving back to society on an ongoing basis, expanding our positive social impact alongside our business growth.**
 
 **As these efforts grow, they could also pave the way for scholarship programs at universities across Europe and Asia that place a strong emphasis on film directing. By providing financial support to aspiring filmmakers, these scholarships would help reduce financial barriers and give students greater creative freedom to bring their artistic visions to life through arthouse cinema.**
 
