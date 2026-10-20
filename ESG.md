@@ -1,4 +1,4 @@
-## Please take just five minutes to read about the values and principles that guide my work.
+## ## Please take five minutes to read about the values and principles guiding my work.
 ### Public Interest Project Director:
 #### Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
 ### I don't drive an expensive car. Instead, I use that money to help children with incurable diseases.
