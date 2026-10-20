@@ -36,6 +36,8 @@ Box office revenue is initially distributed according to a **60:20:20 model**. O
 
 ### Collaboration with Universities
 
+**M-Corp AI oversees overall project management, while the university handles administrative responsibilities and ensures the transparent allocation and management of funds.**
+
 As our film production initiatives grow, we plan to collaborate with multiple universities to establish a cultural foundation or non-governmental organization (NGO) in partnership with the M-Corp AI Research Institute, with the long-term goal of expanding our initiatives worldwide.
 
 Our core principle is to support children in local communities. In essence, it is about helping those in need right in your own neighborhood.
