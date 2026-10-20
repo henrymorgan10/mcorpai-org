@@ -34,6 +34,12 @@ Our goal is not simply to finance individual films, but to build a lasting ecosy
 
 ---
 
+**How Can We Raise Awareness of Our Films for Charity?**
+
+Simply share [https://mcorpai.org/CSR](https://mcorpai.org/CSR) with audiences in your local community to help spread the word about our charitable film initiative.
+
+---
+
 ## A Security Researcher’s Manifesto
 
 # My Dream Is to Become an ESG Leader.
@@ -68,12 +74,6 @@ If technology can protect people, we should pursue it. If visual storytelling ca
 **It is about protecting people, saving lives, and creating the possibility of a better future.**
 
 This is the dream I hope to realize as a security researcher.
-
----
-
-**How Can We Raise Awareness of Our Films for Charity?**
-
-Simply share [https://mcorpai.org/CSR](https://mcorpai.org/CSR) with audiences in your local community to help spread the word about our charitable film initiative.
 
 ---
 
