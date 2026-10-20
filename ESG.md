@@ -36,6 +36,8 @@ Our goal is not simply to finance individual films, but to build a lasting ecosy
 
 ---
 
+### Helping Children in Your Community.
+
 This is not about sending donations to distant communities with little connection to our own. **It is about directly helping children in your local community.**
 
 Through partnerships with local hospitals, a portion of the film's box office revenue is donated directly to these hospitals to help cover medical treatment and educational expenses for children in need.
