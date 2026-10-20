@@ -4,7 +4,7 @@
 
 Although M-Corp AI is a very small startup based in South Korea, we believe that expanding the global reach of our ESG initiatives could open the door to meaningful collaborations and long-term partnerships with companies and organizations around the world.
 
-As our company grows, we remain committed to giving back to society, ensuring that our contributions to the communities we serve grow alongside our business.
+**As our company grows, we remain committed to giving back to society, ensuring that our contributions to the communities we serve grow alongside our business.**
 
 We hope these efforts will eventually create opportunities to establish scholarship programs at universities across Europe and Asia with strong film directing programs. By supporting aspiring filmmakers financially, these scholarships could help remove barriers to artistic expression and empower students to bring their creative visions to life through arthouse cinema.
 
