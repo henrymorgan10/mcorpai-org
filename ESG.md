@@ -1,4 +1,4 @@
-**Micro Cinema: Connecting People, Bringing Communities Together.**
+### Micro Cinema: Connecting People, Bringing Communities Together.
 ## Please take five minutes to read about the values and principles guiding my work.
 ### Public Interest Project Director:
 #### Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
