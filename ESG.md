@@ -1,4 +1,4 @@
-ESG is an essential ethical responsibility for every company. If this positive impact expands globally, it could open the door to scholarship opportunities at numerous universities across Europe and Asia that place a strong emphasis on film directing. Through these scholarships, aspiring filmmakers studying directing would gain greater financial support and creative freedom, making it easier for them to bring their artistic visions to life through arthouse cinema.
+**ESG is an essential ethical responsibility for every company. If this positive impact expands globally, it could open the door to scholarship opportunities at numerous universities across Europe and Asia that place a strong emphasis on film directing. Through these scholarships, aspiring filmmakers studying directing would gain greater financial support and creative freedom, making it easier for them to bring their artistic visions to life through arthouse cinema.**
 
 ## A Security Researcher’s Manifesto
 
