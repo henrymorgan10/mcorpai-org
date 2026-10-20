@@ -1,4 +1,4 @@
-## Public Interest Project Director:
+### Public Interest Project Director
 #### Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
 #### Official Founder’s Email: contact@mcorpai.org
 ## Micro Cinema - Environmental, Social, and Governance
