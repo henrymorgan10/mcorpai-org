@@ -1,9 +1,8 @@
+## Please take just five minutes to read about the values and principles that guide my work.
 ### Public Interest Project Director:
 #### Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
 ### I don't drive an expensive car. Instead, I use that money to help children with incurable diseases.
 #### Official Founder’s Email: contact@mcorpai.org
-
-### Please take just five minutes to read about the values and principles that guide my work.
 
 ## Micro Cinema - Environmental, Social, and Governance
 ### ESG is an essential ethical responsibility for every company. 
