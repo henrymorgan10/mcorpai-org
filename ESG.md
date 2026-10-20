@@ -69,6 +69,14 @@ If technology can protect people, we should pursue it. If visual storytelling ca
 
 This is the dream I hope to realize as a security researcher.
 
+---
+
+**How Can We Raise Awareness of Our Films for Charity?**
+
+Simply share [https://mcorpai.org/CSR](https://mcorpai.org/CSR) with audiences in your local community to help spread the word about our charitable film initiative.
+
+---
+
 # ESG Management
 
 ### Can a security professional become a world-class expert through exceptional talent alone?
