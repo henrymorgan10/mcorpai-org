@@ -50,6 +50,14 @@ Through partnerships with local hospitals, a portion of the film's box office re
 
 Simply share [https://mcorpai.org/CSR](https://mcorpai.org/CSR) with audiences in your local community to help spread the word about our charitable film initiative.
 
+I believe that **true social responsibility begins with caring for and taking action within our own communities.**
+
+There are children in our communities who cannot access proper medical treatment because their families cannot afford it, or who are forced to give up educational opportunities due to financial hardship. **The true value of philanthropy lies not in the amount of money donated, but in making a meaningful difference in their lives and providing lasting support.**
+
+We aim to prioritize healthcare and education for children in our local communities and **gradually extend our support to other regions and countries as our company grows and our partnerships expand.**
+
+**Positive change should begin close to home and extend beyond borders. This is our vision of sustainable and responsible philanthropy.**
+
 ---
 
 ## A Security Researcher’s Manifesto
