@@ -22,10 +22,13 @@ The production model is simple, transparent, and designed to create a sustainabl
 M-Corp AI supports independent arthouse filmmakers in submitting their works to international film festivals, helping their creative voices reach audiences around the world.
 
 Box office revenue is distributed as follows:
-- **60%** goes to participating local arthouse cinemas, supporting independent cultural spaces and their continued operation.
-- **20%:** Allocated to recovering the original film production costs and establishing an additional contingency reserve equivalent to 30% of the production budget. This helps ensure a stable production environment and secures funding for future arthouse film projects.
-- **20%** is donated through partnerships with local hospitals to support children suffering from rare and incurable diseases, as well as children in need of assistance with medical expenses or educational costs.
-- **Zero,** Please note that no licensing fees are charged, and communities from any region are welcome to participate.
+- **60%** goes to participating local arthouse cinemas, helping sustain independent cultural spaces and support their long-term operation.
+
+- **20%** is allocated to recovering the original film production costs and building a contingency reserve equivalent to 30% of the production budget. This helps maintain a stable production environment and supports future independent film projects.
+
+- **20%** is donated through partnerships with local hospitals to support children with rare or incurable diseases, as well as children who need financial assistance with medical care or education.
+
+- **Zero licensing fees.** No licensing fees are charged, and communities from all regions are welcome to participate.
 
 Once the production costs and the additional 30% contingency reserve have been recovered, these funds are reinvested into new arthouse film productions and international film festival submission fees.
 
