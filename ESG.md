@@ -30,6 +30,10 @@ Box office revenue is distributed as follows:
 
 - **Zero licensing fees.** No licensing fees are charged, and communities from all regions are welcome to participate.
 
+Box office revenue is initially distributed according to a **60:20:20 model**. Once the film production costs and an additional 30% contingency reserve have been fully recovered, the revenue distribution transitions to a **60:40 model**.
+
+**However, one principle remains absolute and non-negotiable: 60% of all box office revenue will always be allocated to participating local arthouse cinemas, under all circumstances.**
+
 ### Collaboration with Universities
 
 As our film production initiatives grow, we plan to collaborate with multiple universities to establish a cultural foundation or non-governmental organization (NGO) in partnership with the M-Corp AI Research Institute, with the long-term goal of expanding our initiatives worldwide.
