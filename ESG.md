@@ -30,7 +30,9 @@ Box office revenue is distributed as follows:
 
 - **Zero licensing fees.** No licensing fees are charged, and communities from all regions are welcome to participate.
 
-**The revenue distribution shifts from 60:20:20 to 60:40, with one essential principle remaining unchanged: the 60% share allocated to participating arthouse cinemas is always fixed.**
+### Collaboration with Universities
+
+As our film production initiatives grow, we plan to collaborate with multiple universities to establish a cultural foundation or non-governmental organization (NGO) in partnership with the M-Corp AI Research Institute, with the long-term goal of expanding our initiatives worldwide.
 
 Our core principle is to support children in local communities. In essence, it is about helping those in need right in your own neighborhood.
 
