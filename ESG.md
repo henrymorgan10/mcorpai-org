@@ -18,7 +18,7 @@ Box office revenue is distributed as follows:
 - **60%** goes to participating local arthouse cinemas, supporting independent cultural spaces and their continued operation.
 - **20%** is allocated toward recovering the original film production costs, including an additional 30% contingency reserve.
 - **20%** is donated through partnerships with local hospitals to support children suffering from rare and incurable diseases, as well as children in need of assistance with medical expenses or educational costs.
-- **ZERO:** Please note that no licensing fees are charged, and communities from any region are welcome to participate.
+- **Zero** Please note that no licensing fees are charged, and communities from any region are welcome to participate.
 
 Once the production costs and the additional 30% contingency reserve have been recovered, these funds are reinvested into new arthouse film productions and international film festival submission fees.
 
