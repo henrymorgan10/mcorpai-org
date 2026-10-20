@@ -3,6 +3,8 @@
 ### I don't drive an expensive car. Instead, I use that money to help children with incurable diseases.
 #### Official Founder’s Email: contact@mcorpai.org
 
+### Please take just five minutes to read about the values and principles that guide my work.
+
 ## Micro Cinema - Environmental, Social, and Governance
 ### ESG is an essential ethical responsibility for every company. 
 ### Scholarships for Arthouse Film Production : Creative Freedom
