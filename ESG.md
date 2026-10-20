@@ -6,6 +6,26 @@
 
 **As these efforts grow, they could also pave the way for scholarship programs at universities across Europe and Asia that place a strong emphasis on film directing. By providing financial support to aspiring filmmakers, these scholarships would help reduce financial barriers and give students greater creative freedom to bring their artistic visions to life through arthouse cinema.**
 
+---
+
+The production model is simple, transparent, and designed to create a sustainable cycle of artistic opportunity and social impact.
+
+M-Corp AI supports independent arthouse filmmakers in submitting their works to international film festivals, helping their creative voices reach audiences around the world.
+
+Box office revenue is distributed as follows:
+
+- **60%** goes to participating local arthouse cinemas, supporting independent cultural spaces and their continued operation.
+- **20%** is allocated toward recovering the original film production costs, including an additional 30% contingency reserve.
+- **20%** is donated through partnerships with local hospitals to support children suffering from rare and incurable diseases, as well as children in need of assistance with medical expenses or educational costs.
+
+Once the production costs and the additional 30% contingency reserve have been recovered, these funds are reinvested into new arthouse film productions and international film festival submission fees.
+
+**This creates a sustainable, self-reinforcing cycle: each film helps sustain local cinemas, supports vulnerable children, and generates resources to bring the next generation of independent films to life.**
+
+Our goal is not simply to finance individual films, but to build a lasting ecosystem in which artistic freedom, cultural sustainability, and social responsibility reinforce one another.
+
+**Every film becomes an opportunity to create another film—and to make a meaningful difference in someone's life.**
+
 ## A Security Researcher’s Manifesto
 
 # My Dream Is to Become an ESG Leader.
