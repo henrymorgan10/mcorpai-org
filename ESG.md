@@ -74,7 +74,7 @@ We aim to prioritize healthcare and education for children in our local communit
 
 ---
 
-**Public Interest Project Director**
+### Public Interest Project Director
 
 <img width="200" height="200" alt="Morgan J  Caricature" src="https://github.com/user-attachments/assets/76dff975-4ca5-4b3f-b76a-ddfb8e154a49" />
 
