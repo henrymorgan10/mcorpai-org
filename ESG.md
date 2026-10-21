@@ -80,6 +80,8 @@ We aim to prioritize healthcare and education for children in our local communit
 
 ### Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
 
+### I don't drive an expensive car. Instead, I use that money to help children with incurable diseases.
+
 I was born in 1982, and throughout my life, I have experienced more than my share of hardship.
 
 I struggled from childhood and spent most of my life living in poverty. Even after I had passed my mid-forties, I had never held a job that most people would consider stable or respectable. I had never married, either.
