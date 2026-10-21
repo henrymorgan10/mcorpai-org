@@ -73,6 +73,10 @@ We aim to prioritize healthcare and education for children in our local communit
 **Positive change should begin close to home and extend beyond borders. This is our vision of sustainable and responsible philanthropy.**
 
 ---
+
+Public Interest Project Director:
+Founder of M-Corp AI: Morgan J. (Korean Name: Gyu-min Jeon)
+
 <img width="200" height="200" alt="Morgan J  Caricature" src="https://github.com/user-attachments/assets/76dff975-4ca5-4b3f-b76a-ddfb8e154a49" />
 
 I was born in 1982, and throughout my life, I have experienced more than my share of hardship.
