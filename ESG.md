@@ -73,6 +73,27 @@ We aim to prioritize healthcare and education for children in our local communit
 **Positive change should begin close to home and extend beyond borders. This is our vision of sustainable and responsible philanthropy.**
 
 ---
+<img width="200" height="200" alt="Morgan J  Caricature" src="https://github.com/user-attachments/assets/76dff975-4ca5-4b3f-b76a-ddfb8e154a49" />
+
+I was born in 1982, and throughout my life, I have experienced more than my share of hardship.
+
+I struggled from childhood and spent most of my life living in poverty. Even after I had passed my mid-forties, I had never held a job that most people would consider stable or respectable. I had never married, either.
+
+But if there is one thing life has taught me, it is this:
+
+**We should live our lives helping those who are less fortunate than ourselves.**
+
+I do not believe we should help others simply for personal satisfaction or to feel good about ourselves. I believe we should do so because we have a responsibility to leave a better future for the generations that come after us.
+
+**We should leave our children and future generations a life filled with hope, rather than one defined by poverty.**
+
+This is the conclusion I have reached through everything I have experienced in life.
+
+**Poverty is not a crime. But when we have the means to help others find a way out of poverty and choose not to, we fail in our moral responsibility.**
+
+Because ultimately, **we have a responsibility to leave the next generation a better world than the one we inherited.**
+
+---
 
 ## A Security Researcher’s Manifesto
 
@@ -491,23 +512,3 @@ Through this approach, we can respect the copyright and distribution rights of f
 
 What I aim to create is not simply a film distribution business. I want to build **a new model of cultural access that connects art, technology, tourism, and local communities**. Through micro-cinemas and a limited offline film-download system, I hope to create an environment where people can access film and the arts without depending on the internet or large-scale cultural institutions.
 
-
-<img width="200" height="200" alt="Morgan J  Caricature" src="https://github.com/user-attachments/assets/76dff975-4ca5-4b3f-b76a-ddfb8e154a49" />
-
-I was born in 1982, and throughout my life, I have experienced more than my share of hardship.
-
-I struggled from childhood and spent most of my life living in poverty. Even after I had passed my mid-forties, I had never held a job that most people would consider stable or respectable. I had never married, either.
-
-But if there is one thing life has taught me, it is this:
-
-**We should live our lives helping those who are less fortunate than ourselves.**
-
-I do not believe we should help others simply for personal satisfaction or to feel good about ourselves. I believe we should do so because we have a responsibility to leave a better future for the generations that come after us.
-
-**We should leave our children and future generations a life filled with hope, rather than one defined by poverty.**
-
-This is the conclusion I have reached through everything I have experienced in life.
-
-**Poverty is not a crime. But when we have the means to help others find a way out of poverty and choose not to, we fail in our moral responsibility.**
-
-Because ultimately, **we have a responsibility to leave the next generation a better world than the one we inherited.**
