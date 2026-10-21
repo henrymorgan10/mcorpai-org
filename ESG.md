@@ -492,5 +492,5 @@ Through this approach, we can respect the copyright and distribution rights of f
 What I aim to create is not simply a film distribution business. I want to build **a new model of cultural access that connects art, technology, tourism, and local communities**. Through micro-cinemas and a limited offline film-download system, I hope to create an environment where people can access film and the arts without depending on the internet or large-scale cultural institutions.
 
 
-<img width="307" height="307" alt="Morgan J  Caricature" src="https://github.com/user-attachments/assets/76dff975-4ca5-4b3f-b76a-ddfb8e154a49" />
+<img width="250" height="250" alt="Morgan J  Caricature" src="https://github.com/user-attachments/assets/76dff975-4ca5-4b3f-b76a-ddfb8e154a49" />
 
