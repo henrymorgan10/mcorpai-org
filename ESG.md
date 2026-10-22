@@ -74,7 +74,8 @@ We aim to prioritize healthcare and education for children in our local communit
 
 ---
 
-**Public Interest Project Director: Based in South Korea, working in the fields of artificial intelligence (AI) and cybersecurity.**
+### Public Interest Project Director: 
+### Based in South Korea, working in the fields of artificial intelligence (AI) and cybersecurity.
 
 <img width="200" height="200" alt="Morgan J  Caricature" src="https://raw.githubusercontent.com/henrymorgan10/mcorpai-org/main/Morgan J. Caricature.jpg" />
 
