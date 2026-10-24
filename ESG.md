@@ -128,11 +128,23 @@ The key is not to generate large profits from a single film or cinema. Instead, 
 
 ---
 
+### A $1,000 micro-cinema can help save the lives of many children.
+
 **Some poor villages do not even have hospitals. However, restaurants can be found in communities all around the world.**
 
 **We can help these restaurants set up small cinemas for just $1,000 and turn them into basic healthcare centers.**
 
 **The concept of a basic healthcare center is simple. When film screenings generate revenue, that money can be used to purchase medicines and distribute them to sick children in the local community.**
+
+**One important point is that this initiative aligns with ESG (Environmental, Social, and Governance) principles and may also qualify for ODA (Official Development Assistance).**
+
+**In other words, if the pilot social impact project succeeds, it could be expanded globally with support from public funding and international development assistance programs.**
+
+**The Micro-Cinema initiative delivers clear, measurable outcomes, making it possible to quantify its ethical, humanitarian, and charitable impact.**
+
+**This makes the model particularly well-suited to ESG (Environmental, Social, and Governance) frameworks and ODA (Official Development Assistance) programs.**
+
+**Even modest financial support can help save many children's lives, while the resulting social impact can be systematically measured, quantified, and presented through transparent data and visual reports.**
 
 ---
 
