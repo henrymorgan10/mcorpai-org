@@ -128,6 +128,14 @@ The key is not to generate large profits from a single film or cinema. Instead, 
 
 ---
 
+**Some poor villages do not even have hospitals. However, restaurants can be found in communities all around the world.**
+
+**We can help these restaurants set up small cinemas for just $1,000 and turn them into basic healthcare centers.**
+
+**The concept of a basic healthcare center is simple. When film screenings generate revenue, that money can be used to purchase medicines and distribute them to sick children in the local community.**
+
+---
+
 ## A Security Researcher’s Manifesto
 
 # My Dream Is to Become an ESG Leader.
