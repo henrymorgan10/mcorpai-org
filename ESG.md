@@ -104,6 +104,26 @@ Because ultimately, **we have a responsibility to leave the next generation a be
 
 ---
 
+**“How can filmmakers recover their production costs if they receive only 20% of the revenue?”**
+
+I see it differently.
+
+If there are no film licensing fees, anyone can create a small cinema with nothing more than a projector, a small screen, and a space to show films.
+
+Even in small villages around the world, there are children suffering from serious illnesses who need money for medical treatment, as well as children whose families cannot afford their education.
+
+With just $1,000, we could set up a small screening space and show films, using the revenue to help cover these children's education and medical expenses.
+
+Such cinemas do not require elaborate facilities. They could easily operate in a corner of a small restaurant in a village.
+
+What matters is not how much profit a single cinema can generate. As these small cinemas spread to more villages, we can help more children, while naturally creating more opportunities for filmmakers to recover their production costs.
+
+Ultimately, when we let go of the desire to monopolize profits, we open the door for more people to participate, creating new opportunities for everyone to benefit together.
+
+**When we let go of greed, we gain wisdom.**
+
+---
+
 ## A Security Researcher’s Manifesto
 
 # My Dream Is to Become an ESG Leader.
