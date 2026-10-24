@@ -122,6 +122,10 @@ Ultimately, when we let go of the desire to monopolize profits, we open the door
 
 **When we let go of greed, we gain wisdom.**
 
+**This is a self-sustaining social impact model that creates a small cinema with just $1,000 worth of equipment, including a projector, screen, and sound system, and uses revenue from film screenings to support the education and medical expenses of local children.**
+
+The key is not to generate large profits from a single film or cinema. Instead, the goal is to expand a network of small, affordable cinemas that anyone can operate across different communities, creating a structure in which filmmakers, local communities, and children in need can all benefit together.
+
 ---
 
 ## A Security Researcher’s Manifesto
