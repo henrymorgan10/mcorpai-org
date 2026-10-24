@@ -104,7 +104,7 @@ Because ultimately, **we have a responsibility to leave the next generation a be
 
 ---
 
-**“How can filmmakers recover their production costs if they receive only 20% of the revenue?”**
+### How can filmmakers recover their production costs if they receive only 20% of the revenue?
 
 I see it differently.
 
