@@ -1,3 +1,5 @@
+### My values will always remain unchanged. No matter how much I grow or how successful I become, I will never change who I am.
+
 ### [International Collaboration] Micro Cinema: Connecting People, Bringing Communities Together.
 ## Please take five minutes to read about the values and principles guiding my work.
 ### Public Interest Project Director:
