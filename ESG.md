@@ -6,6 +6,8 @@ When he passed away at the age of 92, he was living in a modest two-bedroom rent
 
 I may never be able to live exactly as he did, but I hope to use the talents and abilities I have to save as many lives as possible.
 
+---
+
 ### [International Collaboration] Micro Cinema: Connecting People, Bringing Communities Together.
 ## Please take five minutes to read about the values and principles guiding my work.
 ### Public Interest Project Director:
