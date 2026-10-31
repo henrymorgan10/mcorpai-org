@@ -1,3 +1,5 @@
+### I'm merely a modest small business owner.   
+
 **My values will always remain unchanged. No matter how much I grow or how successful I become, I will never change who I am.**
 
 **Chuck Feeney** was a highly respected American billionaire known for his extraordinary frugality. He saved every dollar he could, yet his generosity inspired countless people, and his philanthropy helped save and improve countless lives.
