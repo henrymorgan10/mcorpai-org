@@ -1,5 +1,11 @@
 **My values will always remain unchanged. No matter how much I grow or how successful I become, I will never change who I am.**
 
+**Chuck Feeney** was a highly respected American billionaire known for his extraordinary frugality. He saved every dollar he could, yet his generosity inspired countless people, and his philanthropy helped save and improve countless lives.
+
+When he passed away at the age of 92, he was living in a modest two-bedroom rented apartment. To me, that was the life of a truly wealthy man.
+
+I may never be able to live exactly as he did, but I hope to use the talents and abilities I have to save as many lives as possible.
+
 ### [International Collaboration] Micro Cinema: Connecting People, Bringing Communities Together.
 ## Please take five minutes to read about the values and principles guiding my work.
 ### Public Interest Project Director:
