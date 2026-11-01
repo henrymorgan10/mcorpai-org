@@ -12,8 +12,6 @@ I may never be able to live exactly as he did, but I hope to use the talents and
 
 ### My Core Goals and Vision for ESG Leadership
 
-One of my most important goals is to obtain **EB-1A status in the United States**, not simply as a personal achievement, but as a meaningful step toward my greater ambition: **becoming a leader in ESG (Environmental, Social, and Governance) and driving lasting social change.**
-
 Many people believe that donating money to those living in poverty is enough to fulfill their social responsibility. While charitable giving is valuable, I believe that true social responsibility must go far beyond temporary financial assistance.
 
 **To me, the true essence of ESG is not simply helping people survive poverty, but empowering them to overcome it.** It is about building pathways to economic independence, creating opportunities for upward social mobility, and establishing the ladders that allow individuals and families to move from poverty into the middle class.
