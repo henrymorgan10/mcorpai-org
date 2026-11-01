@@ -10,6 +10,24 @@ I may never be able to live exactly as he did, but I hope to use the talents and
 
 ---
 
+### My Core Goals and Vision for ESG Leadership
+
+One of my most important goals is to obtain **EB-1A status in the United States**, not simply as a personal achievement, but as a meaningful step toward my greater ambition: **becoming a leader in ESG (Environmental, Social, and Governance) and driving lasting social change.**
+
+Many people believe that donating money to those living in poverty is enough to fulfill their social responsibility. While charitable giving is valuable, I believe that true social responsibility must go far beyond temporary financial assistance.
+
+**To me, the true essence of ESG is not simply helping people survive poverty, but empowering them to overcome it.** It is about building pathways to economic independence, creating opportunities for upward social mobility, and establishing the ladders that allow individuals and families to move from poverty into the middle class.
+
+I believe that sustainable social progress comes not from making people dependent on generosity, but from giving them the tools, opportunities, and support they need to build better futures for themselves.
+
+This is the kind of ESG leadership I aspire to pursue. I want to help create systems that do more than provide short-term relief—systems that enable people to achieve financial independence, restore their dignity, and build lasting prosperity for future generations.
+
+**True innovation is not merely about creating new technologies or generating greater wealth. It is about creating opportunities for those who have been left behind to rise, become self-sufficient, and enter the middle class.**
+
+**That, to me, is the true meaning of ESG—and the kind of lasting impact I hope to make through my work in the United States.**
+
+---
+
 ### [International Collaboration] Micro Cinema: Connecting People, Bringing Communities Together.
 ## Please take five minutes to read about the values and principles guiding my work.
 ### Public Interest Project Director:
