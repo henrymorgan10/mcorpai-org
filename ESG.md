@@ -1,4 +1,4 @@
-### I'm merely a modest small business owner.   
+## I'm merely a modest small business owner.   
 
 **My values will always remain unchanged. No matter how much I grow or how successful I become, I will never change who I am.**
 
